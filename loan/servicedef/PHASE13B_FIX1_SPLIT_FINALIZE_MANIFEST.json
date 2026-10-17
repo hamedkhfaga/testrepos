@@ -1,0 +1,10 @@
+{
+  "phase": "Phase 13B-Fix1",
+  "title": "Split finalize out of disbursement finance orchestration",
+  "changedFiles": [
+    "LoanServices.java",
+    "services.xml"
+  ],
+  "behavior": "orchestrateLoanDisbursementFinanceV1 creates/posts accounting only and returns nextAction; finalizeLoanDisbursementV1 is called separately.",
+  "reason": "Avoid Derby lock timeout and rollback from nested create/post/finalize transaction."
+}

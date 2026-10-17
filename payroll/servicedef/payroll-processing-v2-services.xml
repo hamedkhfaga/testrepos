@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+
+    <service name="processPayrollRunFromSnapshotV2"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollProcessingServicesV2"
+             invoke="processPayrollRunFromSnapshotV2"
+               export="true" action="POST" auth="true"
+             transaction-timeout="3600">
+        <description>Generate EmployeePayrollResult from PayrollInputSnapshot (snapshot-only).</description>
+
+        <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+        <attribute name="snapshotStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="forceReprocess" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="data" type="Map" mode="OUT" optional="false"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="false"/>
+        <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="payrollPurgeResultsForRunV2"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollProcessingServicesV2"
+             invoke="payrollPurgeResultsForRunV2"
+               export="true" action="POST" auth="true"
+             transaction-timeout="3600">
+        <description>Purge EmployeePayrollResult + EmployeePayrollResultLine for a run.</description>
+
+        <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="data" type="Map" mode="OUT" optional="false"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="false"/>
+        <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+    </service>
+
+</services>

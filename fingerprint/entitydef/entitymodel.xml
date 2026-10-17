@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+
+    <!-- ========================================================= -->
+    <!-- 1) FpShift -->
+    <!-- ========================================================= -->
+    <entity entity-name="FpShift" package-name="org.apache.ofbiz.fingerprint" title="Fingerprint Shift">
+        <field name="shiftId" type="id"/>
+        <field name="description" type="description"/>
+        <field name="startTime" type="time"/>
+        <field name="endTime" type="time"/>
+
+        <!-- StatusItem-based status -->
+        <field name="statusId" type="id"/>
+
+        <!-- Audit -->
+        <field name="createdDate" type="date-time"/>
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedDate" type="date-time"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <!-- Standard stamps (consistent with rest of your model) -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="shiftId"/>
+
+        <relation type="one" fk-name="FPSHIFT_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="FPSHIFT_CBY" rel-entity-name="UserLogin">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" fk-name="FPSHIFT_MBY" rel-entity-name="UserLogin">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 2) BiometricDeviceType -->
+    <!-- ========================================================= -->
+    <entity entity-name="BiometricDeviceType" package-name="org.apache.ofbiz.hr.biometric" title="Biometric Device Type">
+        <field name="biometricDeviceTypeId" type="id"/>
+        <field name="description" type="description"/>
+
+        <!-- StatusItem-based status -->
+        <field name="statusId" type="id"/>
+
+        <!-- Audit (fix types to id) -->
+        <field name="createdDate" type="date-time"/>
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedDate" type="date-time"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="biometricDeviceTypeId"/>
+
+        <relation type="one" fk-name="BIO_DEV_TYPE_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="BIO_DEV_TYPE_CBY" rel-entity-name="UserLogin">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" fk-name="BIO_DEV_TYPE_MBY" rel-entity-name="UserLogin">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 3) BiometricDevice -->
+    <!-- ========================================================= -->
+    <entity entity-name="BiometricDevice" package-name="org.apache.ofbiz.hr.biometric" title="Biometric Device">
+        <field name="biometricDeviceId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="deviceName" type="name"/>
+        <field name="serialNumber" type="value"/>
+        <field name="vendorName" type="name"/>
+        <field name="modelName" type="name"/>
+
+        <!-- Align to BiometricDeviceType (NOT enum) -->
+        <field name="biometricDeviceTypeId" type="id"/>
+
+        <field name="ipAddress" type="value"/>
+        <field name="port" type="numeric"/>
+        <field name="timeZoneId" type="id"/>
+        <field name="facilityId" type="id"/>
+        <field name="geoPointId" type="id"/>
+        <field name="externalSystemRef" type="value"/>
+
+        <!-- StatusItem-based status -->
+        <field name="statusId" type="id"/>
+
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+
+        <!-- Audit -->
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="biometricDeviceId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="BIODEV_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="BiometricDeviceType" fk-name="BIODEV_TYPE">
+            <key-map field-name="biometricDeviceTypeId" rel-field-name="biometricDeviceTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Facility" fk-name="BIODEV_FAC">
+            <key-map field-name="facilityId" rel-field-name="facilityId"/>
+        </relation>
+        <relation type="one" rel-entity-name="GeoPoint" fk-name="BIODEV_GEO">
+            <key-map field-name="geoPointId" rel-field-name="geoPointId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIODEV_STS">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIODEV_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIODEV_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 4) BiometricDeviceUser -->
+    <!-- ========================================================= -->
+    <entity entity-name="BiometricDeviceUser" package-name="org.apache.ofbiz.hr.biometric" title="Biometric Device User Mapping">
+        <field name="biometricDeviceId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="fromDate" type="date-time"/>
+
+        <field name="organizationPartyId" type="id"/>
+        <field name="deviceUserId" type="value"/>
+        <field name="cardNumber" type="value"/>
+        <field name="badgeId" type="value"/>
+        <field name="badgeBarcode" type="value"/>
+
+        <!-- StatusItem-based 'barcode type' instead of enum -->
+        <field name="badgeBarcodeTypeStatusId" type="id"/>
+
+        <!-- StatusItem-based user status -->
+        <field name="deviceUserStatusId" type="id"/>
+
+        <field name="thruDate" type="date-time"/>
+        <field name="externalRefId" type="value"/>
+
+        <!-- Audit -->
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="biometricDeviceId"/>
+        <prim-key field="partyId"/>
+        <prim-key field="fromDate"/>
+
+        <relation type="one" rel-entity-name="BiometricDevice" fk-name="BIOUSR_DEV">
+            <key-map field-name="biometricDeviceId" rel-field-name="biometricDeviceId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="BIOUSR_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="BIOUSR_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOUSR_STS">
+            <key-map field-name="deviceUserStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOUSR_BBCODET">
+            <key-map field-name="badgeBarcodeTypeStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOUSR_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOUSR_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 5) BiometricTemplateStore -->
+    <!-- ========================================================= -->
+    <entity entity-name="BiometricTemplateStore" package-name="org.apache.ofbiz.hr.biometric" title="Biometric Template Store">
+        <field name="templateStoreId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+
+        <!-- StatusItem-based storage type (instead of enum) -->
+        <field name="storageTypeStatusId" type="id"/>
+
+        <field name="templateHash" type="value"/>
+        <field name="encryptedTemplate" type="byte-array"/>
+        <field name="externalRefId" type="value"/>
+        <field name="encryptionKeyId" type="id"/>
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+
+        <!-- Audit -->
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="templateStoreId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="BIOTPL_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOTPL_STGTYPE">
+            <key-map field-name="storageTypeStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOTPL_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOTPL_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 6) PartyBiometricCredential (canonical) -->
+    <!-- ========================================================= -->
+    <entity entity-name="PartyBiometricCredential" package-name="org.apache.ofbiz.hr.biometric" title="Party Biometric Credential">
+        <field name="partyBiometricId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+
+        <!-- StatusItem-based types (instead of enums) -->
+        <field name="biometricTypeStatusId" type="id"/>     <!-- FP/FACE/IRIS -->
+        <field name="fingerIndexStatusId" type="id"/>       <!-- LT/RI/etc -->
+
+        <field name="templateStoreId" type="id"/>
+        <field name="credentialStatusId" type="id"/>
+        <field name="qualityScore" type="numeric"/>
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="externalRefId" type="value"/>
+
+        <!-- Audit -->
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="partyBiometricId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="BIOCRD_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="BIOCRD_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="BiometricTemplateStore" fk-name="BIOCRD_TPL">
+            <key-map field-name="templateStoreId" rel-field-name="templateStoreId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOCRD_STS">
+            <key-map field-name="credentialStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOCRD_BIOTYPE">
+            <key-map field-name="biometricTypeStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOCRD_FINGIDX">
+            <key-map field-name="fingerIndexStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOCRD_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOCRD_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 7) PartyBiometricEnrollment (audit trail) -->
+    <!-- ========================================================= -->
+    <entity entity-name="PartyBiometricEnrollment"
+            package-name="org.apache.ofbiz.hr.biometric"
+            title="Party Biometric Enrollment">
+
+        <field name="partyBiometricEnrollmentId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyBiometricId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="biometricDeviceId" type="id"/>
+
+        <field name="enrolledDateTime" type="date-time"/>
+        <field name="enrolledByUserLoginId" type="id"/>
+
+        <!-- StatusItem-based method instead of enum -->
+        <field name="enrollMethodStatusId" type="id"/>
+
+        <field name="enrollStatusId" type="id"/>
+        <field name="notes" type="comment"/>
+        <field name="externalRefId" type="value"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="partyBiometricEnrollmentId"/>
+
+        <relation type="one" rel-entity-name="PartyBiometricCredential" fk-name="BIOENR_CRD">
+            <key-map field-name="partyBiometricId" rel-field-name="partyBiometricId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="BIOENR_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="BIOENR_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="BiometricDevice" fk-name="BIOENR_DEV">
+            <key-map field-name="biometricDeviceId" rel-field-name="biometricDeviceId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOENR_UL">
+            <key-map field-name="enrolledByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOENR_STS">
+            <key-map field-name="enrollStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOENR_METHOD">
+            <key-map field-name="enrollMethodStatusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 8) BiometricImportBatch -->
+    <!-- ========================================================= -->
+    <entity entity-name="BiometricImportBatch"
+            package-name="org.apache.ofbiz.hr.biometric"
+            title="Biometric Import Batch">
+
+        <field name="biometricImportBatchId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="biometricDeviceId" type="id"/>
+
+        <!-- StatusItem-based source (instead of enum) -->
+        <field name="importSourceStatusId" type="id"/> <!-- API/FILE/SFTP -->
+        <field name="sourceFileName" type="value"/>
+        <field name="sourceChecksum" type="value"/>
+        <field name="importFromDateTime" type="date-time"/>
+        <field name="importThruDateTime" type="date-time"/>
+        <field name="importStatusId" type="id"/>
+
+        <field name="recordCount" type="numeric"/>
+        <field name="errorCount" type="numeric"/>
+        <field name="startedDateTime" type="date-time"/>
+        <field name="completedDateTime" type="date-time"/>
+        <field name="errorMessage" type="comment"/>
+
+        <!-- Audit -->
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="biometricImportBatchId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="BIOBAT_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="BiometricDevice" fk-name="BIOBAT_DEV">
+            <key-map field-name="biometricDeviceId" rel-field-name="biometricDeviceId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOBAT_STS">
+            <key-map field-name="importStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOBAT_SRC">
+            <key-map field-name="importSourceStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOBAT_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOBAT_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 9) BiometricEventLog (raw punches) -->
+    <!-- ========================================================= -->
+    <entity entity-name="BiometricEventLog"
+            package-name="org.apache.ofbiz.hr.biometric"
+            title="Biometric Event Log">
+
+        <field name="biometricEventLogId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="biometricImportBatchId" type="id"/>
+        <field name="biometricDeviceId" type="id"/>
+
+        <field name="partyId" type="id"/>
+        <field name="deviceUserId" type="value"/>
+        <field name="vendorEventId" type="value"/>
+
+        <field name="eventDateTime" type="date-time"/>
+
+        <!-- StatusItem-based types (instead of enums) -->
+        <field name="eventTypeStatusId" type="id"/>   <!-- punch/door/alarm -->
+        <field name="punchTypeStatusId" type="id"/>   <!-- IN/OUT -->
+        <field name="verifyModeStatusId" type="id"/>  <!-- FP/CARD/PIN -->
+
+        <field name="workLocationFacilityId" type="id"/>
+        <field name="rawPayload" type="very-long"/>
+        <field name="processStatusId" type="id"/>
+        <field name="errorMessage" type="comment"/>
+        <field name="externalRefId" type="value"/>
+
+        <!-- Audit -->
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="biometricEventLogId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="BIOLOG_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="BiometricImportBatch" fk-name="BIOLOG_BAT">
+            <key-map field-name="biometricImportBatchId" rel-field-name="biometricImportBatchId"/>
+        </relation>
+        <relation type="one" rel-entity-name="BiometricDevice" fk-name="BIOLOG_DEV">
+            <key-map field-name="biometricDeviceId" rel-field-name="biometricDeviceId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="BIOLOG_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Facility" fk-name="BIOLOG_FAC">
+            <key-map field-name="workLocationFacilityId" rel-field-name="facilityId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOLOG_STS">
+            <key-map field-name="processStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOLOG_EVTTYPE">
+            <key-map field-name="eventTypeStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOLOG_PUNCHTYPE">
+            <key-map field-name="punchTypeStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOLOG_VMODE">
+            <key-map field-name="verifyModeStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOLOG_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BIOLOG_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 10) BiometricVerificationAttempt (audit attempts) -->
+    <!-- ========================================================= -->
+    <entity entity-name="BiometricVerificationAttempt"
+            package-name="org.apache.ofbiz.hr.biometric"
+            title="Biometric Verification Attempt">
+
+        <field name="biometricVerificationAttemptId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="biometricDeviceId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="partyBiometricId" type="id"/>
+
+        <field name="attemptDateTime" type="date-time"/>
+
+        <!-- StatusItem-based verify mode and result -->
+        <field name="verifyModeStatusId" type="id"/>
+        <field name="resultStatusId" type="id"/>
+
+        <field name="matchScore" type="numeric"/>
+        <field name="rawPayload" type="very-long"/>
+        <field name="externalRefId" type="value"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="biometricVerificationAttemptId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="BIOVAT_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="BiometricDevice" fk-name="BIOVAT_DEV">
+            <key-map field-name="biometricDeviceId" rel-field-name="biometricDeviceId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="BIOVAT_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyBiometricCredential" fk-name="BIOVAT_CRD">
+            <key-map field-name="partyBiometricId" rel-field-name="partyBiometricId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOVAT_RES">
+            <key-map field-name="resultStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BIOVAT_VMODE">
+            <key-map field-name="verifyModeStatusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 11) BiometricFingerprint (legacy/compat enrollment table) -->
+    <!-- ========================================================= -->
+    <entity entity-name="BiometricFingerprint" table-name="BIOMETRIC_FINGERPRINT"
+            package-name="org.apache.ofbiz.hr.biometric" title="Biometric Fingerprint Enrollment (Legacy)">
+
+        <field name="fingerprintId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="biometricDeviceId" type="id"/>
+        <field name="enrollDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+
+        <!-- StatusItem-based status -->
+        <field name="statusId" type="id"/>
+
+        <!-- Tie to template store (fix loose templateRef) -->
+        <field name="templateStoreId" type="id"/>
+        <field name="templateHash" type="value"/>
+        <field name="qualityScore" type="numeric"/>
+
+        <!-- StatusItem-based finger index (instead of id/enum) -->
+        <field name="fingerIndexStatusId" type="id"/>
+
+        <!-- Audit -->
+        <field name="createdDate" type="date-time"/>
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedDate" type="date-time"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <!-- Stamps -->
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="fingerprintId"/>
+
+        <relation type="one" fk-name="BIOFP_PARTY" rel-entity-name="Party">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="BIOFP_DEVICE" rel-entity-name="BiometricDevice">
+            <key-map field-name="biometricDeviceId" rel-field-name="biometricDeviceId"/>
+        </relation>
+        <relation type="one" fk-name="BIOFP_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="BIOFP_TPL" rel-entity-name="BiometricTemplateStore">
+            <key-map field-name="templateStoreId" rel-field-name="templateStoreId"/>
+        </relation>
+        <relation type="one" fk-name="BIOFP_FINGIDX" rel-entity-name="StatusItem">
+            <key-map field-name="fingerIndexStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="BIOFP_CBY" rel-entity-name="UserLogin">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" fk-name="BIOFP_MBY" rel-entity-name="UserLogin">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- Attendance entities (unchanged as you pasted) -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="WorkShift"
+            package-name="org.ofbiz.hr.attendance"
+            title="Work Shift">
+
+        <field name="shiftId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="shiftName" type="name"/>
+        <field name="startTime" type="time"/>
+        <field name="endTime" type="time"/>
+        <field name="crossMidnightFlag" type="indicator"/>
+        <field name="graceInMinutes" type="numeric"/>
+        <field name="graceOutMinutes" type="numeric"/>
+        <field name="breakMinutes" type="numeric"/>
+        <field name="shiftStatusId" type="id"/>
+        <field name="externalRefId" type="value"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="shiftId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="SHIFT_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="SHIFT_STS">
+            <key-map field-name="shiftStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="SHIFT_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="SHIFT_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PartyShiftAssignment"
+            package-name="org.ofbiz.hr.attendance"
+            title="Party Shift Assignment">
+
+        <field name="partyId" type="id"/>
+        <field name="shiftId" type="id"/>
+        <field name="fromDate" type="date-time"/>
+
+        <field name="organizationPartyId" type="id"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="notes" type="comment"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="partyId"/>
+        <prim-key field="shiftId"/>
+        <prim-key field="fromDate"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="PSHIFT_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="WorkShift" fk-name="PSHIFT_SHIFT">
+            <key-map field-name="shiftId" rel-field-name="shiftId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="PSHIFT_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+    </entity>
+
+<entity entity-name="AttendancePolicy"
+        package-name="org.ofbiz.hr.attendance"
+        title="Attendance Policy">
+
+    <field name="attendancePolicyId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="policyName" type="name"/>
+
+    <field name="roundingMethodEnumId" type="id"/>
+    <field name="roundingMinutes" type="numeric"/>
+    <field name="overtimeMethodEnumId" type="id"/>
+    <field name="minOvertimeMinutes" type="numeric"/>
+    <field name="allowManualAdjustFlag" type="indicator"/>
+    <field name="policyStatusId" type="id"/>
+
+    <field name="externalRefId" type="value"/>
+    <field name="notes" type="comment"/>
+
+    <field name="createdByUserLoginId" type="id"/>
+    <field name="lastModifiedByUserLoginId" type="id"/>
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="attendancePolicyId"/>
+
+    <relation type="one" rel-entity-name="Party" fk-name="ATPOL_ORG">
+        <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="ATPOL_STS">
+        <key-map field-name="policyStatusId" rel-field-name="statusId"/>
+    </relation>
+
+    <!-- ADDED: Enum relations -->
+    <relation type="one" rel-entity-name="Enumeration" fk-name="ATPOL_ROUND_ENUM">
+        <key-map field-name="roundingMethodEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" rel-entity-name="Enumeration" fk-name="ATPOL_OT_ENUM">
+        <key-map field-name="overtimeMethodEnumId" rel-field-name="enumId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="ATPOL_CBY">
+        <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+    <relation type="one" rel-entity-name="UserLogin" fk-name="ATPOL_MBY">
+        <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+</entity>
+
+
+    <entity entity-name="PartyAttendancePolicy"
+            package-name="org.ofbiz.hr.attendance"
+            title="Party Attendance Policy Assignment">
+
+        <field name="partyId" type="id"/>
+        <field name="attendancePolicyId" type="id"/>
+        <field name="fromDate" type="date-time"/>
+
+        <field name="organizationPartyId" type="id"/>
+        <field name="thruDate" type="date-time"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="partyId"/>
+        <prim-key field="attendancePolicyId"/>
+        <prim-key field="fromDate"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="PAPOL_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AttendancePolicy" fk-name="PAPOL_POL">
+            <key-map field-name="attendancePolicyId" rel-field-name="attendancePolicyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="PAPOL_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+    </entity>
+
+<entity entity-name="AttendancePunchPair"
+        package-name="org.ofbiz.hr.attendance"
+        title="Attendance Punch Pair">
+
+    <field name="attendancePunchPairId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="partyId" type="id"/>
+    <field name="workDate" type="date"/>
+
+    <field name="inEventLogId" type="id"/>
+    <field name="outEventLogId" type="id"/>
+    <field name="inDateTime" type="date-time"/>
+    <field name="outDateTime" type="date-time"/>
+    <field name="workedMinutes" type="numeric"/>
+    <field name="pairStatusId" type="id"/>
+    <field name="notes" type="comment"/>
+
+    <field name="createdByUserLoginId" type="id"/>
+    <field name="lastModifiedByUserLoginId" type="id"/>
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="attendancePunchPairId"/>
+
+    <relation type="one" rel-entity-name="Party" fk-name="PAIR_ORG">
+        <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" rel-entity-name="Party" fk-name="PAIR_PTY">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" rel-entity-name="BiometricEventLog" fk-name="PAIR_INLOG">
+        <key-map field-name="inEventLogId" rel-field-name="biometricEventLogId"/>
+    </relation>
+    <relation type="one" rel-entity-name="BiometricEventLog" fk-name="PAIR_OUTLOG">
+        <key-map field-name="outEventLogId" rel-field-name="biometricEventLogId"/>
+    </relation>
+    <relation type="one" rel-entity-name="StatusItem" fk-name="PAIR_STS">
+        <key-map field-name="pairStatusId" rel-field-name="statusId"/>
+    </relation>
+
+    <!-- ADDED: audit relations -->
+    <relation type="one" rel-entity-name="UserLogin" fk-name="PAIR_CBY">
+        <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+    <relation type="one" rel-entity-name="UserLogin" fk-name="PAIR_MBY">
+        <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+</entity>
+
+  <entity entity-name="AttendanceException"
+        package-name="org.ofbiz.hr.attendance"
+        title="Attendance Exception">
+
+    <field name="attendanceExceptionId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="partyId" type="id"/>
+    <field name="workDate" type="date"/>
+
+    <field name="exceptionTypeEnumId" type="id"/>
+    <field name="severityEnumId" type="id"/>
+    <field name="relatedEventLogId" type="id"/>
+    <field name="relatedPunchPairId" type="id"/>
+
+    <field name="exceptionStatusId" type="id"/>
+    <field name="resolvedByUserLoginId" type="id"/>
+    <field name="resolvedDateTime" type="date-time"/>
+    <field name="resolutionNote" type="comment"/>
+
+    <field name="createdByUserLoginId" type="id"/>
+    <field name="lastModifiedByUserLoginId" type="id"/>
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="attendanceExceptionId"/>
+
+    <relation type="one" rel-entity-name="Party" fk-name="ATEXC_ORG">
+        <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" rel-entity-name="Party" fk-name="ATEXC_PTY">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" rel-entity-name="BiometricEventLog" fk-name="ATEXC_LOG">
+        <key-map field-name="relatedEventLogId" rel-field-name="biometricEventLogId"/>
+    </relation>
+    <relation type="one" rel-entity-name="AttendancePunchPair" fk-name="ATEXC_PAIR">
+        <key-map field-name="relatedPunchPairId" rel-field-name="attendancePunchPairId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="ATEXC_STS">
+        <key-map field-name="exceptionStatusId" rel-field-name="statusId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="ATEXC_UL">
+        <key-map field-name="resolvedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <!-- ADDED: Enum relations -->
+    <relation type="one" rel-entity-name="Enumeration" fk-name="ATEXC_EXCTYPE_ENUM">
+        <key-map field-name="exceptionTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" rel-entity-name="Enumeration" fk-name="ATEXC_SEV_ENUM">
+        <key-map field-name="severityEnumId" rel-field-name="enumId"/>
+    </relation>
+
+    <!-- ADDED: audit relations -->
+    <relation type="one" rel-entity-name="UserLogin" fk-name="ATEXC_CBY">
+        <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+    <relation type="one" rel-entity-name="UserLogin" fk-name="ATEXC_MBY">
+        <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+</entity>
+
+    <entity entity-name="AttendanceDaySummary"
+            package-name="org.ofbiz.hr.attendance"
+            title="Attendance Day Summary">
+
+        <field name="attendanceDaySummaryId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="workDate" type="date"/>
+
+        <field name="shiftId" type="id"/>
+        <field name="attendancePolicyId" type="id"/>
+
+        <field name="scheduledMinutes" type="numeric"/>
+        <field name="workedMinutes" type="numeric"/>
+        <field name="overtimeMinutes" type="numeric"/>
+        <field name="lateMinutes" type="numeric"/>
+        <field name="earlyLeaveMinutes" type="numeric"/>
+        <field name="absenceFlag" type="indicator"/>
+
+        <field name="summaryStatusId" type="id"/>
+        <field name="calculatedDateTime" type="date-time"/>
+        <field name="calculatedByUserLoginId" type="id"/>
+        <field name="notes" type="comment"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="attendanceDaySummaryId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="ATSUM_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="ATSUM_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="WorkShift" fk-name="ATSUM_SHIFT">
+            <key-map field-name="shiftId" rel-field-name="shiftId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AttendancePolicy" fk-name="ATSUM_POL">
+            <key-map field-name="attendancePolicyId" rel-field-name="attendancePolicyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="ATSUM_STS">
+            <key-map field-name="summaryStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="ATSUM_UL">
+            <key-map field-name="calculatedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="ATSUM_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="ATSUM_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+</entitymodel>

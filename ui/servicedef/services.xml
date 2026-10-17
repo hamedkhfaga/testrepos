@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>Ui Services — all custom UI-support services over standard OFBiz
+        (audit trail, treasury/bank integration, workflow guards).
+        Moved from the qrcore plugin 2026-07-24; qrcore is QR-code only again.</description>
+    <vendor>ui</vendor>
+    <version>1.0</version>
+
+    <!-- generic audit trail: one row per business event -->
+    <service name="uiLogAudit" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiBank.groovy"
+            invoke="uiLogAudit" auth="true" export="true" action="POST">
+        <description>Write one AuditEvent row (docType/docId/eventType)</description>
+        <attribute name="docType" type="String" mode="IN" optional="false"/>
+        <attribute name="docId" type="String" mode="IN" optional="false"/>
+        <attribute name="eventType" type="String" mode="IN" optional="false"/>
+        <attribute name="oldValue" type="String" mode="IN" optional="true"/>
+        <attribute name="newValue" type="String" mode="IN" optional="true"/>
+        <attribute name="remark" type="String" mode="IN" optional="true"/>
+        <attribute name="auditUserLoginId" type="String" mode="IN" optional="true"/>
+        <attribute name="auditEventId" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="uiAuditPaymentStatus" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiBank.groovy"
+            invoke="uiAuditPaymentStatus" auth="false">
+        <description>SECA: audit every payment status transition</description>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="oldStatusId" type="String" mode="IN" optional="true"/>
+    </service>
+    <service name="uiAuditPaymentVoid" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiBank.groovy"
+            invoke="uiAuditPaymentVoid" auth="false">
+        <description>SECA: audit voidPayment</description>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+    </service>
+
+    <!-- digital bank-batch processing: ISO 20022 out + response in -->
+    <service name="uiGenerateBankFile" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiBank.groovy"
+            invoke="uiGenerateBankFile" auth="true" export="true" action="POST">
+        <description>Generate pain.001 (outgoing) / pain.008 (incoming) for a payment group</description>
+        <attribute name="paymentGroupId" type="String" mode="IN" optional="false"/>
+        <attribute name="fileName" type="String" mode="OUT" optional="true"/>
+        <attribute name="fileContent" type="String" mode="OUT" optional="true"/>
+        <attribute name="msgId" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="uiProcessBankResponse" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiBank.groovy"
+            invoke="uiProcessBankResponse" auth="true" export="true" action="POST">
+        <description>Apply a pain.002-style bank status response: ACSC→confirm, RJCT→void,
+            group-binding + tamper guards, idempotent, all audited</description>
+        <attribute name="paymentGroupId" type="String" mode="IN" optional="false"/>
+        <!-- the payload IS XML — bypass the default <> injection filter -->
+        <attribute name="fileContent" type="String" mode="IN" optional="false" allow-html="any"/>
+        <attribute name="results" type="List" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- bank statement staging (reconciliation) — entity-auto CRUD -->
+    <service name="uiCreateBankStatement" default-entity-name="BankStatement"
+            engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Stage one uploaded bank statement file</description>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <!-- the payload may be camt.053 XML — bypass the <> injection filter -->
+        <override name="fileContent" allow-html="any"/>
+    </service>
+    <service name="uiUpdateBankStatement" default-entity-name="BankStatement"
+            engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <description>Update a staged bank statement (status, account, reconciled date)</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fileContent" allow-html="any"/>
+    </service>
+
+    <!-- bank file exchange folders: default runtime/uploads/bankfiles/{out,in,archive},
+         overridable via SystemProperty resource "ui" (bankfile.base.dir + per-folder) -->
+    <service name="uiGetBankFileConfig" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiFiles.groovy"
+            invoke="uiGetBankFileConfig" auth="true" export="true" action="POST">
+        <description>Effective bank-file folder configuration (resolved paths + sources)</description>
+        <!-- the REST layer requires a non-empty body — harmless marker attribute -->
+        <attribute name="refresh" type="String" mode="IN" optional="true"/>
+        <attribute name="config" type="Map" mode="OUT" optional="true"/>
+    </service>
+    <service name="uiDeliverBankFile" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiFiles.groovy"
+            invoke="uiDeliverBankFile" auth="true" export="true" action="POST">
+        <description>Generate a group's bank file and write it to the outbound folder</description>
+        <attribute name="paymentGroupId" type="String" mode="IN" optional="false"/>
+        <attribute name="filePath" type="String" mode="OUT" optional="true"/>
+        <attribute name="fileName" type="String" mode="OUT" optional="true"/>
+        <attribute name="msgId" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="uiScanBankInbox" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiFiles.groovy"
+            invoke="uiScanBankInbox" auth="true" export="true" action="POST">
+        <description>List files waiting in the inbound bank folder</description>
+        <!-- the REST layer requires a non-empty body — harmless marker attribute -->
+        <attribute name="refresh" type="String" mode="IN" optional="true"/>
+        <attribute name="files" type="List" mode="OUT" optional="true"/>
+        <attribute name="inDir" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="uiReadInboxFile" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiFiles.groovy"
+            invoke="uiReadInboxFile" auth="true" export="true" action="POST">
+        <description>Read one inbox file's content</description>
+        <attribute name="fileName" type="String" mode="IN" optional="false"/>
+        <attribute name="fileContent" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="uiArchiveInboxFile" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiFiles.groovy"
+            invoke="uiArchiveInboxFile" auth="true" export="true" action="POST">
+        <description>Move a processed inbox file to the archive folder (timestamped)</description>
+        <attribute name="fileName" type="String" mode="IN" optional="false"/>
+        <attribute name="remark" type="String" mode="IN" optional="true"/>
+        <attribute name="archivedPath" type="String" mode="OUT" optional="true"/>
+    </service>
+    <!-- assets-plugin book GL mapping maintenance — the assets plugin ships
+         no CRUD for AssetsBookGlAccount (rows were POC-seeded); needed to
+         repoint book mappings to the real chart (services-only rule) -->
+    <service name="uiUpdateAssetsBookGlAccount" default-entity-name="AssetsBookGlAccount"
+            engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <description>Update an assets-book GL account mapping row</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <!-- Packing bridge — one stateless call around PackingSession.complete() -->
+    <service name="uiPackOrder" engine="groovy" auth="true" export="true" action="POST"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiPacking.groovy"
+            invoke="uiPackOrder" transaction-timeout="600">
+        <description>Pack an order: lines [{orderItemSeqId, quantity, packageSeq}] into packages, complete the packing session (creates shipment + issuances)</description>
+        <attribute name="orderId"              type="String" mode="IN"  optional="false"/>
+        <attribute name="shipGroupSeqId"       type="String" mode="IN"  optional="true"/>
+        <attribute name="facilityId"           type="String" mode="IN"  optional="false"/>
+        <attribute name="lines"                type="List"   mode="IN"  optional="false"/>
+        <attribute name="packageWeights"       type="java.util.Map" mode="IN" optional="true"/>
+        <attribute name="handlingInstructions" type="String" mode="IN"  optional="true"/>
+        <attribute name="weightUomId"          type="String" mode="IN"  optional="true"/>
+        <attribute name="pickerPartyId"        type="String" mode="IN"  optional="true"/>
+        <attribute name="force"                type="String" mode="IN"  optional="true"/>
+        <attribute name="shipmentId"           type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- Verify-pick bridge — one stateless call around VerifyPickSession.complete() -->
+    <service name="uiVerifyPick" engine="groovy" auth="true" export="true" action="POST"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiVerifyPick.groovy"
+            invoke="uiVerifyPick" transaction-timeout="600">
+        <description>Verify a pick: rows [{orderItemSeqId, productId, quantity}] verified against reservations, session completed (creates PICKED shipment + issuances)</description>
+        <attribute name="orderId"        type="String" mode="IN"  optional="false"/>
+        <attribute name="shipGroupSeqId" type="String" mode="IN"  optional="true"/>
+        <attribute name="facilityId"     type="String" mode="IN"  optional="true"/>
+        <attribute name="rows"           type="List"   mode="IN"  optional="false"/>
+        <attribute name="shipmentId"     type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- Shipment note bridge — OFBiz exports no shipment-note service -->
+    <service name="uiCreateShipmentNote" engine="groovy" auth="true" export="true" action="POST"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiNotes.groovy"
+            invoke="uiCreateShipmentNote">
+        <description>Create a NoteData + ShipmentNote link for a shipment</description>
+        <attribute name="shipmentId" type="String" mode="IN"  optional="false"/>
+        <attribute name="note"       type="String" mode="IN"  optional="false"/>
+        <attribute name="noteId"     type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- SystemProperty maintenance for the folder overrides (entity-auto) -->
+    <service name="uiCreateSystemProperty" default-entity-name="SystemProperty"
+            engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Create a SystemProperty row (bank-file folder overrides)</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="uiUpdateSystemProperty" default-entity-name="SystemProperty"
+            engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <description>Update a SystemProperty row (bank-file folder overrides)</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <!-- Order entry bridges — relocated from asseterp (user decision
+         2026-08-22): core migration must not depend on the optional Asset
+         ERP module. Wrappers around the STANDARD storeOrder (ShoppingCart
+         is session-bound; storeOrder needs GenericValue inputs). -->
+    <service name="uiCalculateOrderTotals" engine="groovy" auth="true" export="true" action="POST"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiOrder.groovy"
+            invoke="uiCalculateOrderTotals">
+        <description>Preview price + tax + discount totals without creating an order</description>
+        <attribute name="partyId"            type="String"     mode="IN"  optional="true"/>
+        <attribute name="orderTypeId"        type="String"     mode="IN"  optional="true"/>
+        <attribute name="productStoreId"     type="String"     mode="IN"  optional="true"/>
+        <attribute name="currencyUom"        type="String"     mode="IN"  optional="true"/>
+        <attribute name="agreementId"        type="String"     mode="IN"  optional="true"/>
+        <attribute name="orderItems"         type="List"       mode="IN"  optional="false"/>
+        <attribute name="promoCodes"         type="Set"        mode="IN"  optional="true"/>
+        <attribute name="shippingAmount"     type="BigDecimal" mode="IN"  optional="true"/>
+        <!-- OUT -->
+        <attribute name="computedItems"      type="List"       mode="OUT" optional="false"/>
+        <attribute name="subtotal"           type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="discountTotal"      type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="taxTotal"           type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="shippingTotal"      type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="grandTotal"         type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="taxAdjustments"     type="List"       mode="OUT" optional="false"/>
+        <attribute name="discountAdjustments" type="List"      mode="OUT" optional="false"/>
+    </service>
+
+    <service name="uiCreateOrder" engine="groovy" auth="true" export="true" action="POST"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiOrder.groovy"
+            invoke="uiCreateOrder">
+        <description>Create a Sales or Purchase order — REST-safe wrapper around OFBiz storeOrder</description>
+        <!-- Required -->
+        <attribute name="partyId"             type="String"  mode="IN"  optional="false"/>
+        <attribute name="orderTypeId"         type="String"  mode="IN"  optional="false"/>
+        <attribute name="currencyUom"         type="String"  mode="IN"  optional="false"/>
+        <attribute name="orderItems"          type="List"    mode="IN"  optional="false"/>
+        <!-- Optional scalars -->
+        <attribute name="orderAdjustments"    type="List"    mode="IN"  optional="true"/>
+        <attribute name="orderPaymentInfo"    type="List"    mode="IN"  optional="true"/>
+        <attribute name="orderNotes"          type="List"    mode="IN"  optional="true"/>
+        <attribute name="productStoreId"      type="String"  mode="IN"  optional="true"/>
+        <attribute name="salesChannelEnumId"  type="String"  mode="IN"  optional="true"/>
+        <attribute name="orderName"           type="String"  mode="IN"  optional="true"/>
+        <attribute name="externalId"          type="String"  mode="IN"  optional="true"/>
+        <attribute name="agreementId"         type="String"  mode="IN"  optional="true"/>
+        <attribute name="workEffortId"        type="String"  mode="IN"  optional="true"/>
+        <attribute name="billingAccountId"    type="String"  mode="IN"  optional="true"/>
+        <attribute name="grandTotal"          type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="placingCustomerPartyId"  type="String" mode="IN" optional="true"/>
+        <attribute name="billToCustomerPartyId"   type="String" mode="IN" optional="true"/>
+        <attribute name="shipToCustomerPartyId"   type="String" mode="IN" optional="true"/>
+        <attribute name="endUserCustomerPartyId"  type="String" mode="IN" optional="true"/>
+        <attribute name="billFromVendorPartyId"   type="String" mode="IN" optional="true"/>
+        <attribute name="shipFromVendorPartyId"   type="String" mode="IN" optional="true"/>
+        <attribute name="supplierAgentPartyId"    type="String" mode="IN" optional="true"/>
+        <attribute name="supplierPartyId"         type="String" mode="IN" optional="true"/>
+        <attribute name="shipmentMethodTypeId"    type="String" mode="IN" optional="true"/>
+        <attribute name="carrierPartyId"          type="String" mode="IN" optional="true"/>
+        <attribute name="shipToContactMechId"     type="String" mode="IN" optional="true"/>
+        <attribute name="orderTerms"              type="List"   mode="IN" optional="true"/>
+        <!-- Output -->
+        <attribute name="orderId"   type="String" mode="OUT" optional="false"/>
+        <attribute name="statusId"  type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- Phase 2 relocation from asseterp (user decision 2026-08-22):
+         order attachments + order inventory summary (groovy, standard
+         content/inventory chains) and accounting entity-auto bridges
+         (standard entities, ACCOUNTING permission). -->
+    <service name="uiUploadOrderAttachment" engine="groovy" auth="true" export="true" action="POST"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiOrder.groovy"
+            invoke="uiUploadOrderAttachment" transaction-timeout="300">
+        <description>Attach an uploaded file (base64) to an order — native OrderContent chain</description>
+        <attribute name="orderId"            type="String" mode="IN"  optional="false"/>
+        <attribute name="orderItemSeqId"     type="String" mode="IN"  optional="true"/>
+        <attribute name="orderContentTypeId" type="String" mode="IN"  optional="true"/>
+        <attribute name="fileName"           type="String" mode="INOUT" optional="false"/>
+        <attribute name="mimeType"           type="String" mode="IN"  optional="true"/>
+        <attribute name="fileDataBase64"     type="String" mode="IN"  optional="false" allow-html="any"/>
+        <attribute name="contentId"          type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="uiGetOrderAttachment" engine="groovy" auth="true" export="true" action="POST"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiOrder.groovy"
+            invoke="uiGetOrderAttachment" transaction-timeout="300">
+        <description>Download an order attachment as base64</description>
+        <attribute name="contentId"      type="String" mode="IN"  optional="false"/>
+        <attribute name="fileName"       type="String" mode="OUT" optional="false"/>
+        <attribute name="mimeType"       type="String" mode="OUT" optional="false"/>
+        <attribute name="fileDataBase64" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="uiGetOrderItemInventorySummary" engine="groovy" auth="true" export="true" action="POST"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiOrder.groovy"
+            invoke="uiGetOrderItemInventorySummary">
+        <description>Per-product inventory summary for an order — mirrors OrderView.groovy context
+            (Required for SO, QOH/ATP by store facility and all facilities, On Order, In Production, Unplanned)</description>
+        <attribute name="orderId"          type="String" mode="IN"  optional="false"/>
+        <attribute name="inventorySummary" type="List"   mode="OUT" optional="false"/>
+        <attribute name="facilityName"     type="String" mode="OUT" optional="true"/>
+        <attribute name="facilityId"       type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="uiCreatePartyAcctgPreference" default-entity-name="PartyAcctgPreference"
+            engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Create PartyAcctgPreference (REST bridge for org accounting setup)</description>
+        <required-permissions join-type="OR">
+            <check-permission permission="ACCOUNTING" action="_CREATE"/>
+            <check-permission permission="ACCOUNTING_ADMIN"/>
+        </required-permissions>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="uiCreateRateAmount" default-entity-name="RateAmount"
+            engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Create a RateAmount row (REST bridge)</description>
+        <required-permissions join-type="OR">
+            <check-permission permission="ACCOUNTING" action="_CREATE"/>
+            <check-permission permission="ACCOUNTING_ADMIN"/>
+        </required-permissions>
+        <auto-attributes include="pk" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="rateTypeId" optional="false"/>
+        <override name="rateAmount" optional="false"/>
+    </service>
+
+    <service name="uiExpireRateAmount" default-entity-name="RateAmount"
+            engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <description>Update/expire a RateAmount row (set thruDate) (REST bridge)</description>
+        <required-permissions join-type="OR">
+            <check-permission permission="ACCOUNTING" action="_UPDATE"/>
+            <check-permission permission="ACCOUNTING_ADMIN"/>
+        </required-permissions>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="uiUpdateGlAccountCategoryMember" default-entity-name="GlAccountCategoryMember"
+            engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <description>Update a GL account category member (percentage / thruDate) (REST bridge)</description>
+        <required-permissions join-type="OR">
+            <check-permission permission="ACCOUNTING" action="_UPDATE"/>
+            <check-permission permission="ACCOUNTING_ADMIN"/>
+        </required-permissions>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <!-- workflow guard — SECA-invoked on setPaymentStatus / voidPayment:
+         denies Cancel/Void for members of security group UI_PMT_NOVOID -->
+    <service name="uiPaymentVoidGuard" engine="groovy"
+            location="component://ui/src/main/groovy/org/apache/ofbiz/ui/UiGuards.groovy"
+            invoke="uiPaymentVoidGuard" auth="false">
+        <description>Deny payment Cancel/Void for UI_PMT_NOVOID members</description>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+    </service>
+</services>

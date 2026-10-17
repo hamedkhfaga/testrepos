@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+
+    <!-- ===================================================== -->
+    <!-- HR Inputs / Requests feeding Payroll (World-class)     -->
+    <!-- Multi-company: organizationPartyId is mandatory        -->
+    <!-- Source-agnostic: FP / API / MANUAL / POLICY            -->
+    <!-- ===================================================== -->
+
+    <!-- ========================= -->
+    <!-- Employee Leave Request     -->
+    <!-- ========================= -->
+    <entity entity-name="EmployeeLeaveRequest"
+            package-name="org.apache.ofbiz.payroll.hr"
+            table-name="EMPLOYEE_LEAVE_REQUEST"
+            title="Employee Leave Request (Vacation/Leave)">
+
+        <field name="leaveRequestId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+
+        <field name="leaveTypeId" type="id"/> <!-- e.g., ANNUAL, SICK, UNPAID (config table later) -->
+
+        <field name="fromDate" type="date"/>
+        <field name="thruDate" type="date"/>
+        <field name="totalDays" type="numeric"/>
+        <field name="paidFlag" type="indicator"/> <!-- Y/N -->
+
+        <field name="statusId" type="id"/> <!-- StatusItem -->
+        <field name="sourceTypeEnumId" type="id"/> <!-- Enumeration enumId: SRC_FP/SRC_API/SRC_MANUAL/SRC_POLICY -->
+
+        <field name="requestNote" type="comment"/>
+        <field name="approverUserLoginId" type="id"/>
+        <field name="approvedDateTime" type="date-time"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="leaveRequestId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="ELR_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="ELR_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="ELR_STS">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Enumeration" fk-name="ELR_SRC">
+            <key-map field-name="sourceTypeEnumId" rel-field-name="enumId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="ELR_APPR">
+            <key-map field-name="approverUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="ELR_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="ELR_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================= -->
+    <!-- Employee Overtime Request  -->
+    <!-- ========================= -->
+    <entity entity-name="EmployeeOvertimeRequest"
+            package-name="org.apache.ofbiz.payroll.hr"
+            table-name="EMPLOYEE_OVERTIME_REQUEST"
+            title="Employee Overtime Request">
+
+        <field name="overtimeRequestId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+
+        <field name="workDate" type="date"/>
+        <field name="requestedMinutes" type="numeric"/>
+        <field name="approvedMinutes" type="numeric"/> <!-- can differ from requested -->
+        <field name="payFlag" type="indicator"/> <!-- Y/N (some OT may be time-off in lieu later) -->
+
+        <field name="statusId" type="id"/> <!-- StatusItem -->
+        <field name="sourceTypeEnumId" type="id"/> <!-- Enumeration enumId -->
+
+        <field name="requestReason" type="comment"/>
+        <field name="approverUserLoginId" type="id"/>
+        <field name="approvedDateTime" type="date-time"/>
+
+        <!-- optional link to attendance summary (fingerprint plugin) -->
+        <field name="attendanceDaySummaryId" type="id"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="overtimeRequestId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="EOTR_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="EOTR_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="EOTR_STS">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Enumeration" fk-name="EOTR_SRC">
+            <key-map field-name="sourceTypeEnumId" rel-field-name="enumId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="EOTR_APPR">
+            <key-map field-name="approverUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="EOTR_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="EOTR_MBY">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+
+        <!-- AttendanceDaySummary is in fingerprint plugin, relation is OK because entity exists -->
+        <relation type="one" rel-entity-name="AttendanceDaySummary" fk-name="EOTR_ATSUM">
+            <key-map field-name="attendanceDaySummaryId" rel-field-name="attendanceDaySummaryId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================= -->
+    <!-- Employee Overtime Actual   -->
+    <!-- ========================= -->
+    <entity entity-name="EmployeeOvertimeActual"
+            package-name="org.apache.ofbiz.payroll.hr"
+            table-name="EMPLOYEE_OVERTIME_ACTUAL"
+            title="Employee Overtime Actual (Measured)">
+
+        <field name="overtimeActualId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+
+        <field name="workDate" type="date"/>
+        <field name="actualMinutes" type="numeric"/>
+
+        <field name="statusId" type="id"/> <!-- StatusItem -->
+        <field name="sourceTypeEnumId" type="id"/> <!-- Enumeration enumId -->
+
+        <!-- Link back to request (optional) -->
+        <field name="overtimeRequestId" type="id"/>
+        <field name="attendanceDaySummaryId" type="id"/>
+
+        <field name="notes" type="comment"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="overtimeActualId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="EOTA_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="EOTA_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="EOTA_STS">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Enumeration" fk-name="EOTA_SRC">
+            <key-map field-name="sourceTypeEnumId" rel-field-name="enumId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="EmployeeOvertimeRequest" fk-name="EOTA_REQ">
+            <key-map field-name="overtimeRequestId" rel-field-name="overtimeRequestId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AttendanceDaySummary" fk-name="EOTA_ATSUM">
+            <key-map field-name="attendanceDaySummaryId" rel-field-name="attendanceDaySummaryId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================= -->
+    <!-- Employee Absence Request   -->
+    <!-- ========================= -->
+    <entity entity-name="EmployeeAbsenceRequest"
+            package-name="org.apache.ofbiz.payroll.hr"
+            table-name="EMPLOYEE_ABSENCE_REQUEST"
+            title="Employee Absence Request (Manual/Policy)">
+
+        <field name="absenceRequestId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+
+        <field name="workDate" type="date"/>
+        <field name="absenceTypeId" type="id"/> <!-- e.g. ABS_UNEXCUSED / ABS_EXCUSED / SHIFT_MISS -->
+        <field name="minutes" type="numeric"/> <!-- optional: for partial-day -->
+        <field name="paidFlag" type="indicator"/> <!-- Y/N -->
+
+        <field name="statusId" type="id"/> <!-- StatusItem -->
+        <field name="sourceTypeEnumId" type="id"/> <!-- Enumeration enumId -->
+
+        <field name="reason" type="comment"/>
+        <field name="approverUserLoginId" type="id"/>
+        <field name="approvedDateTime" type="date-time"/>
+
+        <field name="attendanceDaySummaryId" type="id"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="absenceRequestId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="EAR_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="EAR_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="EAR_STS">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Enumeration" fk-name="EAR_SRC">
+            <key-map field-name="sourceTypeEnumId" rel-field-name="enumId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="EAR_APPR">
+            <key-map field-name="approverUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AttendanceDaySummary" fk-name="EAR_ATSUM">
+            <key-map field-name="attendanceDaySummaryId" rel-field-name="attendanceDaySummaryId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================= -->
+    <!-- Payroll Input Snapshot     -->
+    <!-- ========================= -->
+    <entity entity-name="PayrollInputSnapshot"
+            package-name="org.apache.ofbiz.payroll.input"
+            table-name="PAYROLL_INPUT_SNAPSHOT"
+            title="Payroll Input Snapshot (Approved HR outcomes per run)">
+
+        <field name="payrollInputSnapshotId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollRunId" type="id"/>
+        <field name="payrollPeriodId" type="id"/>
+        <field name="partyId" type="id"/>
+
+        <!-- Optional: when snapshot is daily-based; keep nullable for monthly-only -->
+        <field name="workDate" type="date"/>
+
+        <!-- Consolidated minutes (from AttendanceDaySummary + approved overrides) -->
+        <field name="scheduledMinutes" type="numeric"/>
+        <field name="workedMinutes" type="numeric"/>
+        <field name="overtimeMinutesApproved" type="numeric"/>
+        <field name="lateMinutes" type="numeric"/>
+        <field name="earlyLeaveMinutes" type="numeric"/>
+        <field name="absenceMinutesApproved" type="numeric"/>
+        <field name="leaveDaysApproved" type="numeric"/>
+
+        <!-- Traceability -->
+        <field name="sourceTypeEnumId" type="id"/> <!-- Enumeration enumId -->
+        <field name="snapshotStatusId" type="id"/> <!-- StatusItem, e.g. SNAP_NEW/SNAP_READY/SNAP_POSTED -->
+
+        <field name="attendanceDaySummaryId" type="id"/> <!-- fingerprint daily summary -->
+        <field name="overtimeRequestId" type="id"/>
+        <field name="absenceRequestId" type="id"/>
+        <field name="leaveRequestId" type="id"/>
+
+        <field name="notes" type="comment"/>
+        <field name="generatedDateTime" type="date-time"/>
+        <field name="generatedByUserLoginId" type="id"/>
+
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+
+        <prim-key field="payrollInputSnapshotId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="PIS_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="PIS_PTY">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollRun" fk-name="PIS_RUN">
+            <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollPeriod" fk-name="PIS_PER">
+            <key-map field-name="payrollPeriodId" rel-field-name="payrollPeriodId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="Enumeration" fk-name="PIS_SRC">
+            <key-map field-name="sourceTypeEnumId" rel-field-name="enumId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PIS_STS">
+            <key-map field-name="snapshotStatusId" rel-field-name="statusId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="AttendanceDaySummary" fk-name="PIS_ATSUM">
+            <key-map field-name="attendanceDaySummaryId" rel-field-name="attendanceDaySummaryId"/>
+        </relation>
+        <relation type="one" rel-entity-name="EmployeeOvertimeRequest" fk-name="PIS_OTR">
+            <key-map field-name="overtimeRequestId" rel-field-name="overtimeRequestId"/>
+        </relation>
+        <relation type="one" rel-entity-name="EmployeeAbsenceRequest" fk-name="PIS_ABS">
+            <key-map field-name="absenceRequestId" rel-field-name="absenceRequestId"/>
+        </relation>
+        <relation type="one" rel-entity-name="EmployeeLeaveRequest" fk-name="PIS_LVR">
+            <key-map field-name="leaveRequestId" rel-field-name="leaveRequestId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="UserLogin" fk-name="PIS_GBY">
+            <key-map field-name="generatedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+</entitymodel>

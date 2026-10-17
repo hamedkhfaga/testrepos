@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/ofbiz-properties.xsd">
+
+    <!-- ================================================= -->
+    <!-- Module / Common -->
+    <!-- ================================================= -->
+    <property key="Fingerprint.ModuleTitle"><value xml:lang="ar">البصمة والحضور</value></property>
+
+    <property key="Common.Create"><value xml:lang="ar">إضافة</value></property>
+    <property key="Common.Update"><value xml:lang="ar">تعديل</value></property>
+    <property key="Common.Delete"><value xml:lang="ar">حذف</value></property>
+    <property key="Common.View"><value xml:lang="ar">عرض</value></property>
+    <property key="Common.Search"><value xml:lang="ar">بحث</value></property>
+    <property key="Common.Actions"><value xml:lang="ar">إجراءات</value></property>
+    <property key="Common.Status"><value xml:lang="ar">الحالة</value></property>
+    <property key="Common.FromDate"><value xml:lang="ar">من تاريخ</value></property>
+    <property key="Common.ThruDate"><value xml:lang="ar">إلى تاريخ</value></property>
+    <property key="Common.PartyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Common.UserLoginId"><value xml:lang="ar">مستخدم النظام</value></property>
+    <property key="Common.Notes"><value xml:lang="ar">ملاحظات</value></property>
+
+    <!-- ================================================= -->
+    <!-- 1) BiometricDevice -->
+    <!-- ================================================= -->
+    <property key="Entity.BiometricDevice"><value xml:lang="ar">جهاز البصمة</value></property>
+    <property key="Entity.BiometricDevice.biometricDeviceId"><value xml:lang="ar">معرّف الجهاز</value></property>
+    <property key="Entity.BiometricDevice.deviceName"><value xml:lang="ar">اسم الجهاز</value></property>
+    <property key="Entity.BiometricDevice.serialNumber"><value xml:lang="ar">الرقم التسلسلي</value></property>
+    <property key="Entity.BiometricDevice.vendorName"><value xml:lang="ar">الشركة المصنّعة</value></property>
+    <property key="Entity.BiometricDevice.modelName"><value xml:lang="ar">الموديل</value></property>
+    <property key="Entity.BiometricDevice.deviceTypeEnumId"><value xml:lang="ar">نوع الجهاز</value></property>
+    <property key="Entity.BiometricDevice.ipAddress"><value xml:lang="ar">عنوان الشبكة</value></property>
+    <property key="Entity.BiometricDevice.port"><value xml:lang="ar">المنفذ</value></property>
+    <property key="Entity.BiometricDevice.timeZoneId"><value xml:lang="ar">المنطقة الزمنية</value></property>
+    <property key="Entity.BiometricDevice.facilityId"><value xml:lang="ar">الموقع</value></property>
+    <property key="Entity.BiometricDevice.geoPointId"><value xml:lang="ar">إحداثيات</value></property>
+    <property key="Entity.BiometricDevice.statusId"><value xml:lang="ar">الحالة</value></property>
+    <property key="Entity.BiometricDevice.fromDate"><value xml:lang="ar">من تاريخ</value></property>
+    <property key="Entity.BiometricDevice.thruDate"><value xml:lang="ar">إلى تاريخ</value></property>
+
+    <!-- ================================================= -->
+    <!-- 2) BiometricDeviceUser -->
+    <!-- ================================================= -->
+    <property key="Entity.BiometricDeviceUser"><value xml:lang="ar">ربط مستخدم الجهاز</value></property>
+    <property key="Entity.BiometricDeviceUser.biometricDeviceId"><value xml:lang="ar">الجهاز</value></property>
+    <property key="Entity.BiometricDeviceUser.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.BiometricDeviceUser.fromDate"><value xml:lang="ar">من تاريخ</value></property>
+    <property key="Entity.BiometricDeviceUser.thruDate"><value xml:lang="ar">إلى تاريخ</value></property>
+    <property key="Entity.BiometricDeviceUser.deviceUserId"><value xml:lang="ar">مستخدم الجهاز</value></property>
+    <property key="Entity.BiometricDeviceUser.cardNumber"><value xml:lang="ar">رقم البطاقة</value></property>
+    <property key="Entity.BiometricDeviceUser.deviceUserStatusId"><value xml:lang="ar">حالة المستخدم</value></property>
+
+    <!-- ================================================= -->
+    <!-- 3) BiometricTemplateStore -->
+    <!-- ================================================= -->
+    <property key="Entity.BiometricTemplateStore"><value xml:lang="ar">مخزن قالب البصمة</value></property>
+    <property key="Entity.BiometricTemplateStore.templateStoreId"><value xml:lang="ar">معرّف المخزن</value></property>
+    <property key="Entity.BiometricTemplateStore.storageTypeEnumId"><value xml:lang="ar">نوع التخزين</value></property>
+    <property key="Entity.BiometricTemplateStore.templateHash"><value xml:lang="ar">بصمة تحقق (هاش)</value></property>
+    <property key="Entity.BiometricTemplateStore.encryptedTemplate"><value xml:lang="ar">قالب مشفّر</value></property>
+    <property key="Entity.BiometricTemplateStore.externalRefId"><value xml:lang="ar">مرجع خارجي</value></property>
+    <property key="Entity.BiometricTemplateStore.encryptionKeyId"><value xml:lang="ar">مفتاح التشفير</value></property>
+    <property key="Entity.BiometricTemplateStore.fromDate"><value xml:lang="ar">من تاريخ</value></property>
+    <property key="Entity.BiometricTemplateStore.thruDate"><value xml:lang="ar">إلى تاريخ</value></property>
+
+    <!-- ================================================= -->
+    <!-- 4) PartyBiometricCredential -->
+    <!-- ================================================= -->
+    <property key="Entity.PartyBiometricCredential"><value xml:lang="ar">بيانات البصمة</value></property>
+    <property key="Entity.PartyBiometricCredential.partyBiometricId"><value xml:lang="ar">معرّف البيانات</value></property>
+    <property key="Entity.PartyBiometricCredential.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.PartyBiometricCredential.biometricTypeEnumId"><value xml:lang="ar">نوع القياس الحيوي</value></property>
+    <property key="Entity.PartyBiometricCredential.fingerIndexEnumId"><value xml:lang="ar">الإصبع</value></property>
+    <property key="Entity.PartyBiometricCredential.templateStoreId"><value xml:lang="ar">مخزن القالب</value></property>
+    <property key="Entity.PartyBiometricCredential.credentialStatusId"><value xml:lang="ar">حالة البيانات</value></property>
+    <property key="Entity.PartyBiometricCredential.qualityScore"><value xml:lang="ar">مؤشر الجودة</value></property>
+    <property key="Entity.PartyBiometricCredential.fromDate"><value xml:lang="ar">من تاريخ</value></property>
+    <property key="Entity.PartyBiometricCredential.thruDate"><value xml:lang="ar">إلى تاريخ</value></property>
+
+    <!-- ================================================= -->
+    <!-- 5) PartyBiometricEnrollment -->
+    <!-- ================================================= -->
+    <property key="Entity.PartyBiometricEnrollment"><value xml:lang="ar">تسجيل البصمة</value></property>
+    <property key="Entity.PartyBiometricEnrollment.partyBiometricEnrollmentId"><value xml:lang="ar">معرّف التسجيل</value></property>
+    <property key="Entity.PartyBiometricEnrollment.partyBiometricId"><value xml:lang="ar">معرّف البيانات</value></property>
+    <property key="Entity.PartyBiometricEnrollment.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.PartyBiometricEnrollment.biometricDeviceId"><value xml:lang="ar">الجهاز</value></property>
+    <property key="Entity.PartyBiometricEnrollment.enrolledDateTime"><value xml:lang="ar">تاريخ/وقت التسجيل</value></property>
+    <property key="Entity.PartyBiometricEnrollment.enrolledByUserLoginId"><value xml:lang="ar">تم التسجيل بواسطة</value></property>
+    <property key="Entity.PartyBiometricEnrollment.enrollMethodEnumId"><value xml:lang="ar">طريقة التسجيل</value></property>
+    <property key="Entity.PartyBiometricEnrollment.enrollStatusId"><value xml:lang="ar">حالة التسجيل</value></property>
+    <property key="Entity.PartyBiometricEnrollment.notes"><value xml:lang="ar">ملاحظات</value></property>
+
+    <!-- ================================================= -->
+    <!-- 6) BiometricImportBatch -->
+    <!-- ================================================= -->
+    <property key="Entity.BiometricImportBatch"><value xml:lang="ar">دفعة استيراد البصمة</value></property>
+    <property key="Entity.BiometricImportBatch.biometricImportBatchId"><value xml:lang="ar">معرّف الدفعة</value></property>
+    <property key="Entity.BiometricImportBatch.biometricDeviceId"><value xml:lang="ar">الجهاز</value></property>
+    <property key="Entity.BiometricImportBatch.importSourceEnumId"><value xml:lang="ar">مصدر الاستيراد</value></property>
+    <property key="Entity.BiometricImportBatch.sourceFileName"><value xml:lang="ar">اسم ملف المصدر</value></property>
+    <property key="Entity.BiometricImportBatch.sourceChecksum"><value xml:lang="ar">بصمة الملف (Checksum)</value></property>
+    <property key="Entity.BiometricImportBatch.importFromDateTime"><value xml:lang="ar">الاستيراد من</value></property>
+    <property key="Entity.BiometricImportBatch.importThruDateTime"><value xml:lang="ar">الاستيراد إلى</value></property>
+    <property key="Entity.BiometricImportBatch.importStatusId"><value xml:lang="ar">حالة الاستيراد</value></property>
+    <property key="Entity.BiometricImportBatch.recordCount"><value xml:lang="ar">عدد السجلات</value></property>
+    <property key="Entity.BiometricImportBatch.errorCount"><value xml:lang="ar">عدد الأخطاء</value></property>
+    <property key="Entity.BiometricImportBatch.startedDateTime"><value xml:lang="ar">بدأ في</value></property>
+    <property key="Entity.BiometricImportBatch.completedDateTime"><value xml:lang="ar">انتهى في</value></property>
+
+    <!-- ================================================= -->
+    <!-- 7) BiometricEventLog -->
+    <!-- ================================================= -->
+    <property key="Entity.BiometricEventLog"><value xml:lang="ar">سجل أحداث البصمة</value></property>
+    <property key="Entity.BiometricEventLog.biometricEventLogId"><value xml:lang="ar">معرّف الحدث</value></property>
+    <property key="Entity.BiometricEventLog.biometricImportBatchId"><value xml:lang="ar">دفعة الاستيراد</value></property>
+    <property key="Entity.BiometricEventLog.biometricDeviceId"><value xml:lang="ar">الجهاز</value></property>
+    <property key="Entity.BiometricEventLog.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.BiometricEventLog.deviceUserId"><value xml:lang="ar">مستخدم الجهاز</value></property>
+    <property key="Entity.BiometricEventLog.vendorEventId"><value xml:lang="ar">معرّف الحدث من الجهاز</value></property>
+    <property key="Entity.BiometricEventLog.eventDateTime"><value xml:lang="ar">تاريخ/وقت الحدث</value></property>
+    <property key="Entity.BiometricEventLog.eventTypeEnumId"><value xml:lang="ar">نوع الحدث</value></property>
+    <property key="Entity.BiometricEventLog.punchTypeEnumId"><value xml:lang="ar">نوع الحركة</value></property>
+    <property key="Entity.BiometricEventLog.verifyModeEnumId"><value xml:lang="ar">طريقة التحقق</value></property>
+    <property key="Entity.BiometricEventLog.workLocationFacilityId"><value xml:lang="ar">موقع العمل</value></property>
+    <property key="Entity.BiometricEventLog.rawPayload"><value xml:lang="ar">البيانات الخام</value></property>
+    <property key="Entity.BiometricEventLog.processStatusId"><value xml:lang="ar">حالة المعالجة</value></property>
+    <property key="Entity.BiometricEventLog.errorMessage"><value xml:lang="ar">رسالة الخطأ</value></property>
+
+    <!-- ================================================= -->
+    <!-- 8) BiometricVerificationAttempt -->
+    <!-- ================================================= -->
+    <property key="Entity.BiometricVerificationAttempt"><value xml:lang="ar">محاولة تحقق</value></property>
+    <property key="Entity.BiometricVerificationAttempt.biometricVerificationAttemptId"><value xml:lang="ar">معرّف المحاولة</value></property>
+    <property key="Entity.BiometricVerificationAttempt.biometricDeviceId"><value xml:lang="ar">الجهاز</value></property>
+    <property key="Entity.BiometricVerificationAttempt.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.BiometricVerificationAttempt.partyBiometricId"><value xml:lang="ar">بيانات البصمة</value></property>
+    <property key="Entity.BiometricVerificationAttempt.attemptDateTime"><value xml:lang="ar">تاريخ/وقت المحاولة</value></property>
+    <property key="Entity.BiometricVerificationAttempt.verifyModeEnumId"><value xml:lang="ar">طريقة التحقق</value></property>
+    <property key="Entity.BiometricVerificationAttempt.resultStatusId"><value xml:lang="ar">النتيجة</value></property>
+    <property key="Entity.BiometricVerificationAttempt.matchScore"><value xml:lang="ar">درجة التطابق</value></property>
+    <property key="Entity.BiometricVerificationAttempt.rawPayload"><value xml:lang="ar">البيانات الخام</value></property>
+
+    <!-- ================================================= -->
+    <!-- 9) WorkShift -->
+    <!-- ================================================= -->
+    <property key="Entity.WorkShift"><value xml:lang="ar">الوردية</value></property>
+    <property key="Entity.WorkShift.shiftId"><value xml:lang="ar">معرّف الوردية</value></property>
+    <property key="Entity.WorkShift.shiftName"><value xml:lang="ar">اسم الوردية</value></property>
+    <property key="Entity.WorkShift.startTime"><value xml:lang="ar">وقت البداية</value></property>
+    <property key="Entity.WorkShift.endTime"><value xml:lang="ar">وقت النهاية</value></property>
+    <property key="Entity.WorkShift.crossMidnightFlag"><value xml:lang="ar">تتجاوز منتصف الليل</value></property>
+    <property key="Entity.WorkShift.graceInMinutes"><value xml:lang="ar">سماح الدخول (دقائق)</value></property>
+    <property key="Entity.WorkShift.graceOutMinutes"><value xml:lang="ar">سماح الخروج (دقائق)</value></property>
+    <property key="Entity.WorkShift.breakMinutes"><value xml:lang="ar">الاستراحة (دقائق)</value></property>
+    <property key="Entity.WorkShift.shiftStatusId"><value xml:lang="ar">حالة الوردية</value></property>
+
+    <!-- ================================================= -->
+    <!-- 10) PartyShiftAssignment -->
+    <!-- ================================================= -->
+    <property key="Entity.PartyShiftAssignment"><value xml:lang="ar">ربط الوردية</value></property>
+    <property key="Entity.PartyShiftAssignment.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.PartyShiftAssignment.shiftId"><value xml:lang="ar">الوردية</value></property>
+    <property key="Entity.PartyShiftAssignment.fromDate"><value xml:lang="ar">من تاريخ</value></property>
+    <property key="Entity.PartyShiftAssignment.thruDate"><value xml:lang="ar">إلى تاريخ</value></property>
+
+    <!-- ================================================= -->
+    <!-- 11) AttendancePolicy -->
+    <!-- ================================================= -->
+    <property key="Entity.AttendancePolicy"><value xml:lang="ar">سياسة الحضور</value></property>
+    <property key="Entity.AttendancePolicy.attendancePolicyId"><value xml:lang="ar">معرّف السياسة</value></property>
+    <property key="Entity.AttendancePolicy.policyName"><value xml:lang="ar">اسم السياسة</value></property>
+    <property key="Entity.AttendancePolicy.roundingMethodEnumId"><value xml:lang="ar">طريقة التقريب</value></property>
+    <property key="Entity.AttendancePolicy.roundingMinutes"><value xml:lang="ar">دقائق التقريب</value></property>
+    <property key="Entity.AttendancePolicy.overtimeMethodEnumId"><value xml:lang="ar">طريقة الوقت الإضافي</value></property>
+    <property key="Entity.AttendancePolicy.minOvertimeMinutes"><value xml:lang="ar">الحد الأدنى للإضافي (دقائق)</value></property>
+    <property key="Entity.AttendancePolicy.allowManualAdjustFlag"><value xml:lang="ar">السماح بالتعديل اليدوي</value></property>
+    <property key="Entity.AttendancePolicy.policyStatusId"><value xml:lang="ar">حالة السياسة</value></property>
+
+    <!-- ================================================= -->
+    <!-- 12) PartyAttendancePolicy -->
+    <!-- ================================================= -->
+    <property key="Entity.PartyAttendancePolicy"><value xml:lang="ar">ربط سياسة الحضور</value></property>
+    <property key="Entity.PartyAttendancePolicy.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.PartyAttendancePolicy.attendancePolicyId"><value xml:lang="ar">السياسة</value></property>
+    <property key="Entity.PartyAttendancePolicy.fromDate"><value xml:lang="ar">من تاريخ</value></property>
+    <property key="Entity.PartyAttendancePolicy.thruDate"><value xml:lang="ar">إلى تاريخ</value></property>
+
+    <!-- ================================================= -->
+    <!-- 13) AttendancePunchPair -->
+    <!-- ================================================= -->
+    <property key="Entity.AttendancePunchPair"><value xml:lang="ar">ربط الحركات</value></property>
+    <property key="Entity.AttendancePunchPair.attendancePunchPairId"><value xml:lang="ar">معرّف الربط</value></property>
+    <property key="Entity.AttendancePunchPair.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.AttendancePunchPair.workDate"><value xml:lang="ar">تاريخ العمل</value></property>
+    <property key="Entity.AttendancePunchPair.inEventLogId"><value xml:lang="ar">سجل دخول</value></property>
+    <property key="Entity.AttendancePunchPair.outEventLogId"><value xml:lang="ar">سجل خروج</value></property>
+    <property key="Entity.AttendancePunchPair.inDateTime"><value xml:lang="ar">وقت الدخول</value></property>
+    <property key="Entity.AttendancePunchPair.outDateTime"><value xml:lang="ar">وقت الخروج</value></property>
+    <property key="Entity.AttendancePunchPair.workedMinutes"><value xml:lang="ar">الدقائق المحتسبة</value></property>
+    <property key="Entity.AttendancePunchPair.pairStatusId"><value xml:lang="ar">حالة الربط</value></property>
+
+    <!-- ================================================= -->
+    <!-- 14) AttendanceException -->
+    <!-- ================================================= -->
+    <property key="Entity.AttendanceException"><value xml:lang="ar">استثناءات الحضور</value></property>
+    <property key="Entity.AttendanceException.attendanceExceptionId"><value xml:lang="ar">معرّف الاستثناء</value></property>
+    <property key="Entity.AttendanceException.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.AttendanceException.workDate"><value xml:lang="ar">تاريخ العمل</value></property>
+    <property key="Entity.AttendanceException.exceptionTypeEnumId"><value xml:lang="ar">نوع الاستثناء</value></property>
+    <property key="Entity.AttendanceException.severityEnumId"><value xml:lang="ar">الخطورة</value></property>
+    <property key="Entity.AttendanceException.relatedEventLogId"><value xml:lang="ar">سجل مرتبط</value></property>
+    <property key="Entity.AttendanceException.relatedPunchPairId"><value xml:lang="ar">ربط مرتبط</value></property>
+    <property key="Entity.AttendanceException.exceptionStatusId"><value xml:lang="ar">حالة الاستثناء</value></property>
+    <property key="Entity.AttendanceException.resolvedByUserLoginId"><value xml:lang="ar">تمت المعالجة بواسطة</value></property>
+    <property key="Entity.AttendanceException.resolvedDateTime"><value xml:lang="ar">تاريخ/وقت المعالجة</value></property>
+    <property key="Entity.AttendanceException.resolutionNote"><value xml:lang="ar">ملاحظة المعالجة</value></property>
+
+    <!-- ================================================= -->
+    <!-- 15) AttendanceDaySummary -->
+    <!-- ================================================= -->
+    <property key="Entity.AttendanceDaySummary"><value xml:lang="ar">ملخص الحضور اليومي</value></property>
+    <property key="Entity.AttendanceDaySummary.attendanceDaySummaryId"><value xml:lang="ar">معرّف الملخص</value></property>
+    <property key="Entity.AttendanceDaySummary.partyId"><value xml:lang="ar">الموظف</value></property>
+    <property key="Entity.AttendanceDaySummary.workDate"><value xml:lang="ar">تاريخ العمل</value></property>
+    <property key="Entity.AttendanceDaySummary.shiftId"><value xml:lang="ar">الوردية</value></property>
+    <property key="Entity.AttendanceDaySummary.attendancePolicyId"><value xml:lang="ar">سياسة الحضور</value></property>
+    <property key="Entity.AttendanceDaySummary.scheduledMinutes"><value xml:lang="ar">الدقائق المجدولة</value></property>
+    <property key="Entity.AttendanceDaySummary.workedMinutes"><value xml:lang="ar">الدقائق المحتسبة</value></property>
+    <property key="Entity.AttendanceDaySummary.overtimeMinutes"><value xml:lang="ar">الدقائق الإضافية</value></property>
+    <property key="Entity.AttendanceDaySummary.lateMinutes"><value xml:lang="ar">دقائق التأخير</value></property>
+    <property key="Entity.AttendanceDaySummary.earlyLeaveMinutes"><value xml:lang="ar">دقائق الانصراف المبكر</value></property>
+    <property key="Entity.AttendanceDaySummary.absenceFlag"><value xml:lang="ar">غياب</value></property>
+    <property key="Entity.AttendanceDaySummary.summaryStatusId"><value xml:lang="ar">حالة الملخص</value></property>
+    <property key="Entity.AttendanceDaySummary.calculatedDateTime"><value xml:lang="ar">تاريخ/وقت الاحتساب</value></property>
+    <property key="Entity.AttendanceDaySummary.calculatedByUserLoginId"><value xml:lang="ar">احتسب بواسطة</value></property>
+
+</resource>

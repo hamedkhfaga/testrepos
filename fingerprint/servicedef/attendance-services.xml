@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ===================================================== -->
+    <!-- SHIFT -->
+    <!-- ===================================================== -->
+
+    <service name="createWorkShift"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendanceCalculationServices"
+             invoke="createWorkShift"
+             auth="true"
+             export="true">
+        <description>Create Work Shift (multi-org)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="shiftName" type="String" mode="IN" optional="false"/>
+        <attribute name="startTime" type="Time" mode="IN" optional="false"/>
+        <attribute name="endTime" type="Time" mode="IN" optional="false"/>
+        <attribute name="crossMidnightFlag" type="String" mode="IN" optional="true"/>
+        <attribute name="graceInMinutes" type="Long" mode="IN" optional="true"/>
+        <attribute name="graceOutMinutes" type="Long" mode="IN" optional="true"/>
+        <attribute name="breakMinutes" type="Long" mode="IN" optional="true"/>
+        <attribute name="shiftStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="externalRefId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="shiftId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- ATTENDANCE POLICY -->
+    <!-- ===================================================== -->
+
+    <service name="createAttendancePolicy"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendanceCalculationServices"
+             invoke="createAttendancePolicy"
+             auth="true"
+             export="true">
+        <description>Create Attendance Policy (rounding/overtime)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="policyName" type="String" mode="IN" optional="false"/>
+
+        <attribute name="roundingMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="roundingMinutes" type="Long" mode="IN" optional="true"/>
+        <attribute name="overtimeMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="minOvertimeMinutes" type="Long" mode="IN" optional="true"/>
+        <attribute name="allowManualAdjustFlag" type="String" mode="IN" optional="true"/>
+        <attribute name="policyStatusId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="notes" type="String" mode="IN" optional="true"/>
+        <attribute name="externalRefId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="attendancePolicyId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- ASSIGNMENTS -->
+    <!-- ===================================================== -->
+
+    <service name="assignShiftToParty"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendanceCalculationServices"
+             invoke="assignShiftToParty"
+             auth="true"
+             export="true">
+        <description>Assign shift to employee (dated)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="shiftId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="notes" type="String" mode="IN" optional="true"/>
+
+        <attribute name="effectiveFromDate" type="Timestamp" mode="OUT" optional="false"/>
+        <attribute name="assigned" type="Boolean" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="assignAttendancePolicyToParty"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendanceCalculationServices"
+             invoke="assignAttendancePolicyToParty"
+             auth="true"
+             export="true">
+        <description>Assign policy to employee (dated)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="attendancePolicyId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="effectiveFromDate" type="Timestamp" mode="OUT" optional="false"/>
+		<attribute name="assigned" type="Boolean" mode="OUT" optional="false"/>
+
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- PAIRING: build AttendancePunchPair from BiometricEventLog -->
+    <!-- ===================================================== -->
+
+    <service name="pairAttendancePunches"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendancePairingServices"
+             invoke="pairAttendancePunches"
+             auth="true"
+             export="true">
+        <description>Pair IN/OUT punches into AttendancePunchPair for a date range</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="true"/>
+        <attribute name="workDate" type="Date" mode="IN" optional="true"/>
+
+        <attribute name="fromDateTime" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="thruDateTime" type="Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="deviceId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="Boolean" mode="IN" optional="true"/>
+
+        <attribute name="pairedCount" type="Long" mode="OUT" optional="false"/>
+        <attribute name="exceptionCount" type="Long" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- CALCULATION: create/update AttendanceDaySummary -->
+    <!-- ===================================================== -->
+
+    <service name="calculateAttendanceDaySummary"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendanceCalculationServices"
+             invoke="calculateAttendanceDaySummary"
+             auth="true"
+             export="true">
+        <description>Calculate day summary from punch pairs + policy + shift</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="workDate" type="Date" mode="IN" optional="false"/>
+        <attribute name="recalculate" type="Boolean" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="Boolean" mode="IN" optional="true"/>
+
+        <attribute name="attendanceDaySummaryId" type="String" mode="OUT" optional="false"/>
+        <attribute name="workedMinutes" type="Long" mode="OUT" optional="true"/>
+        <attribute name="overtimeMinutes" type="Long" mode="OUT" optional="true"/>
+        <attribute name="lateMinutes" type="Long" mode="OUT" optional="true"/>
+        <attribute name="earlyLeaveMinutes" type="Long" mode="OUT" optional="true"/>
+        <attribute name="summaryStatusId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="calculateAttendanceForPeriod"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendanceCalculationServices"
+             invoke="calculateAttendanceForPeriod"
+             auth="true"
+             export="true">
+        <description>Batch calculate attendance summaries for a period</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromWorkDate" type="Date" mode="IN" optional="false"/>
+        <attribute name="thruWorkDate" type="Date" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="true"/>
+        <attribute name="recalculate" type="Boolean" mode="IN" optional="true"/>
+
+        <attribute name="processedEmployees" type="Long" mode="OUT" optional="false"/>
+        <attribute name="processedDays" type="Long" mode="OUT" optional="false"/>
+        <attribute name="exceptionCount" type="Long" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- EXCEPTIONS: resolve, close, notify hooks -->
+    <!-- ===================================================== -->
+
+    <service name="resolveAttendanceException"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendanceCalculationServices"
+             invoke="resolveAttendanceException"
+             auth="true"
+             export="true">
+        <description>Resolve attendance exception (manual resolution)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="attendanceExceptionId" type="String" mode="IN" optional="false"/>
+        <attribute name="exceptionStatusId" type="String" mode="IN" optional="false"/>
+        <attribute name="resolutionNote" type="String" mode="IN" optional="true"/>
+        <attribute name="resolvedDateTime" type="Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="resolved" type="Boolean" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- READ / REPORT API: period summary for payroll/export -->
+    <!-- ===================================================== -->
+
+    <service name="getAttendanceSummaryForPeriod"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendanceSummaryServices"
+             invoke="getAttendanceSummaryForPeriod"
+             auth="true"
+             export="true">
+        <description>Return attendance totals for a period (for payroll/export)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromWorkDate" type="Date" mode="IN" optional="false"/>
+        <attribute name="thruWorkDate" type="Date" mode="IN" optional="false"/>
+
+        <attribute name="partyId" type="String" mode="IN" optional="true"/>
+        <attribute name="facilityId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="totalWorkedMinutes" type="Long" mode="OUT" optional="true"/>
+        <attribute name="totalOvertimeMinutes" type="Long" mode="OUT" optional="true"/>
+        <attribute name="totalLateMinutes" type="Long" mode="OUT" optional="true"/>
+        <attribute name="totalEarlyLeaveMinutes" type="Long" mode="OUT" optional="true"/>
+        <attribute name="absentDays" type="Long" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="exportAttendanceSummary"
+             engine="java"
+             location="org.ofbiz.hr.attendance.AttendanceSummaryServices"
+             invoke="exportAttendanceSummary"
+             auth="true"
+             export="true">
+        <description>Export attendance summary (PDF/HTML/TXT/EXCEL) - service returns Content ID or bytes</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromWorkDate" type="Date" mode="IN" optional="false"/>
+        <attribute name="thruWorkDate" type="Date" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="exportFormatEnumId" type="String" mode="IN" optional="false"/> <!-- PDF/HTML/TXT/XLSX -->
+        <attribute name="locale" type="String" mode="IN" optional="true"/>             <!-- en/ar -->
+        <attribute name="timeZoneId" type="String" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>      <!-- for payroll exports if needed -->
+
+        <attribute name="fileName" type="String" mode="OUT" optional="true"/>
+        <attribute name="mimeTypeId" type="String" mode="OUT" optional="true"/>
+        <attribute name="fileBytes" type="byte[]" mode="OUT" optional="true"/>
+        <attribute name="contentId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+</services>

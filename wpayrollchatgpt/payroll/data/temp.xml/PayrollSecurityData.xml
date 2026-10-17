@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <!-- ========================================== -->
+    <!-- PAYROLL SECURITY PERMISSIONS (MAX 20 CHARS) -->
+    <!-- ========================================== -->
+    
+    <!-- Dashboard Permissions (13-17 chars) -->
+    <SecurityPermission permission-id="PAYROLL_DASH_VIEW" description="View Payroll Dashboard"/>
+    
+    <!-- Employee Management Permissions (14-20 chars) -->
+    <SecurityPermission permission-id="EMP_LIST_VIEW" description="View Employee List"/>
+    <SecurityPermission permission-id="EMP_ASSIGN_CREATE" description="Create Employee Assignment"/>
+    <SecurityPermission permission-id="INTL_EMP_VIEW" description="View International Employees"/>
+    <SecurityPermission permission-id="INTL_EMP_CREATE" description="Create International Employee"/>
+    
+    <!-- Payroll Processing Permissions (14-20 chars) -->
+    <SecurityPermission permission-id="PAYROLL_RUN" description="Run Payroll"/>
+    <SecurityPermission permission-id="PAYROLL_ITER_VIEW" description="View Payroll Iterations"/>
+    <SecurityPermission permission-id="PAYROLL_CALC" description="Calculate Payroll"/>
+    <SecurityPermission permission-id="PAYROLL_FINALIZE" description="Finalize/Approve Payroll"/>
+    
+    <!-- Loan Management Permissions (14-18 chars) -->
+    <SecurityPermission permission-id="EMP_LOAN_VIEW" description="View Employee Loans"/>
+    <SecurityPermission permission-id="EMP_LOAN_CREATE" description="Create Employee Loan"/>
+    <SecurityPermission permission-id="LOAN_REPORT_VIEW" description="View Loan Reports"/>
+    
+    <!-- Tax Configuration Permissions (14-20 chars) -->
+    <SecurityPermission permission-id="TAX_CONFIG_VIEW" description="View Tax Configuration"/>
+    <SecurityPermission permission-id="TAX_CONFIG_CREATE" description="Create Tax Configuration"/>
+    <SecurityPermission permission-id="TAX_REPORT_VIEW" description="View Tax Reports"/>
+    
+    <!-- Reports Permissions (14-20 chars) -->
+    <SecurityPermission permission-id="PAYSLIP_GENERATE" description="Generate Payslips"/>
+    <SecurityPermission permission-id="BANK_TRANSFER_GEN" description="Generate Bank Transfer Files"/>
+    <SecurityPermission permission-id="PAYROLL_EXPORT" description="Export Payroll Data"/>
+    <SecurityPermission permission-id="QUICK_REPORT_VIEW" description="View Quick Reports"/>
+    <SecurityPermission permission-id="PAYROLL_HIST_VIEW" description="View Payroll History"/>
+    
+    <!-- System Settings Permissions (15-20 chars) -->
+    <SecurityPermission permission-id="SYS_SETTINGS_VIEW" description="View System Settings"/>
+    <SecurityPermission permission-id="PAYROLL_STRUCT_MNG" description="Manage Payroll Structures"/>
+    <SecurityPermission permission-id="ALLOWANCE_TYPE_MNG" description="Manage Allowance Types"/>
+    <SecurityPermission permission-id="BANK_CONFIG_MNG" description="Manage Bank Configurations"/>
+    <SecurityPermission permission-id="HR_POLICY_MNG" description="Manage HR Policies"/>
+    
+</entity-engine-xml>

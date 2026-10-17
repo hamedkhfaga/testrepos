@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<ofbiz-component name="payroll"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/ofbiz-component.xsd">
+
+    <!-- define resource loaders; most common is to use the component resource loader -->
+    <resource-loader name="main" type="component"/>
+
+    <!-- place the config directory on the classpath to access configuration files -->
+    <classpath type="dir" location="config"/>
+
+    <!-- =========================================== -->
+    <!-- ENTITY RESOURCES -->
+    <!-- =========================================== -->
+
+    <!-- Main entity model (Payroll core entities) -->
+    <entity-resource type="model" reader-name="main" loader="main" location="entitydef/entitymodel.xml"/>
+
+    <!-- NEW: Payroll Accounting Integration entities (separate model) -->
+    <entity-resource type="model" reader-name="main" loader="main" location="entitydef/entitymodel_payroll_acctg.xml"/>
+
+    <!-- View entity model -->
+    <entity-resource type="model" reader-name="main" loader="main" location="entitydef/view-entities.xml"/>
+    <entity-resource type="model" reader-name="main" loader="main" location="entitydef/test-view.xml"/>
+
+    <!-- ECA definitions (if any) -->
+    <!-- <entity-resource type="eca" reader-name="main" loader="main" location="entitydef/eecas.xml"/> -->
+
+    <!-- =========================================== -->
+    <!-- SEED & DEMO DATA -->
+    <!-- =========================================== -->
+     <entity-resource type="data" reader-name="demo"  loader="main" location="data/PayrollGlAccountSeedData.xml"/>
+
+    <!-- Type/Status data (MUST load before other data) -->
+    <entity-resource type="data" reader-name="seed" loader="main" location="data/PayrollTypeData.xml"/>
+
+    <!-- NEW: Payroll Accounting StatusType/StatusItem (Pattern A/B, Components, statuses) -->
+    <entity-resource type="data" reader-name="seed" loader="main" location="data/PayrollAcctgTypeData.xml"/>
+
+    <!-- Security data -->
+    <entity-resource type="data" reader-name="seed" loader="main" location="data/PayrollSecurityPermissionSeedData.xml"/>
+    <entity-resource type="data" reader-name="seed" loader="main" location="data/PayrollSecurityAll.xml"/>
+
+    <!-- Demo data (loads after seed) -->
+    <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollSecurityGroupDemoData.xml"/>
+    <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollDemoData.xml"/>
+
+    <!-- NEW: Payroll Accounting demo config + mappings (depends on StatusItem + demo org/users/gl accounts) -->
+    <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollAcctgDemoData.xml"/>
+    <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollAcctgConfigDemoData.xml"/>
+    <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollAcctgMapDemoData.xml"/>
+     
+    <!-- User login security (optional) -->
+    <!-- <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollUserLoginSecurityData.xml"/> -->
+
+    <!-- =========================================== -->
+    <!-- SERVICE RESOURCES -->
+    <!-- =========================================== -->
+
+    <!-- Service definitions -->
+    <service-resource type="model" loader="main" location="servicedef/services.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/payroll-services.xml"/>
+
+    <!-- Service ECAs (optional) -->
+    <!-- <service-resource type="eca" loader="main" location="servicedef/secas.xml"/> -->
+
+    <!-- Service groups (optional) -->
+    <!-- <service-resource type="group" loader="main" location="servicedef/groups.xml"/> -->
+
+    <!-- =========================================== -->
+    <!-- TESTING -->
+    <!-- =========================================== -->
+
+    <test-suite loader="main" location="testdef/PayrollTests.xml"/>
+
+    <!-- =========================================== -->
+    <!-- WEB APPLICATIONS -->
+    <!-- =========================================== -->
+
+    <webapp name="payroll"
+        title="Payroll"
+        server="default-server"
+        location="webapp/payroll"
+        base-permission="OFBTOOLS,PAYROLL"
+        mount-point="/payroll"/>
+
+    <!-- Payroll RESTful API webapp (separate from /rest/services) -->
+    <webapp name="payrollapi"
+        title="Payroll API"
+        server="default-server"
+        location="webapp/payrollapi"
+        base-permission="OFBTOOLS,PAYROLL"
+        mount-point="/payrollapi"/>
+
+</ofbiz-component>

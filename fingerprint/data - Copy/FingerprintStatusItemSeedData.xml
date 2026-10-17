@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- Device Status -->
+    <StatusItem statusId="DEV_ACT" statusTypeId="BIO_DEV_ST" description="Active"/>
+    <StatusItem statusId="DEV_INA" statusTypeId="BIO_DEV_ST" description="Inactive"/>
+
+    <!-- Device User Status -->
+    <StatusItem statusId="USR_ACT" statusTypeId="BIO_USR_ST" description="Active"/>
+    <StatusItem statusId="USR_INA" statusTypeId="BIO_USR_ST" description="Inactive"/>
+
+    <!-- Fingerprint Status -->
+    <StatusItem statusId="FP_ENROL" statusTypeId="FP_STAT_ST" description="Enrolled"/>
+    <StatusItem statusId="FP_REV"   statusTypeId="FP_STAT_ST" description="Revoked"/>
+  
+
+</entity-engine-xml>

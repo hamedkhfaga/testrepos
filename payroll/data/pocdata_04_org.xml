@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+  <!-- ===================================================== -->
+  <!-- POC WT: Organization master (import FIRST)             -->
+  <!-- Keeps IDs <= 20 to match your schema constraints       -->
+  <!-- ===================================================== -->
+
+  <!-- 0) RoleType (must exist before PartyRole insert) -->
+  <RoleType roleTypeId="INTERNAL_ORG"
+            description="Internal Organization"/>
+
+  <!-- 1) Party root -->
+  <Party partyId="WTORG" partyTypeId="PARTY_GROUP"/>
+  <PartyGroup partyId="WTORG" groupName="World Telecom (WT)"/>
+
+  <!-- 2) PartyRole -->
+  <PartyRole partyId="WTORG" roleTypeId="INTERNAL_ORG"/>
+
+  <!-- 3) Payroll Organization -->
+  <PayrollOrganization organizationPartyId="WTORG"
+                       orgName="World Telecom (WT)"
+                       defaultCurrencyUomId="SAR"
+                       countryGeoId="SAU"
+                       isActive="Y"/>
+</entity-engine-xml>

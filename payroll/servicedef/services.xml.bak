@@ -1,0 +1,1482 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ===================================================== -->
+    <!--  A) GENERIC PAYROLL CRUD (ORG SCOPED) -->
+    <!-- ===================================================== -->
+	
+<service name="routeEmployeePaymentsForRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollAllocationServices"
+         invoke="routeEmployeePaymentsForRun"
+         auth="true"
+         export="true"  action="POST">
+
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="strictMode" type="String" mode="IN" optional="true"/>
+
+    <attribute name="routedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="missingCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="routedByChannel" type="Map" mode="OUT" optional="true"/>
+    <attribute name="missingLines" type="List" mode="OUT" optional="true"/>
+</service>
+
+
+
+	<service name="ensureEmployeePaymentAllocations"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollAllocationServices"
+         invoke="ensureEmployeePaymentAllocations"
+         auth="true"   export ="true"   action = "POST">
+
+    <attribute name="organizationPartyId" type="String" mode="IN"/>
+    <attribute name="payrollPeriodId" type="String" mode="IN"/>
+
+    <attribute name="createdCount" type="Integer" mode="OUT"/>
+</service>
+
+<service name="runPayrollReadinessPack"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollReadinessServices"
+         invoke="runPayrollReadinessPack"
+         auth="true"
+         export="true"
+         action="POST">
+    <!-- attributes here -->
+ 
+    <description>Generate payroll readiness pack files for a payroll run</description>
+
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="bankTransferConfigId" type="String" mode="IN" optional="false"/>
+    <attribute name="outDir" type="String" mode="IN" optional="true"/>
+    <attribute name="result" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+
+   
+
+    <!-- ===================================================== -->
+    <!--  B) PAYROLL RUN WORKFLOW (FINAL) -->
+    <!--  Canonical class: PayrollRunWorkflowServices -->
+    <!-- ===================================================== -->
+
+<service name="createPayrollRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollRunWorkflowServices"
+         invoke="createPayrollRun"
+        auth="true"
+         export="true"
+         action="POST"
+         use-transaction="true"
+         require-new-transaction="true">
+    <description>Create Payroll Run Header</description>
+
+    <!-- Required identifiers -->
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="payrollPeriodId" type="String" mode="IN" optional="false"/>
+    <attribute name="currencyUomId" type="String" mode="IN" optional="false"/>
+
+    <!-- Optional -->
+    <attribute name="runName" type="String" mode="IN" optional="true"/>
+    <attribute name="valuationCurrencyUomId" type="String" mode="IN" optional="true"/>
+    <attribute name="exchangeRate" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+
+    <!-- OFBiz standard -->
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <!-- OUT -->
+    <attribute name="payrollRunId" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="processPayrollRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollRunWorkflowServices"
+         invoke="processPayrollRun"
+         auth="true"
+         use-transaction="true"
+         require-new-transaction="true">
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="forceRecalc" type="Boolean" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+
+    <service name="approvePayrollRun"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollRunWorkflowServices"
+             invoke="approvePayrollRun"
+             auth="true"
+             use-transaction="true"  export="true"  action="POST"
+             require-new-transaction="true">
+        <description>Approve run (validates totals + locks results)</description>
+        <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <!-- Workflow "post" should route to router -->
+<service name="postPayrollRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollRunWorkflowServices"
+         invoke="postPayrollRun"
+         auth="true" export="true" action="POST"
+         use-transaction="true"
+         require-new-transaction="true">
+    <description>Post payroll run (router to GL/Invoice/Both based on option)</description>
+
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="accountingPostOptionId" type="String" mode="IN" optional="true"/>
+    <attribute name="vendorPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="forceRepost" type="Boolean" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="glJournalId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+
+    <!-- REST-friendly -->
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+    <attribute name="errorMessage" type="String" mode="OUT" optional="true"/>
+	
+</service>
+
+  <service name="generateBankTransferBatchForRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollRunWorkflowServices"
+         invoke="generateBankTransferBatchForRun"
+         auth="true"
+         export="true"  action="POST"
+         use-transaction="true"
+         require-new-transaction="true">
+    <description>Generate bank transfer batch from payroll results</description>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="bankTransferConfigId" type="String" mode="IN" optional="false"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    <attribute name="bankTransferBatchId" type="String" mode="OUT" optional="true"/>
+</service>
+
+
+
+    <!-- ===================================================== -->
+    <!--  C) DELIVERY / NOTIFICATIONS -->
+    <!-- ===================================================== -->
+
+    <service name="queuePayrollEmail"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollDeliveryServices"
+             invoke="queuePayrollEmail"
+             auth="true"
+             use-transaction="true">
+        <description>Queue an email for payslip/run export file</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="toAddress" type="String" mode="IN" optional="false"/>
+        <attribute name="subject" type="String" mode="IN" optional="false"/>
+        <attribute name="content" type="String" mode="IN" optional="false"/>
+        <attribute name="attachmentExportFileId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+        <attribute name="partyId" type="String" mode="IN" optional="true"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+        <attribute name="emailQueueId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+   <service name="processPayrollEmailQueue"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollDeliveryServices"
+         invoke="processPayrollEmailQueue"
+         auth="true"
+         use-transaction="true"
+         require-new-transaction="true">
+    <description>Worker: processes N payroll delivery emails in NEW status</description>
+
+    <attribute name="maxItems" type="Integer" mode="IN" optional="true"/>
+
+    <!-- IMPORTANT: OFBiz expects userLogin as GenericValue -->
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="sentCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+</service>
+
+
+
+<service name="generateBankTransferBatchForRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollBankServices"
+         invoke="generateBankTransferBatchForRun"
+         auth="true"
+         export="true"
+         action="POST"
+         use-transaction="false">
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="bankTransferConfigId" type="String" mode="IN" optional="false"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="bankTransferBatchId" type="String" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="exportBankTransferBatchFileForRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollBankServices"
+         invoke="exportBankTransferBatchFileForRun"
+         auth="true"
+         export="true"
+         action="POST"
+         use-transaction="false">
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="bankTransferBatchId" type="String" mode="IN" optional="true"/>
+    <attribute name="exportFormat" type="String" mode="IN" optional="true"/> <!-- CSV -->
+    <attribute name="outDir" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+
+    <attribute name="exportFileName" type="String" mode="OUT" optional="true"/>
+    <attribute name="exportFilePath" type="String" mode="OUT" optional="true"/>
+    <attribute name="bankTransferBatchId" type="String" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="uploadBankFileForRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollBankServices"
+         invoke="uploadBankFileForRun"
+         auth="true"  export="true"
+         action="POST">
+    <description>Mark bank file as uploaded (SENT) for a payroll run</description>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="bankTransferBatchId" type="String" mode="IN" optional="true"/>
+    <attribute name="bankFileReference" type="String" mode="IN" optional="false"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="bankTransferBatchId" type="String" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="confirmBankTransferBatchForRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollBankServices"
+         invoke="confirmBankTransferBatchForRun"
+         auth="true"  export="true"
+         action="POST">
+    <description>Confirm bank batch (CONFIRMED) and close payroll run (DONE)</description>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="bankTransferBatchId" type="String" mode="IN" optional="true"/>
+    <attribute name="confirmReference" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="bankTransferBatchId" type="String" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+<service name="markBankFileUploadedForRun"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollBankServices"
+         invoke="markBankFileUploadedForRun"
+         auth="true"  export="true"
+         action="POST">
+    <description>Mark bank file uploaded (SENT) without closing payroll run</description>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="bankTransferBatchId" type="String" mode="IN" optional="true"/>
+    <attribute name="bankFileReference" type="String" mode="IN" optional="false"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="bankTransferBatchId" type="String" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+    <service name="processPayrollEmailQueueWorkerV2"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollDeliveryServices"
+             invoke="processPayrollEmailQueue"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <description>Worker: processes N emails in NEW status</description>
+        <attribute name="maxItems" type="Integer" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="sentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+
+
+    <service name="queuePayrollSms"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollDeliveryServices"
+             invoke="queuePayrollSms"
+             auth="true"
+             use-transaction="true">
+        <description>Queue SMS notification</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="toNumber" type="String" mode="IN" optional="false"/>
+        <attribute name="messageText" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+        <attribute name="partyId" type="String" mode="IN" optional="true"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+        <attribute name="smsQueueId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="processPayrollSmsQueue"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollDeliveryServices"
+             invoke="processPayrollSmsQueue"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <description>Worker: process SMS queue</description>
+        <attribute name="maxItems" type="Integer" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+        <attribute name="sentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+
+    <!-- ===================================================== -->
+    <!--  D) EXPORT (OpenPDF + FOP) -->
+    <!-- ===================================================== -->
+
+    <service name="createPayrollExportRequest"
+             engine="java"
+             location="org.apache.ofbiz.payroll.export.PayrollExportServices"
+             invoke="createPayrollExportRequest"
+             auth="true"
+             use-transaction="true">
+        <description>Create an export request</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+        <attribute name="exportTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="formatTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="localeString" type="String" mode="IN" optional="true"/>
+        <attribute name="timeZoneString" type="String" mode="IN" optional="true"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+        <attribute name="exportRequestId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="processPayrollExportRequest"
+             engine="java"
+             location="org.apache.ofbiz.payroll.export.PayrollExportServices"
+             invoke="processPayrollExportRequest"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <description>Process export request and generate files</description>
+        <attribute name="exportRequestId" type="String" mode="IN" optional="false"/>
+        <attribute name="generatedExportFileIds" type="List" mode="OUT" optional="true"/>
+        <attribute name="generatedCount" type="Long" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- NOTE: you referenced org.apache.ofbiz.payroll.services.PayrollExportServices here;
+         keep ONE export services package to avoid confusion. -->
+    <service name="getPayrollExportFile"
+             engine="java"
+             location="org.apache.ofbiz.payroll.export.PayrollExportServices"
+             invoke="getPayrollExportFile"
+             auth="true">
+        <description>Fetch export file metadata</description>
+        <attribute name="exportFileId" type="String" mode="IN" optional="false"/>
+        <attribute name="exportFile" type="Map" mode="OUT" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+
+    <!-- ===================================================== -->
+    <!--  E) ACCOUNTING INTEGRATION -->
+    <!-- ===================================================== -->
+<service name="postPayrollRunToGl"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPostingServices"
+         invoke="postPayrollRunToGl"
+         auth="true"
+         use-transaction="true"
+         require-new-transaction="true">
+    <description>Post payroll run to GL</description>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="glFiscalTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="glJournalName" type="String" mode="IN" optional="true"/>
+    <attribute name="forceRepost" type="Boolean" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="glJournalId" type="String" mode="OUT" optional="true"/>
+    <attribute name="payrollPostingId" type="String" mode="OUT" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+<service name="postPayrollRunToInvoice"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPostingServices"
+         invoke="postPayrollRunToInvoice"
+         auth="true"
+         use-transaction="true"
+         require-new-transaction="true">
+    <description>Post payroll run to Invoice</description>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="vendorPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="forceRepost" type="Boolean" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="payrollPostingId" type="String" mode="OUT" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+
+<service name="postPayrollRunAccounting"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPostingServices"
+         invoke="postPayrollRunAccounting"
+         auth="true"
+         use-transaction="true"
+         require-new-transaction="true">
+    <description>Alias router: routes posting based on PayrollRun.accountingPostOptionId</description>
+
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+
+    <attribute name="accountingPostOptionId" type="String" mode="IN" optional="true"/>
+
+    <attribute name="vendorPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceTypeId" type="String" mode="IN" optional="true"/>
+
+    <attribute name="glFiscalTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="glJournalName" type="String" mode="IN" optional="true"/>
+
+    <attribute name="forceRepost" type="Boolean" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+
+    <attribute name="glJournalId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="payrollPostingId" type="String" mode="OUT" optional="true"/>
+
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+
+    <!-- ===================================================== -->
+    <!--  F) RETRO PAYROLL (5) -->
+    <!-- ===================================================== -->
+
+    <service name="createPayrollRetroBatch"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollRetroServices"
+             invoke="createPayrollRetroBatch"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodYear" type="Long" mode="IN" optional="false"/>
+        <attribute name="periodMonth" type="Long" mode="IN" optional="false"/>
+        <attribute name="effectiveDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="postMode" type="String" mode="IN" optional="true"/>
+        <attribute name="applyInPayrollRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="reason" type="String" mode="IN" optional="true"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollRetroBatchId" type="String" mode="OUT" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="addEmployeesToRetroBatch"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollRetroServices"
+             invoke="addEmployeesToRetroBatch"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <attribute name="payrollRetroBatchId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyIdList" type="List" mode="IN" optional="false"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="calculatePayrollRetroBatch"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollRetroServices"
+             invoke="calculatePayrollRetroBatch"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <attribute name="payrollRetroBatchId" type="String" mode="IN" optional="false"/>
+        <attribute name="forceRecalc" type="Boolean" mode="IN" optional="true"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="approvePayrollRetroBatch"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollRetroServices"
+             invoke="approvePayrollRetroBatch"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <attribute name="payrollRetroBatchId" type="String" mode="IN" optional="false"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="postPayrollRetroBatch"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollRetroServices"
+             invoke="postPayrollRetroBatch"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <attribute name="payrollRetroBatchId" type="String" mode="IN" optional="false"/>
+        <attribute name="forceRepost" type="Boolean" mode="IN" optional="true"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+        <attribute name="glJournalId" type="String" mode="OUT" optional="true"/>
+        <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+
+    <!-- ===================================================== -->
+    <!--  G) AUDIT + COMPLIANCE (6) -->
+    <!-- ===================================================== -->
+
+<service name="recordPayrollAuditEvent"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollAuditServices"
+         invoke="recordPayrollAuditEvent"
+         auth="true"
+         require-new-transaction="true">
+    <description>Record payroll audit event (isolated tx)</description>
+
+    <attribute name="organizationPartyId" type="String" mode="IN"/>
+    <attribute name="eventTypeId" type="String" mode="IN"/>
+    <attribute name="entityName" type="String" mode="IN"/>
+    <attribute name="recordId" type="String" mode="IN" optional="true"/>
+    <attribute name="oldValue" type="String" mode="IN" optional="true"/>
+    <attribute name="newValue" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+</service>
+
+    <service name="generatePayrollComplianceReport"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollComplianceServices"
+             invoke="generatePayrollComplianceReport"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodYear" type="Long" mode="IN" optional="false"/>
+        <attribute name="periodMonth" type="Long" mode="IN" optional="false"/>
+        <attribute name="reportTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+        <attribute name="payrollComplianceReportId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="approvePayrollComplianceReport"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollComplianceServices"
+             invoke="approvePayrollComplianceReport"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <attribute name="payrollComplianceReportId" type="String" mode="IN" optional="false"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="exportPayrollComplianceReport"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollComplianceServices"
+             invoke="exportPayrollComplianceReport"
+             auth="true"
+             use-transaction="true"
+             require-new-transaction="true">
+        <attribute name="payrollComplianceReportId" type="String" mode="IN" optional="false"/>
+        <attribute name="formatTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+        <attribute name="exportFileId" type="String" mode="OUT" optional="true"/>
+    </service>
+	
+	
+	 
+    <!-- ===================================================== -->
+    <!-- Payroll Master CRUD Services -->
+    <!-- ===================================================== -->
+
+    <service name="createPayrollStructure" engine="java"
+             location="org.apache.ofbiz.payroll.PayrollMasterServices"
+             invoke="createPayrollStructure" auth="true">
+        <description>Create Payroll Structure</description>
+    </service>
+
+    <service name="updatePayrollStructure" engine="java"
+             location="org.apache.ofbiz.payroll.PayrollMasterServices"
+             invoke="updatePayrollStructure" auth="true"/>
+
+    <service name="deletePayrollStructure" engine="java"
+             location="org.apache.ofbiz.payroll.PayrollMasterServices"
+             invoke="deletePayrollStructure" auth="true"/>
+
+    <service name="getPayrollStructureList" engine="java"
+             location="org.apache.ofbiz.payroll.PayrollMasterServices"
+             invoke="getPayrollStructureList" auth="true">
+        <attribute name="list" type="List" mode="OUT"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- Employee Payroll Assignment -->
+    <!-- ===================================================== -->
+
+    <service name="createEmployeePayrollAssignment" engine="java"
+             location="org.apache.ofbiz.payroll.PayrollMasterServices"
+             invoke="createEmployeePayrollAssignment" auth="true"/>
+
+    <service name="updateEmployeePayrollAssignment" engine="java"
+             location="org.apache.ofbiz.payroll.PayrollMasterServices"
+             invoke="updateEmployeePayrollAssignment" auth="true"/>
+
+    <service name="deleteEmployeePayrollAssignment" engine="java"
+             location="org.apache.ofbiz.payroll.PayrollMasterServices"
+             invoke="deleteEmployeePayrollAssignment" auth="true"/>
+
+    <service name="getEmployeePayrollAssignmentList" engine="java"
+             location="org.apache.ofbiz.payroll.PayrollMasterServices"
+             invoke="getEmployeePayrollAssignmentList" auth="true">
+        <attribute name="list" type="List" mode="OUT"/>
+    </service>
+
+    
+
+ <!-- ===================================================== -->
+<!-- Payroll Period Resolver (Option A) -->
+<!-- ===================================================== -->
+
+<service name="resolvePayrollPeriodForMonth"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPeriodServices"
+         invoke="resolvePayrollPeriodForMonth"
+         auth="true"
+         use-transaction="false">
+    <description>Resolve PayrollPeriodId for (org + year + month) and return default currency</description>
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="periodYear" type="Long" mode="IN" optional="false"/>
+    <attribute name="periodMonth" type="Long" mode="IN" optional="false"/>
+
+    <!-- optional filters -->
+    <attribute name="periodTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="statusId" type="String" mode="IN" optional="true"/>
+
+    <!-- outputs -->
+    <attribute name="payrollPeriodId" type="String" mode="OUT" optional="true"/>
+    <attribute name="currencyUomId" type="String" mode="OUT" optional="true"/>
+    <attribute name="valuationCurrencyUomId" type="String" mode="OUT" optional="true"/>
+    <attribute name="exchangeRate" type="BigDecimal" mode="OUT" optional="true"/>
+
+    <attribute name="periodStartDate" type="java.sql.Date" mode="OUT" optional="true"/>
+    <attribute name="periodEndDate" type="java.sql.Date" mode="OUT" optional="true"/>
+
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+<!-- ===================================================== -->
+<!-- Payroll Scheduler Workers V2 (ADD-ONLY, no overwrite) -->
+<!-- ===================================================== -->
+
+<!-- ===================================================== -->
+<!-- 1) Monthly Payroll Runner (PROTECTED)                  -->
+<!--    - Keep auth=true                                    -->
+<!--    - Add dryRun + testMode to allow safe testing       -->
+<!-- ===================================================== -->
+<service name="runMonthlyPayrollV2"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+         invoke="runMonthlyPayrollV2"
+         auth="true"
+         export="true"
+         action="POST"
+         use-transaction="false">
+    <description>V2 monthly payroll cycle - REST callable - supports dryRun/testMode + export</description>
+<attribute name="bankTransferBatchId" type="String" mode="OUT" optional="true"/>
+<attribute name="autoGenerateBankBatch" type="String" mode="IN" optional="true"/>
+    <!-- Inputs -->
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollPeriodId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+
+    <attribute name="currencyUomId" type="String" mode="IN" optional="false"/>
+    <attribute name="valuationCurrencyUomId" type="String" mode="IN" optional="true"/>
+    <attribute name="exchangeRate" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="runTypeId" type="String" mode="IN" optional="true"/>
+    <!-- Posting options -->
+    <attribute name="accountingPostOptionId" type="String" mode="IN" optional="true"/>
+    <attribute name="vendorPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="bankTransferConfigId" type="String" mode="IN" optional="true"/>
+
+    <!-- Filters / switches -->
+    <attribute name="partyId" type="String" mode="IN" optional="true"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="testMode" type="String" mode="IN" optional="true"/>
+    <attribute name="executeNow" type="String" mode="IN" optional="true"/>
+    <attribute name="forceRecalc" type="String" mode="IN" optional="true"/>
+
+    <!-- REST-friendly identity -->
+    <attribute name="userLoginId" type="String" mode="IN" optional="true"/>
+
+    <!-- Export request -->
+    <attribute name="exportFormat" type="String" mode="IN" optional="true"/>  <!-- CSV|PDF -->
+    <attribute name="exportScope" type="String" mode="IN" optional="true"/>   <!-- RUN|RESULTS|BANK -->
+
+    <!-- Outputs (legacy / REST wrapper friendly) -->
+    <attribute name="okCount" type="Long" mode="OUT" optional="true"/>
+    <attribute name="errorCount" type="Long" mode="OUT" optional="true"/>
+    <attribute name="nextRunTime" type="Timestamp" mode="OUT" optional="true"/>
+
+    <!-- Enhanced payload -->
+    <attribute name="payload" type="Map" mode="OUT" optional="true"/>
+    <attribute name="payloadMessage" type="String" mode="OUT" optional="true"/>
+
+    <!-- Export outputs -->
+    <attribute name="exportFileId" type="String" mode="OUT" optional="true"/>
+    <attribute name="exportFileName" type="String" mode="OUT" optional="true"/>
+
+    <!-- IMPORTANT: This is what your REST response is using -->
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+
+    <!-- Optional (only if your REST wrapper uses these) -->
+    <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+    <attribute name="errorMessage" type="String" mode="OUT" optional="true"/>
+</service>
+
+
+
+<service name="processPayrollEmailQueueWorkerV2"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+         invoke="processPayrollEmailQueueWorkerV2"
+         auth="false"
+         use-transaction="false">
+    <description>V2 Email queue worker self-rescheduling (supports testOnly)</description>
+    <attribute name="testOnly" type="String" mode="IN" optional="true"/>
+    <attribute name="userLoginId" type="String" mode="IN" optional="true"/>
+    <attribute name="processedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="nextRunTime" type="Timestamp" mode="OUT" optional="true"/>
+</service>
+
+<service name="processPayrollSmsQueueWorkerV2"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+         invoke="processPayrollSmsQueueWorkerV2"
+         auth="false"
+         use-transaction="false">
+    <description>V2 SMS queue worker self-rescheduling (supports testOnly)</description>
+    <attribute name="testOnly" type="String" mode="IN" optional="true"/>
+    <attribute name="userLoginId" type="String" mode="IN" optional="true"/>
+    <attribute name="processedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="nextRunTime" type="Timestamp" mode="OUT" optional="true"/>
+</service>
+
+<service name="processPayrollExportQueueWorkerV2"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+         invoke="processPayrollExportQueueWorkerV2"
+         auth="false"
+         use-transaction="false">
+    <description>V2 Export queue worker self-rescheduling (supports testOnly)</description>
+    <attribute name="testOnly" type="String" mode="IN" optional="true"/>
+    <attribute name="userLoginId" type="String" mode="IN" optional="true"/>
+    <attribute name="processedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="nextRunTime" type="Timestamp" mode="OUT" optional="true"/>
+</service>
+
+<service name="processPayrollComplianceDailyWorkerV2"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+         invoke="processPayrollComplianceDailyWorkerV2"
+         auth="false"
+         use-transaction="false">
+    <description>V2 compliance worker self-rescheduling (supports testOnly)</description>
+    <attribute name="periodYear" type="Long" mode="IN" optional="true"/>
+    <attribute name="periodMonth" type="Long" mode="IN" optional="true"/>
+    <attribute name="reportTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="testOnly" type="String" mode="IN" optional="true"/>
+    <attribute name="userLoginId" type="String" mode="IN" optional="true"/>
+    <attribute name="processedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="nextRunTime" type="Timestamp" mode="OUT" optional="true"/>
+</service>
+<!-- ===================================================== -->
+<!-- 3) Safe Test Service (NO BUSINESS IMPACT)              -->
+<!--    - schedules ONE test job per worker                 -->
+<!--    - workers called with testOnly=Y                    -->
+<!-- ===================================================== -->
+<service name="bootstrapPayrollSchedulerTestV2"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+         invoke="bootstrapPayrollSchedulerTestV2"
+         auth="true"
+         use-transaction="false">
+    <description>Creates immediate JobSandbox test jobs for V2 workers (testOnly=Y)</description>
+    <attribute name="minutesAhead" type="Long" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    <attribute name="createdJobs" type="Integer" mode="OUT" optional="true"/>
+</service>
+
+
+<!-- ===================================================== -->
+<!--  MISSING SERVICES ADDED (Controller + Screens)         -->
+<!--  Purpose: unblock menus/screens/controllers resolution  -->
+<!-- ===================================================== -->
+
+<!-- ===================================================== -->
+<!--  1) PAYSLIP ACTIONS (Controller request-maps)           -->
+<!-- ===================================================== -->
+
+<service name="generatePayslipBarcode"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPayslipServices"
+         invoke="generatePayslipBarcode"
+         auth="true"
+         use-transaction="true">
+    <description>Generate/refresh payslip barcode for a payroll result</description>
+    <attribute name="payrollResultId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    <attribute name="barcodeId" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="generatePayslipPdfOpenPdf"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPayslipServices"
+         invoke="generatePayslipPdfOpenPdf"
+         auth="true"
+         use-transaction="true"
+         require-new-transaction="true">
+    <description>Generate payslip PDF using OpenPDF and attach to PayrollExportFile</description>
+    <attribute name="payrollResultId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="localeString" type="String" mode="IN" optional="true"/>
+    <attribute name="timeZoneString" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    <attribute name="exportFileId" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="generatePayslipPdfFop"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPayslipServices"
+         invoke="generatePayslipPdfFop"
+         auth="true"
+         use-transaction="true"
+         require-new-transaction="true">
+    <description>Generate payslip PDF using Apache FOP (FO template)</description>
+    <attribute name="payrollResultId" type="String" mode="IN" optional="false"/>
+    <attribute name="foTemplatePath" type="String" mode="IN" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="localeString" type="String" mode="IN" optional="true"/>
+    <attribute name="timeZoneString" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    <attribute name="exportFileId" type="String" mode="OUT" optional="true"/>
+</service>
+
+
+<!-- ===================================================== -->
+<!--  2) RUN POST OPTION UPDATE (Controller request-map)     -->
+<!-- ===================================================== -->
+
+<service name="updatePayrollRunPostOption"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollRunWorkflowServices"
+         invoke="updatePayrollRunPostOption"
+         auth="true"
+         use-transaction="true">
+    <description>Update PayrollRun accounting post option and related fields</description>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="accountingPostOptionId" type="String" mode="IN" optional="true"/>
+    <attribute name="vendorPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+
+<!-- ===================================================== -->
+<!--  3) GL MAPPING CRUD (Controller request-maps)           -->
+<!-- ===================================================== -->
+
+<service name="createPayrollGlMapping"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollMappingServices"
+         invoke="createPayrollGlMapping"
+         auth="true"
+         use-transaction="true">
+    <description>Create Payroll GL Mapping</description>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="lineTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="glAccountId" type="String" mode="IN" optional="true"/>
+    <attribute name="description" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    <attribute name="payrollGlMappingId" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="updatePayrollGlMapping"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollMappingServices"
+         invoke="updatePayrollGlMapping"
+         auth="true"
+         use-transaction="true">
+    <description>Update Payroll GL Mapping</description>
+    <attribute name="payrollGlMappingId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="lineTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="glAccountId" type="String" mode="IN" optional="true"/>
+    <attribute name="description" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+<service name="deletePayrollGlMapping"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollMappingServices"
+         invoke="deletePayrollGlMapping"
+         auth="true"
+         use-transaction="true">
+    <description>Delete Payroll GL Mapping</description>
+    <attribute name="payrollGlMappingId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+
+<!-- ===================================================== -->
+<!--  4) INVOICE MAPPING CRUD (Controller request-maps)      -->
+<!-- ===================================================== -->
+
+<service name="createPayrollInvoiceMapping"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollMappingServices"
+         invoke="createPayrollInvoiceMapping"
+         auth="true"
+         use-transaction="true">
+    <description>Create Payroll Invoice Mapping</description>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="lineTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceItemTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="productId" type="String" mode="IN" optional="true"/>
+    <attribute name="description" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    <attribute name="payrollInvoiceMappingId" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="updatePayrollInvoiceMapping"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollMappingServices"
+         invoke="updatePayrollInvoiceMapping"
+         auth="true"
+         use-transaction="true">
+    <description>Update Payroll Invoice Mapping</description>
+    <attribute name="payrollInvoiceMappingId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="lineTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceItemTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="productId" type="String" mode="IN" optional="true"/>
+    <attribute name="description" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+<service name="deletePayrollInvoiceMapping"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollMappingServices"
+         invoke="deletePayrollInvoiceMapping"
+         auth="true"
+         use-transaction="true">
+    <description>Delete Payroll Invoice Mapping</description>
+    <attribute name="payrollInvoiceMappingId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+
+<!-- ===================================================== -->
+<!--  5) ORGANIZATION CRUD (Controller request-maps)         -->
+<!-- ===================================================== -->
+
+<!-- ===================================================== -->
+<!-- PayrollOrganization CRUD (FIXED: organizationPartyId) -->
+<!-- ===================================================== -->
+
+<service name="createPayrollOrganization"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollOrganizationServices"
+         invoke="createPayrollOrganization"
+         auth="true"
+         export="true"
+         action="POST"
+         use-transaction="true">
+    <description>Create Payroll Organization (REST exposed)</description>
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="parentOrganizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgName" type="String" mode="IN" optional="true"/>
+    <attribute name="defaultCurrencyUomId" type="String" mode="IN" optional="false"/>
+    <attribute name="countryGeoId" type="String" mode="IN" optional="true"/>
+    <attribute name="isActive" type="String" mode="IN" optional="true"/>
+
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+<service name="updatePayrollOrganization"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollOrganizationServices"
+         invoke="updatePayrollOrganization"
+         auth="true"
+         export="true"
+         action="POST"
+         use-transaction="true">
+    <description>Update Payroll Organization (REST exposed)</description>
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="parentOrganizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="orgName" type="String" mode="IN" optional="true"/>
+    <attribute name="defaultCurrencyUomId" type="String" mode="IN" optional="true"/>
+    <attribute name="countryGeoId" type="String" mode="IN" optional="true"/>
+    <attribute name="isActive" type="String" mode="IN" optional="true"/>
+
+    <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+
+
+<!-- ===================================================== -->
+<!--  6) SCREEN LIST SERVICES (Retro + Compliance screens)   -->
+<!-- ===================================================== -->
+
+<service name="getPayrollRetroBatchList"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollRetroQueryServices"
+         invoke="getPayrollRetroBatchList"
+         auth="true"
+         use-transaction="false">
+    <description>List payroll retro batches (org scoped + optional filters)</description>
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="periodYear" type="Long" mode="IN" optional="true"/>
+    <attribute name="periodMonth" type="Long" mode="IN" optional="true"/>
+    <attribute name="statusId" type="String" mode="IN" optional="true"/>
+
+    <attribute name="list" type="List" mode="OUT" optional="true"/>
+
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+
+
+<service name="getPayrollRetroDeltaList"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollRetroQueryServices"
+         invoke="getPayrollRetroDeltaList"
+         auth="true"
+         use-transaction="false">
+    <description>List payroll retro delta lines for a batch (optional org validation)</description>
+
+    <attribute name="payrollRetroBatchId" type="String" mode="IN" optional="false"/>
+
+    <!-- optional filters -->
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="partyId" type="String" mode="IN" optional="true"/>
+    <attribute name="lineTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="statusId" type="String" mode="IN" optional="true"/>
+
+    <attribute name="list" type="List" mode="OUT" optional="true"/>
+
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+<!-- ===================================================== -->
+<!-- FIXED: getPayrollComplianceReportList (NO orgPartyId)  -->
+<!-- ===================================================== -->
+<service name="getPayrollComplianceReportList"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollComplianceServices"
+         invoke="getPayrollComplianceReportList"
+         auth="true"
+         use-transaction="false">
+    <description>Returns compliance reports list for screens</description>
+
+    <!-- Filters -->
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="periodYear" type="Long" mode="IN" optional="true"/>
+    <attribute name="periodMonth" type="Long" mode="IN" optional="true"/>
+    <attribute name="reportTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="statusId" type="String" mode="IN" optional="true"/>
+
+    <!-- Paging (recommended for list screens) -->
+    <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+    <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+
+    <!-- Outputs -->
+    <attribute name="list" type="List" mode="OUT" optional="true"/>
+    <attribute name="listSize" type="Long" mode="OUT" optional="true"/>
+
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+</service>
+
+
+
+<!-- ===================================================== -->
+<!--  MISSING SERVICE ADDED TO SERVICES XML: Generic Payroll CRUD -->
+<!--  Engine: java | Location: PayrollCrudServices | Org field: organizationPartyId -->
+<!-- ===================================================== -->
+ 
+    <!-- ===================================================== -->
+    <!-- Generic Payroll CRUD - REST -->
+    <!-- NOTE: userLogin MUST be GenericValue (not "UserLogin") -->
+    <!-- ===================================================== -->
+
+    <!-- Generic CREATE (requires fields Map) -->
+<service name="payrollCreateEntity"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollCrudServices"
+         invoke="createEntity"
+         auth="true"
+         use-transaction="true"
+         export="true"
+         action="POST">
+    <description>Generic create for allowed payroll entities (org-scoped)</description>
+
+    <attribute name="entityName"          type="String" mode="IN"  optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN"  optional="true"/>
+    <attribute name="fields"             type="Map"    mode="IN"  optional="false"/>
+
+    <!-- Your Java returns result.put("resultId", ...) -->
+    <attribute name="resultId"           type="String" mode="OUT" optional="true"/>
+</service>
+<!-- Generic UPDATE (requires pk Map + fields Map) -->
+<service name="payrollUpdateEntity"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollCrudServices"
+         invoke="updateEntity"
+         auth="true"
+         use-transaction="true"
+         export="true"
+         action="POST">
+    <description>Generic update for allowed payroll entities (org-scoped)</description>
+
+    <attribute name="entityName"          type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="pk"                 type="Map"    mode="IN" optional="false"/>
+    <attribute name="fields"             type="Map"    mode="IN" optional="false"/>
+</service>
+
+<service name="payrollDeleteEntity"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollCrudServices"
+         invoke="deleteEntity"
+         auth="true"
+         use-transaction="true"
+         export="true"
+         action="POST">
+    <description>Generic delete for allowed payroll entities (org-scoped)</description>
+
+    <attribute name="entityName"          type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="pk"                 type="Map"    mode="IN" optional="false"/>
+</service>
+
+<service name="payrollFindOne"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollCrudServices"
+         invoke="findOne"
+         auth="true"
+         use-transaction="false"
+         export="true"
+         action="GET">
+    <description>Find entity by PK (GET)</description>
+
+    <attribute name="entityName"          type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="pk"                 type="Map"    mode="IN" optional="false"/>
+
+    <attribute name="record"             type="Map"    mode="OUT" optional="true"/>
+</service>
+
+<service name="payrollFindOnePost"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollCrudServices"
+         invoke="findOne"
+         auth="true"
+         use-transaction="false"
+         export="true"
+         action="POST">
+    <description>Find entity by PK (POST)</description>
+
+    <attribute name="entityName"          type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="pk"                 type="Map"    mode="IN" optional="false"/>
+
+    <attribute name="record"             type="Map"    mode="OUT" optional="true"/>
+</service>
+
+
+<service name="payrollFindEntity"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollCrudServices"
+         invoke="findEntity"
+         auth="true"
+         export="true"
+         action="GET">
+    <description>Find entity by PK (GET via inParams)</description>
+    <attribute name="entityName"          type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="pk"                 type="Map"    mode="IN" optional="false"/>
+    <attribute name="record" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="payrollFindEntityPost"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollCrudServices"
+         invoke="findEntity"
+         auth="true"
+         export="true"
+         action="POST">
+    <description>Find entity by PK (POST)</description>
+
+    <attribute name="entityName" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="pk" type="Map" mode="IN" optional="false"/>
+
+    <attribute name="record" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+
+
+<!-- Generic LIST (filters/orderBy/viewSize/viewIndex) -->
+<service name="payrollList"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollCrudServices"
+         invoke="list"
+         auth="true" action="POST"
+         export="true">
+    <description>List entity records</description>
+
+    <attribute name="entityName"          type="String"  mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String"  mode="IN" optional="true"/>
+    <attribute name="filters"             type="Map"     mode="IN" optional="true"/>
+    <attribute name="orderBy"             type="List"    mode="IN" optional="true"/>
+    <attribute name="viewIndex"           type="Integer" mode="IN" optional="true"/>
+    <attribute name="viewSize"            type="Integer" mode="IN" optional="true"/>
+
+    <attribute name="records"             type="List"    mode="OUT" optional="true"/>
+    <attribute name="totalCount"          type="Long"    mode="OUT" optional="true"/>
+    <attribute name="viewIndex"           type="Integer" mode="OUT" optional="true"/>
+    <attribute name="viewSize"            type="Integer" mode="OUT" optional="true"/>
+</service>
+
+<service name="payrollListEntityPost"
+         engine="java"
+        location="org.apache.ofbiz.payroll.services.PayrollCrudServices"
+         invoke="list"
+         auth="true"
+         export="true"
+         action="POST">
+    <description>List entity records (POST)</description>
+
+   <attribute name="entityName"          type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="filters"            type="Map"    mode="IN" optional="true"/>
+    <attribute name="orderBy"            type="List"   mode="IN" optional="true"/>
+    <attribute name="viewIndex"          type="Integer" mode="IN" optional="true"/>
+    <attribute name="viewSize"           type="Integer" mode="IN" optional="true"/>
+
+    <attribute name="records"            type="List"   mode="OUT" optional="true"/>
+    <attribute name="totalCount"         type="Long"   mode="OUT" optional="true"/>
+    <attribute name="viewIndex"          type="Integer" mode="OUT" optional="true"/>
+    <attribute name="viewSize"           type="Integer" mode="OUT" optional="true"/>
+</service>
+
+
+  <service name="createPayrollDeductionItem"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollTxnItemServices"
+         invoke="createPayrollDeductionItem"
+         auth="true">
+    <description>Create Payroll Deduction Item (Txn)</description>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="payrollRunId"         type="String" mode="IN" optional="false"/>
+    <attribute name="partyId"             type="String" mode="IN" optional="false"/>
+    <attribute name="deductionTypeId"     type="String" mode="IN" optional="false"/>
+    <attribute name="amount"              type="BigDecimal" mode="IN" optional="false"/>
+    <attribute name="remarks"             type="String" mode="IN" optional="true"/>
+
+    <attribute name="data" type="Map" mode="OUT" optional="false"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="false"/>
+</service>
+
+<service name="listPayrollDeductionItems"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollTxnItemServices"
+         invoke="listPayrollDeductionItems"
+         auth="true">
+    <description>List Payroll Deduction Items</description>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollRunId"        type="String" mode="IN" optional="true"/>
+    <attribute name="partyId"             type="String" mode="IN" optional="true"/>
+    <attribute name="onlyPending"         type="String" mode="IN" optional="true"/> <!-- Y/N -->
+
+    <attribute name="data" type="Map" mode="OUT" optional="false"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="false"/>
+</service>
+
+<!-- Generic LIST (payroll outout   stage 4.2  -->
+
+<service name="getEmployeePayslipDataV1"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPayslipServices"
+         invoke="getEmployeePayslipDataV1"
+        auth="true" export="true" action="POST" >
+    <description>Build structured payslip data from payroll result tables</description>
+
+    <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+    <attribute name="partyId" type="String" mode="IN" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="data" type="Map" mode="OUT"/>
+    <attribute name="legacyData" type="Map" mode="OUT"/>
+</service>
+
+
+<service name="generateEmployeePayslipV1"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPayslipServices"
+         invoke="generateEmployeePayslipV1"
+        auth="true" export="true" action="POST" >
+    <description>Generate one employee payslip record/output reference</description>
+
+    <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+    <attribute name="partyId" type="String" mode="IN" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="payslipFormatEnumId" type="String" mode="IN" optional="true"/>
+    <attribute name="forceRegenerate" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="payslipId" type="String" mode="OUT" optional="true"/>
+    <attribute name="contentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="dataResourceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+<service name="generatePayrollRunPayslipsV1"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollPayslipServices"
+         invoke="generatePayrollRunPayslipsV1"
+         auth="true" export="true" action="POST" >
+    <description>Generate payslips for all payroll results in a run</description>
+
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="payslipFormatEnumId" type="String" mode="IN" optional="true"/>
+    <attribute name="forceRegenerate" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="generatedCount" type="Long" mode="OUT"/>
+    <attribute name="skippedCount" type="Long" mode="OUT"/>
+    <attribute name="errorCount" type="Long" mode="OUT"/>
+    <attribute name="data" type="Map" mode="OUT"/>
+    <attribute name="legacyData" type="Map" mode="OUT"/>
+</service>
+
+
+<service name="reconcilePayrollRunV1"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollReconciliationServices"
+         invoke="reconcilePayrollRunV1"
+         auth="true" export="true" action="POST" >
+    <description>Reconcile payroll results, payment instructions, and bank batches</description>
+
+    <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="toleranceAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="reconciliationStatus" type="String" mode="OUT"/>
+    <attribute name="data" type="Map" mode="OUT"/>
+    <attribute name="legacyData" type="Map" mode="OUT"/>
+</service>
+
+<!--
+
+    <description> gemmeni start block Payroll Plugin Services for Loan Recovery and Benefits</description>
+
+    <service name="postLoanRepayment" engine="java" export="true"  action="POST"
+            location="org.apache.ofbiz.payroll.services.LoanServices" invoke="postLoanRepayment">
+        <description>Records a loan repayment deduction into the employee financial account</description>
+        <attribute name="finAccountId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyIdTo" type="String" mode="IN" optional="false">
+            <description>The Employee Party ID</description>
+        </attribute>
+        <attribute name="amount" type="BigDecimal" mode="IN" optional="false">
+            <description>Monthly recovery amount (e.g., 500.00)</description>
+        </attribute>
+    </service>
+
+    <service name="createLoanBenefit" engine="java" export="true"  action="POST"
+            location="org.apache.ofbiz.payroll.services.LoanServices" invoke="createLoanBenefit">
+        <description>Creates a PartyBenefit record using the 6-part primary key schema</description>
+        <attribute name="partyIdTo" type="String" mode="IN" optional="false"/>
+        <attribute name="cost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="benefitTypeId" type="String" mode="IN" optional="true" default-value="DED_ADV"/>
+        <attribute name="roleTypeIdFrom" type="String" mode="IN" optional="true" default-value="INTERNAL_ORGANIZATIO"/>
+        <attribute name="roleTypeIdTo" type="String" mode="IN" optional="true" default-value="EMPLOYEE"/>
+        <attribute name="partyIdFrom" type="String" mode="IN" optional="true" default-value="Company"/>
+    </service>
+ 
+
+ <description> gemmeni end  block Payroll Plugin Services for Loan Recovery and Benefits</descripti
+-->
+</services>
+

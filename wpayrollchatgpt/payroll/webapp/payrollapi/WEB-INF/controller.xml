@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site-conf xmlns="http://ofbiz.apache.org/Site-Conf"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
+
+    <request-map uri="assignments">
+        <security https="true" auth="false"/>
+        <event type="groovy" path="component://payroll/groovyScripts/rest/assignments.groovy" invoke="run"/>
+        <response name="success" type="none"/>
+        <response name="error" type="none"/>
+    </request-map>
+
+</site-conf>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-menu.xsd">
+
+  <menu name="PayrollMainMenu" title="Payroll Menu">
+    <menu-item name="PayrollHomeMenuItem" title="Payroll Home"
+               target="PayrollHome" />
+
+    <menu-item name="PayrollIterationListMenuItem" title="Payroll Iterations"
+               target="PayrollIterationList" />
+
+    <menu-item name="PayrollIterationCreateMenuItem" title="Create Iteration"
+               target="PayrollIterationCreate" />
+
+    <menu-item name="PayrollAssignmentCreateMenuItem" title="Create Assignment"
+               target="PayrollAssignmentCreate" />
+
+    <menu-item name="PayrollAcctgConfigListMenuItem" title="Payroll Accounting Config"
+               target="PayrollAcctgConfigList" />
+
+    <menu-item name="PayrollGlMapListMenuItem" title="Payroll GL Mapping"
+               target="PayrollGlMapList" />
+
+    <menu-item name="PayrollAcctgPostingListMenuItem" title="Payroll GL Postings (Pattern A)"
+               target="PayrollAcctgPostingList" />
+
+    <menu-item name="PayrollPayRunListMenuItem" title="Payroll PayRuns (Pattern B)"
+               target="PayrollPayRunList" />
+  </menu>
+
+</menus>

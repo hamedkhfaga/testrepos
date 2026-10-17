@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <EnumerationType enumTypeId="LOAN_TYPE" description="Loan Type"/>
+    <EnumerationType enumTypeId="LOAN_INT_MTHD" description="Loan Interest Method"/>
+    <EnumerationType enumTypeId="LOAN_REPAY_PTRN" description="Loan Repayment Pattern"/>
+    <EnumerationType enumTypeId="LOAN_ALLOC_ORD" description="Loan Allocation Order"/>
+    <EnumerationType enumTypeId="LOAN_SETT_POL" description="Loan Settlement Policy"/>
+    <EnumerationType enumTypeId="LOAN_REPAY_CHNL" description="Loan Repayment Channel"/>
+    <EnumerationType enumTypeId="LOAN_REPAY_SRC" description="Loan Repayment Source"/>
+    <EnumerationType enumTypeId="LOAN_EVT_TYPE" description="Loan Event Type"/>
+    <EnumerationType enumTypeId="LOAN_CHG_RSN" description="Loan Change Reason"/>
+
+    <Enumeration enumId="LOANTYP_CUST" enumTypeId="LOAN_TYPE" description="Customer Loan"/>
+    <Enumeration enumId="LOANTYP_EMP" enumTypeId="LOAN_TYPE" description="Employee Loan"/>
+    <Enumeration enumId="LNINT_FLAT" enumTypeId="LOAN_INT_MTHD" description="Flat Interest"/>
+    <Enumeration enumId="LNINT_DECL" enumTypeId="LOAN_INT_MTHD" description="Declining Balance"/>
+    <Enumeration enumId="LNRP_FIXED" enumTypeId="LOAN_REPAY_PTRN" description="Fixed Installment"/>
+    <Enumeration enumId="LNRP_INCR" enumTypeId="LOAN_REPAY_PTRN" description="Increasing Installment"/>
+    <Enumeration enumId="LNRP_DECR" enumTypeId="LOAN_REPAY_PTRN" description="Decreasing Installment"/>
+    <Enumeration enumId="LNALLO_ORD1" enumTypeId="LOAN_ALLOC_ORD" description="Penalty Fee Interest Principal"/>
+    <Enumeration enumId="LNSET_STD" enumTypeId="LOAN_SETT_POL" description="Standard Settlement"/>
+    <Enumeration enumId="LNCHNL_MANUAL" enumTypeId="LOAN_REPAY_CHNL" description="Manual Payment"/>
+    <Enumeration enumId="LNCHNL_PAYROLL" enumTypeId="LOAN_REPAY_CHNL" description="Payroll Deduction"/>
+    <Enumeration enumId="LNCHNL_MIXED" enumTypeId="LOAN_REPAY_CHNL" description="Mixed"/>
+    <Enumeration enumId="LNRS_MANUAL" enumTypeId="LOAN_REPAY_SRC" description="Manual"/>
+    <Enumeration enumId="LNRS_PAYROLL" enumTypeId="LOAN_REPAY_SRC" description="Payroll"/>
+    <Enumeration enumId="LNE_CREATE" enumTypeId="LOAN_EVT_TYPE" description="Create Loan"/>
+    <Enumeration enumId="LNE_APPROVE" enumTypeId="LOAN_EVT_TYPE" description="Approve Loan"/>
+    <Enumeration enumId="LNE_DISBURSE" enumTypeId="LOAN_EVT_TYPE" description="Disburse Loan"/>
+    <Enumeration enumId="LNE_REPAY" enumTypeId="LOAN_EVT_TYPE" description="Repayment"/>
+    <Enumeration enumId="LNE_RESCHEDULE" enumTypeId="LOAN_EVT_TYPE" description="Reschedule"/>
+    <Enumeration enumId="LNE_EARLY_SETTLE" enumTypeId="LOAN_EVT_TYPE" description="Early Settlement"/>
+    <Enumeration enumId="LNE_SCH_GEN" enumTypeId="LOAN_EVT_TYPE" description="Schedule Generated"/>
+
+    <LoanTypePolicy loanTypePolicyId="LTP_CUST_STD" loanTypeEnumId="LOANTYP_CUST" interestMethodEnumId="LNINT_FLAT"
+                    repaymentPatternEnumId="LNRP_FIXED" allocationOrderEnumId="LNALLO_ORD1" settlementPolicyEnumId="LNSET_STD"
+                    defaultChannelEnumId="LNCHNL_MANUAL" allowPayrollFlag="N" allowRescheduleFlag="Y"
+                    allowEarlySettlementFlag="Y" allowPartialPaymentFlag="Y" sequenceNum="10"
+                    description="Standard customer loan policy"/>
+
+    <LoanTypePolicy loanTypePolicyId="LTP_EMP_STD" loanTypeEnumId="LOANTYP_EMP" interestMethodEnumId="LNINT_FLAT"
+                    repaymentPatternEnumId="LNRP_FIXED" allocationOrderEnumId="LNALLO_ORD1" settlementPolicyEnumId="LNSET_STD"
+                    defaultChannelEnumId="LNCHNL_PAYROLL" allowPayrollFlag="Y" allowRescheduleFlag="Y"
+                    allowEarlySettlementFlag="Y" allowPartialPaymentFlag="Y" sequenceNum="20"
+                    description="Standard employee loan policy"/>
+					
+					
+					<LoanTypePolicy
+    loanTypePolicyId="LN_TYPE_HOUSING"
+    loanTypeEnumId="LN_TYPE_HOUSING"
+    policyName="Housing Loan"
+    description="Housing loan for employee home purchase or housing support"
+    allowPartialPaymentFlag="Y"
+    allowEarlySettlementFlag="Y"
+    allowRescheduleFlag="Y"
+    payrollEligibleFlag="Y"
+    activeFromDate="2026-01-01 00:00:00.0"
+    statusId="LTP_ACTIVE"/>
+
+<LoanTypePolicy
+    loanTypePolicyId="LN_TYPE_AUTO"
+    loanTypeEnumId="LN_TYPE_AUTO"
+    policyName="Car Loan"
+    description="Vehicle purchase support loan"
+    allowPartialPaymentFlag="Y"
+    allowEarlySettlementFlag="Y"
+    allowRescheduleFlag="Y"
+    payrollEligibleFlag="Y"
+    activeFromDate="2026-01-01 00:00:00.0"
+    statusId="LTP_ACTIVE"/>
+
+<LoanTypePolicy
+    loanTypePolicyId="LN_TYPE_EDU"
+    loanTypeEnumId="LN_TYPE_EDU"
+    policyName="Education Loan"
+    description="Education and school fee support loan"
+    allowPartialPaymentFlag="Y"
+    allowEarlySettlementFlag="Y"
+    allowRescheduleFlag="Y"
+    payrollEligibleFlag="Y"
+    activeFromDate="2026-01-01 00:00:00.0"
+    statusId="LTP_ACTIVE"/>
+
+<LoanTypePolicy
+    loanTypePolicyId="LN_TYPE_EMERGENCY"
+    loanTypeEnumId="LN_TYPE_EMERGENCY"
+    policyName="Emergency Loan"
+    description="Emergency support loan"
+    allowPartialPaymentFlag="Y"
+    allowEarlySettlementFlag="Y"
+    allowRescheduleFlag="Y"
+    payrollEligibleFlag="Y"
+    activeFromDate="2026-01-01 00:00:00.0"
+    statusId="LTP_ACTIVE"/>
+
+<LoanTypePolicy
+    loanTypePolicyId="LN_TYPE_SALARY_ADV"
+    loanTypeEnumId="LN_TYPE_SALARY_ADV"
+    policyName="Salary Advance"
+    description="Short-term salary advance"
+    allowPartialPaymentFlag="Y"
+    allowEarlySettlementFlag="Y"
+    allowRescheduleFlag="N"
+    payrollEligibleFlag="Y"
+    activeFromDate="2026-01-01 00:00:00.0"
+    statusId="LTP_ACTIVE"/>
+	
+	<Enumeration
+    enumId="LN_TYPE_HOUSING"
+    enumTypeId="LOAN_TYPE"
+    sequenceId="01"
+    description="Housing Loan"/>
+
+<Enumeration
+    enumId="LN_TYPE_AUTO"
+    enumTypeId="LOAN_TYPE"
+    sequenceId="02"
+    description="Car Loan"/>
+
+<Enumeration
+    enumId="LN_TYPE_EDU"
+    enumTypeId="LOAN_TYPE"
+    sequenceId="03"
+    description="Education Loan"/>
+
+<Enumeration
+    enumId="LN_TYPE_EMERGENCY"
+    enumTypeId="LOAN_TYPE"
+    sequenceId="04"
+    description="Emergency Loan"/>
+
+<Enumeration
+    enumId="LN_TYPE_SALARY_ADV"
+    enumTypeId="LOAN_TYPE"
+    sequenceId="05"
+    description="Salary Advance"/>
+	
+	
+    <InvoiceType invoiceTypeId="LOAN_FINANCE"
+                 description="Loan Finance Document"/>
+
+    <InvoiceType invoiceTypeId="LOAN_DISBURSEMENT"
+                 parentTypeId="LOAN_FINANCE"
+                 description="Loan Disbursement Invoice"/>
+
+    <InvoiceType invoiceTypeId="LOAN_REPAYMENT"
+                 parentTypeId="LOAN_FINANCE"
+                 description="Loan Repayment Invoice"/>
+
+    <InvoiceItemType invoiceItemTypeId="LOAN_ITEM"
+                     hasTable="N"
+                     description="Loan Financial Item"/>
+
+    <InvoiceItemType invoiceItemTypeId="LOAN_PRINCIPAL"
+                     parentTypeId="LOAN_ITEM"
+                     hasTable="N"
+                     description="Loan Principal"/>
+
+    <InvoiceItemType invoiceItemTypeId="LOAN_INTEREST"
+                     parentTypeId="LOAN_ITEM"
+                     hasTable="N"
+                     description="Loan Interest"/>
+
+    <InvoiceItemType invoiceItemTypeId="LOAN_FEE"
+                     parentTypeId="LOAN_ITEM"
+                     hasTable="N"
+                     description="Loan Fee"/>
+
+ 
+<AgreementType agreementTypeId="LOAN_AGREEMENT"
+               description="Loan Agreement"/>
+
+ 
+    <AgreementType agreementTypeId="LOAN_AGREEMENT"
+                   description="Loan Agreement"/>
+
+    <RoleType roleTypeId="LOAN_PROVIDER"
+              parentTypeId="ORGANIZATION_ROLE"
+              description="Loan Provider"/>
+
+    <RoleType roleTypeId="LOAN_BORROWER"
+              parentTypeId="CUSTOMER"
+              description="Loan Borrower"/>
+
+ 
+
+
+ 
+    <!-- ========================= -->
+    <!-- Agreement Type -->
+    <!-- ========================= -->
+    <AgreementType agreementTypeId="LOAN_AGREEMENT"
+                   description="Loan Agreement"/>
+
+    <!-- ========================= -->
+    <!-- Role Types -->
+    <!-- ========================= -->
+    <RoleType roleTypeId="LOAN_PROVIDER"
+              parentTypeId="ORGANIZATION_ROLE"
+              description="Loan Provider"/>
+
+    <RoleType roleTypeId="LOAN_BORROWER"
+              parentTypeId="CUSTOMER"
+              description="Loan Borrower"/>
+
+    <!-- ========================= -->
+    <!-- Party Roles (CRITICAL FIX) -->
+    <!-- ========================= -->
+
+    <!-- Company as Loan Provider -->
+    <PartyRole partyId="Company"
+               roleTypeId="LOAN_PROVIDER"/>
+
+    <!-- DemoEmployee as Loan Borrower -->
+    <PartyRole partyId="DemoEmployee"
+               roleTypeId="LOAN_BORROWER"/>
+
+    <!-- Optional: add more borrowers if needed -->
+    <!--
+    <PartyRole partyId="DemoCustomer1"
+               roleTypeId="LOAN_BORROWER"/>
+    -->
+
+ 
+<PartyRole partyId="PAY_EMP001" roleTypeId="LOAN_BORROWER"/>
+<PartyRole partyId="DemoCustomer2" roleTypeId="LOAN_BORROWER"/>
+
+</entity-engine-xml>

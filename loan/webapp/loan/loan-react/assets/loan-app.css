@@ -1,0 +1,69 @@
+﻿body {
+    margin: 0;
+    font-family: Segoe UI, Arial;
+    background: #f4f7fb;
+}
+
+.app-header {
+    background: #1e3a8a;
+    color: white;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.app-logo {
+    background: rgba(255,255,255,0.2);
+    padding: 8px;
+    border-radius: 6px;
+}
+
+.app-main {
+    padding: 30px;
+}
+
+.welcome-card {
+    background: white;
+    padding: 25px;
+    border-radius: 10px;
+    max-width: 900px;
+    margin: auto;
+}
+
+.badge {
+    background: #dbeafe;
+    padding: 5px 10px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.info-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.info-box {
+    background: #f1f5f9;
+    padding: 10px;
+    flex: 1;
+}
+
+.primary-btn {
+    background: #1e3a8a;
+    color: white;
+    padding: 10px;
+    border: none;
+}
+
+.secondary-btn {
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.app-footer {
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border-top: 1px solid #ddd;
+}

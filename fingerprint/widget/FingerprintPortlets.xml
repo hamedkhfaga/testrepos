@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<portal-portlets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-portal.xsd">
+
+    <portal-portlet name="TrendChartPortlet" title="Attendance Analytics"
+        screen-name="TrendChartPortletScreen" screen-location="component://fingerprint/widget/FingerprintScreens.xml"/>
+
+    <portal-portlet name="DeviceListPortlet" title="Biometric Devices"
+        screen-name="DeviceListPortletScreen" screen-location="component://fingerprint/widget/FingerprintScreens.xml"/>
+
+    <portal-portlet name="RecentPunchesPortlet" title="Recent Punches"
+        screen-name="RecentPunchesPortletScreen" screen-location="component://fingerprint/widget/FingerprintScreens.xml"/>
+
+</portal-portlets>

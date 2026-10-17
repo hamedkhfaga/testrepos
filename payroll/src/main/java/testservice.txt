@@ -1,0 +1,76 @@
+5) How you test these services (important)
+A) Run from WebTools → Service Engine
+
+Go to: https://localhost:8443/webtools/control/main
+
+Service Engine → Run Service
+Example inputs:
+
+Create PayrollPeriod
+
+serviceName: payrollCreateEntity
+
+entityName: PayrollPeriod
+
+orgPartyId: Company
+
+fields
+
+{
+  "payrollPeriodId":"P2026_01",
+  "periodName":"Jan 2026",
+  "startDate":"2026-01-01",
+  "endDate":"2026-01-31",
+  "statusId":"PAY_PER_OPEN"
+}
+
+
+Process Payroll Run
+
+serviceName: processPayrollRun
+
+orgPartyId: Company
+
+payrollRunId: 10001
+
+recalculate: true
+
+B) Call via curl (authenticated session required)
+
+If you already use OFBiz JSON-RPC or REST layer, we can wire these services to your /rest/services/... endpoint, but the service implementation above is correct regardless of controller.
+
+4) How to test quickly (Postman / service call)
+A) Use OFBiz service URL (example)
+
+If your OFBiz REST services are enabled, you typically call (depends on your setup):
+
+/webtools/control/serviceJson
+
+/webtools/control/serviceXML
+
+or REST plugin endpoints.
+
+Example JSON (WebTools):
+
+POST https://localhost:8443/webtools/control/serviceJson
+Content-Type: application/x-www-form-urlencoded
+
+serviceName=calculatePayrollRun&payrollRunId=10000
+
+
+
+
+
+B) Minimal workflow usage
+
+Create PayrollPeriod
+
+Create PayrollRun with status PAY_RUN_DRAFT
+
+Create EmployeePayrollAssignment + allowances + deductions + loans
+
+Call calculatePayrollRun
+
+Call approvePayrollRun
+
+Call generateBankTransferBatchForRun

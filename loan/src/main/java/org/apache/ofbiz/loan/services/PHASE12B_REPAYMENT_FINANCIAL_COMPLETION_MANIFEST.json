@@ -1,0 +1,9 @@
+{
+  "phase": "Phase 12B",
+  "title": "Repayment Financial Completion",
+  "changes": [
+    "completeUnifiedLoanRepaymentFinancialsV1",
+    "recordUnifiedLoanRepaymentV1 calls financial completion before reconciliation",
+    "repayment invoice/payment application/accounting markers"
+  ]
+}

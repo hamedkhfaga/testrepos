@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under the Apache License, Version 2.0. -->
+<entity-engine-xml>
+    <SecurityGroup groupId="ASSET_ERP_ADMIN" description="Asset ERP Administrator"/>
+    <SecurityGroup groupId="ASSET_ERP_MANAGER" description="Asset ERP Manager"/>
+    <SecurityGroup groupId="ASSET_ERP_ACCOUNTANT" description="Asset ERP Accountant"/>
+    <SecurityGroup groupId="ASSET_ERP_MAINT" description="Asset ERP Maintenance User"/>
+    <SecurityGroup groupId="ASSET_ERP_CUSTODIAN" description="Asset ERP Custodian"/>
+    <SecurityGroup groupId="ASSET_ERP_VIEWER" description="Asset ERP Viewer"/>
+
+    <SecurityGroupPermission groupId="ASSET_ERP_ADMIN" permissionId="ASSETERP_ADMIN" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_MANAGER" permissionId="ASSETERP_VIEW" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_MANAGER" permissionId="ASSETERP_CREATE" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_MANAGER" permissionId="ASSETERP_UPDATE" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_MANAGER" permissionId="ASSETERP_APPROVE" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_ACCOUNTANT" permissionId="ASSETERP_VIEW" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_ACCOUNTANT" permissionId="ASSETERP_ACCOUNTING" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_MAINT" permissionId="ASSETERP_VIEW" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_MAINT" permissionId="ASSETERP_MAINT_VIEW" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_MAINT" permissionId="ASSETERP_MAINT_UPDATE" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_CUSTODIAN" permissionId="ASSETERP_VIEW" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="ASSET_ERP_VIEWER" permissionId="ASSETERP_VIEW" fromDate="2001-05-13 12:00:00.0"/>
+
+    <SecurityGroupPermission groupId="SUPER" permissionId="ASSETERP_ADMIN" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="SUPER" permissionId="ASSETERP_ACCOUNTING" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="FULLADMIN" permissionId="ASSETERP_ADMIN" fromDate="2001-05-13 12:00:00.0"/>
+    <SecurityGroupPermission groupId="FULLADMIN" permissionId="ASSETERP_ACCOUNTING" fromDate="2001-05-13 12:00:00.0"/>
+
+    <UserLoginSecurityGroup userLoginId="admin" groupId="ASSET_ERP_ADMIN" fromDate="2001-01-01 12:00:00.0"/>
+</entity-engine-xml>

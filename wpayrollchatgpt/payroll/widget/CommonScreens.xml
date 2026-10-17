@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Widget-Screen" 
+        xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <!-- ==================== -->
+    <!-- 1. MAIN DECORATOR WITH MENU SETUP -->
+    <!-- ==================== -->
+    <screen name="main-decorator">
+        <section>
+            <actions>
+                <!-- CRITICAL: These must run for menus to show -->
+                <property-map resource="PayrollUiLabels" map-name="uiLabelMap" global="true"/>
+                <property-map resource="CommonUiLabels" map-name="uiLabelMap" global="true"/>
+                
+                <!-- Set application context - REQUIRED FOR MENUS -->
+                <set field="activeApp" value="payroll" global="true"/>
+                <set field="applicationTitle" from-field="uiLabelMap.PayrollApplication" global="true"/>
+                
+                <!-- MENU SETUP - THESE ARE ESSENTIAL -->
+                <set field="applicationMenuName" value="MainAppBar" global="true"/>
+                <set field="applicationMenuLocation" value="component://payroll/widget/PayrollMenus.xml" global="true"/>
+            </actions>
+            <widgets>
+                <!-- Include GlobalDecorator which handles menu rendering -->
+                <include-screen name="GlobalDecorator" location="component://common/widget/CommonScreens.xml"/>
+            </widgets>
+        </section>
+    </screen>
+
+    <!-- ==================== -->
+    <!-- 2. PAYROLL COMMON DECORATOR -->
+    <!-- ==================== -->
+    <screen name="PayrollCommonDecorator">
+        <section>
+            <actions>
+                <!-- Set which decorator to use -->
+                <set field="mainDecoratorLocation" value="component://payroll/widget/CommonScreens.xml" global="false"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <!-- Your screen content goes here -->
+                        <decorator-section-include name="body"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <!-- ==================== -->
+    <!-- 3. COMMON APP DECORATOR -->
+    <!-- ==================== -->
+    <screen name="CommonAppDecorator">
+        <section>
+            <actions>
+                <!-- Set which decorator to use -->
+                <set field="mainDecoratorLocation" value="component://payroll/widget/CommonScreens.xml" global="false"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <!-- Your screen content goes here -->
+                        <decorator-section-include name="body"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+</screens>

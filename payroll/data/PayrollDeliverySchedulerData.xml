@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ===================================================== -->
+    <!-- Recurrence: every 2 minutes -->
+    <!-- ===================================================== -->
+
+    <RecurrenceInfo recurrenceInfoId="PAY_EMQ_REC_2MIN"
+                    startDateTime="2026-01-01 00:00:00.0"
+                    recurrenceRule="FREQ=MINUTELY;INTERVAL=2"
+                    recurrenceCount="-1"
+                    recurrenceTimeZone="UTC"/>
+
+    <RecurrenceInfo recurrenceInfoId="PAY_SMQ_REC_2MIN"
+                    startDateTime="2026-01-01 00:00:00.0"
+                    recurrenceRule="FREQ=MINUTELY;INTERVAL=2"
+                    recurrenceCount="-1"
+                    recurrenceTimeZone="UTC"/>
+
+    <!-- ===================================================== -->
+    <!-- Email Queue Worker Job -->
+    <!-- service: processPayrollEmailQueue -->
+    <!-- Inputs: maxItems, baseUrl -->
+    <!-- ===================================================== -->
+
+    <JobSandbox jobId="PAY_EMQ_JOB"
+                jobName="Payroll Email Queue Worker"
+                serviceName="processPayrollEmailQueue"
+                statusId="SERVICE_PENDING"
+                runTime="2026-01-01 00:00:05.0"
+                recurrenceInfoId="PAY_EMQ_REC_2MIN"
+                runAsUser="system"
+                maxRecurrenceCount="-1"
+                currentRecurrenceCount="0"/>
+
+    <!-- Optional: service context parameters for email worker -->
+    <!-- Note: some OFBiz installs support jobDataMap / runtimeData. If your DB has JobSandboxData or runtimeDataId,
+         tell me your JobSandbox entity fields and I'll generate the exact compatible rows. -->
+
+    <!-- ===================================================== -->
+    <!-- SMS Queue Worker Job -->
+    <!-- service: processPayrollSmsQueue -->
+    <!-- Inputs: maxItems -->
+    <!-- ===================================================== -->
+
+    <JobSandbox jobId="PAY_SMQ_JOB"
+                jobName="Payroll SMS Queue Worker"
+                serviceName="processPayrollSmsQueue"
+                statusId="SERVICE_PENDING"
+                runTime="2026-01-01 00:00:10.0"
+                recurrenceInfoId="PAY_SMQ_REC_2MIN"
+                runAsUser="system"
+                maxRecurrenceCount="-1"
+                currentRecurrenceCount="0"/>
+
+</entity-engine-xml>

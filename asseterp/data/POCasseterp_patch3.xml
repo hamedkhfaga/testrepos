@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    POCasseterp_patch3.xml
+    ─────────────────────────────────────────────────────────────────────────────
+    Fix: OFBiz standard accounting/ListFixedAssets screen throws
+         "Depreciation method not found" for any asset that has no
+         FixedAssetDepMethod row pointing to an OFBiz CustomMethod.
+
+    Root cause: asseterpRegisterAsset did not auto-create this row.
+    Affected:   asset 10000 (laptop) and any future manually created assets.
+
+    This patch adds a FixedAssetDepMethod record linking asset 10000 to the
+    OFBiz built-in STR_LINE_DEP_FORMULA (Straight Line) so the standard
+    calculateFixedAssetDepreciation service can run without error.
+
+    PK = (depreciationCustomMethodId, fixedAssetId) — safe to re-import (upsert).
+    ─────────────────────────────────────────────────────────────────────────────
+-->
+<entity-engine-xml>
+
+    <!-- REMOVED (2026-07-15): the FixedAssetDepMethod row for asset "10000"
+         referenced an asset created at RUNTIME through the UI, not by demo
+         data — on a clean database it violates FK FIXDAST_DM_FXAST and aborts
+         the whole data load. Runtime-created records must never be baked into
+         seed/demo files. If a registered asset needs the standard dep-method
+         link, create it at runtime (createFixedAssetDepMethod) after the asset
+         exists. -->
+
+</entity-engine-xml>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================================================= -->
+    <!-- PAYROLL ACCOUNTING: STATUS TYPES + ITEMS (<=20 chars) -->
+    <!-- ========================================================= -->
+
+    <!-- Pattern control -->
+    <StatusType statusTypeId="PAY_ACCT_PAT" description="Payroll Accounting Pattern"/>
+    <StatusItem statusId="PAT_GL"  statusTypeId="PAY_ACCT_PAT" description="Pattern A - GL Posting" sequenceId="10"/>
+    <StatusItem statusId="PAT_PAY" statusTypeId="PAY_ACCT_PAT" description="Pattern B - PayRun Payment/Invoice" sequenceId="20"/>
+
+    <!-- Posting level -->
+    <StatusType statusTypeId="PAY_POST_LVL" description="Payroll Posting Level"/>
+    <StatusItem statusId="LVL_SUM" statusTypeId="PAY_POST_LVL" description="Summary Posting" sequenceId="10"/>
+    <StatusItem statusId="LVL_EMP" statusTypeId="PAY_POST_LVL" description="Per Employee Posting" sequenceId="20"/>
+
+    <!-- Component types (what you map to GL accounts) -->
+    <StatusType statusTypeId="PAY_CMP_TYP" description="Payroll Accounting Component Type"/>
+    <StatusItem statusId="CMP_BASIC" statusTypeId="PAY_CMP_TYP" description="Basic Salary" sequenceId="10"/>
+    <StatusItem statusId="CMP_OT"    statusTypeId="PAY_CMP_TYP" description="Overtime" sequenceId="20"/>
+    <StatusItem statusId="CMP_ALW"   statusTypeId="PAY_CMP_TYP" description="Allowances" sequenceId="30"/>
+    <StatusItem statusId="CMP_BON"   statusTypeId="PAY_CMP_TYP" description="Bonuses" sequenceId="40"/>
+    <StatusItem statusId="CMP_TAX"   statusTypeId="PAY_CMP_TYP" description="Income Tax" sequenceId="50"/>
+    <StatusItem statusId="CMP_SS"    statusTypeId="PAY_CMP_TYP" description="Social Security" sequenceId="60"/>
+    <StatusItem statusId="CMP_LOAN"  statusTypeId="PAY_CMP_TYP" description="Loan Deductions" sequenceId="70"/>
+    <StatusItem statusId="CMP_NET"   statusTypeId="PAY_CMP_TYP" description="Net Pay" sequenceId="80"/>
+
+    <!-- Pattern A posting status -->
+    <StatusType statusTypeId="PAY_POST_STS" description="Payroll Accounting Posting Status"/>
+    <StatusItem statusId="PAC_NEW"  statusTypeId="PAY_POST_STS" description="New" sequenceId="10"/>
+    <StatusItem statusId="PAC_POST" statusTypeId="PAY_POST_STS" description="Posted" sequenceId="20"/>
+    <StatusItem statusId="PAC_ERR"  statusTypeId="PAY_POST_STS" description="Error" sequenceId="30"/>
+    <StatusItem statusId="PAC_REV"  statusTypeId="PAY_POST_STS" description="Reversed" sequenceId="40"/>
+
+    <!-- Pattern B PayRun status -->
+    <StatusType statusTypeId="PAY_RUN_STS" description="Payroll PayRun Status"/>
+    <StatusItem statusId="PRN_NEW"  statusTypeId="PAY_RUN_STS" description="New" sequenceId="10"/>
+    <StatusItem statusId="PRN_GEN"  statusTypeId="PAY_RUN_STS" description="Generated" sequenceId="20"/>
+    <StatusItem statusId="PRN_SENT" statusTypeId="PAY_RUN_STS" description="Sent" sequenceId="30"/>
+    <StatusItem statusId="PRN_ERR"  statusTypeId="PAY_RUN_STS" description="Error" sequenceId="40"/>
+
+    <!-- Pattern B PayRun item status -->
+    <StatusType statusTypeId="PAY_ITEM_STS" description="Payroll PayRun Item Status"/>
+    <StatusItem statusId="PRI_NEW" statusTypeId="PAY_ITEM_STS" description="New" sequenceId="10"/>
+    <StatusItem statusId="PRI_GEN" statusTypeId="PAY_ITEM_STS" description="Generated" sequenceId="20"/>
+    <StatusItem statusId="PRI_ERR" statusTypeId="PAY_ITEM_STS" description="Error" sequenceId="30"/>
+
+</entity-engine-xml>

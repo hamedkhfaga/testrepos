@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ===================================================== -->
+    <!-- Payroll Scheduler Router -->
+    <!-- UI calls these stable service names -->
+    <!-- Router selects Pattern A or Pattern B -->
+    <!-- ===================================================== -->
+
+    <service name="runMonthlyPayroll"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerRouterServices"
+             invoke="runMonthlyPayroll"
+             auth="true"
+             use-transaction="false">
+        <description>Router: runMonthlyPayroll â†’ calls A or B based on selected pattern</description>
+
+        <!-- Router selector -->
+        <attribute name="schedulerPattern" type="String" mode="IN" optional="true"/>
+        <!-- A|B; if empty router uses system property default -->
+
+        <!-- Pass-through parameters -->
+        <attribute name="payrollPeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="valuationCurrencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="exchangeRate" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="accountingPostOptionId" type="String" mode="IN" optional="true"/>
+        <attribute name="vendorPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="invoiceTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="bankTransferConfigId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodYear" type="Long" mode="IN" optional="true"/>
+        <attribute name="periodMonth" type="Long" mode="IN" optional="true"/>
+        <attribute name="reportTypeId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <!-- Outputs -->
+        <attribute name="okCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="nextRunTime" type="Timestamp" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="processPayrollEmailQueueWorker"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerRouterServices"
+             invoke="processPayrollEmailQueueWorker"
+             auth="true"
+             use-transaction="false">
+        <description>Router: email worker â†’ calls A or B</description>
+        <attribute name="schedulerPattern" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollSmsQueueWorker"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerRouterServices"
+             invoke="processPayrollSmsQueueWorker"
+             auth="true"
+             use-transaction="false">
+        <description>Router: SMS worker â†’ calls A or B</description>
+        <attribute name="schedulerPattern" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollExportQueueWorker"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerRouterServices"
+             invoke="processPayrollExportQueueWorker"
+             auth="true"
+             use-transaction="false">
+        <description>Router: export worker â†’ calls A or B</description>
+        <attribute name="schedulerPattern" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollComplianceDailyWorker"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerRouterServices"
+             invoke="processPayrollComplianceDailyWorker"
+             auth="true"
+             use-transaction="false">
+        <description>Router: compliance worker â†’ calls A or B</description>
+        <attribute name="schedulerPattern" type="String" mode="IN" optional="true"/>
+        <attribute name="periodYear" type="Long" mode="IN" optional="true"/>
+        <attribute name="periodMonth" type="Long" mode="IN" optional="true"/>
+        <attribute name="reportTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+</services>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- Device Type enum group -->
+    <EnumerationType enumTypeId="BIO_DEV_TYPE"
+                     description="Biometric Device Type"/>
+
+    <!-- Device types -->
+    <Enumeration enumId="FP_SCAN"
+                 enumTypeId="BIO_DEV_TYPE"
+                 description="Fingerprint Scanner"/>
+
+</entity-engine-xml>

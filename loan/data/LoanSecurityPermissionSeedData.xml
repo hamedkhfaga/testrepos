@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<entity-engine-xml>
+    <SecurityPermission description="ALL operations in the Loan Component." permissionId="LOAN_ADMIN" />
+    <SecurityPermission description="Create operations in the Loan Component." permissionId="LOAN_CREATE" />
+    <SecurityPermission description="Delete operations in the Loan Component." permissionId="LOAN_DELETE" />
+    <SecurityPermission description="Update operations in the Loan Component." permissionId="LOAN_UPDATE" />
+    <SecurityPermission description="View operations in the Loan Component." permissionId="LOAN_VIEW" />
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="SUPER" permissionId="LOAN_ADMIN" />
+</entity-engine-xml>

@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ================================================= -->
+    <!-- Payroll REST Facade (Wrapper Services) -->
+    <!-- ================================================= -->
+
+    <service name="createPayrollAssignmentRest"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollRestServices"
+             invoke="createPayrollAssignmentRest"
+             auth="true" export="true">
+        <description>REST: Create Employee Payroll Assignment</description>
+    </service>
+
+    <service name="processPayrollRunRest"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollRestServices"
+             invoke="processPayrollRunRest"
+             auth="true" export="true"/>
+
+    <service name="approvePayrollRunRest"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollRestServices"
+             invoke="approvePayrollRunRest"
+             auth="true" export="true"/>
+
+    <service name="generatePayslipPdfRest"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollRestServices"
+             invoke="generatePayslipPdfRest"
+             auth="true" export="true">
+        <attribute name="pdfFile" type="String" mode="OUT"/>
+    </service>
+
+<service name="downloadPayslipByToken"
+         engine="java"
+         location="org.apache.ofbiz.payroll.PayslipDeliveryServices"
+         invoke="downloadPayslipByToken"
+         auth="false" export="true"/>
+
+ </service>
+
+<service name="getPayrollRetroBatchList"
+         engine="java"
+         location="org.apache.ofbiz.payroll.PayrollRetroQueryServices"
+         invoke="getPayrollRetroBatchList"
+         auth="true">
+    <description>List retro payroll batches (with optional filters)</description>
+    <attribute name="list" type="List" mode="OUT"/>
+</service>
+
+<service name="getPayrollRetroDeltaList"
+         engine="java"
+         location="org.apache.ofbiz.payroll.PayrollRetroQueryServices"
+         invoke="getPayrollRetroDeltaList"
+         auth="true">
+    <description>List retro delta lines for a batch</description>
+    <attribute name="list" type="List" mode="OUT"/>
+</service>
+
+
+</services>

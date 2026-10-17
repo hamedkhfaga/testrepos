@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://ofbiz.apache.org/Widget-Menu"
+       xsi:schemaLocation="http://ofbiz.apache.org/Widget-Menu http://ofbiz.apache.org/dtds/widget-menu.xsd">
+
+    <menu name="MainAppBar"
+          title="${uiLabelMap['Fingerprint.ModuleTitle']}"
+          extends="CommonAppBarMenu"
+          extends-resource="component://common/widget/CommonMenus.xml">
+
+        <menu-item name="fpHome" title="${uiLabelMap['Common.View']}">
+            <link target="FingerprintHome"/>
+        </menu-item>
+
+        <menu-item name="fpDevices" title="${uiLabelMap['Entity.BiometricDevice']}">
+            <link target="BiometricDeviceList"/>
+        </menu-item>
+
+        <menu-item name="fpDeviceUsers" title="${uiLabelMap['Entity.BiometricDeviceUser']}">
+            <link target="BiometricDeviceUserList"/>
+        </menu-item>
+
+        <menu-item name="fpLogs" title="${uiLabelMap['Entity.BiometricEventLog']}">
+            <link target="BiometricEventLogList"/>
+        </menu-item>
+
+        <menu-item name="fpShifts" title="${uiLabelMap['Entity.WorkShift']}">
+            <link target="WorkShiftList"/>
+        </menu-item>
+
+        <menu-item name="fpPolicies" title="${uiLabelMap['Entity.AttendancePolicy']}">
+            <link target="AttendancePolicyList"/>
+        </menu-item>
+
+        <menu-item name="fpDaySummary" title="${uiLabelMap['Entity.AttendanceDaySummary']}">
+            <link target="AttendanceDaySummaryList"/>
+        </menu-item>
+
+        <menu-item name="fpExceptions" title="${uiLabelMap['Entity.AttendanceException']}">
+            <link target="AttendanceExceptionList"/>
+        </menu-item>
+        <menu-item name="BiometricDashboard" title="${uiLabelMap['Entity.BiometricDashboard']}">
+            <link target="BiometricDashboard"/>
+        </menu-item>
+    </menu>
+
+</menus>

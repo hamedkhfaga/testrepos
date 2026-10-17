@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================================================= -->
+    <!-- PAYROLL ACCTG MAP (Demo) - Child depends on Config + GL -->
+    <!-- ========================================================= -->
+
+    <!-- Basic Salary: Debit Salary Expense, Credit Payroll Payable -->
+    <PayrollAcctgMap payrollAcctgConfigId="PACFG_001"
+                     componentTypeStatusId="CMP_BASIC"
+                     debitGlAccountId="PAY_SAL_EXP"
+                     creditGlAccountId="PAY_NET_PAY"
+                     fromDate="2026-01-01 00:00:00.000"/>
+
+    <!-- Overtime -->
+    <PayrollAcctgMap payrollAcctgConfigId="PACFG_001"
+                     componentTypeStatusId="CMP_OT"
+                     debitGlAccountId="PAY_OT_EXP"
+                     creditGlAccountId="PAY_NET_PAY"
+                     fromDate="2026-01-01 00:00:00.000"/>
+
+    <!-- Income Tax: Debit Payroll Payable, Credit Tax Payable -->
+    <PayrollAcctgMap payrollAcctgConfigId="PACFG_001"
+                     componentTypeStatusId="CMP_TAX"
+                     debitGlAccountId="PAY_NET_PAY"
+                     creditGlAccountId="PAY_TAX_PAY"
+                     fromDate="2026-01-01 00:00:00.000"/>
+
+    <!-- Social Security: Debit Payroll Payable, Credit SS Payable -->
+    <PayrollAcctgMap payrollAcctgConfigId="PACFG_001"
+                     componentTypeStatusId="CMP_SS"
+                     debitGlAccountId="PAY_NET_PAY"
+                     creditGlAccountId="PAY_SS_PAY"
+                     fromDate="2026-01-01 00:00:00.000"/>
+
+</entity-engine-xml>

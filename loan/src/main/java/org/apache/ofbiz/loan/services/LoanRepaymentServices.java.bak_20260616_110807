@@ -1,0 +1,1416 @@
+package org.apache.ofbiz.loan.services;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+
+import org.apache.ofbiz.base.util.Debug;
+import org.apache.ofbiz.base.util.UtilDateTime;
+import org.apache.ofbiz.base.util.UtilMisc;
+import org.apache.ofbiz.base.util.UtilValidate;
+import org.apache.ofbiz.entity.Delegator;
+import org.apache.ofbiz.entity.GenericEntityException;
+import org.apache.ofbiz.entity.GenericValue;
+import org.apache.ofbiz.entity.condition.EntityCondition;
+import org.apache.ofbiz.entity.condition.EntityOperator;
+import org.apache.ofbiz.entity.util.EntityQuery;
+import org.apache.ofbiz.service.DispatchContext;
+import org.apache.ofbiz.service.LocalDispatcher;
+import org.apache.ofbiz.service.ServiceUtil;
+import org.apache.ofbiz.payroll.util.PayrollGovernanceUtil;
+
+public final class LoanRepaymentServices {
+    public static final String MODULE = LoanRepaymentServices.class.getName();
+    public static final String SCH_PARTIAL = "LNS_PARTIAL";
+    public static final String SCH_PAID = "LNS_PAID";
+    public static final String REP_POSTED = "LNR_POSTED";
+    public static final String LOAN_ACTIVE = "LN_ACTIVE";
+    public static final String LOAN_PARTIAL = "LN_PARTIAL";
+    public static final String LOAN_CLOSED = "LN_CLOSED";
+
+    private LoanRepaymentServices() {}
+
+    
+public static Map<String, Object> recordPartyLoanRepayment(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String loanId = (String) context.get("loanId");
+            String loanScheduleId = (String) context.get("loanScheduleId");
+            BigDecimal amountApplied = (BigDecimal) context.get("amountApplied");
+            Timestamp repaymentDate = (Timestamp) context.get("repaymentDate");
+            String sourceEnumId = (String) context.get("repaymentSourceEnumId");
+            String paymentId = (String) context.get("paymentId");
+            String createPaymentFlag = normalizeFlag((String) context.get("createPaymentFlag"));
+            String paymentTypeId = trimToNull((String) context.get("paymentTypeId"));
+            String paymentMethodTypeId = trimToNull((String) context.get("paymentMethodTypeId"));
+            String paymentMethodId = trimToNull((String) context.get("paymentMethodId"));
+            String payrollRunId = (String) context.get("payrollRunId");
+            String payrollResultId = (String) context.get("payrollResultId");
+            String finAccountId = trimToNull((String) context.get("finAccountId"));
+            String organizationPartyId = trimToNull((String) context.get("organizationPartyId"));
+            String remarks = (String) context.get("remarks");
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+            if (amountApplied == null || amountApplied.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("amountApplied must be greater than zero");
+            }
+            if (repaymentDate == null) {
+                repaymentDate = UtilDateTime.nowTimestamp();
+            }
+            if (UtilValidate.isEmpty(sourceEnumId)) {
+                sourceEnumId = "LNRS_MANUAL";
+            }
+            if ("LNRS_PAYROLL".equals(sourceEnumId) && UtilValidate.isEmpty(createPaymentFlag)) {
+                createPaymentFlag = "Y";
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+            if (UtilValidate.isEmpty(organizationPartyId)) {
+                organizationPartyId = loan.getString("organizationPartyId");
+            }
+            if (UtilValidate.isEmpty(finAccountId)) {
+                finAccountId = trimToNull(loan.getString("finAccountId"));
+            }
+
+            if ("LNRS_PAYROLL".equals(sourceEnumId)) {
+                try {
+                    ensurePayrollRunEditableForLoanAction(delegator, payrollRunId);
+                } catch (Exception e) {
+                    logLoanAudit(dctx, context,
+                            "PAY_ACT_LOAN_RECORD",
+                            "ACT_FAIL",
+                            "recordPartyLoanRepayment blocked: " + e.getMessage());
+                    throw e;
+                }
+            }
+
+            Map<String, Object> statusValidation = validateLoanStatus(
+                    loan, "recordPartyLoanRepayment", LOAN_ACTIVE, LOAN_PARTIAL);
+            if (ServiceUtil.isError(statusValidation)) {
+                return statusValidation;
+            }
+
+            if ("LNRS_PAYROLL".equals(sourceEnumId)
+                    && !"Y".equalsIgnoreCase(loan.getString("payrollEligibleFlag"))) {
+                return ServiceUtil.returnError(
+                        "Payroll-source repayment is not allowed for loanId: "
+                                + loanId + " because payrollEligibleFlag != Y");
+            }
+
+            BigDecimal loanOutstandingBefore = safeAmount(loan.getBigDecimal("outstandingAmount"));
+            if (loanOutstandingBefore.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("Loan has no outstanding amount available for repayment: " + loanId);
+            }
+
+            List<GenericValue> dueRows;
+            if (UtilValidate.isNotEmpty(loanScheduleId)) {
+                GenericValue targetedRow = EntityQuery.use(delegator)
+                        .from("PartyLoanSchedule")
+                        .where("loanScheduleId", loanScheduleId)
+                        .queryOne();
+
+                if (targetedRow == null) {
+                    return ServiceUtil.returnError("Loan schedule row not found: " + loanScheduleId);
+                }
+                if (!loanId.equals(targetedRow.getString("loanId"))) {
+                    return ServiceUtil.returnError("loanScheduleId does not belong to loanId. loanId="
+                            + loanId + ", loanScheduleId=" + loanScheduleId);
+                }
+                if (safeAmount(targetedRow.getBigDecimal("outstandingAmount")).compareTo(BigDecimal.ZERO) <= 0) {
+                    return ServiceUtil.returnError("Loan schedule row has no outstanding amount: " + loanScheduleId);
+                }
+
+                dueRows = new ArrayList<GenericValue>();
+                dueRows.add(targetedRow);
+            } else {
+                dueRows = resolveRepaymentTargetRows(delegator, loanId, null);
+                if (UtilValidate.isEmpty(dueRows)) {
+                    return ServiceUtil.returnError(
+                            "No outstanding repayment schedule rows were available for allocation for loanId: " + loanId);
+                }
+            }
+
+            if ("LNRS_PAYROLL".equals(sourceEnumId)
+                    && UtilValidate.isNotEmpty(payrollRunId)
+                    && UtilValidate.isNotEmpty(payrollResultId)) {
+
+                GenericValue duplicateRepayment = findExistingPayrollRepayment(
+                        delegator,
+                        loanId,
+                        loanScheduleId,
+                        payrollRunId,
+                        payrollResultId
+                );
+
+                if (duplicateRepayment != null) {
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put("loanId", loanId);
+                    data.put("loanScheduleId", duplicateRepayment.getString("loanScheduleId"));
+                    data.put("requestedAmountApplied", amountApplied);
+                    data.put("totalApplied", BigDecimal.ZERO);
+                    data.put("unappliedAmount", amountApplied);
+                    data.put("allocationCount", Integer.valueOf(0));
+                    data.put("repaymentDate", duplicateRepayment.getTimestamp("repaymentDate"));
+                    data.put("repaymentSourceEnumId", sourceEnumId);
+                    data.put("paymentId", duplicateRepayment.getString("paymentId"));
+                    data.put("payrollRunId", payrollRunId);
+                    data.put("payrollResultId", payrollResultId);
+                    data.put("repaymentRecordId", duplicateRepayment.getString("loanRepaymentId"));
+                    data.put("duplicateSkipped", "Y");
+                    data.put("loanStatusIdAfter", loan.getString("loanStatusId"));
+                    data.put("outstandingAmountAfter", loanOutstandingBefore);
+                    return buildStandardSuccess("Duplicate payroll repayment skipped", data);
+                }
+            }
+
+            if (UtilValidate.isNotEmpty(paymentId) && "Y".equals(createPaymentFlag)) {
+                return ServiceUtil.returnError("Provide either paymentId or createPaymentFlag=Y, but not both");
+            }
+
+            if (UtilValidate.isNotEmpty(paymentId)) {
+                GenericValue payment = validateExistingPayment(delegator, paymentId);
+                if (payment == null) {
+                    return ServiceUtil.returnError("Invalid paymentId; Payment not found: " + paymentId);
+                }
+            } else if ("Y".equals(createPaymentFlag)) {
+                String createdPaymentId = createRepaymentPayment(
+                        dctx,
+                        loan,
+                        amountApplied,
+                        repaymentDate,
+                        sourceEnumId,
+                        paymentTypeId,
+                        paymentMethodTypeId,
+                        paymentMethodId,
+                        payrollRunId,
+                        payrollResultId,
+                        remarks,
+                        userLogin
+                );
+                if (UtilValidate.isEmpty(createdPaymentId)) {
+                    return ServiceUtil.returnError("Failed to create OFBiz Payment for loan repayment");
+                }
+                paymentId = createdPaymentId;
+            }
+
+            BigDecimal requestedAmount = amountApplied;
+            BigDecimal remainingApply = requestedAmount.min(loanOutstandingBefore);
+            BigDecimal totalApplied = BigDecimal.ZERO;
+            int allocationCount = 0;
+            String lastAppliedLoanScheduleId = null;
+
+            for (GenericValue row : dueRows) {
+                BigDecimal outstanding = safeAmount(row.getBigDecimal("outstandingAmount"));
+                if (outstanding.compareTo(BigDecimal.ZERO) <= 0) {
+                    continue;
+                }
+                if (remainingApply.compareTo(BigDecimal.ZERO) <= 0) {
+                    break;
+                }
+
+                BigDecimal applied = remainingApply.min(outstanding);
+                if (applied.compareTo(BigDecimal.ZERO) <= 0) {
+                    continue;
+                }
+
+                applyToScheduleRow(
+                        delegator,
+                        loan,
+                        row,
+                        applied,
+                        repaymentDate,
+                        sourceEnumId,
+                        paymentId,
+                        payrollRunId,
+                        payrollResultId,
+                        remarks,
+                        userLogin != null ? userLogin.getString("userLoginId") : null
+                );
+
+                remainingApply = remainingApply.subtract(applied);
+                totalApplied = totalApplied.add(applied);
+                allocationCount++;
+                lastAppliedLoanScheduleId = row.getString("loanScheduleId");
+            }
+
+            if (allocationCount == 0 || totalApplied.compareTo(BigDecimal.ZERO) <= 0) {
+                if (UtilValidate.isNotEmpty(loanScheduleId)) {
+                    return ServiceUtil.returnError("Loan schedule row has no outstanding amount: " + loanScheduleId);
+                }
+                return ServiceUtil.returnError(
+                        "No outstanding repayment schedule rows were available for allocation for loanId: " + loanId);
+            }
+
+            refreshLoanTotals(delegator, loanId);
+
+            GenericValue refreshedLoan = requireLoan(delegator, loanId);
+
+            if (UtilValidate.isNotEmpty(paymentId)) {
+                postLoanRepaymentFinancials(
+                        dctx,
+                        loan,
+                        paymentId,
+                        totalApplied,
+                        repaymentDate,
+                        sourceEnumId,
+                        organizationPartyId,
+                        finAccountId,
+                        payrollRunId,
+                        payrollResultId,
+                        remarks,
+                        userLogin
+                );
+            }
+
+            BigDecimal unappliedAmount = requestedAmount.subtract(totalApplied);
+            if (unappliedAmount.compareTo(BigDecimal.ZERO) < 0) {
+                unappliedAmount = BigDecimal.ZERO;
+            }
+
+            BigDecimal outstandingAmountAfter = safeAmount(refreshedLoan.getBigDecimal("outstandingAmount"));
+            String loanStatusIdAfter = refreshedLoan.getString("loanStatusId");
+
+            String repaymentRecordId = null;
+            GenericValue latestRepayment = EntityQuery.use(delegator)
+                    .from("PartyLoanRepayment")
+                    .where("loanId", loanId)
+                    .orderBy("-createdStamp")
+                    .queryFirst();
+            if (latestRepayment != null) {
+                repaymentRecordId = latestRepayment.getString("loanRepaymentId");
+            }
+
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("loanId", loanId);
+            data.put("loanScheduleId", UtilValidate.isNotEmpty(loanScheduleId) ? loanScheduleId : lastAppliedLoanScheduleId);
+            data.put("requestedAmountApplied", requestedAmount);
+            data.put("totalApplied", totalApplied);
+            data.put("unappliedAmount", unappliedAmount);
+            data.put("allocationCount", Integer.valueOf(allocationCount));
+            data.put("repaymentDate", repaymentDate);
+            data.put("repaymentSourceEnumId", sourceEnumId);
+            data.put("paymentId", org.apache.ofbiz.base.util.UtilValidate.isNotEmpty(paymentId) ? paymentId : "");
+            data.put("createPaymentFlag", createPaymentFlag);
+            data.put("payrollRunId", org.apache.ofbiz.base.util.UtilValidate.isNotEmpty(payrollRunId) ? payrollRunId : "");
+            data.put("payrollResultId", org.apache.ofbiz.base.util.UtilValidate.isNotEmpty(payrollResultId) ? payrollResultId : "");
+            data.put("repaymentRecordId", repaymentRecordId);
+            data.put("outstandingAmountAfter", outstandingAmountAfter);
+            data.put("loanStatusIdAfter", loanStatusIdAfter);
+
+            return buildStandardSuccess("Loan repayment recorded successfully", data);
+
+        } catch (Exception e) {
+            Debug.logError(e, "Error recording loan repayment", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+
+    public static Map<String, Object> captureLoanRepaymentPaymentV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String loanId = (String) context.get("loanId");
+            String loanScheduleId = trimToNull((String) context.get("loanScheduleId"));
+            String invoiceId = trimToNull((String) context.get("invoiceId"));
+            String organizationPartyId = trimToNull((String) context.get("organizationPartyId"));
+            BigDecimal amountApplied = (BigDecimal) context.get("amountApplied");
+            Timestamp repaymentDate = (Timestamp) context.get("repaymentDate");
+            String repaymentSourceEnumId = trimToNull((String) context.get("repaymentSourceEnumId"));
+            String remarks = (String) context.get("remarks");
+            String paymentId = trimToNull((String) context.get("paymentId"));
+            String createPaymentFlag = (String) context.get("createPaymentFlag");
+            String paymentTypeId = trimToNull((String) context.get("paymentTypeId"));
+            String paymentMethodTypeId = trimToNull((String) context.get("paymentMethodTypeId"));
+            String paymentMethodId = trimToNull((String) context.get("paymentMethodId"));
+            String payrollRunId = (String) context.get("payrollRunId");
+            String payrollResultId = (String) context.get("payrollResultId");
+            String finAccountId = trimToNull((String) context.get("finAccountId"));
+            String financeProcessingMode = trimToNull((String) context.get("financeProcessingMode"));
+            String paymentTargetStatusId = trimToNull((String) context.get("paymentTargetStatusId"));
+            String invoiceApprovedStatusId = trimToNull((String) context.get("invoiceApprovedStatusId"));
+            String invoiceReadyStatusId = trimToNull((String) context.get("invoiceReadyStatusId"));
+            String invoicePaidStatusId = trimToNull((String) context.get("invoicePaidStatusId"));
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+            if (UtilValidate.isEmpty(invoiceId)) {
+                return ServiceUtil.returnError("invoiceId is required");
+            }
+            if (amountApplied == null || amountApplied.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("amountApplied must be greater than zero");
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+            Map<String, Object> statusValidation = validateLoanStatus(
+                    loan, "captureLoanRepaymentPaymentV1", LOAN_ACTIVE, LOAN_PARTIAL);
+            if (ServiceUtil.isError(statusValidation)) {
+                return statusValidation;
+            }
+            if (UtilValidate.isEmpty(organizationPartyId)) {
+                organizationPartyId = loan.getString("organizationPartyId");
+            }
+            if (UtilValidate.isEmpty(organizationPartyId)) {
+                return ServiceUtil.returnError("organizationPartyId is required");
+            }
+            if (!organizationPartyId.equals(loan.getString("organizationPartyId"))) {
+                return ServiceUtil.returnError("organizationPartyId mismatch for loanId: " + loanId);
+            }
+
+            GenericValue invoice = requireRepaymentInvoiceForLoan(
+                    delegator, loan, invoiceId, organizationPartyId, loanScheduleId);
+
+            GenericValue existingApp = findExistingPaymentApplicationForInvoice(delegator, invoiceId);
+            if (existingApp != null) {
+                GenericValue refreshedLoan = requireLoan(delegator, loanId);
+                Map<String, Object> result = ServiceUtil.returnSuccess(
+                        "Loan repayment payment already captured for invoice; existing application reused");
+                result.put("loanId", loanId);
+                result.put("loanScheduleId", loanScheduleId);
+                result.put("repaymentRecordId", null);
+                result.put("paymentId", existingApp.getString("paymentId"));
+                result.put("invoiceId", invoiceId);
+                result.put("paymentApplicationId", existingApp.getString("paymentApplicationId"));
+                result.put("amountApplied", existingApp.getBigDecimal("amountApplied"));
+                result.put("paymentStatusId", fetchPaymentStatusId(delegator, existingApp.getString("paymentId")));
+                result.put("invoiceStatusId", invoice.getString("statusId"));
+                result.put("loanStatusIdAfter", refreshedLoan.getString("loanStatusId"));
+                result.put("outstandingAmountAfter", safeAmount(refreshedLoan.getBigDecimal("outstandingAmount")));
+                result.put("financeProcessingMode", UtilValidate.isNotEmpty(financeProcessingMode) ? financeProcessingMode : "FINANCE_MANAGED");
+                result.put("duplicateSkipped", "Y");
+                result.put("idempotentReplay", "Y");
+                return result;
+            }
+
+            if (UtilValidate.isEmpty(repaymentSourceEnumId)) {
+                repaymentSourceEnumId = "LNRS_MANUAL";
+            }
+            if (UtilValidate.isEmpty(createPaymentFlag) && UtilValidate.isEmpty(paymentId)) {
+                createPaymentFlag = "Y";
+            }
+            if (UtilValidate.isEmpty(financeProcessingMode)) {
+                financeProcessingMode = "FINANCE_MANAGED";
+            }
+
+            Map<String, Object> repayCtx = new HashMap<String, Object>();
+            repayCtx.put("loanId", loanId);
+            repayCtx.put("loanScheduleId", loanScheduleId);
+            repayCtx.put("amountApplied", amountApplied);
+            repayCtx.put("repaymentDate", repaymentDate);
+            repayCtx.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            repayCtx.put("remarks", remarks);
+            repayCtx.put("organizationPartyId", organizationPartyId);
+            repayCtx.put("paymentId", paymentId);
+            repayCtx.put("createPaymentFlag", createPaymentFlag);
+            repayCtx.put("paymentTypeId", paymentTypeId);
+            repayCtx.put("paymentMethodTypeId", paymentMethodTypeId);
+            repayCtx.put("paymentMethodId", paymentMethodId);
+            repayCtx.put("payrollRunId", payrollRunId);
+            repayCtx.put("payrollResultId", payrollResultId);
+            repayCtx.put("finAccountId", finAccountId);
+            repayCtx.put("billingAccountId", loan.getString("billingAccountId"));
+            repayCtx.put("financeProcessingMode", financeProcessingMode);
+            repayCtx.put("userLogin", userLogin);
+
+            Map<String, Object> repayResp = dispatcher.runSync("recordPartyLoanRepayment", repayCtx);
+            if (ServiceUtil.isError(repayResp)) {
+                return ServiceUtil.returnError(ServiceUtil.getErrorMessage(repayResp));
+            }
+
+            @SuppressWarnings("unchecked")
+            Map<String, Object> repayData = (Map<String, Object>) repayResp.get("data");
+            String resolvedPaymentId = paymentId;
+            if (repayData != null && UtilValidate.isEmpty(resolvedPaymentId)) {
+                resolvedPaymentId = trimToNull((String) repayData.get("paymentId"));
+            }
+            if (UtilValidate.isEmpty(resolvedPaymentId)) {
+                resolvedPaymentId = trimToNull((String) repayResp.get("paymentId"));
+            }
+            if (UtilValidate.isEmpty(resolvedPaymentId)) {
+                return ServiceUtil.returnError("Payment capture succeeded but returned no paymentId");
+            }
+
+            Map<String, Object> applyCtx = new HashMap<String, Object>();
+            applyCtx.put("loanId", loanId);
+            applyCtx.put("paymentId", resolvedPaymentId);
+            applyCtx.put("invoiceId", invoiceId);
+            applyCtx.put("organizationPartyId", organizationPartyId);
+            applyCtx.put("amountApplied", amountApplied);
+            if (UtilValidate.isNotEmpty(paymentTargetStatusId)) applyCtx.put("paymentTargetStatusId", paymentTargetStatusId);
+            if (UtilValidate.isNotEmpty(invoiceApprovedStatusId)) applyCtx.put("invoiceApprovedStatusId", invoiceApprovedStatusId);
+            if (UtilValidate.isNotEmpty(invoiceReadyStatusId)) applyCtx.put("invoiceReadyStatusId", invoiceReadyStatusId);
+            if (UtilValidate.isNotEmpty(invoicePaidStatusId)) applyCtx.put("invoicePaidStatusId", invoicePaidStatusId);
+            applyCtx.put("userLogin", userLogin);
+
+            Map<String, Object> applyResp = dispatcher.runSync("applyLoanRepaymentPaymentToInvoiceV1", applyCtx);
+            if (ServiceUtil.isError(applyResp)) {
+                return ServiceUtil.returnError(ServiceUtil.getErrorMessage(applyResp));
+            }
+
+            Map<String, Object> result = ServiceUtil.returnSuccess("Loan repayment payment captured and applied successfully");
+            result.put("loanId", loanId);
+            result.put("loanScheduleId", repayData != null ? repayData.get("loanScheduleId") : loanScheduleId);
+            result.put("repaymentRecordId", repayData != null ? repayData.get("repaymentRecordId") : null);
+            result.put("paymentId", resolvedPaymentId);
+            result.put("invoiceId", invoiceId);
+            result.put("paymentApplicationId", applyResp.get("paymentApplicationId"));
+            result.put("amountApplied", applyResp.get("amountApplied"));
+            result.put("paymentStatusId", applyResp.get("paymentStatusId"));
+            result.put("invoiceStatusId", applyResp.get("invoiceStatusId"));
+            result.put("loanStatusIdAfter", repayData != null ? repayData.get("loanStatusIdAfter") : null);
+            result.put("outstandingAmountAfter", repayData != null ? repayData.get("outstandingAmountAfter") : null);
+            result.put("financeProcessingMode", financeProcessingMode);
+            result.put("duplicateSkipped", "N");
+            return result;
+
+        } catch (Exception e) {
+            Debug.logError(e, "Error capturing loan repayment payment", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    public static Map<String, Object> settlePartyLoanEarly(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String loanId = (String) context.get("loanId");
+            String paymentId = (String) context.get("paymentId");
+            String createPaymentFlag = normalizeFlag((String) context.get("createPaymentFlag"));
+            String paymentTypeId = trimToNull((String) context.get("paymentTypeId"));
+            String paymentMethodTypeId = trimToNull((String) context.get("paymentMethodTypeId"));
+            String paymentMethodId = trimToNull((String) context.get("paymentMethodId"));
+            String payrollRunId = (String) context.get("payrollRunId");
+            String payrollResultId = (String) context.get("payrollResultId");
+            String remarks = (String) context.get("remarks");
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+
+            ensurePayrollRunEditableForLoanAction(delegator, payrollRunId);
+
+            Map<String, Object> statusValidation = validateLoanStatus(
+                    loan, "settlePartyLoanEarly", LOAN_ACTIVE, LOAN_PARTIAL);
+            if (ServiceUtil.isError(statusValidation)) {
+                return statusValidation;
+            }
+
+            List<GenericValue> dueRows = EntityQuery.use(delegator)
+                    .from("PartyLoanSchedule")
+                    .where("loanId", loanId)
+                    .orderBy("installmentSeqNum")
+                    .queryList();
+            if (UtilValidate.isEmpty(dueRows)) {
+                return ServiceUtil.returnError(
+                        "Loan schedule not generated for loanId: " + loanId + ". Generate schedule first.");
+            }
+
+            if (UtilValidate.isNotEmpty(paymentId)) {
+                GenericValue payment = validateExistingPayment(delegator, paymentId);
+                if (payment == null) {
+                    return ServiceUtil.returnError("Invalid paymentId; Payment not found: " + paymentId);
+                }
+            }
+
+            BigDecimal settlementAmount = loan.getBigDecimal("outstandingAmount");
+            if (settlementAmount == null) {
+                settlementAmount = BigDecimal.ZERO;
+            }
+            if (settlementAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("Loan outstandingAmount must be greater than zero for early settlement");
+            }
+
+            Map<String, Object> repayCtx = new HashMap<String, Object>();
+            for (Map.Entry<String, ?> entry : context.entrySet()) {
+                repayCtx.put(entry.getKey(), entry.getValue());
+            }
+            repayCtx.put("loanId", loanId);
+            repayCtx.put("amountApplied", settlementAmount);
+            repayCtx.put("paymentId", paymentId);
+            repayCtx.put("remarks", remarks);
+
+            Map<String, Object> repayResp = recordPartyLoanRepayment(dctx, repayCtx);
+            if (ServiceUtil.isError(repayResp)) {
+                return repayResp;
+            }
+
+            refreshLoanTotals(delegator, loanId);
+
+            loan = requireLoan(delegator, loanId);
+
+            BigDecimal outstandingAmountAfter = loan.getBigDecimal("outstandingAmount");
+            if (outstandingAmountAfter == null) {
+                outstandingAmountAfter = BigDecimal.ZERO;
+            }
+
+            String loanStatusIdAfter = loan.getString("loanStatusId");
+            if (outstandingAmountAfter.compareTo(BigDecimal.ZERO) == 0) {
+                loan.set("loanStatusId", LOAN_CLOSED);
+                loan.store();
+                loanStatusIdAfter = LOAN_CLOSED;
+            }
+
+            createLoanEvent(
+                    delegator,
+                    loanId,
+                    null,
+                    null,
+                    "LNE_EARLY_SETTLE",
+                    UtilDateTime.nowTimestamp(),
+                    userLogin != null ? userLogin.getString("userLoginId") : null,
+                    UtilValidate.isNotEmpty(remarks) ? remarks : "Loan settled early",
+                    paymentId
+            );
+
+            Integer generatedRepaymentCount = null;
+            String repaymentRecordId = null;
+
+            Object repaymentDataObj = repayResp.get("data");
+            if (repaymentDataObj instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> repaymentData = (Map<String, Object>) repaymentDataObj;
+                Object countObj = repaymentData.get("allocationCount");
+                if (countObj instanceof Integer) {
+                    generatedRepaymentCount = (Integer) countObj;
+                } else if (countObj != null) {
+                    generatedRepaymentCount = Integer.valueOf(countObj.toString());
+                }
+                repaymentRecordId = (String) repaymentData.get("repaymentRecordId");
+            }
+
+            if (generatedRepaymentCount == null) {
+                Object countObj = repayResp.get("allocationCount");
+                if (countObj instanceof Integer) {
+                    generatedRepaymentCount = (Integer) countObj;
+                } else if (countObj != null) {
+                    generatedRepaymentCount = Integer.valueOf(countObj.toString());
+                }
+            }
+            if (repaymentRecordId == null) {
+                repaymentRecordId = (String) repayResp.get("repaymentRecordId");
+            }
+
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("loanId", loanId);
+            data.put("settlementAmount", settlementAmount);
+            data.put("paymentId", org.apache.ofbiz.base.util.UtilValidate.isNotEmpty(paymentId) ? paymentId : "");
+            data.put("payrollRunId", org.apache.ofbiz.base.util.UtilValidate.isNotEmpty(payrollRunId) ? payrollRunId : "");
+            data.put("payrollResultId", org.apache.ofbiz.base.util.UtilValidate.isNotEmpty(payrollResultId) ? payrollResultId : "");
+            data.put("generatedRepaymentCount", generatedRepaymentCount);
+            data.put("repaymentRecordId", repaymentRecordId);
+            data.put("outstandingAmountAfter", outstandingAmountAfter);
+            data.put("loanStatusId", loanStatusIdAfter);
+
+            return buildStandardSuccess("Loan settled successfully", data);
+
+        } catch (Exception e) {
+            Debug.logError(e, "Error settling loan early", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+
+    public static Map<String, Object> applyPayrollDeductionToPartyLoan(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String loanId = (String) context.get("loanId");
+            String loanScheduleId = (String) context.get("loanScheduleId");
+            String payrollRunId = (String) context.get("payrollRunId");
+            String payrollResultId = (String) context.get("payrollResultId");
+            String remarks = (String) context.get("remarks");
+            BigDecimal amountApplied = (BigDecimal) context.get("amountApplied");
+            Timestamp repaymentDate = (Timestamp) context.get("repaymentDate");
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+            if (UtilValidate.isEmpty(loanScheduleId)) {
+                return ServiceUtil.returnError("loanScheduleId is required");
+            }
+            if (UtilValidate.isEmpty(payrollRunId)) {
+                return ServiceUtil.returnError("payrollRunId is required");
+            }
+            if (amountApplied == null || amountApplied.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("amountApplied must be greater than zero");
+            }
+            if (repaymentDate == null) {
+                repaymentDate = UtilDateTime.nowTimestamp();
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+            Map<String, Object> statusValidation = validateLoanStatus(
+                    loan, "applyPayrollDeductionToPartyLoan", LOAN_ACTIVE, LOAN_PARTIAL);
+            if (ServiceUtil.isError(statusValidation)) {
+                return statusValidation;
+            }
+
+            try {
+    ensurePayrollRunEditableForLoanAction(delegator, payrollRunId);
+} catch (Exception e) {
+    logLoanAudit(dctx, context,
+            "PAY_ACT_LOAN_APPLY",
+            "ACT_FAIL",
+            "applyPayrollDeductionToPartyLoan blocked: " + e.getMessage());
+    throw e;
+}
+
+            GenericValue row = EntityQuery.use(delegator)
+                    .from("PartyLoanSchedule")
+                    .where("loanScheduleId", loanScheduleId)
+                    .queryOne();
+
+            if (row == null) {
+                return ServiceUtil.returnError("Loan schedule row not found: " + loanScheduleId);
+            }
+            if (!loanId.equals(row.getString("loanId"))) {
+                return ServiceUtil.returnError("loanScheduleId does not belong to loanId. loanId=" + loanId + ", loanScheduleId=" + loanScheduleId);
+            }
+
+            BigDecimal outstandingBefore = safeAmount(row.getBigDecimal("outstandingAmount"));
+            if (outstandingBefore.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("Loan schedule row has no outstanding amount: " + loanScheduleId);
+            }
+
+            BigDecimal loanOutstandingBefore = safeAmount(loan.getBigDecimal("outstandingAmount"));
+            if (loanOutstandingBefore.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("Loan has no outstanding amount available for repayment: " + loanId);
+            }
+
+            if (UtilValidate.isNotEmpty(payrollRunId) && UtilValidate.isNotEmpty(payrollResultId)) {
+                GenericValue duplicateRepayment = findExistingPayrollRepayment(
+                        delegator, loanId, loanScheduleId, payrollRunId, payrollResultId);
+                if (duplicateRepayment != null) {
+                    return ServiceUtil.returnError(
+                            "Duplicate payroll repayment application is not allowed for loanScheduleId="
+                                    + loanScheduleId + ", payrollRunId=" + payrollRunId + ", payrollResultId=" + payrollResultId);
+                }
+            }
+
+            boolean alreadyPayrollProcessed = UtilValidate.isNotEmpty(row.getString("processedPayrollRunId"))
+                    || UtilValidate.isNotEmpty(row.getString("processedPayrollResultId"));
+            boolean partialContinuationAllowed = SCH_PARTIAL.equals(row.getString("scheduleStatusId"))
+                    && outstandingBefore.compareTo(BigDecimal.ZERO) > 0;
+
+            if (alreadyPayrollProcessed && !partialContinuationAllowed) {
+                return ServiceUtil.returnError("Loan schedule row already processed by payroll: " + loanScheduleId);
+            }
+
+            BigDecimal maxAllowed = minAmount(outstandingBefore, loanOutstandingBefore);
+            if (amountApplied.compareTo(maxAllowed) > 0) {
+                return ServiceUtil.returnError(
+                        "Requested payroll deduction exceeds allowed outstanding amount for loanScheduleId="
+                                + loanScheduleId + ". requestedAmount=" + amountApplied + ", maxAllowed=" + maxAllowed);
+            }
+
+            applyToScheduleRow(
+                    delegator,
+                    loan,
+                    row,
+                    amountApplied,
+                    repaymentDate,
+                    "LNRS_PAYROLL",
+                    null,
+                    payrollRunId,
+                    payrollResultId,
+                    remarks,
+                    userLogin != null ? userLogin.getString("userLoginId") : null
+            );
+
+            refreshLoanTotals(delegator, loanId);
+
+            GenericValue refreshedLoan = requireLoan(delegator, loanId);
+            GenericValue refreshedRow = EntityQuery.use(delegator)
+                    .from("PartyLoanSchedule")
+                    .where("loanScheduleId", loanScheduleId)
+                    .queryOne();
+
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("loanId", loanId);
+            data.put("loanScheduleId", loanScheduleId);
+            data.put("amountApplied", amountApplied);
+            data.put("outstandingAmountAfter",
+                    refreshedRow != null && refreshedRow.getBigDecimal("outstandingAmount") != null
+                            ? refreshedRow.getBigDecimal("outstandingAmount") : BigDecimal.ZERO);
+            data.put("scheduleStatusId", refreshedRow != null ? refreshedRow.getString("scheduleStatusId") : null);
+            data.put("loanStatusIdAfter", refreshedLoan.getString("loanStatusId"));
+            data.put("repaymentSourceEnumId", "LNRS_PAYROLL");
+            data.put("payrollRunId", payrollRunId);
+            data.put("payrollResultId", payrollResultId);
+
+            return buildStandardSuccess("Payroll loan deduction applied successfully", data);
+
+        } catch (Exception e) {
+            Debug.logError(e, "Error applying payroll deduction", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    private static List<GenericValue> resolveRepaymentTargetRows(
+            Delegator delegator,
+            String loanId,
+            String loanScheduleId) throws GenericEntityException {
+
+        if (UtilValidate.isNotEmpty(loanScheduleId)) {
+            GenericValue row = EntityQuery.use(delegator)
+                    .from("PartyLoanSchedule")
+                    .where("loanScheduleId", loanScheduleId)
+                    .queryOne();
+
+            if (row == null) {
+                throw new GenericEntityException("Loan schedule row not found: " + loanScheduleId);
+            }
+            if (!loanId.equals(row.getString("loanId"))) {
+                throw new GenericEntityException("loanScheduleId does not belong to loanId. loanId="
+                        + loanId + ", loanScheduleId=" + loanScheduleId);
+            }
+
+            List<GenericValue> rows = new ArrayList<GenericValue>();
+            rows.add(row);
+            return rows;
+        }
+
+        return EntityQuery.use(delegator)
+                .from("PartyLoanSchedule")
+                .where("loanId", loanId)
+                .orderBy("installmentSeqNum", "loanScheduleId")
+                .queryList();
+    }
+
+    private static GenericValue findExistingPayrollRepayment(
+            Delegator delegator,
+            String loanId,
+            String loanScheduleId,
+            String payrollRunId,
+            String payrollResultId) throws GenericEntityException {
+
+        List<EntityCondition> conditions = new ArrayList<EntityCondition>();
+        conditions.add(EntityCondition.makeCondition("loanId", loanId));
+        conditions.add(EntityCondition.makeCondition("repaymentSourceEnumId", "LNRS_PAYROLL"));
+        conditions.add(EntityCondition.makeCondition("payrollRunId", payrollRunId));
+        conditions.add(EntityCondition.makeCondition("payrollResultId", payrollResultId));
+        conditions.add(EntityCondition.makeCondition("repaymentStatusId", REP_POSTED));
+
+        if (UtilValidate.isNotEmpty(loanScheduleId)) {
+            conditions.add(EntityCondition.makeCondition("loanScheduleId", loanScheduleId));
+        }
+
+        return EntityQuery.use(delegator)
+                .from("PartyLoanRepayment")
+                .where(EntityCondition.makeCondition(conditions, EntityOperator.AND))
+                .orderBy("-createdStamp")
+                .queryFirst();
+    }
+
+    private static void applyToScheduleRow(
+            Delegator delegator,
+            GenericValue loan,
+            GenericValue row,
+            BigDecimal applied,
+            Timestamp repaymentDate,
+            String sourceEnumId,
+            String paymentId,
+            String payrollRunId,
+            String payrollResultId,
+            String remarks,
+            String userLoginId) throws GenericEntityException {
+
+        if (loan == null) {
+            throw new GenericEntityException("Loan record is required");
+        }
+        if (row == null) {
+            throw new GenericEntityException("Loan schedule row is required");
+        }
+        if (applied == null || applied.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new GenericEntityException("Applied amount must be greater than zero");
+        }
+        if (repaymentDate == null) {
+            repaymentDate = UtilDateTime.nowTimestamp();
+        }
+        if (UtilValidate.isEmpty(sourceEnumId)) {
+            sourceEnumId = "LNRS_MANUAL";
+        }
+
+        BigDecimal outstanding = row.getBigDecimal("outstandingAmount");
+        if (outstanding == null) {
+            outstanding = BigDecimal.ZERO;
+        }
+        if (outstanding.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new GenericEntityException("Cannot apply repayment to schedule row with zero outstanding amount");
+        }
+
+        BigDecimal paid = row.getBigDecimal("paidAmount");
+        if (paid == null) {
+            paid = BigDecimal.ZERO;
+        }
+
+        BigDecimal principalAmount = row.getBigDecimal("principalAmount");
+        if (principalAmount == null) {
+            principalAmount = BigDecimal.ZERO;
+        }
+
+        BigDecimal interestAmount = row.getBigDecimal("interestAmount");
+        if (interestAmount == null) {
+            interestAmount = BigDecimal.ZERO;
+        }
+
+        BigDecimal feeAmount = row.getBigDecimal("feeAmount");
+        if (feeAmount == null) {
+            feeAmount = BigDecimal.ZERO;
+        }
+
+        BigDecimal penaltyAmount = row.getBigDecimal("penaltyAmount");
+        if (penaltyAmount == null) {
+            penaltyAmount = BigDecimal.ZERO;
+        }
+
+        BigDecimal appliedCapped = applied.min(outstanding);
+        if (appliedCapped.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new GenericEntityException("Applied amount became zero after outstanding cap");
+        }
+
+        BigDecimal newPaid = paid.add(appliedCapped);
+        BigDecimal newOutstanding = outstanding.subtract(appliedCapped);
+        if (newOutstanding.compareTo(BigDecimal.ZERO) < 0) {
+            newOutstanding = BigDecimal.ZERO;
+        }
+
+        row.set("paidAmount", newPaid);
+        row.set("outstandingAmount", newOutstanding);
+        row.set("repaymentSourceEnumId", sourceEnumId);
+
+        if (UtilValidate.isNotEmpty(payrollRunId)) {
+            row.set("processedPayrollRunId", payrollRunId);
+        }
+        if (UtilValidate.isNotEmpty(payrollResultId)) {
+            row.set("processedPayrollResultId", payrollResultId);
+        }
+
+        row.set("scheduleStatusId", newOutstanding.compareTo(BigDecimal.ZERO) == 0 ? SCH_PAID : SCH_PARTIAL);
+        row.store();
+
+        BigDecimal remainingAllocation = appliedCapped;
+
+        BigDecimal principalApplied = remainingAllocation.min(principalAmount);
+        remainingAllocation = remainingAllocation.subtract(principalApplied);
+
+        BigDecimal interestApplied = remainingAllocation.min(interestAmount);
+        remainingAllocation = remainingAllocation.subtract(interestApplied);
+
+        BigDecimal feeApplied = remainingAllocation.min(feeAmount);
+        remainingAllocation = remainingAllocation.subtract(feeApplied);
+
+        BigDecimal penaltyApplied = remainingAllocation.min(penaltyAmount);
+
+        String loanRepaymentId = delegator.getNextSeqId("PartyLoanRepayment");
+        GenericValue repayment = delegator.makeValue("PartyLoanRepayment");
+
+        repayment.set("loanRepaymentId", loanRepaymentId);
+        repayment.set("loanId", loan.getString("loanId"));
+        repayment.set("loanScheduleId", row.getString("loanScheduleId"));
+        repayment.set("repaymentDate", repaymentDate);
+        repayment.set("amountApplied", appliedCapped);
+        repayment.set("principalApplied", principalApplied);
+        repayment.set("interestApplied", interestApplied);
+        repayment.set("feeApplied", feeApplied);
+        repayment.set("penaltyApplied", penaltyApplied);
+        repayment.set("repaymentSourceEnumId", sourceEnumId);
+        repayment.set("repaymentStatusId", REP_POSTED);
+        repayment.set("remarks", remarks);
+
+        if (UtilValidate.isNotEmpty(paymentId)) {
+            repayment.set("paymentId", paymentId);
+        }
+        if (UtilValidate.isNotEmpty(payrollRunId)) {
+            repayment.set("payrollRunId", payrollRunId);
+        }
+        if (UtilValidate.isNotEmpty(payrollResultId)) {
+            repayment.set("payrollResultId", payrollResultId);
+        }
+
+        delegator.create(repayment);
+
+        String eventReferenceId = null;
+        if (UtilValidate.isNotEmpty(paymentId)) {
+            eventReferenceId = paymentId;
+        } else if (UtilValidate.isNotEmpty(payrollRunId)) {
+            eventReferenceId = payrollRunId;
+        }
+
+        String eventRemarks = UtilValidate.isNotEmpty(remarks)
+                ? remarks
+                : "Loan repayment applied to schedule row " + row.getString("loanScheduleId");
+
+        createLoanEvent(
+                delegator,
+                loan.getString("loanId"),
+                row.getString("loanScheduleId"),
+                loanRepaymentId,
+                "LNE_REPAY",
+                repaymentDate,
+                userLoginId,
+                eventRemarks,
+                eventReferenceId
+        );
+    }
+
+    private static void refreshLoanTotals(Delegator delegator, String loanId) throws GenericEntityException {
+        GenericValue loan = requireLoan(delegator, loanId);
+
+        List<GenericValue> repayments = EntityQuery.use(delegator)
+                .from("PartyLoanRepayment")
+                .where("loanId", loanId)
+                .queryList();
+
+        BigDecimal totalPaid = BigDecimal.ZERO;
+        for (GenericValue row : repayments) {
+            BigDecimal amountApplied = row.getBigDecimal("amountApplied");
+            totalPaid = totalPaid.add(amountApplied == null ? BigDecimal.ZERO : amountApplied);
+        }
+
+        BigDecimal totalRepayableAmount = loan.getBigDecimal("totalRepayableAmount");
+        if (totalRepayableAmount == null) {
+            totalRepayableAmount = BigDecimal.ZERO;
+        }
+
+        BigDecimal outstanding = totalRepayableAmount.subtract(totalPaid);
+        if (outstanding.compareTo(BigDecimal.ZERO) < 0) {
+            outstanding = BigDecimal.ZERO;
+        }
+
+        loan.set("paidAmount", totalPaid);
+        loan.set("outstandingAmount", outstanding);
+
+        if (outstanding.compareTo(BigDecimal.ZERO) == 0) {
+            loan.set("loanStatusId", LOAN_CLOSED);
+        } else if (totalPaid.compareTo(BigDecimal.ZERO) > 0) {
+            loan.set("loanStatusId", LOAN_PARTIAL);
+        }
+
+        loan.store();
+    }
+
+
+
+    private static void logLoanAudit(DispatchContext dctx,
+                                     Map<String, ?> context,
+                                     String actionTypeId,
+                                     String status,
+                                     String message) {
+        try {
+            LocalDispatcher dispatcher = dctx.getDispatcher();
+            GenericValue userLogin = (GenericValue) context.get("userLogin");
+            if (dispatcher == null || userLogin == null) {
+                return;
+            }
+
+            String payrollRunId = (String) context.get("payrollRunId");
+            String payrollPeriodId = (String) context.get("payrollPeriodId");
+            String organizationPartyId = (String) context.get("organizationPartyId");
+            String partyId = (String) context.get("partyId");
+
+            if (UtilValidate.isEmpty(organizationPartyId) && UtilValidate.isNotEmpty(payrollRunId)) {
+                GenericValue payrollRun = dctx.getDelegator().findOne("PayrollRun", false, "payrollRunId", payrollRunId);
+                if (payrollRun != null) {
+                    organizationPartyId = payrollRun.getString("organizationPartyId");
+                    if (UtilValidate.isEmpty(payrollPeriodId)) {
+                        payrollPeriodId = payrollRun.getString("payrollPeriodId");
+                    }
+                }
+            }
+
+            dispatcher.runSync("createPayrollActionAudit", UtilMisc.toMap(
+                    "organizationPartyId", organizationPartyId,
+                    "payrollRunId", payrollRunId,
+                    "payrollPeriodId", payrollPeriodId,
+                    "partyId", partyId,
+                    "actionTypeId", actionTypeId,
+                    "actionStatusId", status,
+                    "messageText", message,
+                    "userLogin", userLogin
+            ));
+        } catch (Exception ignored) {
+        }
+    }
+
+    private static void ensurePayrollRunEditableForLoanAction(Delegator delegator, String payrollRunId)
+            throws GenericEntityException {
+        if (UtilValidate.isEmpty(payrollRunId)) {
+            return;
+        }
+        GenericValue payrollRun = EntityQuery.use(delegator)
+                .from("PayrollRun")
+                .where("payrollRunId", payrollRunId)
+                .queryOne();
+        if (payrollRun == null) {
+            throw new GenericEntityException("PayrollRun not found: " + payrollRunId);
+        }
+        PayrollGovernanceUtil.ensureRunAndPeriodEditable(
+                delegator,
+                payrollRun.getString("organizationPartyId"),
+                payrollRun.getString("payrollPeriodId"),
+                payrollRunId
+        );
+    }
+
+    public static void createLoanEvent(
+            Delegator delegator,
+            String loanId,
+            String loanScheduleId,
+            String loanRepaymentId,
+            String eventTypeEnumId,
+            Timestamp eventDate,
+            String userLoginId,
+            String eventNote,
+            String referenceId) throws GenericEntityException {
+
+        if (UtilValidate.isEmpty(loanId)) {
+            throw new GenericEntityException("loanId is required for PartyLoanEvent");
+        }
+
+        if (eventDate == null) {
+            eventDate = UtilDateTime.nowTimestamp();
+        }
+
+        if (UtilValidate.isEmpty(eventNote)) {
+            eventNote = "Loan event recorded";
+        }
+
+        GenericValue ev = delegator.makeValue("PartyLoanEvent");
+
+        ev.set("loanEventId", delegator.getNextSeqId("PartyLoanEvent"));
+        ev.set("loanId", loanId);
+        ev.set("eventTypeEnumId", eventTypeEnumId);
+        ev.set("eventDate", eventDate);
+
+        if (UtilValidate.isNotEmpty(loanScheduleId)) {
+            ev.set("loanScheduleId", loanScheduleId);
+        }
+        if (UtilValidate.isNotEmpty(loanRepaymentId)) {
+            ev.set("loanRepaymentId", loanRepaymentId);
+        }
+        if (UtilValidate.isNotEmpty(userLoginId)) {
+            ev.set("userLoginId", userLoginId);
+        }
+        if (UtilValidate.isNotEmpty(eventNote)) {
+            ev.set("eventNote", eventNote);
+        }
+        if (UtilValidate.isNotEmpty(referenceId)) {
+            ev.set("referenceId", referenceId);
+        }
+
+        delegator.create(ev);
+    }
+
+    private static GenericValue requireLoan(Delegator delegator, String loanId) throws GenericEntityException {
+        GenericValue loan = EntityQuery.use(delegator)
+                .from("PartyLoan")
+                .where("loanId", loanId)
+                .queryOne();
+        if (loan == null) {
+            throw new GenericEntityException("Loan not found: " + loanId);
+        }
+        return loan;
+    }
+
+    private static Map<String, Object> validateLoanStatus(GenericValue loan, String serviceName, String... allowedStatuses) {
+        if (loan == null) {
+            return ServiceUtil.returnError(serviceName + " failed because loan record is missing");
+        }
+
+        String currentStatusId = loan.getString("loanStatusId");
+        if (UtilValidate.isEmpty(currentStatusId)) {
+            return ServiceUtil.returnError(serviceName + " failed because loanStatusId is empty for loanId: "
+                    + loan.getString("loanId"));
+        }
+
+        for (String allowed : allowedStatuses) {
+            if (allowed.equals(currentStatusId)) {
+                return ServiceUtil.returnSuccess();
+            }
+        }
+
+        return ServiceUtil.returnError(
+                serviceName + " not allowed for loanId: " + loan.getString("loanId")
+                        + ". Current status is " + currentStatusId);
+    }
+
+    private static String normalizeFlag(String value) {
+        return "Y".equalsIgnoreCase(value) ? "Y" : "N";
+    }
+
+    private static String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private static String createRepaymentPayment(
+            DispatchContext dctx,
+            GenericValue loan,
+            BigDecimal amountApplied,
+            Timestamp repaymentDate,
+            String sourceEnumId,
+            String paymentTypeId,
+            String paymentMethodTypeId,
+            String paymentMethodId,
+            String payrollRunId,
+            String payrollResultId,
+            String remarks,
+            GenericValue userLogin) throws Exception {
+
+        if (loan == null) {
+            throw new GenericEntityException("Loan record is required to create repayment Payment");
+        }
+        if (amountApplied == null || amountApplied.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new GenericEntityException("amountApplied must be greater than zero to create repayment Payment");
+        }
+
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        if (dispatcher == null) {
+            throw new GenericEntityException("Dispatcher is required to create repayment Payment");
+        }
+        if (repaymentDate == null) {
+            repaymentDate = UtilDateTime.nowTimestamp();
+        }
+
+        String borrowerPartyId = loan.getString("partyId");
+        String organizationPartyId = loan.getString("organizationPartyId");
+        String currencyUomId = loan.getString("currencyUomId");
+        if (UtilValidate.isEmpty(borrowerPartyId) || UtilValidate.isEmpty(organizationPartyId)) {
+            throw new GenericEntityException("Loan partyId and organizationPartyId are required to create repayment Payment");
+        }
+        if (UtilValidate.isEmpty(currencyUomId)) {
+            throw new GenericEntityException("Loan currencyUomId is required to create repayment Payment");
+        }
+
+        Map<String, Object> paymentCtx = new HashMap<String, Object>();
+        paymentCtx.put("paymentTypeId", UtilValidate.isNotEmpty(paymentTypeId) ? paymentTypeId : "CUSTOMER_PAYMENT");
+        paymentCtx.put("partyIdFrom", borrowerPartyId);
+        paymentCtx.put("partyIdTo", organizationPartyId);
+        paymentCtx.put("amount", amountApplied);
+        paymentCtx.put("currencyUomId", currencyUomId);
+        paymentCtx.put("effectiveDate", repaymentDate);
+        paymentCtx.put("paymentMethodTypeId", paymentMethodTypeId);
+        paymentCtx.put("paymentMethodId", paymentMethodId);
+        paymentCtx.put("comments", buildRepaymentPaymentComment(loan, sourceEnumId, payrollRunId, payrollResultId, remarks));
+        paymentCtx.put("userLogin", userLogin);
+
+        Map<String, Object> paymentResp = dispatcher.runSync("createPayment", paymentCtx);
+        if (ServiceUtil.isError(paymentResp)) {
+            throw new GenericEntityException(
+                    "Failed to create OFBiz Payment for loan repayment: "
+                            + ServiceUtil.getErrorMessage(paymentResp));
+        }
+
+        String createdPaymentId = (String) paymentResp.get("paymentId");
+        if (UtilValidate.isEmpty(createdPaymentId)) {
+            throw new GenericEntityException("createPayment succeeded but returned no paymentId for loan repayment");
+        }
+
+        GenericValue payment = validateExistingPayment(dctx.getDelegator(), createdPaymentId);
+        if (payment == null) {
+            throw new GenericEntityException(
+                    "createPayment returned paymentId but Payment record was not found: " + createdPaymentId);
+        }
+
+        return createdPaymentId;
+    }
+
+    private static String buildRepaymentPaymentComment(
+            GenericValue loan,
+            String sourceEnumId,
+            String payrollRunId,
+            String payrollResultId,
+            String remarks) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Loan repayment");
+        if (loan != null && UtilValidate.isNotEmpty(loan.getString("loanId"))) {
+            sb.append(" loanId=").append(loan.getString("loanId"));
+        }
+        if (UtilValidate.isNotEmpty(sourceEnumId)) {
+            sb.append(" source=").append(sourceEnumId);
+        }
+        if (UtilValidate.isNotEmpty(payrollRunId)) {
+            sb.append(" payrollRunId=").append(payrollRunId);
+        }
+        if (UtilValidate.isNotEmpty(payrollResultId)) {
+            sb.append(" payrollResultId=").append(payrollResultId);
+        }
+        if (UtilValidate.isNotEmpty(remarks)) {
+            sb.append(" - ").append(remarks);
+        }
+        return sb.toString();
+    }
+
+    private static void postLoanRepaymentFinancials(
+            DispatchContext dctx,
+            GenericValue loan,
+            String paymentId,
+            BigDecimal amount,
+            Timestamp repaymentDate,
+            String sourceEnumId,
+            String organizationPartyId,
+            String finAccountId,
+            String payrollRunId,
+            String payrollResultId,
+            String remarks,
+            GenericValue userLogin) throws Exception {
+
+        if (UtilValidate.isEmpty(paymentId) || amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            return;
+        }
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        Map<String, Object> acctgCtx = new HashMap<String, Object>();
+        acctgCtx.put("paymentId", paymentId);
+        acctgCtx.put("organizationPartyId", organizationPartyId);
+        acctgCtx.put("amount", amount);
+        acctgCtx.put("finAccountId", finAccountId);
+        acctgCtx.put("repaymentDate", repaymentDate);
+        acctgCtx.put("repaymentSourceEnumId", sourceEnumId);
+        acctgCtx.put("loanId", loan != null ? loan.getString("loanId") : null);
+        acctgCtx.put("payrollRunId", payrollRunId);
+        acctgCtx.put("payrollResultId", payrollResultId);
+        acctgCtx.put("remarks", remarks);
+        acctgCtx.put("userLogin", userLogin);
+
+        Map<String, Object> acctgResp = dispatcher.runSync("createAcctgTransForLoanRepayment", acctgCtx);
+        if (ServiceUtil.isError(acctgResp)) {
+            throw new GenericEntityException("Failed to create accounting transaction for loan repayment: "
+                    + ServiceUtil.getErrorMessage(acctgResp));
+        }
+
+        if (UtilValidate.isNotEmpty(finAccountId)) {
+            Map<String, Object> finResp = dispatcher.runSync("createFinAccountTransForLoanRepayment", acctgCtx);
+            if (ServiceUtil.isError(finResp)) {
+                throw new GenericEntityException("Failed to create fin account transaction for loan repayment: "
+                        + ServiceUtil.getErrorMessage(finResp));
+            }
+        }
+    }
+
+
+    private static GenericValue requireRepaymentInvoiceForLoan(
+            Delegator delegator,
+            GenericValue loan,
+            String invoiceId,
+            String organizationPartyId,
+            String loanScheduleId) throws GenericEntityException {
+        if (loan == null) {
+            throw new GenericEntityException("Loan is required");
+        }
+        GenericValue invoice = EntityQuery.use(delegator)
+                .from("Invoice")
+                .where("invoiceId", invoiceId)
+                .queryOne();
+        if (invoice == null) {
+            throw new GenericEntityException("Invoice not found: " + invoiceId);
+        }
+        String invoiceTypeId = trimToNull(invoice.getString("invoiceTypeId"));
+        if (UtilValidate.isNotEmpty(invoiceTypeId) && !"LOAN_REPAYMENT".equals(invoiceTypeId)) {
+            throw new GenericEntityException("Invoice is not a repayment invoice: " + invoiceId);
+        }
+        if (!organizationPartyId.equals(invoice.getString("partyIdFrom"))) {
+            throw new GenericEntityException("Invoice organizationPartyId mismatch for invoiceId: " + invoiceId);
+        }
+        String borrowerPartyId = trimToNull(loan.getString("partyId"));
+        if (UtilValidate.isNotEmpty(borrowerPartyId)
+                && UtilValidate.isNotEmpty(invoice.getString("partyId"))
+                && !borrowerPartyId.equals(invoice.getString("partyId"))) {
+            throw new GenericEntityException("Invoice borrower mismatch for invoiceId: " + invoiceId);
+        }
+        String expectedReference = buildRepaymentInvoiceReference(loan.getString("loanId"), loanScheduleId);
+        String actualReference = trimToNull(invoice.getString("referenceNumber"));
+        if (UtilValidate.isNotEmpty(actualReference)
+                && !expectedReference.equals(actualReference)
+                && !loan.getString("loanId").equals(actualReference)) {
+            throw new GenericEntityException("Invoice reference does not belong to requested loan/schedule. invoiceId="
+                    + invoiceId + ", referenceNumber=" + actualReference);
+        }
+        return invoice;
+    }
+
+    private static GenericValue findExistingPaymentApplicationForInvoice(Delegator delegator, String invoiceId)
+            throws GenericEntityException {
+        if (UtilValidate.isEmpty(invoiceId)) {
+            return null;
+        }
+        return EntityQuery.use(delegator)
+                .from("PaymentApplication")
+                .where("invoiceId", invoiceId)
+                .orderBy("-createdStamp", "-paymentApplicationId")
+                .queryFirst();
+    }
+
+    private static String fetchPaymentStatusId(Delegator delegator, String paymentId) throws GenericEntityException {
+        GenericValue payment = validateExistingPayment(delegator, paymentId);
+        return payment != null ? payment.getString("statusId") : null;
+    }
+
+    private static String buildRepaymentInvoiceReference(String loanId, String loanScheduleId) {
+        if (UtilValidate.isEmpty(loanId)) {
+            return null;
+        }
+        return UtilValidate.isNotEmpty(loanScheduleId) ? (loanId + "::" + loanScheduleId) : loanId;
+    }
+
+    private static GenericValue validateExistingPayment(Delegator delegator, String paymentId)
+            throws GenericEntityException {
+        if (UtilValidate.isEmpty(paymentId)) {
+            return null;
+        }
+        return EntityQuery.use(delegator)
+                .from("Payment")
+                .where("paymentId", paymentId)
+                .queryOne();
+    }
+
+    private static Map<String, Object> buildStandardSuccess(String successMessage, Map<String, Object> data) {
+        Map<String, Object> out = ServiceUtil.returnSuccess(successMessage);
+
+        Map<String, Object> safeData = new HashMap<String, Object>();
+        if (data != null) {
+            safeData.putAll(data);
+            out.putAll(data);
+        }
+
+        out.put("data", safeData);
+        out.put("legacyData", new HashMap<String, Object>(safeData));
+        return out;
+    }
+
+    private static BigDecimal safeAmount(BigDecimal value) {
+        return value != null ? value : BigDecimal.ZERO;
+    }
+
+    private static BigDecimal minAmount(BigDecimal... values) {
+        BigDecimal min = null;
+        if (values == null || values.length == 0) {
+            return BigDecimal.ZERO;
+        }
+        for (BigDecimal value : values) {
+            BigDecimal safe = safeAmount(value);
+            if (min == null || safe.compareTo(min) < 0) {
+                min = safe;
+            }
+        }
+        return min != null ? min : BigDecimal.ZERO;
+    }
+
+}

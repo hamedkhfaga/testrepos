@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>AssetERP worldwide workflow services: entity-auto CRUD for the
+        record entities, Java services where lifecycle logic or GL posting is
+        required. All exported for REST.</description>
+    <vendor>AssetERP</vendor>
+
+    <!-- ============ entity-auto CRUD (simple record entities) ============ -->
+
+    <service name="asseterpCreateInsurance" default-entity-name="AsseterpInsurance" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Create asset insurance policy</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+        <override name="policyNumber" optional="false"/>
+    </service>
+    <service name="asseterpUpdateInsurance" default-entity-name="AsseterpInsurance" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="asseterpDeleteInsurance" default-entity-name="AsseterpInsurance" engine="entity-auto" invoke="delete" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="DELETE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <service name="asseterpCreateInsuranceClaim" default-entity-name="AsseterpInsuranceClaim" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>File an insurance claim</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="asseterpInsuranceId" optional="false"/>
+    </service>
+    <service name="asseterpUpdateInsuranceClaim" default-entity-name="AsseterpInsuranceClaim" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateWarranty" default-entity-name="AsseterpWarranty" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+    </service>
+    <service name="asseterpUpdateWarranty" default-entity-name="AsseterpWarranty" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateComplianceDoc" default-entity-name="AsseterpComplianceDoc" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+    </service>
+    <service name="asseterpUpdateComplianceDoc" default-entity-name="AsseterpComplianceDoc" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreatePledge" default-entity-name="AsseterpPledge" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+        <override name="lenderPartyId" optional="false"/>
+    </service>
+    <service name="asseterpUpdatePledge" default-entity-name="AsseterpPledge" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateRentalContract" default-entity-name="AsseterpRentalContract" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Rent an owned asset out to a lessee</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+        <override name="lesseePartyId" optional="false"/>
+    </service>
+    <service name="asseterpUpdateRentalContract" default-entity-name="AsseterpRentalContract" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateBooking" default-entity-name="AsseterpBooking" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+        <override name="bookedByPartyId" optional="false"/>
+    </service>
+    <service name="asseterpUpdateBooking" default-entity-name="AsseterpBooking" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateFuelLog" default-entity-name="AsseterpFuelLog" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+    </service>
+    <service name="asseterpUpdateFuelLog" default-entity-name="AsseterpFuelLog" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateSoftwareLicense" default-entity-name="AsseterpSoftwareLicense" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="vendorPartyId" optional="false"/>
+    </service>
+    <service name="asseterpUpdateSoftwareLicense" default-entity-name="AsseterpSoftwareLicense" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateSparePartIssue" default-entity-name="AsseterpSparePart" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Record spare part issued to an asset / work order</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+        <override name="productId" optional="false"/>
+    </service>
+    <service name="asseterpUpdateSparePartIssue" default-entity-name="AsseterpSparePart" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateValuation" default-entity-name="AsseterpValuation" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+    </service>
+
+    <service name="asseterpCreateCgu" default-entity-name="AsseterpCgu" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="cguName" optional="false"/>
+    </service>
+    <service name="asseterpCreateCguMember" default-entity-name="AsseterpCguMember" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="asseterpCguId" optional="false"/>
+        <override name="fixedAssetId" optional="false"/>
+    </service>
+
+    <service name="asseterpCreateCipProject" default-entity-name="AsseterpCipProject" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <description>Open a construction-in-progress project</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="partyId" optional="false"/>
+        <override name="projectName" optional="false"/>
+    </service>
+    <service name="asseterpUpdateCipProject" default-entity-name="AsseterpCipProject" engine="entity-auto" invoke="update" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateGovGrant" default-entity-name="AsseterpGovGrant" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="fixedAssetId" optional="false"/>
+        <override name="grantAmount" optional="false"/>
+    </service>
+
+    <service name="asseterpCreateLeaseModification" default-entity-name="AsseterpLeaseModification" engine="entity-auto" invoke="create" auth="true" export="true" action="POST">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="asseterpLeaseId" optional="false"/>
+    </service>
+
+    <!-- ===================== Java workflow services ===================== -->
+
+    <service name="asseterpCreateLease" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpCreateLease">
+        <description>Recognize an IFRS 16 lease: PV of payments, ROU asset, full payment schedule, initial GL (Dr ROU / Cr Lease Liability)</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="lessorPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"><description>Lessee organization (GL org)</description></attribute>
+        <attribute name="leaseTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="leaseStartDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="termMonths" type="Long" mode="IN" optional="false"/>
+        <attribute name="monthlyPayment" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="annualDiscountRate" type="BigDecimal" mode="IN" optional="false"><description>e.g. 0.06 for 6%</description></attribute>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpLeaseId" type="String" mode="OUT" optional="false"/>
+        <attribute name="presentValueLiability" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpPostLeasePayment" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpPostLeasePayment">
+        <description>Post one lease schedule row: Dr Interest + Dr Liability / Cr Cash</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpLeaseScheduleId" type="String" mode="IN" optional="false"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpTerminateLease" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpTerminateLease">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpLeaseId" type="String" mode="IN" optional="false"/>
+        <attribute name="terminationDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="reason" type="String" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateHirePurchase" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpCreateHirePurchase">
+        <description>Open a hire-purchase agreement and generate the installment schedule (annuity)</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="financierPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="principalAmount" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="interestRate" type="BigDecimal" mode="IN" optional="false"><description>annual, e.g. 0.08</description></attribute>
+        <attribute name="termMonths" type="Long" mode="IN" optional="false"/>
+        <attribute name="startDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpHirePurchaseId" type="String" mode="OUT" optional="false"/>
+        <attribute name="monthlyInstallment" type="BigDecimal" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpPayHirePurchaseInstallment" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpPayHirePurchaseInstallment">
+        <description>Pay one HP installment: Dr Liability + Dr Interest / Cr Cash; settles agreement on last installment</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpHirePurchaseScheduleId" type="String" mode="IN" optional="false"/>
+        <attribute name="paidDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpAddCipCost" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpAddCipCost">
+        <description>Add cost to a CIP project; optional GL Dr CIP / Cr Cash</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpCipProjectId" type="String" mode="IN" optional="false"/>
+        <attribute name="amount" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="costDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="description" type="String" mode="IN" optional="true"/>
+        <attribute name="invoiceId" type="String" mode="IN" optional="true"/>
+        <attribute name="invoiceItemSeqId" type="String" mode="IN" optional="true"/>
+        <attribute name="postGl" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpCipCostId" type="String" mode="OUT" optional="false"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpCapitalizeCipProject" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpCapitalizeCipProject">
+        <description>Capitalize CIP into a FixedAsset (standard createFixedAsset) with GL Dr Asset Cost / Cr CIP</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpCipProjectId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="fixedAssetName" type="String" mode="IN" optional="true"/>
+        <attribute name="capitalizedDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="fixedAssetId" type="String" mode="OUT" optional="false"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpAmortizeGovGrant" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpAmortizeGovGrant">
+        <description>Amortize one period of a capital grant: Dr Deferred Grant / Cr Grant Income</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpGovGrantId" type="String" mode="IN" optional="false"/>
+        <attribute name="periodDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpGovGrantAmortId" type="String" mode="OUT" optional="false"/>
+        <attribute name="amortAmount" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpRecordImpairment" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpRecordImpairment">
+        <description>IAS 36: record impairment loss, GL Dr Impairment Loss / Cr Accumulated Depreciation</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="recoverableAmount" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="assessmentDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="asseterpCguId" type="String" mode="IN" optional="true"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpImpairmentId" type="String" mode="OUT" optional="false"/>
+        <attribute name="impairmentLoss" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpCreateAro" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpCreateAro">
+        <description>IAS 37: recognize asset retirement obligation at present value</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="CREATE"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="estimatedCost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="annualDiscountRate" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="expectedSettleDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="recognitionDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpAroId" type="String" mode="OUT" optional="false"/>
+        <attribute name="presentValue" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpUnwindAro" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpUnwindAro">
+        <description>Post one period of ARO accretion: Dr Interest / Cr ARO Liability</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpAroId" type="String" mode="IN" optional="false"/>
+        <attribute name="periodDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpAroScheduleId" type="String" mode="OUT" optional="false"/>
+        <attribute name="interestUnwound" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpReclassifyHeldForSale" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpReclassifyHeldForSale">
+        <description>IFRS 5: reclassify to held-for-sale at lower of carrying and fair value less costs</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="fairValueLessCostsToSell" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="reclassificationDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="expectedSaleDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpHeldForSaleId" type="String" mode="OUT" optional="false"/>
+        <attribute name="writtenDownAmount" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpIntercompanyTransferAsset" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpIntercompanyTransferAsset">
+        <description>Transfer an asset between group organizations at NBV: mirrored GL in both orgs + custody reassignment</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="toPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="transferDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="notes" type="String" mode="IN" optional="true"/>
+        <attribute name="postNow" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpIntercompanyTransferId" type="String" mode="OUT" optional="false"/>
+        <attribute name="transferValue" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="fromAcctgTransId" type="String" mode="OUT" optional="true"/>
+        <attribute name="toAcctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="asseterpSettleInsuranceClaim" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpSettleInsuranceClaim">
+        <description>Settle or reject a filed claim; emits lifecycle event</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpInsuranceClaimId" type="String" mode="IN" optional="false"/>
+        <attribute name="settledAmount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="rejected" type="String" mode="IN" optional="true"><description>Y = reject instead of settle</description></attribute>
+        <attribute name="settlementDate" type="Timestamp" mode="IN" optional="true"/>
+    </service>
+
+    <service name="asseterpAssignLicenseSeat" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpAssignLicenseSeat">
+        <description>Assign a seat; refuses when totalSeats are exhausted</description>
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpSoftwareLicenseId" type="String" mode="IN" optional="false"/>
+        <attribute name="assignedToPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="deviceFixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="asseterpLicenseSeatId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="asseterpReleaseLicenseSeat" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.asseterp.AsseterpWorldwideServices" invoke="asseterpReleaseLicenseSeat">
+        <permission-service service-name="asseterpPermissionCheck" main-action="UPDATE"/>
+        <attribute name="asseterpLicenseSeatId" type="String" mode="IN" optional="false"/>
+    </service>
+
+</services>

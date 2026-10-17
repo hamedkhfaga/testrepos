@@ -1,0 +1,11 @@
+{
+  "phase": "Phase 12B-Fix3",
+  "title": "AcctgTrans marker field compatibility",
+  "changedFiles": [
+    "LoanServices.java",
+    "services.xml"
+  ],
+  "fix": "AcctgTrans does not have organizationPartyId. Accounting marker helper now stores organizationPartyId into partyId when the field exists.",
+  "previousFixIncluded": "Fix2 duplicate-safe accounting check remains included.",
+  "testService": "recordUnifiedLoanRepaymentFinancialFirstV1"
+}

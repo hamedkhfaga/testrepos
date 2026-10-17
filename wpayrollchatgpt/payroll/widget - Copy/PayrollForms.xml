@@ -1,0 +1,583 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://ofbiz.apache.org/Widget-Form"
+    xsi:schemaLocation="http://ofbiz.apache.org/Widget-Form http://ofbiz.apache.org/dtds/widget-form.xsd">
+    
+    <!-- ==================== -->
+    <!-- PAYROLL ITERATION FORMS -->
+    <!-- ==================== -->
+
+    <form name="CreatePayrollIteration" type="single" target="createPayrollIteration"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <auto-fields-service service-name="createPayrollIteration" default-field-type="edit"/>
+        <field name="payrollIterationId"><hidden/></field>
+        <field name="iterationName" title="${uiLabelMap.PayrollIteration}">
+            <text size="30" maxlength="60"/>
+        </field>
+        <field name="payPeriodFrom" title="${uiLabelMap.FieldFromDate}">
+            <date-time type="timestamp"/>
+        </field>
+        <field name="payPeriodThru" title="${uiLabelMap.FieldThruDate}">
+            <date-time type="timestamp"/>
+        </field>
+        <field name="payDate" title="${uiLabelMap.PayDate}">
+            <date-time type="timestamp"/>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.ButtonCreate}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <form name="FindPayrollIteration" type="single" target="findPayrollIteration"
+          default-table-style="basic-table">
+        <field name="iterationName" title="${uiLabelMap.PayrollIteration}">
+            <text-find hide-options="true"/>
+        </field>
+        <field name="statusId" title="${uiLabelMap.PayrollStatus}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="Enumeration" key-field-name="enumId" description="${description}">
+                    <entity-condition>
+                        <condition-expr field-name="enumTypeId" operator="equals" value="PAYROLL_STATUS"/>
+                    </entity-condition>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="searchButton" title="${uiLabelMap.ButtonSearch}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <!-- ==================== -->
+    <!-- EMPLOYEE PAYROLL ASSIGNMENT FORMS -->
+    <!-- ==================== -->
+
+    <form name="CreateEmployeePayrollAssignment" type="single" target="createEmployeePayrollAssignment"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <auto-fields-service service-name="createEmployeePayrollAssignment" default-field-type="edit"/>
+        <field name="assignmentId"><hidden/></field>
+        <field name="partyId" title="${uiLabelMap.EmployeeId}">
+            <lookup target-form-name="LookupParty" description="${uiLabelMap.EmployeeName}"/>
+        </field>
+        <field name="payrollStructureId" title="${uiLabelMap.PayrollStructure}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="PayrollStructure" key-field-name="payrollStructureId">
+                    <option-description><property value="${description}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="employmentType" title="${uiLabelMap.EmploymentType}">
+            <drop-down allow-empty="false">
+                <option key="LOCAL"><property value="${uiLabelMap.Local}"/></option>
+                <option key="EXPAT"><property value="${uiLabelMap.Expatriate}"/></option>
+                <option key="CONTRACT"><property value="${uiLabelMap.Contract}"/></option>
+                <option key="PART_TIME"><property value="${uiLabelMap.PartTime}"/></option>
+            </drop-down>
+        </field>
+        <field name="contractType" title="${uiLabelMap.ContractType}">
+            <drop-down allow-empty="false">
+                <option key="PERMANENT"><property value="${uiLabelMap.Permanent}"/></option>
+                <option key="FIXED_TERM"><property value="${uiLabelMap.FixedTerm}"/></option>
+                <option key="PROBATION"><property value="${uiLabelMap.Probation}"/></option>
+                <option key="SECONDMENT"><property value="${uiLabelMap.Secondment}"/></option>
+            </drop-down>
+        </field>
+        <field name="baseSalary" title="${uiLabelMap.BasicSalary}">
+            <text size="15" maxlength="20"/>
+        </field>
+        <field name="effectiveDate" title="${uiLabelMap.FieldFromDate}">
+            <date-time type="timestamp"/>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.ButtonCreate}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <!-- ==================== -->
+    <!-- INTERNATIONAL EMPLOYEE FORMS -->
+    <!-- ==================== -->
+
+    <form name="CreateInternationalEmployee" type="single" target="createInternationalEmployee"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <auto-fields-service service-name="createInternationalEmployee" default-field-type="edit"/>
+        <field name="partyId" title="${uiLabelMap.EmployeeId}">
+            <lookup target-form-name="LookupParty" description="${uiLabelMap.EmployeeName}"/>
+        </field>
+        <field name="nationalityCountryGeoId" title="${uiLabelMap.FieldNationality}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="Country" key-field-name="geoId">
+                    <option-description><property value="${geoName}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="residenceCountryGeoId" title="${uiLabelMap.FieldCountry}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="Country" key-field-name="geoId">
+                    <option-description><property value="${geoName}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="visaType" title="${uiLabelMap.VisaType}">
+            <text size="20" maxlength="60"/>
+        </field>
+        <field name="visaNumber" title="${uiLabelMap.VisaNumber}">
+            <text size="20" maxlength="60"/>
+        </field>
+        <field name="visaExpiryDate" title="${uiLabelMap.VisaExpiry}">
+            <date-time type="date"/>
+        </field>
+        <field name="workPermitNumber" title="${uiLabelMap.WorkPermit}">
+            <text size="20" maxlength="60"/>
+        </field>
+        <field name="workPermitExpiry" title="${uiLabelMap.WorkPermitExpiry}">
+            <date-time type="date"/>
+        </field>
+        <field name="housingAllowance" title="${uiLabelMap.HousingAllowance}">
+            <text size="15" maxlength="20"/>
+        </field>
+        <field name="educationAllowance" title="${uiLabelMap.EducationAllowance}">
+            <text size="15" maxlength="20"/>
+        </field>
+        <field name="transportationAllowance" title="${uiLabelMap.TransportationAllowance}">
+            <text size="15" maxlength="20"/>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.ButtonCreate}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <!-- ==================== -->
+    <!-- LOAN MANAGEMENT FORMS -->
+    <!-- ==================== -->
+
+    <form name="CreateEmployeeLoan" type="single" target="createEmployeeLoan"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <auto-fields-service service-name="createEmployeeLoan" default-field-type="edit"/>
+        <field name="loanId"><hidden/></field>
+        <field name="partyId" title="${uiLabelMap.EmployeeId}">
+            <lookup target-form-name="LookupParty" description="${uiLabelMap.EmployeeName}"/>
+        </field>
+        <field name="loanType" title="${uiLabelMap.LoanType}">
+            <drop-down allow-empty="false">
+                <option key="PERSONAL"><property value="${uiLabelMap.PersonalLoan}"/></option>
+                <option key="HOUSING"><property value="${uiLabelMap.HousingLoan}"/></option>
+                <option key="CAR"><property value="${uiLabelMap.CarLoan}"/></option>
+                <option key="EDUCATION"><property value="${uiLabelMap.EducationLoan}"/></option>
+            </drop-down>
+        </field>
+        <field name="loanAmount" title="${uiLabelMap.LoanAmount}">
+            <text size="15" maxlength="20"/>
+        </field>
+        <field name="interestRate" title="${uiLabelMap.InterestRate}">
+            <text size="10" maxlength="10"/>
+        </field>
+        <field name="totalInstallments" title="${uiLabelMap.TotalInstallments}">
+            <text size="5" maxlength="3"/>
+        </field>
+        <field name="startDate" title="${uiLabelMap.StartDate}">
+            <date-time type="timestamp"/>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.ButtonCreate}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <!-- ==================== -->
+    <!-- TAX CONFIGURATION FORMS -->
+    <!-- ==================== -->
+
+    <form name="CreatePayrollTaxConfig" type="single" target="createPayrollTaxConfig"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <auto-fields-service service-name="createPayrollTaxConfig" default-field-type="edit"/>
+        <field name="taxConfigId"><hidden/></field>
+        <field name="countryGeoId" title="${uiLabelMap.FieldCountry}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="Country" key-field-name="geoId">
+                    <option-description><property value="${geoName}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="taxYear" title="${uiLabelMap.TaxYear}">
+            <text size="6" maxlength="4"/>
+        </field>
+        <field name="taxType" title="${uiLabelMap.TaxType}">
+            <drop-down allow-empty="false">
+                <option key="INCOME_TAX"><property value="${uiLabelMap.IncomeTax}"/></option>
+                <option key="SOCIAL_SECURITY"><property value="${uiLabelMap.SocialSecurity}"/></option>
+            </drop-down>
+        </field>
+        <field name="minIncome" title="${uiLabelMap.MinIncome}">
+            <text size="15" maxlength="20"/>
+        </field>
+        <field name="maxIncome" title="${uiLabelMap.MaxIncome}">
+            <text size="15" maxlength="20"/>
+        </field>
+        <field name="taxRate" title="${uiLabelMap.TaxRate}">
+            <text size="10" maxlength="10"/>
+        </field>
+        <field name="submitButton" title="${uiLabelMap.ButtonCreate}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <!-- ==================== -->
+    <!-- PAYROLL CALCULATION FORMS -->
+    <!-- ==================== -->
+
+    <form name="CalculatePayrollForm" type="single" target="calculateComprehensivePayroll"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <field name="payrollIterationId" title="${uiLabelMap.PayrollIteration}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="EnhancedPayrollIteration" key-field-name="payrollIterationId">
+                    <option-description><property value="${iterationName}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="calculateButton" title="${uiLabelMap.ButtonCalculate}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <form name="FinalizePayrollForm" type="single" target="finalizePayrollRun"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <field name="payrollIterationId" title="${uiLabelMap.PayrollIteration}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="EnhancedPayrollIteration" key-field-name="payrollIterationId">
+                    <option-description><property value="${iterationName}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="approveButton" title="${uiLabelMap.ButtonApprove}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <!-- ==================== -->
+    <!-- REPORT GENERATION FORMS -->
+    <!-- ==================== -->
+
+    <form name="GeneratePayslipsForm" type="single" target="generatePayslips"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <field name="payrollIterationId" title="${uiLabelMap.PayrollIteration}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="EnhancedPayrollIteration" key-field-name="payrollIterationId">
+                    <option-description><property value="${iterationName}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="generateButton" title="${uiLabelMap.ButtonGenerate}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <form name="ExportPayrollForm" type="single" target="exportPayrollToExcel"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <field name="payrollIterationId" title="${uiLabelMap.PayrollIteration}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="EnhancedPayrollIteration" key-field-name="payrollIterationId">
+                    <option-description><property value="${iterationName}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="exportType" title="${uiLabelMap.ExportType}">
+            <drop-down allow-empty="false">
+                <option key="EXCEL"><property value="${uiLabelMap.ExportToExcel}"/></option>
+                <option key="PDF"><property value="${uiLabelMap.ExportToPDF}"/></option>
+                <option key="CSV"><property value="${uiLabelMap.ExportToCSV}"/></option>
+            </drop-down>
+        </field>
+        <field name="exportButton" title="${uiLabelMap.ButtonExport}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <!-- ==================== -->
+    <!-- BANK TRANSFER FORMS -->
+    <!-- ==================== -->
+
+    <form name="GenerateBankTransferForm" type="single" target="generateBankTransferFiles"
+          header-row-style="header-row-2" default-table-style="basic-table">
+        <field name="payrollIterationId" title="${uiLabelMap.PayrollIteration}">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="EnhancedPayrollIteration" key-field-name="payrollIterationId">
+                    <option-description><property value="${iterationName}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="bankConfigId" title="${uiLabelMap.BankConfiguration}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="BankTransferConfig" key-field-name="configId">
+                    <option-description><property value="${bankName}"/></option-description>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="generateButton" title="${uiLabelMap.ButtonGenerate}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <!-- ==================== -->
+    <!-- PAYROLL DASHBOARD FORMS -->
+    <!-- ==================== -->
+
+    <form name="PayrollDashboardForm" type="single">
+        <field name="dashboardTitle" title="">
+            <display type="html">
+                <![CDATA[
+                    <h1>PAYROLL DASHBOARD</h1>
+                    <p style="font-weight: bold;">Overview of payroll activities</p>
+                ]]>
+            </display>
+        </field>
+        <field name="stats" title="">
+            <display type="html">
+                <![CDATA[
+                    <h2>Statistics</h2>
+                    <table class="basic-table" cellspacing="5" cellpadding="5">
+                        <tr><td><b>Total Employees:</b></td><td>${statistics.totalEmployees}</td></tr>
+                        <tr><td><b>Active Payrolls:</b></td><td>${statistics.activePayrolls}</td></tr>
+                        <tr><td><b>Pending Loans:</b></td><td>${statistics.pendingLoans}</td></tr>
+                        <tr><td><b>This Month Payroll:</b></td><td>${statistics.thisMonthPayroll}</td></tr>
+                    </table>
+                ]]>
+            </display>
+        </field>
+        <field name="actions" title="">
+            <display type="html">
+                <![CDATA[
+                    <h2>Quick Actions</h2>
+                    <table cellspacing="8">
+                        <tr>
+                            <td><a href="RunPayroll">Run Payroll</a></td>
+                            <td><a href="EmployeeList">Employee Management</a></td>
+                            <td><a href="LoanManagement">Loan Management</a></td>
+                            <td><a href="PayrollReports">Reports</a></td>
+                        </tr>
+                    </table>
+                ]]>
+            </display>
+        </field>
+        <field name="recentList" title="">
+            <display type="html">
+                <![CDATA[
+                    <h2>Recent Payroll Runs</h2>
+                    <table class="basic-table">
+                        <tr>
+                            <th>Iteration</th>
+                            <th>Period From</th>
+                            <th>Total Employees</th>
+                            <th>Total Net Pay</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        <#list recentPayrolls as r>
+                        <tr>
+                            <td>${r.iterationName}</td>
+                            <td>${r.payPeriodFrom}</td>
+                            <td>${r.totalEmployees}</td>
+                            <td>${r.totalNetPay}</td>
+                            <td>${r.statusId}</td>
+                            <td><a href="ViewPayrollIteration?payrollIterationId=${r.payrollIterationId}">View</a></td>
+                        </tr>
+                        </#list>
+                    </table>
+                ]]>
+            </display>
+        </field>
+    </form>
+
+    <!-- ==================== -->
+    <!-- EMPLOYEE LIST FORM -->
+    <!-- ==================== -->
+
+    <form name="EmployeeListForm" type="list" list-name="employeeList" paginate="true"
+        separate-columns="true" odd-row-style="alternate-row">
+
+        <!-- Controls row: export, bulk actions, page-size -->
+        <field name="controls" title="">
+            <display type="html">
+                <![CDATA[
+                    <div class="toolbar" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                        <form method="get" action="">
+                            <label style="margin-right:6px;">Show</label>
+                            <select name="pageSize" onchange="this.form.submit()" style="margin-right:12px;">
+                                <option value="10">10</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </form>
+                        <a class="btn btn-sm" href="?export=csv" title="Export visible results to CSV">Export CSV</a>
+                        <a class="btn btn-sm" href="?export=xlsx" title="Export visible results to Excel">Export XLSX</a>
+                        <div style="margin-left:auto;">
+                            <span class="badge">Total: ${employeeListSize != null ? employeeListSize : ''}</span>
+                        </div>
+                    </div>
+                ]]>
+            </display>
+        </field>
+
+        <!-- Bulk select checkbox column -->
+        <field name="selectRow" title="">
+            <display type="html">
+                <![CDATA[
+                    <input type="checkbox" name="selectRow_${employeeId}" value="${employeeId}" />
+                ]]>
+            </display>
+        </field>
+
+        <!-- Avatar column -->
+        <field name="avatar" title=" " width="60px">
+            <display type="html">
+                <![CDATA[
+                    <img src="${avatarUrl != null ? avatarUrl : '/themes/images/default-avatar.png'}"
+                         alt="avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;" />
+                ]]>
+            </display>
+        </field>
+
+        <!-- Employee ID as a hyperlink -->
+        <field name="employeeId" title="Employee ID">
+            <hyperlink target="ViewEmployee">
+                <parameter param-name="employeeId"/>
+            </hyperlink>
+        </field>
+
+        <!-- Full name -->
+        <field name="fullName" title="Employee Name" widget-style="text-align-left">
+            <display/>
+        </field>
+
+        <!-- Department -->
+        <field name="department" title="Department">
+            <display/>
+        </field>
+
+        <!-- Position -->
+        <field name="position" title="Position">
+            <display/>
+        </field>
+
+        <!-- Email -->
+        <field name="email" title="Email">
+            <display/>
+        </field>
+
+        <!-- Phone -->
+        <field name="phone" title="Phone">
+            <display/>
+        </field>
+
+        <!-- Hire Date -->
+        <field name="hireDate" title="Hire Date">
+            <display/>
+        </field>
+
+        <!-- Status with badge -->
+        <field name="statusId" title="Status">
+            <display type="html">
+                <![CDATA[
+                    <span class="status-chip ${statusId}">
+                        ${uiLabelMap['Status.' + statusId] != null ? uiLabelMap['Status.' + statusId] : statusId}
+                    </span>
+                ]]>
+            </display>
+        </field>
+
+        <!-- Inline actions column -->
+        <field name="actions" title="Actions" widget-style="text-align-center" width="180px">
+            <display type="html">
+                <![CDATA[
+                    <div style="display:flex;gap:6px;justify-content:center;">
+                        <a class="btn btn-sm" href="ViewEmployee?employeeId=${employeeId}" title="View">View</a>
+                        <a class="btn btn-sm" href="EditEmployee?employeeId=${employeeId}" title="Edit">Edit</a>
+                        <a class="btn btn-sm" href="EmployeePayrollHistory?employeeId=${employeeId}" title="Payroll History">Payslips</a>
+                    </div>
+                ]]>
+            </display>
+        </field>
+
+        <!-- Row-actions removed as it was causing schema validation error -->
+        <!-- <row-actions> is not allowed in this context in newer OFBiz -->
+
+    </form>
+
+    <!-- ===========================
+         Employee Search Form
+       ============================ -->
+    <form name="EmployeeSearchForm" type="single" target="EmployeeList">
+        <field name="firstName" title="First Name">
+            <text-find/>
+        </field>
+        <field name="lastName" title="Last Name">
+            <text-find/>
+        </field>
+        <field name="employeeId" title="Employee ID">
+            <text-find/>
+        </field>
+        <field name="department" title="Department">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="Department"/>
+            </drop-down>
+        </field>
+        <field name="statusId" title="Status">
+            <drop-down allow-empty="true">
+                <option key="EMPL_ACTIVE"><property value="Active"/></option>
+                <option key="EMPL_INACTIVE"><property value="Inactive"/></option>
+                <option key="EMPL_TERMINATED"><property value="Terminated"/></option>
+            </drop-down>
+        </field>
+        <field name="searchButton" title="${uiLabelMap.ButtonSearch}" widget-style="smallSubmit">
+            <submit button-type="button"/>
+        </field>
+        <field name="newEmployeeButton" title="">
+            <display type="html">
+                <![CDATA[
+                    <a class="btn btn-secondary" href="CreateEmployee">New Employee</a>
+                ]]>
+            </display>
+        </field>
+    </form>
+
+    <!-- Create Employee Form -->
+    <form name="CreateEmployeeForm" type="single" target="createEmployee">
+        <field name="employeeId" title="Employee ID" required-field="true">
+            <text/>
+        </field>
+        <field name="firstName" title="First Name" required-field="true">
+            <text size="30"/>
+        </field>
+        <field name="lastName" title="Last Name" required-field="true">
+            <text size="30"/>
+        </field>
+        <field name="department" title="Department" required-field="true">
+            <drop-down>
+                <entity-options entity-name="Department" key-field-name="departmentId"/>
+            </drop-down>
+        </field>
+        <field name="position" title="Position" required-field="true">
+            <text size="30"/>
+        </field>
+        <field name="salary" title="Base Salary" required-field="true">
+            <text/>
+        </field>
+        <field name="email" title="Email">
+            <text size="40"/>
+        </field>
+        <field name="phone" title="Phone">
+            <text size="20"/>
+        </field>
+        <field name="hireDate" title="Hire Date" required-field="true">
+            <date-time type="date"/>
+        </field>
+        <field name="statusId" title="Status" required-field="true">
+            <drop-down>
+                <option key="EMPL_ACTIVE"><property value="Active"/></option>
+                <option key="EMPL_INACTIVE"><property value="Inactive"/></option>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="Create Employee">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+</forms>

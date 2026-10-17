@@ -1,0 +1,16 @@
+{
+  "phase": "Phase 17B-17D Safe Hardening",
+  "excluded": "17A disbursement accounting classification change intentionally not included to avoid impacting validated processing.",
+  "changedFiles": [
+    "LoanDisbursementInvoiceServices.java",
+    "LoanReconciliationServices.java",
+    "LoanUiServices.java",
+    "services.xml"
+  ],
+  "changes": [
+    "17B: repayment invoice paid-status finalization now occurs only when invoice is fully applied; added dry-run/backfill finalizer service.",
+    "17C: reconciliation warns when a LOAN_REPAYMENT invoice is fully applied but not INVOICE_PAID.",
+    "17D: added read-only getLoanProfileV1 API for profile/workbench payload."
+  ],
+  "safety": "No change to createPartyLoan, approvePartyLoan, disbursePartyLoan, recordPartyLoanRepayment allocation, or existing repayment balance posting logic."
+}

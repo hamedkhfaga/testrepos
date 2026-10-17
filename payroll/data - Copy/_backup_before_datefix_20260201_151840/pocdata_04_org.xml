@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+  <!-- ===================================================== -->
+  <!-- POC WT: Organization master (must be imported FIRST)   -->
+  <!-- Creates Party + PartyGroup + PartyRole + PayrollOrganization -->
+  <!-- IDs <= 20, no empty-string FKs                         -->
+  <!-- ===================================================== -->
+
+  <!-- 1) Party root -->
+  <Party partyId="WTORG" partyTypeId="PARTY_GROUP"/>
+  <PartyGroup partyId="WTORG" groupName="World Telecom (WT)"/>
+
+  <!-- IMPORTANT: roleTypeId must be valid OFBiz RoleType -->
+  
+<PartyRole partyId="WTORG" roleTypeId="INTERNAL_ORG"/>
+
+  <!-- 2) PayrollOrganization (parent for PayrollStructure) -->
+  <PayrollOrganization organizationpartyId="WTORG"
+                       orgName="World Telecom (WT)"
+                       defaultCurrencyUomId="SAR"
+                       countryGeoId="SAU"
+                       isActive="Y"/>
+</entity-engine-xml>
+

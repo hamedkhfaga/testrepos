@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    POCasseterp_patch2.xml — AcctgTransEntry.organizationPartyId fix
+    Problem: All AcctgTransEntry records in POCasseterp.xml were seeded without
+             organizationPartyId="Company". OFBiz standard Accounting searches
+             filter on AcctgTransEntry.organizationPartyId, so all ASSETERP
+             depreciation journals were invisible in the Finance module.
+    Fix:     Re-upsert every AcctgTransEntry with organizationPartyId="Company".
+             OFBiz entity-engine-xml import uses PK for upsert — the PK for
+             AcctgTransEntry is (acctgTransId + acctgTransEntrySeqId), so
+             re-importing with the same PK + same data + new field is safe.
+    Import:  Admin > Entity Engine XML Import  (same way as POCasseterp.xml)
+-->
+<entity-engine-xml>
+
+    <!-- AT-GAAP-2022-IT  Depr Expense IT Hardware 2022 -->
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-IT" acctgTransEntrySeqId="01"
+        organizationPartyId="Company" glAccountId="ASSETERP-741000"
+        debitCreditFlag="D" amount="15300.00" currencyUomId="USD"
+        description="Depr Expense IT Hardware 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-IT" acctgTransEntrySeqId="02"
+        organizationPartyId="Company" glAccountId="ASSETERP-142000"
+        debitCreditFlag="C" amount="15300.00" currencyUomId="USD"
+        description="Accum Depr IT Hardware 2022"/>
+
+    <!-- AT-GAAP-2022-SW  Depr Expense Software 2022 -->
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-SW" acctgTransEntrySeqId="01"
+        organizationPartyId="Company" glAccountId="ASSETERP-741100"
+        debitCreditFlag="D" amount="20500.00" currencyUomId="USD"
+        description="Depr Expense Software 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-SW" acctgTransEntrySeqId="02"
+        organizationPartyId="Company" glAccountId="ASSETERP-142100"
+        debitCreditFlag="C" amount="20500.00" currencyUomId="USD"
+        description="Accum Depr Software 2022"/>
+
+    <!-- AT-GAAP-2022-VH  Depr Expense Vehicles 2022 -->
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-VH" acctgTransEntrySeqId="01"
+        organizationPartyId="Company" glAccountId="ASSETERP-741200"
+        debitCreditFlag="D" amount="31140.00" currencyUomId="USD"
+        description="Depr Expense Vehicles 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-VH" acctgTransEntrySeqId="02"
+        organizationPartyId="Company" glAccountId="ASSETERP-142200"
+        debitCreditFlag="C" amount="31140.00" currencyUomId="USD"
+        description="Accum Depr Vehicles 2022"/>
+
+    <!-- AT-GAAP-2022-MC  Depr Expense Machinery 2022 -->
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-MC" acctgTransEntrySeqId="01"
+        organizationPartyId="Company" glAccountId="ASSETERP-741300"
+        debitCreditFlag="D" amount="17100.00" currencyUomId="USD"
+        description="Depr Expense Machinery 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-MC" acctgTransEntrySeqId="02"
+        organizationPartyId="Company" glAccountId="ASSETERP-142300"
+        debitCreditFlag="C" amount="17100.00" currencyUomId="USD"
+        description="Accum Depr Machinery 2022"/>
+
+    <!-- AT-GAAP-2022-FN  Depr Expense Furniture 2022 -->
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-FN" acctgTransEntrySeqId="01"
+        organizationPartyId="Company" glAccountId="ASSETERP-741400"
+        debitCreditFlag="D" amount="4037.50" currencyUomId="USD"
+        description="Depr Expense Furniture 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-FN" acctgTransEntrySeqId="02"
+        organizationPartyId="Company" glAccountId="ASSETERP-142400"
+        debitCreditFlag="C" amount="4037.50" currencyUomId="USD"
+        description="Accum Depr Furniture 2022"/>
+
+    <!-- AT-TAX-2022-VH  Tax Depr Vehicles 2022 DDB -->
+    <AcctgTransEntry acctgTransId="AT-TAX-2022-VH" acctgTransEntrySeqId="01"
+        organizationPartyId="Company" glAccountId="ASSETERP-741200"
+        debitCreditFlag="D" amount="58000.00" currencyUomId="USD"
+        description="Tax Depr Expense Vehicles 2022 DDB"/>
+    <AcctgTransEntry acctgTransId="AT-TAX-2022-VH" acctgTransEntrySeqId="02"
+        organizationPartyId="Company" glAccountId="ASSETERP-142200"
+        debitCreditFlag="C" amount="58000.00" currencyUomId="USD"
+        description="Tax Accum Depr Vehicles 2022 DDB"/>
+
+    <!-- AT-TAX-2023-VH  Tax Depr Vehicles 2023 DDB -->
+    <AcctgTransEntry acctgTransId="AT-TAX-2023-VH" acctgTransEntrySeqId="01"
+        organizationPartyId="Company" glAccountId="ASSETERP-741200"
+        debitCreditFlag="D" amount="34800.00" currencyUomId="USD"
+        description="Tax Depr Expense Vehicles 2023 DDB"/>
+    <AcctgTransEntry acctgTransId="AT-TAX-2023-VH" acctgTransEntrySeqId="02"
+        organizationPartyId="Company" glAccountId="ASSETERP-142200"
+        debitCreditFlag="C" amount="34800.00" currencyUomId="USD"
+        description="Tax Accum Depr Vehicles 2023 DDB"/>
+
+    <!-- AT-TAX-2024-VH  Tax Depr Vehicles 2024 DDB -->
+    <AcctgTransEntry acctgTransId="AT-TAX-2024-VH" acctgTransEntrySeqId="01"
+        organizationPartyId="Company" glAccountId="ASSETERP-741200"
+        debitCreditFlag="D" amount="20880.00" currencyUomId="USD"
+        description="Tax Depr Expense Vehicles 2024 DDB"/>
+    <AcctgTransEntry acctgTransId="AT-TAX-2024-VH" acctgTransEntrySeqId="02"
+        organizationPartyId="Company" glAccountId="ASSETERP-142200"
+        debitCreditFlag="C" amount="20880.00" currencyUomId="USD"
+        description="Tax Accum Depr Vehicles 2024 DDB"/>
+
+    <!-- AT-DISP-VH004  Disposal of ASSET-VH-004 -->
+    <AcctgTransEntry acctgTransId="AT-DISP-VH004" acctgTransEntrySeqId="01"
+        organizationPartyId="Company" glAccountId="ASSETERP-142200"
+        debitCreditFlag="D" amount="15120.00" currencyUomId="USD"
+        description="Remove accum depreciation — VH-004"/>
+    <AcctgTransEntry acctgTransId="AT-DISP-VH004" acctgTransEntrySeqId="02"
+        organizationPartyId="Company" glAccountId="ASSETERP-882000"
+        debitCreditFlag="D" amount="2120.00" currencyUomId="USD"
+        description="Loss on disposal — VH-004 (NBV 12880 - proceeds 10760)"/>
+    <AcctgTransEntry acctgTransId="AT-DISP-VH004" acctgTransEntrySeqId="03"
+        organizationPartyId="Company" glAccountId="ASSETERP-141200"
+        debitCreditFlag="C" amount="28000.00" currencyUomId="USD"
+        description="Remove asset cost — VH-004"/>
+
+</entity-engine-xml>

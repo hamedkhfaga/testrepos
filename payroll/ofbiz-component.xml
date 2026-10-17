@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ofbiz-component name="payroll"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/ofbiz-component.xsd">
+
+    <!-- ===================================================== -->
+    <!-- Resource Loader -->
+    <!-- ===================================================== -->
+    <resource-loader name="main" type="component"/>
+
+    <!-- ===================================================== -->
+    <!-- Classpath (optional but useful for config/) -->
+    <!-- This does NOT auto-load labels; it just makes config resources reachable. -->
+    <!-- ===================================================== -->
+    <classpath type="jar" location="config"/>
+ 
+    <!-- ===================================================== -->
+    <!-- Entity Model -->
+    <!-- ===================================================== -->
+    <entity-resource type="model"
+                     reader-name="main"
+                     loader="main"
+                     location="entitydef/entitymodel.xml"/>
+	<entity-resource type="model" reader-name="main" loader="main"
+        location="entitydef/entitymodel-hr-inputs.xml"/>
+<entity-resource type="model" reader-name="main" loader="main"
+        location="entitydef/entitymodel_phase25_additions.xml"/>
+		<entity-resource type="model" reader-name="main" loader="main"
+        location="entitydef/entitymodel-payroll-phase3.xml"/>
+		
+			<entity-resource type="model" reader-name="main" loader="main"
+        location="entitydef/entitymodel_payroll_governance.xml"/>
+    <!-- ===================================================== -->
+    
+
+    <!-- ===================================================== -->
+    <!-- SEED DATA (Parent-first) -->
+    <!-- IMPORTANT: must create any referenced StatusType/StatusItem and custom reference entities FIRST -->
+    <!-- ===================================================== -->
+    <entity-resource type="data" reader-name="seed" loader="main" location="data/PayrollTypeData.xml"/>
+   <entity-resource type="data" reader-name="seed" loader="main" location="data/PayrollStatusData.xml"/>
+    <entity-resource type="data" reader-name="seed" loader="main" location="data/PayrollSecurityPermissionSeedData.xml"/>
+
+    <!-- ===================================================== -->
+    <!-- DEMO DATA -->
+    <!-- ===================================================== -->
+    <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollSecurityGroupDemoData.xml"/>
+
+    <!-- Enable ONLY after your entities create tables successfully -->
+    <!--   
+    <entity-resource type="data" reader-name="demo" loader="main" location="data/Payroll_Seed_DemoData.xml"/>
+   -->
+<!--    POC  Data  -->
+
+   <entity-resource type="data" reader-name="seed" loader="main"    location="data/payroll_poc_onefile.xml"/>   
+ <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollGlMappingSeedData.xml"/>	
+  <entity-resource type="data" reader-name="demo" loader="main" location="data/pocdata_08_bank_split_payment.xml"/> 
+  <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollPhase25SeedData.xml"/> 
+  <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollGovernanceData.xml"/>
+  <entity-resource type="data" reader-name="demo" loader="main" location="data/PayrollTestV3.xml"/>
+
+ 
+<!-- 
+ 
+   
+
+
+
+   <entity-resource type="data" reader-name="demo" loader="main" location="data/pocdata_12_periods_2025_01_to_2026_03.xml"/>
+   <entity-resource type="data" reader-name="demo" loader="main" location="data/pocdata_03_party_employees_0001_0060.xml"/>
+   <entity-resource type="data" reader-name="demo" loader="main" location="data/pocdata_04_org.xml"/>
+   <entity-resource type="data" reader-name="demo" loader="main" location="data/pocdata_04_contacts_employees_0001_0060.xml"/> 
+   <entity-resource type="data" reader-name="demo" loader="main" location="data/pocdata_05_payroll_setup.xml"/>
+   <entity-resource type="data" reader-name="demo" loader="main" location="data/pocdata_06_assignments_0001_0060.xml"/>
+
+ 
+  -->
+    <!-- ===================================================== -->
+    <!-- SERVICES -->
+    <!-- ===================================================== -->
+    <service-resource type="model" loader="main" location="servicedef/services.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/payroll-scheduler-services_a.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/payroll-scheduler-services_b.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/payroll-scheduler-router-services.xml"/>
+    <service-resource type="model" loader="main" location="servicedef/services-hr-input.xml"/>
+	
+	<service-resource type="model" loader="main" location="servicedef/payroll-overtime-v2-services.xml"/>
+	<service-resource type="model" loader="main" location="servicedef/payroll-processing-v2-services.xml"/>
+	<service-resource type="model" loader="main" location="servicedef/payroll-phase25-services.xml"/>
+	<service-resource type="model" loader="main" location="servicedef/payroll-phase3-services.xml"/>
+	<service-resource type="model" loader="main" location="servicedef/payroll-governance-services.xml"/>
+	
+    <!-- ===================================================== -->
+    <!-- WEBAPP -->
+    <!-- ===================================================== -->
+    <webapp name="payroll"
+        title="Payroll"
+        server="default-server"
+        location="webapp/payroll"
+        base-permission="OFBTOOLS,PAYROLL"
+        mount-point="/payroll"/>
+</ofbiz-component>

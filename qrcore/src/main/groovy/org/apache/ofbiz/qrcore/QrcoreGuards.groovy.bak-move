@@ -1,0 +1,29 @@
+/*
+ * qrcore — server-side workflow guards (UI-support plugin; OFBiz core untouched).
+ *
+ * qrcorePaymentVoidGuard: attached by qrcore secas.xml to the INVOKE stage of
+ * setPaymentStatus and voidPayment. Members of security group QRC_PMT_NOVOID
+ * are denied Cancel/Void transitions — all other payment actions untouched.
+ * Stock OFBiz cannot express this (Cancel/Void share ACCOUNTING_UPDATE with
+ * every other payment action), hence this plugin-level deny-list guard.
+ */
+package org.apache.ofbiz.qrcore
+
+Map qrcorePaymentVoidGuard() {
+    // voidPayment carries no statusId parameter — treat it as PMNT_VOID
+    String target = parameters.statusId ?: 'PMNT_VOID'
+    if (['PMNT_CANCELLED', 'PMNT_VOID'].contains(target)) {
+        String uid = userLogin?.userLoginId
+        if (uid) {
+            def restricted = from('UserLoginSecurityGroup')
+                    .where('userLoginId', uid, 'groupId', 'QRC_PMT_NOVOID')
+                    .filterByDate()
+                    .queryList()
+            if (restricted) {
+                return error("User ${uid} is not authorized to cancel or void payments " +
+                        '(QRC_PMT_NOVOID restriction). Contact an administrator.')
+            }
+        }
+    }
+    return success()
+}

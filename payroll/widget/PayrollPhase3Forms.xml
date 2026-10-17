@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+  <form name="PayrollPostRunForm" type="single" target="PostPayrollRunV3" title="${uiLabelMap.PayrollPostRun}">
+    <field name="payrollRunId" title="${uiLabelMap.PayrollRunId}"><text/></field>
+    <field name="accountingPostOptionId" title="${uiLabelMap.PayrollPostOption}">
+      <drop-down allow-empty="false">
+        <option key="PO_GL" description="${uiLabelMap.PayrollPostToGL}"/>
+        <option key="PO_INV" description="${uiLabelMap.PayrollPostToInvoice}"/>
+      </drop-down>
+    </field>
+    <field name="forceRepost" title="${uiLabelMap.PayrollForce}">
+      <drop-down allow-empty="true">
+        <option key="N" description="N"/>
+        <option key="Y" description="Y"/>
+      </drop-down>
+    </field>
+    <field name="submitButton" title="${uiLabelMap.PayrollExecute}"><submit button-type="button"/></field>
+  </form>
+
+  <form name="PayrollRoutePaymentsForm" type="single" target="RoutePaymentsV3" title="${uiLabelMap.PayrollRoutePayments}">
+    <field name="payrollRunId" title="${uiLabelMap.PayrollRunId}"><text/></field>
+    <field name="defaultDisbursementChannelId" title="${uiLabelMap.PayrollDefaultChannel}">
+      <drop-down allow-empty="true">
+        <option key="BANK" description="${uiLabelMap.PayrollChannelBank}"/>
+        <option key="CASH" description="${uiLabelMap.PayrollChannelCash}"/>
+        <option key="CHEQUE" description="${uiLabelMap.PayrollChannelCheque}"/>
+        <option key="WALLET" description="${uiLabelMap.PayrollChannelWallet}"/>
+      </drop-down>
+    </field>
+    <field name="forceReroute" title="${uiLabelMap.PayrollForce}">
+      <drop-down allow-empty="true">
+        <option key="N" description="N"/>
+        <option key="Y" description="Y"/>
+      </drop-down>
+    </field>
+    <field name="dryRun" title="${uiLabelMap.PayrollDryRun}">
+      <drop-down allow-empty="true">
+        <option key="N" description="N"/>
+        <option key="Y" description="Y"/>
+      </drop-down>
+    </field>
+    <field name="submitButton" title="${uiLabelMap.PayrollExecute}"><submit button-type="button"/></field>
+  </form>
+
+  <form name="PayrollGenerateBankBatchForm" type="single" target="GenerateBankBatchV3" title="${uiLabelMap.PayrollGenerateBankBatch}">
+    <field name="payrollRunId" title="${uiLabelMap.PayrollRunId}"><text/></field>
+    <field name="bankTransferConfigId" title="${uiLabelMap.PayrollBankTransferConfigId}"><text/></field>
+    <field name="forceRegenerate" title="${uiLabelMap.PayrollForce}">
+      <drop-down allow-empty="true">
+        <option key="N" description="N"/>
+        <option key="Y" description="Y"/>
+      </drop-down>
+    </field>
+    <field name="dryRun" title="${uiLabelMap.PayrollDryRun}">
+      <drop-down allow-empty="true">
+        <option key="N" description="N"/>
+        <option key="Y" description="Y"/>
+      </drop-down>
+    </field>
+    <field name="submitButton" title="${uiLabelMap.PayrollExecute}"><submit button-type="button"/></field>
+  </form>
+  
+  <form name="PayrollApproveBankBatchForm" type="single" target="ApproveBankBatchV3" title="${uiLabelMap.PayrollApproveBankBatch}">
+  <field name="bankTransferBatchId" title="${uiLabelMap.PayrollBankTransferBatchId}"><text/></field>
+  <field name="approveNote" title="${uiLabelMap.PayrollNote}"><text/></field>
+  <field name="submitButton" title="${uiLabelMap.PayrollExecute}"><submit button-type="button"/></field>
+</form>
+
+<form name="PayrollExportBankFileForm" type="single" target="ExportBankFileV3" title="${uiLabelMap.PayrollExportBankFile}">
+  <field name="bankTransferBatchId" title="${uiLabelMap.PayrollBankTransferBatchId}"><text/></field>
+  <field name="outDir" title="${uiLabelMap.PayrollOutDir}"><text/></field>
+  <field name="fileName" title="${uiLabelMap.PayrollFileName}"><text/></field>
+  <field name="dryRun" title="${uiLabelMap.PayrollDryRun}">
+    <drop-down allow-empty="true">
+      <option key="N" description="N"/>
+      <option key="Y" description="Y"/>
+    </drop-down>
+  </field>
+  <field name="submitButton" title="${uiLabelMap.PayrollExecute}"><submit button-type="button"/></field>
+</form>
+
+
+
+
+</forms>

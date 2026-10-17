@@ -1,0 +1,92 @@
+📑 Project Document: Fingerprint Dashboard Implementation (A-Z)
+System: Apache OFBiz 24
+
+Plugin: Fingerprint Biometric Management
+
+Status: Multi-Column, AJAX-Enabled, Auto-Refresh
+
+Part 1: Database Setup (The Grid)
+These steps define the structural layout of the dashboard.
+
+Step 1: Define the Portal Page
+Register the dashboard ID in your data XML.
+
+XML
+
+<PortalPage portalPageId="FP_DASHBOARD" portalPageName="Fingerprint Dashboard" parentPortalPageId="MAIN"/>
+Step 2: Fix the Layout (Column Widths)
+Crucial: This step prevents the "One Row" problem by creating side-by-side columns.
+
+XML
+
+<PortalPageColumn portalPageId="FP_DASHBOARD" columnSeqId="00001" columnWidthPercentage="50"/>
+<PortalPageColumn portalPageId="FP_DASHBOARD" columnSeqId="00002" columnWidthPercentage="50"/>
+Step 3: Register Portlet IDs
+Map nickname IDs to the actual screen locations.
+
+XML
+
+<PortalPortlet portalPortletId="FP_CARDS" screenName="AttendanceCountersPortlet" screenLocation="component://fingerprint/widget/FingerprintScreens.xml"/>
+<PortalPortlet portalPortletId="FP_DEVICES" screenName="DeviceStatusPortlet" screenLocation="component://fingerprint/widget/FingerprintScreens.xml"/>
+Step 4: Map Portlets to Columns
+Assign which widget appears on the left or right.
+
+XML
+
+<PortalPagePortlet portalPageId="FP_DASHBOARD" portalPortletId="FP_CARDS" columnSeqId="00001" sequenceNum="1"/>
+<PortalPagePortlet portalPageId="FP_DASHBOARD" portalPortletId="FP_DEVICES" columnSeqId="00002" sequenceNum="1"/>
+Part 2: Screen Widgets & Logic
+These steps handle the UI and the data calculations.
+
+Step 5: Create the Main Wrapper Screen
+The container that calls the portal page.
+
+XML
+
+<screen name="main">
+    <section>
+        <actions><set field="portalPageId" value="FP_DASHBOARD"/></actions>
+        <widgets><include-portal-page id="${portalPageId}"/></widgets>
+    </section>
+</screen>
+Step 6: Create the Groovy Logic Script
+File: FingerprintDashboard.groovy Used to count active devices and daily punches.
+
+Groovy
+
+context.activeDevicesCount = from("BiometricDevice").where("statusId", "DEVICE_ENABLED").queryCount()
+context.punchCount = from("BiometricEventLog").where(EntityCondition.makeCondition("eventDateTime", EntityOperator.GREATER_THAN, dayStart)).queryCount()
+Step 7: Build the Portlet Screens
+Combine the Groovy logic and the display labels.
+
+Step 8: Apply CSS Styling
+Add card styles (borders, shadows, and padding) to the screen containers.
+
+Part 3: Interactivity (AJAX & Refresh)
+These steps make the dashboard modern and automated.
+
+Step 9: Add AJAX Update Areas
+Wrap the portlet in a container with a specific ID (e.g., id="AttendanceCountersContainer").
+
+Step 10: Create the Refresh Link
+Add a <link link-type="update-area"> to trigger data reloads without refreshing the browser.
+
+Step 11: Add the Auto-Refresh Timer
+Insert a JavaScript setTimeout to click the refresh button every 60 seconds automatically.
+
+Step 12: Configure the Controller
+Map the AJAX request URIs in controller.xml so the server knows how to respond to "Refresh" clicks.
+
+Part 4: Deployment & Testing
+How to move from code to a working screen.
+
+Step 13: Import Test Data
+Load sample BiometricDevice and BiometricEventLog records to verify the counters.
+
+Step 14: Clear Cache & Reset User Preferences
+Important: Delete user-specific rows in the PortalPage entity to ensure the new 50/50 layout is applied.
+
+Step 15: Final Verification
+Access .../control/main and verify that columns are side-by-side and numbers update automatically.
+
+Next Step: Since your documentation is now complete, would you like me to help you format a Troubleshooting Guide for common XML errors you might encounter during the "Step 15" verification?

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0.
+-->
+<entity-engine-xml>
+
+    <!-- ================================================================
+         STATUS — OFBiz standard StatusType + StatusItem
+         ================================================================ -->
+
+    <StatusType statusTypeId="ASSET_ERP_STATUS" description="Asset ERP Lifecycle Status"/>
+    <StatusItem statusId="ASSET_REQUESTED"   statusTypeId="ASSET_ERP_STATUS" statusCode="REQUESTED"    sequenceId="01" description="Asset Requested"/>
+    <StatusItem statusId="ASSET_APPROVED"    statusTypeId="ASSET_ERP_STATUS" statusCode="APPROVED"     sequenceId="02" description="Asset Approved"/>
+    <StatusItem statusId="ASSET_REJECTED"    statusTypeId="ASSET_ERP_STATUS" statusCode="REJECTED"     sequenceId="03" description="Asset Rejected"/>
+    <StatusItem statusId="ASSET_ORDERED"     statusTypeId="ASSET_ERP_STATUS" statusCode="ORDERED"      sequenceId="04" description="Asset Ordered"/>
+    <StatusItem statusId="ASSET_RECEIVED"    statusTypeId="ASSET_ERP_STATUS" statusCode="RECEIVED"     sequenceId="05" description="Asset Received"/>
+    <StatusItem statusId="ASSET_REGISTERED"  statusTypeId="ASSET_ERP_STATUS" statusCode="REGISTERED"   sequenceId="06" description="Asset Registered"/>
+    <StatusItem statusId="ASSET_CAPITALIZED" statusTypeId="ASSET_ERP_STATUS" statusCode="CAPITALIZED"  sequenceId="07" description="Asset Capitalized"/>
+    <StatusItem statusId="ASSET_ACTIVE"      statusTypeId="ASSET_ERP_STATUS" statusCode="ACTIVE"       sequenceId="08" description="Asset Active"/>
+    <StatusItem statusId="ASSET_ASSIGNED"    statusTypeId="ASSET_ERP_STATUS" statusCode="ASSIGNED"     sequenceId="09" description="Asset Assigned"/>
+    <StatusItem statusId="ASSET_TRANSFERRED" statusTypeId="ASSET_ERP_STATUS" statusCode="TRANSFERRED"  sequenceId="10" description="Asset Transferred"/>
+    <StatusItem statusId="ASSET_IN_MAINT"    statusTypeId="ASSET_ERP_STATUS" statusCode="IN_MAINT"     sequenceId="11" description="Asset In Maintenance"/>
+    <StatusItem statusId="ASSET_IDLE"        statusTypeId="ASSET_ERP_STATUS" statusCode="IDLE"         sequenceId="12" description="Asset Idle"/>
+    <StatusItem statusId="ASSET_RENTED_OUT"  statusTypeId="ASSET_ERP_STATUS" statusCode="RENTED_OUT"   sequenceId="13" description="Asset Rented Out"/>
+    <StatusItem statusId="ASSET_LEASED_IN"   statusTypeId="ASSET_ERP_STATUS" statusCode="LEASED_IN"    sequenceId="14" description="Asset Leased In"/>
+    <StatusItem statusId="ASSET_HELD_SALE"   statusTypeId="ASSET_ERP_STATUS" statusCode="HELD_FOR_SALE" sequenceId="15" description="Asset Held For Sale"/>
+    <StatusItem statusId="ASSET_SOLD"        statusTypeId="ASSET_ERP_STATUS" statusCode="SOLD"         sequenceId="16" description="Asset Sold"/>
+    <StatusItem statusId="ASSET_RETIRED"     statusTypeId="ASSET_ERP_STATUS" statusCode="RETIRED"      sequenceId="17" description="Asset Retired"/>
+    <StatusItem statusId="ASSET_SCRAPPED"    statusTypeId="ASSET_ERP_STATUS" statusCode="SCRAPPED"     sequenceId="18" description="Asset Scrapped"/>
+    <StatusItem statusId="ASSET_RETURNED"    statusTypeId="ASSET_ERP_STATUS" statusCode="RETURNED"     sequenceId="19" description="Asset Returned"/>
+    <StatusItem statusId="ASSET_CLOSED"      statusTypeId="ASSET_ERP_STATUS" statusCode="CLOSED"       sequenceId="20" description="Asset Closed"/>
+
+    <!-- ================================================================
+         FIXED ASSET TYPES — OFBiz standard FixedAssetType
+         ================================================================ -->
+
+    <FixedAssetType fixedAssetTypeId="ASSET_LAND"        description="Land"                           hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_BUILDING"    description="Buildings and Real Estate"      hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_LEASE_IMP"   description="Leasehold Improvements"        hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_MACHINERY"   description="Plant and Production Equipment" hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_VEHICLE"     description="Fleet and Vehicles"             hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_IT_HW"       description="IT Hardware"                    hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_SOFTWARE"    description="Software and Digital Assets"    hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_FURNITURE"   description="Furniture and Fixtures"         hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_OFF_EQUIP"   description="Office Equipment"               hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_TOOLS"       description="Tools and Small Equipment"      hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_FACILITY"    description="Facility and Utility Systems"   hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_INFRA"       description="Infrastructure Assets"          hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_RENTAL"      description="Rental and Leasing Assets"      hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_ROU"         description="Right-of-Use Assets"            hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_CIP"         description="Construction in Progress"       hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_INTANGIBLE"  description="Intangible Assets"              hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_INV_PROP"    description="Investment Property"            hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_OTHER"       description="Other Enterprise Assets"        hasTable="N"/>
+
+    <!-- ================================================================
+         ROLE TYPES — OFBiz standard RoleType
+         ================================================================ -->
+
+    <RoleType roleTypeId="ASSET_CUSTODIAN" parentTypeId="EMPLOYEE" hasTable="N" description="Asset Custodian"/>
+    <RoleType roleTypeId="ASSET_APPROVER"  parentTypeId="MANAGER"  hasTable="N" description="Asset Approver"/>
+
+    <!-- ================================================================
+         ENUMERATIONS — OFBiz standard EnumerationType + Enumeration
+         Replaces the removed AsseterpEventType custom entity.
+         Each group has a distinct enumTypeId.
+         ================================================================ -->
+
+    <!-- 1. Lifecycle Event Types (replaces AsseterpEventType) -->
+    <EnumerationType enumTypeId="AE_EVENT_TYPE" description="Asset ERP Lifecycle Event Type"/>
+    <Enumeration enumId="AEVT_REQUESTED"        enumTypeId="AE_EVENT_TYPE" sequenceId="01" description="Asset request submitted"/>
+    <Enumeration enumId="AEVT_APPROVED"         enumTypeId="AE_EVENT_TYPE" sequenceId="02" description="Asset request approved"/>
+    <Enumeration enumId="AEVT_REJECTED"         enumTypeId="AE_EVENT_TYPE" sequenceId="03" description="Asset request rejected"/>
+    <Enumeration enumId="AEVT_CANCELLED"        enumTypeId="AE_EVENT_TYPE" sequenceId="04" description="Asset request cancelled"/>
+    <Enumeration enumId="AEVT_ORDERED"          enumTypeId="AE_EVENT_TYPE" sequenceId="05" description="Purchase order created for asset"/>
+    <Enumeration enumId="AEVT_RECEIVED"         enumTypeId="AE_EVENT_TYPE" sequenceId="06" description="Asset received from supplier"/>
+    <Enumeration enumId="AEVT_REGISTERED"       enumTypeId="AE_EVENT_TYPE" sequenceId="07" description="Asset registered in fixed asset register"/>
+    <Enumeration enumId="AEVT_CAPITALIZED"      enumTypeId="AE_EVENT_TYPE" sequenceId="08" description="Asset capitalized from CIP"/>
+    <Enumeration enumId="AEVT_ASSIGNED"         enumTypeId="AE_EVENT_TYPE" sequenceId="09" description="Asset custody assigned"/>
+    <Enumeration enumId="AEVT_TRANSFERRED"      enumTypeId="AE_EVENT_TYPE" sequenceId="10" description="Asset custody transferred"/>
+    <Enumeration enumId="AEVT_MAINT_CREATED"    enumTypeId="AE_EVENT_TYPE" sequenceId="11" description="Maintenance work order created"/>
+    <Enumeration enumId="AEVT_MAINT_COMPLETED"  enumTypeId="AE_EVENT_TYPE" sequenceId="12" description="Maintenance work order completed"/>
+    <Enumeration enumId="AEVT_METER_READING"    enumTypeId="AE_EVENT_TYPE" sequenceId="13" description="Meter reading recorded"/>
+    <Enumeration enumId="AEVT_DEP_CALC"         enumTypeId="AE_EVENT_TYPE" sequenceId="14" description="Depreciation calculated"/>
+    <Enumeration enumId="AEVT_DEP_POSTED"       enumTypeId="AE_EVENT_TYPE" sequenceId="15" description="Depreciation posted to GL"/>
+    <Enumeration enumId="AEVT_DEP_RUN"          enumTypeId="AE_EVENT_TYPE" sequenceId="16" description="Batch depreciation run completed"/>
+    <Enumeration enumId="AEVT_BOOK_CREATED"     enumTypeId="AE_EVENT_TYPE" sequenceId="17" description="Depreciation book created"/>
+    <Enumeration enumId="AEVT_BOOK_CHANGED"     enumTypeId="AE_EVENT_TYPE" sequenceId="18" description="Depreciation estimate changed (IAS 8)"/>
+    <Enumeration enumId="AEVT_REVALUED"         enumTypeId="AE_EVENT_TYPE" sequenceId="19" description="Asset revalued (IAS 16)"/>
+    <Enumeration enumId="AEVT_IMPAIRED"         enumTypeId="AE_EVENT_TYPE" sequenceId="20" description="Impairment loss recognised (IAS 36)"/>
+    <Enumeration enumId="AEVT_HELD_SALE"        enumTypeId="AE_EVENT_TYPE" sequenceId="21" description="Reclassified as held for sale (IFRS 5)"/>
+    <Enumeration enumId="AEVT_TAGGED"           enumTypeId="AE_EVENT_TYPE" sequenceId="22" description="Physical tag issued to asset"/>
+    <Enumeration enumId="AEVT_VERIFIED"         enumTypeId="AE_EVENT_TYPE" sequenceId="23" description="Physical verification completed"/>
+    <Enumeration enumId="AEVT_RETIRED"          enumTypeId="AE_EVENT_TYPE" sequenceId="24" description="Asset retired from service"/>
+    <Enumeration enumId="AEVT_SCRAPPED"         enumTypeId="AE_EVENT_TYPE" sequenceId="25" description="Asset scrapped"/>
+    <Enumeration enumId="AEVT_SOLD"             enumTypeId="AE_EVENT_TYPE" sequenceId="26" description="Asset sold"/>
+
+    <!-- 2. Depreciation Methods — Enumeration labels (display / reporting) -->
+    <EnumerationType enumTypeId="AE_DEP_METHOD" description="Asset ERP Depreciation Method"/>
+    <Enumeration enumId="DEP_SL"   enumTypeId="AE_DEP_METHOD" sequenceId="01" description="Straight Line"/>
+    <Enumeration enumId="DEP_DDB"  enumTypeId="AE_DEP_METHOD" sequenceId="02" description="Double Declining Balance"/>
+    <Enumeration enumId="DEP_SYD"  enumTypeId="AE_DEP_METHOD" sequenceId="03" description="Sum of Years Digits"/>
+    <Enumeration enumId="DEP_UOP"  enumTypeId="AE_DEP_METHOD" sequenceId="04" description="Units of Production"/>
+    <Enumeration enumId="DEP_RB"   enumTypeId="AE_DEP_METHOD" sequenceId="05" description="Reducing Balance"/>
+    <Enumeration enumId="DEP_NONE" enumTypeId="AE_DEP_METHOD" sequenceId="06" description="Non-Depreciable (Land)"/>
+
+    <!--
+        Depreciation Formula CustomMethod records.
+        These are the calculation engine wiring: each CustomMethod.customMethodName
+        is the OFBiz service name invoked by calculateFixedAssetDepreciation.
+        DEP_SL and DEP_DDB reuse the OFBiz standard services (shipped in AccountingSeedData.xml).
+        DEP_SYD, DEP_UOP, DEP_RB, DEP_NONE, DEP_MACRS are implemented in
+        component://asseterp/script/AsseterpDepServices.groovy.
+    -->
+    <CustomMethod customMethodId="AE_DEP_SL_FORMULA"   customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="straightLineDepreciation"
+                  description="Straight Line — (cost−salvage)/years"/>
+    <CustomMethod customMethodId="AE_DEP_DDB_FORMULA"  customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="doubleDecliningBalanceDepreciation"
+                  description="Double Declining Balance — 2×(NBV−salvage)/remainingYears"/>
+    <CustomMethod customMethodId="AE_DEP_SYD_FORMULA"  customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="asseterpSydDepreciation"
+                  description="Sum-of-Years-Digits — (cost−salvage)×(n−yr+1)/SYD"/>
+    <CustomMethod customMethodId="AE_DEP_UOP_FORMULA"  customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="asseterpUopDepreciation"
+                  description="Units of Production — (cost−salvage)/capacity × unitsToDate"/>
+    <CustomMethod customMethodId="AE_DEP_RB_FORMULA"   customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="asseterpRbDepreciation"
+                  description="Reducing Balance — NBV × r, where r=1−(S/C)^(1/n)"/>
+    <CustomMethod customMethodId="AE_DEP_NONE_FORMULA" customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="asseterpNoneDepreciation"
+                  description="Non-Depreciable — always posts zero (Land, perpetual assets)"/>
+    <CustomMethod customMethodId="AE_DEP_MACRS_FORMULA" customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="asseterpMacrsDepreciation"
+                  description="MACRS — IRS Rev. Proc. 87-57 half-year convention tables (3/5/7/10/15/20YR)"/>
+
+    <!-- 3. Depreciation Book Types -->
+    <EnumerationType enumTypeId="AE_BOOK_TYPE" description="Asset ERP Depreciation Book Type"/>
+    <Enumeration enumId="BOOK_GAAP" enumTypeId="AE_BOOK_TYPE" sequenceId="01" description="GAAP / Local Statutory Book"/>
+    <Enumeration enumId="BOOK_TAX"  enumTypeId="AE_BOOK_TYPE" sequenceId="02" description="Tax Book"/>
+    <Enumeration enumId="BOOK_IFRS" enumTypeId="AE_BOOK_TYPE" sequenceId="03" description="IFRS / Management Book"/>
+
+    <!-- 4. Asset Tag Types -->
+    <EnumerationType enumTypeId="AE_TAG_TYPE" description="Asset ERP Physical Tag Type"/>
+    <Enumeration enumId="TAG_BARCODE" enumTypeId="AE_TAG_TYPE" sequenceId="01" description="Barcode Label"/>
+    <Enumeration enumId="TAG_QR"      enumTypeId="AE_TAG_TYPE" sequenceId="02" description="QR Code Label"/>
+    <Enumeration enumId="TAG_RFID"    enumTypeId="AE_TAG_TYPE" sequenceId="03" description="RFID Tag"/>
+    <Enumeration enumId="TAG_NFC"     enumTypeId="AE_TAG_TYPE" sequenceId="04" description="NFC Tag"/>
+    <Enumeration enumId="TAG_EMBOSS"  enumTypeId="AE_TAG_TYPE" sequenceId="05" description="Embossed Plate"/>
+
+    <!-- 5. Alert Types -->
+    <EnumerationType enumTypeId="AE_ALERT_TYPE" description="Asset ERP Alert Type"/>
+    <Enumeration enumId="ALERT_INS_EXP"   enumTypeId="AE_ALERT_TYPE" sequenceId="01" description="Insurance Expiry Due"/>
+    <Enumeration enumId="ALERT_WRN_EXP"   enumTypeId="AE_ALERT_TYPE" sequenceId="02" description="Warranty Expiry Due"/>
+    <Enumeration enumId="ALERT_COMP_EXP"  enumTypeId="AE_ALERT_TYPE" sequenceId="03" description="Compliance Certificate Expiry"/>
+    <Enumeration enumId="ALERT_MAINT_DUE" enumTypeId="AE_ALERT_TYPE" sequenceId="04" description="Scheduled Maintenance Due"/>
+    <Enumeration enumId="ALERT_DEP_ZERO"  enumTypeId="AE_ALERT_TYPE" sequenceId="05" description="Asset Fully Depreciated"/>
+    <Enumeration enumId="ALERT_LIC_EXP"   enumTypeId="AE_ALERT_TYPE" sequenceId="06" description="Software License Expiry"/>
+    <Enumeration enumId="ALERT_VERIF_DUE" enumTypeId="AE_ALERT_TYPE" sequenceId="07" description="Physical Verification Due"/>
+    <Enumeration enumId="ALERT_PENDING"   enumTypeId="AE_ALERT_TYPE" sequenceId="08" description="Alert Pending Acknowledgement"/>
+
+    <!-- 6. Budget Types -->
+    <EnumerationType enumTypeId="AE_BUDGET_TYPE" description="Asset ERP Budget Type"/>
+    <Enumeration enumId="BGTTYPE_CAPEX" enumTypeId="AE_BUDGET_TYPE" sequenceId="01" description="Capital Expenditure (CAPEX)"/>
+    <Enumeration enumId="BGTTYPE_OPEX"  enumTypeId="AE_BUDGET_TYPE" sequenceId="02" description="Operating Expenditure (OPEX)"/>
+    <Enumeration enumId="BGTTYPE_MAINT" enumTypeId="AE_BUDGET_TYPE" sequenceId="03" description="Maintenance Budget"/>
+
+    <!-- 7. Government Grant Types (IAS 20) -->
+    <EnumerationType enumTypeId="AE_GRANT_TYPE" description="Asset ERP Government Grant Type"/>
+    <Enumeration enumId="GRANT_CAPITAL"  enumTypeId="AE_GRANT_TYPE" sequenceId="01" description="Capital Grant (deducted from asset cost)"/>
+    <Enumeration enumId="GRANT_DEFERRED" enumTypeId="AE_GRANT_TYPE" sequenceId="02" description="Deferred Income Grant"/>
+    <Enumeration enumId="GRANT_SUBSIDY"  enumTypeId="AE_GRANT_TYPE" sequenceId="03" description="Operating Subsidy"/>
+
+    <!-- 8. GL Mapping Types -->
+    <EnumerationType enumTypeId="AE_GL_MAP_TYPE" description="Asset ERP GL Mapping Type"/>
+    <Enumeration enumId="GL_MAP_COST"      enumTypeId="AE_GL_MAP_TYPE" sequenceId="01" description="Asset Cost Account"/>
+    <Enumeration enumId="GL_MAP_ACCUM_DEP" enumTypeId="AE_GL_MAP_TYPE" sequenceId="02" description="Accumulated Depreciation Account"/>
+    <Enumeration enumId="GL_MAP_DEP_EXP"   enumTypeId="AE_GL_MAP_TYPE" sequenceId="03" description="Depreciation Expense Account"/>
+    <Enumeration enumId="GL_MAP_GAIN"      enumTypeId="AE_GL_MAP_TYPE" sequenceId="04" description="Gain on Disposal Account"/>
+    <Enumeration enumId="GL_MAP_LOSS"      enumTypeId="AE_GL_MAP_TYPE" sequenceId="05" description="Loss on Disposal Account"/>
+    <Enumeration enumId="GL_MAP_CIP"       enumTypeId="AE_GL_MAP_TYPE" sequenceId="06" description="Construction in Progress Account"/>
+    <Enumeration enumId="GL_MAP_REVAL_RSV" enumTypeId="AE_GL_MAP_TYPE" sequenceId="07" description="Revaluation Reserve Account"/>
+    <Enumeration enumId="GL_MAP_IMPAIR"    enumTypeId="AE_GL_MAP_TYPE" sequenceId="08" description="Impairment Loss Account"/>
+
+    <!-- 9. Policy Types -->
+    <EnumerationType enumTypeId="AE_POLICY_TYPE" description="Asset ERP Policy Type"/>
+    <Enumeration enumId="POL_CAP_THRESH"  enumTypeId="AE_POLICY_TYPE" sequenceId="01" description="Capitalization Threshold"/>
+    <Enumeration enumId="POL_USEFUL_LIFE" enumTypeId="AE_POLICY_TYPE" sequenceId="02" description="Default Useful Life (Years)"/>
+    <Enumeration enumId="POL_SALVAGE_PCT" enumTypeId="AE_POLICY_TYPE" sequenceId="03" description="Default Salvage Value (%)"/>
+    <Enumeration enumId="POL_DEP_METHOD"  enumTypeId="AE_POLICY_TYPE" sequenceId="04" description="Default Depreciation Method"/>
+    <Enumeration enumId="POL_VERIF_FREQ"  enumTypeId="AE_POLICY_TYPE" sequenceId="05" description="Physical Verification Frequency (months)"/>
+
+    <!-- 10. Estimate Change Types (IAS 8) -->
+    <EnumerationType enumTypeId="AE_CHANGE_TYPE" description="Asset ERP Estimate Change Type (IAS 8)"/>
+    <Enumeration enumId="CHG_USEFUL_LIFE" enumTypeId="AE_CHANGE_TYPE" sequenceId="01" description="Change in Useful Life"/>
+    <Enumeration enumId="CHG_SALVAGE_VAL" enumTypeId="AE_CHANGE_TYPE" sequenceId="02" description="Change in Salvage Value"/>
+    <Enumeration enumId="CHG_DEP_METHOD"  enumTypeId="AE_CHANGE_TYPE" sequenceId="03" description="Change in Depreciation Method"/>
+    <Enumeration enumId="CHG_MIXED"       enumTypeId="AE_CHANGE_TYPE" sequenceId="04" description="Multiple Estimate Changes"/>
+
+    <!-- 11. Valuation Methods -->
+    <EnumerationType enumTypeId="AE_VAL_METHOD" description="Asset ERP Valuation Method"/>
+    <Enumeration enumId="VAL_MARKET"   enumTypeId="AE_VAL_METHOD" sequenceId="01" description="Market Comparison Approach"/>
+    <Enumeration enumId="VAL_INCOME"   enumTypeId="AE_VAL_METHOD" sequenceId="02" description="Income Capitalisation Approach"/>
+    <Enumeration enumId="VAL_COST"     enumTypeId="AE_VAL_METHOD" sequenceId="03" description="Depreciated Replacement Cost"/>
+    <Enumeration enumId="VAL_INTERNAL" enumTypeId="AE_VAL_METHOD" sequenceId="04" description="Internal Management Estimate"/>
+
+    <!-- 12. Disposal Methods -->
+    <EnumerationType enumTypeId="AE_DISPOSAL_METHOD" description="Asset ERP Disposal Method"/>
+    <Enumeration enumId="DISP_SALE"     enumTypeId="AE_DISPOSAL_METHOD" sequenceId="01" description="Sale to Third Party"/>
+    <Enumeration enumId="DISP_SCRAP"    enumTypeId="AE_DISPOSAL_METHOD" sequenceId="02" description="Scrapped / Written Off"/>
+    <Enumeration enumId="DISP_RETIRE"   enumTypeId="AE_DISPOSAL_METHOD" sequenceId="03" description="Retirement from Service"/>
+    <Enumeration enumId="DISP_DONATE"   enumTypeId="AE_DISPOSAL_METHOD" sequenceId="04" description="Donated / Gifted"/>
+    <Enumeration enumId="DISP_TRANSFER" enumTypeId="AE_DISPOSAL_METHOD" sequenceId="05" description="Intercompany Transfer"/>
+    <Enumeration enumId="DISP_WRITEOFF" enumTypeId="AE_DISPOSAL_METHOD" sequenceId="06" description="Write-Off (Lost / Stolen / Destroyed)"/>
+
+    <!-- 13. Lease Types (IFRS 16) -->
+    <EnumerationType enumTypeId="AE_LEASE_TYPE" description="Asset ERP Lease Type"/>
+    <Enumeration enumId="LEASE_FINANCE"    enumTypeId="AE_LEASE_TYPE" sequenceId="01" description="Finance Lease (IFRS 16)"/>
+    <Enumeration enumId="LEASE_OPERATING"  enumTypeId="AE_LEASE_TYPE" sequenceId="02" description="Operating Lease"/>
+    <Enumeration enumId="LEASE_SHORT_TERM" enumTypeId="AE_LEASE_TYPE" sequenceId="03" description="Short-Term Lease (exempt)"/>
+    <Enumeration enumId="LEASE_LOW_VALUE"  enumTypeId="AE_LEASE_TYPE" sequenceId="04" description="Low-Value Asset Lease (exempt)"/>
+
+    <!-- 14. Lease Modification Types -->
+    <EnumerationType enumTypeId="AE_LEASE_MOD_TYPE" description="Asset ERP Lease Modification Type"/>
+    <Enumeration enumId="LMOD_EXTEND"   enumTypeId="AE_LEASE_MOD_TYPE" sequenceId="01" description="Lease Extension"/>
+    <Enumeration enumId="LMOD_SHORTEN"  enumTypeId="AE_LEASE_MOD_TYPE" sequenceId="02" description="Lease Termination (Early)"/>
+    <Enumeration enumId="LMOD_RATE_CHG" enumTypeId="AE_LEASE_MOD_TYPE" sequenceId="03" description="Discount Rate Revision"/>
+    <Enumeration enumId="LMOD_SCOPE"    enumTypeId="AE_LEASE_MOD_TYPE" sequenceId="04" description="Scope Change"/>
+
+    <!-- 15. Warranty Types -->
+    <EnumerationType enumTypeId="AE_WARRANTY_TYPE" description="Asset ERP Warranty Type"/>
+    <Enumeration enumId="WRN_MANUFACTURER" enumTypeId="AE_WARRANTY_TYPE" sequenceId="01" description="Manufacturer Warranty"/>
+    <Enumeration enumId="WRN_EXTENDED"     enumTypeId="AE_WARRANTY_TYPE" sequenceId="02" description="Extended Service Contract"/>
+    <Enumeration enumId="WRN_PARTS"        enumTypeId="AE_WARRANTY_TYPE" sequenceId="03" description="Parts-Only Warranty"/>
+    <Enumeration enumId="WRN_LABOUR"       enumTypeId="AE_WARRANTY_TYPE" sequenceId="04" description="Labour-Only Warranty"/>
+
+    <!-- 16. Document / Compliance Document Types -->
+    <EnumerationType enumTypeId="AE_DOC_TYPE" description="Asset ERP Document and Compliance Type"/>
+    <Enumeration enumId="DOC_PURCHASE_INV"  enumTypeId="AE_DOC_TYPE" sequenceId="01" description="Purchase Invoice"/>
+    <Enumeration enumId="DOC_VALUATION"     enumTypeId="AE_DOC_TYPE" sequenceId="02" description="Valuation Report"/>
+    <Enumeration enumId="DOC_INSURANCE"     enumTypeId="AE_DOC_TYPE" sequenceId="03" description="Insurance Certificate"/>
+    <Enumeration enumId="DOC_WARRANTY"      enumTypeId="AE_DOC_TYPE" sequenceId="04" description="Warranty Certificate"/>
+    <Enumeration enumId="DOC_INSPECTION"    enumTypeId="AE_DOC_TYPE" sequenceId="05" description="Inspection / Test Certificate"/>
+    <Enumeration enumId="DOC_REG_CERT"      enumTypeId="AE_DOC_TYPE" sequenceId="06" description="Registration Certificate"/>
+    <Enumeration enumId="DOC_PERMIT"        enumTypeId="AE_DOC_TYPE" sequenceId="07" description="Operating Permit / Licence"/>
+    <Enumeration enumId="DOC_CALIBRATION"   enumTypeId="AE_DOC_TYPE" sequenceId="08" description="Calibration Certificate"/>
+    <Enumeration enumId="DOC_ENVIRONMENTAL" enumTypeId="AE_DOC_TYPE" sequenceId="09" description="Environmental Compliance"/>
+    <Enumeration enumId="DOC_OTHER"         enumTypeId="AE_DOC_TYPE" sequenceId="10" description="Other Document"/>
+
+    <!-- 17. Software License Types -->
+    <EnumerationType enumTypeId="AE_LICENSE_TYPE" description="Asset ERP Software License Type"/>
+    <Enumeration enumId="LIC_PERPETUAL"  enumTypeId="AE_LICENSE_TYPE" sequenceId="01" description="Perpetual License"/>
+    <Enumeration enumId="LIC_SUBSCRIPT"  enumTypeId="AE_LICENSE_TYPE" sequenceId="02" description="Subscription / SaaS"/>
+    <Enumeration enumId="LIC_CONCURRENT" enumTypeId="AE_LICENSE_TYPE" sequenceId="03" description="Concurrent (Floating) Seats"/>
+    <Enumeration enumId="LIC_NAMED"      enumTypeId="AE_LICENSE_TYPE" sequenceId="04" description="Named User Seats"/>
+    <Enumeration enumId="LIC_DEVICE"     enumTypeId="AE_LICENSE_TYPE" sequenceId="05" description="Device-Bound License"/>
+    <Enumeration enumId="LIC_OPEN_SRC"   enumTypeId="AE_LICENSE_TYPE" sequenceId="06" description="Open Source (tracked for compliance)"/>
+
+    <!-- 18. Spare Part Treatment Types -->
+    <EnumerationType enumTypeId="AE_TREATMENT_TYPE" description="Asset ERP Spare Part Treatment Type"/>
+    <Enumeration enumId="TRT_CAPITALISE"  enumTypeId="AE_TREATMENT_TYPE" sequenceId="01" description="Capitalise (add to asset cost)"/>
+    <Enumeration enumId="TRT_EXPENSE"     enumTypeId="AE_TREATMENT_TYPE" sequenceId="02" description="Expense (maintenance cost)"/>
+    <Enumeration enumId="TRT_REPLACEMENT" enumTypeId="AE_TREATMENT_TYPE" sequenceId="03" description="Component Replacement (derecognise old part)"/>
+
+    <!-- 19. Batch Job Types -->
+    <EnumerationType enumTypeId="AE_JOB_TYPE" description="Asset ERP Batch Job Type"/>
+    <Enumeration enumId="JOB_DEP_RUN"     enumTypeId="AE_JOB_TYPE" sequenceId="01" description="Depreciation Batch Run"/>
+    <Enumeration enumId="JOB_ALERT_SCAN"  enumTypeId="AE_JOB_TYPE" sequenceId="02" description="Alert Threshold Scan"/>
+    <Enumeration enumId="JOB_VERIF_GEN"   enumTypeId="AE_JOB_TYPE" sequenceId="03" description="Verification Plan Generation"/>
+    <Enumeration enumId="JOB_GRANT_AMORT" enumTypeId="AE_JOB_TYPE" sequenceId="04" description="Government Grant Amortization Run"/>
+    <Enumeration enumId="JOB_ARO_UNWIND"  enumTypeId="AE_JOB_TYPE" sequenceId="05" description="ARO Unwinding Batch"/>
+
+    <!-- 20. Meter Reading — meterTypeId relates to OFBiz FixedAssetMeterType.
+         Seed standard meter types here so the asseterp meter reading entity
+         has valid FK targets without duplicating the OFBiz standard type table. -->
+    <FixedAssetMeterType fixedAssetMeterTypeId="AEMTR_ODOMETER"  description="Odometer"           defaultUomId="LEN_mi"/>
+    <FixedAssetMeterType fixedAssetMeterTypeId="AEMTR_HOURS"     description="Operating Hours"     defaultUomId="TF_hr"/>
+    <FixedAssetMeterType fixedAssetMeterTypeId="AEMTR_CYCLES"    description="Production Cycles"   defaultUomId="OTH_ea"/>
+    <FixedAssetMeterType fixedAssetMeterTypeId="AEMTR_KWH"       description="Energy Consumption"  defaultUomId="EN_Kw"/>
+    <FixedAssetMeterType fixedAssetMeterTypeId="AEMTR_UNITS"     description="Units Produced"      defaultUomId="OTH_ea"/>
+
+</entity-engine-xml>

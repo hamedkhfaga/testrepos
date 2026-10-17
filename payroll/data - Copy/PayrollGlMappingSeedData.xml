@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================================================= -->
+    <!-- POC SAFE: RoleType/Party/PartyRole first, then GL links,   -->
+    <!-- then PayrollGlMapping. All IDs <= 20 chars.                -->
+    <!-- Pre-req: GlAccount 601100 and 221000 exist                 -->
+    <!-- ========================================================= -->
+
+
+ 
+
+    <!-- ====================================================== -->
+    <!-- Status Types (only created if not already existing) -->
+    <!-- ====================================================== -->
+
+    <StatusType statusTypeId="PAY_AUD_EVT" description="Payroll Audit Event Type"/>
+    <StatusType statusTypeId="PAY_AUD_ACT" description="Payroll Audit Action Type"/>
+
+
+    <!-- ====================================================== -->
+    <!-- PayrollAuditEvent.eventTypeId values -->
+    <!-- FK → StatusItem(statusId) -->
+    <!-- ====================================================== -->
+
+    <StatusItem statusId="POST_GL_OK"
+                statusTypeId="PAY_AUD_EVT"
+                description="Payroll successfully posted to GL"
+                sequenceId="01"/>
+
+    <StatusItem statusId="POST_GL_FAIL"
+                statusTypeId="PAY_AUD_EVT"
+                description="Payroll GL posting failed"
+                sequenceId="02"/>
+
+    <StatusItem statusId="RUN_POST"
+                statusTypeId="PAY_AUD_EVT"
+                description="Payroll run posted"
+                sequenceId="03"/>
+
+    <StatusItem statusId="RUN_CREATE"
+                statusTypeId="PAY_AUD_EVT"
+                description="Payroll run created"
+                sequenceId="04"/>
+
+    <StatusItem statusId="RUN_APPROVE"
+                statusTypeId="PAY_AUD_EVT"
+                description="Payroll run approved"
+                sequenceId="05"/>
+
+
+    <!-- ====================================================== -->
+    <!-- PayrollAuditLog.actionTypeId values -->
+    <!-- FK → StatusItem(statusId) -->
+    <!-- ====================================================== -->
+
+    <StatusItem statusId="CREATE"
+                statusTypeId="PAY_AUD_ACT"
+                description="Create record"
+                sequenceId="01"/>
+
+    <StatusItem statusId="UPDATE"
+                statusTypeId="PAY_AUD_ACT"
+                description="Update record"
+                sequenceId="02"/>
+
+    <StatusItem statusId="DELETE"
+                statusTypeId="PAY_AUD_ACT"
+                description="Delete record"
+                sequenceId="03"/>
+
+    <StatusItem statusId="POST"
+                statusTypeId="PAY_AUD_ACT"
+                description="Posting action"
+                sequenceId="04"/>
+
+ 
+
+
+    <!-- 1) GL Account assignment to Org (depends on GlAccount + Party + RoleType) -->
+ 
+
+    <!-- ================================ -->
+    <!-- Payroll GL Mapping Line Types    -->
+    <!-- ================================ -->
+
+    <!-- StatusType for payroll GL line types -->
+    <StatusType statusTypeId="PAY_GL_LTYPE" description="Payroll GL Mapping Line Types"/>
+
+    <!-- Line types (keep IDs <= 20 chars) -->
+    <StatusItem statusId="BASIC"
+                statusTypeId="PAY_GL_LTYPE"
+                description="Basic Salary"/>
+
+    <StatusItem statusId="ALLOW"
+                statusTypeId="PAY_GL_LTYPE"
+                description="Allowance"/>
+
+    <StatusItem statusId="DEDUCT"
+                statusTypeId="PAY_GL_LTYPE"
+                description="Deduction"/>
+
+    <StatusItem statusId="NETPAY"
+                statusTypeId="PAY_GL_LTYPE"
+                description="Net Pay"/>
+ 
+ 
+<StatusItem statusId="ALLOWANCE" statusTypeId="PAY_GL_LTYPE" description="Allowances"/>
+<StatusItem statusId="DEDUCTION" statusTypeId="PAY_GL_LTYPE" description="Other Deductions"/>
+<StatusItem statusId="SOC_SEC"   statusTypeId="PAY_GL_LTYPE" description="Social Security"/>
+<StatusItem statusId="LOAN"      statusTypeId="PAY_GL_LTYPE" description="Loan Deductions"/>
+<StatusItem statusId="NET"       statusTypeId="PAY_GL_LTYPE" description="Net Pay"/>
+
+
+
+    <GlAccountOrganization
+            glAccountId="601100"
+            organizationPartyId="WTORG"
+            roleTypeId="INTERNAL_ORG"
+            fromDate="2026-01-01 00:00:00.000"/>
+
+    <GlAccountOrganization
+            glAccountId="221000"
+            organizationPartyId="WTORG"
+            roleTypeId="INTERNAL_ORG"
+            fromDate="2026-01-01 00:00:00.000"/>
+
+    <!-- 2) Payroll GL Mapping (depends on orgPartyId + glAccountId + lineTypeId) -->
+    <PayrollGlMapping
+            payrollGlMappingId="PGM_WT_BAS_DR"
+            organizationPartyId="WTORG"
+            lineTypeId="BASIC"
+            glAccountId="601100"
+            drCrFlag="DR"
+            isActive="Y"
+            fromDate="2026-01-01 00:00:00.000"/>
+
+    <PayrollGlMapping
+            payrollGlMappingId="PGM_WT_BAS_CR"
+            organizationPartyId="WTORG"
+            lineTypeId="BASIC"
+            glAccountId="221000"
+            drCrFlag="CR"
+            isActive="Y"
+            fromDate="2026-01-01 00:00:00.000"/>
+			
+		 
+
+    <!-- ========================================================= -->
+    <!-- Payroll GL Mapping for WTORG - additional line types       -->
+    <!-- Accounts: 601100 (DR), 221000 (CR)                         -->
+    <!-- ========================================================= -->
+
+    <!-- ALLOWANCE -->
+    <PayrollGlMapping payrollGlMappingId="PGM_WT_ALW_DR"
+                      organizationPartyId="WTORG"
+                      lineTypeId="ALLOWANCE"
+                      glAccountId="601100"
+                      drCrFlag="DR"
+                      isActive="Y"
+                      fromDate="2026-01-01 00:00:00.000"/>
+
+    <PayrollGlMapping payrollGlMappingId="PGM_WT_ALW_CR"
+                      organizationPartyId="WTORG"
+                      lineTypeId="ALLOWANCE"
+                      glAccountId="221000"
+                      drCrFlag="CR"
+                      isActive="Y"
+                      fromDate="2026-01-01 00:00:00.000"/>
+
+    <!-- SOC_SEC -->
+    <PayrollGlMapping payrollGlMappingId="PGM_WT_SOC_DR"
+                      organizationPartyId="WTORG"
+                      lineTypeId="SOC_SEC"
+                      glAccountId="601100"
+                      drCrFlag="DR"
+                      isActive="Y"
+                      fromDate="2026-01-01 00:00:00.000"/>
+
+    <PayrollGlMapping payrollGlMappingId="PGM_WT_SOC_CR"
+                      organizationPartyId="WTORG"
+                      lineTypeId="SOC_SEC"
+                      glAccountId="221000"
+                      drCrFlag="CR"
+                      isActive="Y"
+                      fromDate="2026-01-01 00:00:00.000"/>
+
+    <!-- LOAN -->
+    <PayrollGlMapping payrollGlMappingId="PGM_WT_LOAN_DR"
+                      organizationPartyId="WTORG"
+                      lineTypeId="LOAN"
+                      glAccountId="601100"
+                      drCrFlag="DR"
+                      isActive="Y"
+                      fromDate="2026-01-01 00:00:00.000"/>
+
+    <PayrollGlMapping payrollGlMappingId="PGM_WT_LOAN_CR"
+                      organizationPartyId="WTORG"
+                      lineTypeId="LOAN"
+                      glAccountId="221000"
+                      drCrFlag="CR"
+                      isActive="Y"
+                      fromDate="2026-01-01 00:00:00.000"/>
+
+    <!-- DEDUCTION -->
+    <PayrollGlMapping payrollGlMappingId="PGM_WT_DED_DR"
+                      organizationPartyId="WTORG"
+                      lineTypeId="DEDUCTION"
+                      glAccountId="601100"
+                      drCrFlag="DR"
+                      isActive="Y"
+                      fromDate="2026-01-01 00:00:00.000"/>
+
+    <PayrollGlMapping payrollGlMappingId="PGM_WT_DED_CR"
+                      organizationPartyId="WTORG"
+                      lineTypeId="DEDUCTION"
+                      glAccountId="221000"
+                      drCrFlag="CR"
+                      isActive="Y"
+                      fromDate="2026-01-01 00:00:00.000"/>
+ 
+
+ 
+    <!-- ========================================================= -->
+    <!-- Payroll Audit Event Types (StatusItem, statusTypeId=PAY_AUD_EVT)
+         Needed for PayrollAuditEvent.eventTypeId FK (PAEV_TYPE)
+    -->
+    <!-- ========================================================= -->
+
+    <!-- Ensure the StatusType exists (safe if already present) -->
+    <StatusType statusTypeId="PAY_AUD_EVT" description="Payroll Audit Event Type"/>
+
+    <!-- Core generic levels (safe if already present) -->
+    <StatusItem statusId="AE_INFO" statusTypeId="PAY_AUD_EVT" description="Info"/>
+    <StatusItem statusId="AE_WARN" statusTypeId="PAY_AUD_EVT" description="Warning"/>
+    <StatusItem statusId="AE_ERR"  statusTypeId="PAY_AUD_EVT" description="Error"/>
+
+    <!-- Posting events -->
+    <StatusItem statusId="POST_GL_OK"   statusTypeId="PAY_AUD_EVT" description="Payroll successfully posted to GL"/>
+    <StatusItem statusId="POST_GL_FAIL" statusTypeId="PAY_AUD_EVT" description="Payroll GL posting failed"/>
+
+    <!-- Run lifecycle events (MISSING in your list) -->
+    <StatusItem statusId="RUN_CREATE"  statusTypeId="PAY_AUD_EVT" description="Payroll run created"/>
+    <StatusItem statusId="RUN_POST"    statusTypeId="PAY_AUD_EVT" description="Payroll run posted"/>
+    <StatusItem statusId="RUN_APPROVE" statusTypeId="PAY_AUD_EVT" description="Payroll run approved"/>
+
+    <!-- Status Types (safe to include even if already exist) -->
+    <StatusType statusTypeId="PAY_AUD_EVT" description="Payroll Audit Event Type"/>
+    <StatusType statusTypeId="PAY_AUD_ACT" description="Payroll Audit Action"/>
+
+    <!-- Audit Event Types (used by PayrollAuditEvent.eventTypeId) -->
+    <StatusItem statusId="AE_INFO"      statusTypeId="PAY_AUD_EVT" description="Info"/>
+    <StatusItem statusId="AE_WARN"      statusTypeId="PAY_AUD_EVT" description="Warning"/>
+    <StatusItem statusId="AE_ERR"       statusTypeId="PAY_AUD_EVT" description="Error"/>
+
+    <StatusItem statusId="RUN_CREATE"   statusTypeId="PAY_AUD_EVT" description="Payroll run created"/>
+    <StatusItem statusId="RUN_APPROVE"  statusTypeId="PAY_AUD_EVT" description="Payroll run approved"/>
+    <StatusItem statusId="RUN_POST"     statusTypeId="PAY_AUD_EVT" description="Payroll run posted"/>
+
+    <StatusItem statusId="POST_GL_OK"   statusTypeId="PAY_AUD_EVT" description="Payroll successfully posted to GL"/>
+    <StatusItem statusId="POST_GL_FAIL" statusTypeId="PAY_AUD_EVT" description="Payroll GL posting failed"/>
+
+    <!-- Audit Actions (used by PayrollAuditLog.actionTypeId) -->
+    <StatusItem statusId="AUD_NEW" statusTypeId="PAY_AUD_ACT" description="Created"/>
+    <StatusItem statusId="AUD_UPD" statusTypeId="PAY_AUD_ACT" description="Updated"/>
+    <StatusItem statusId="AUD_DEL" statusTypeId="PAY_AUD_ACT" description="Deleted"/>
+    <StatusItem statusId="AUD_APR" statusTypeId="PAY_AUD_ACT" description="Approved"/>
+    <StatusItem statusId="AUD_REJ" statusTypeId="PAY_AUD_ACT" description="Rejected"/>
+    <StatusItem statusId="AUD_EXP" statusTypeId="PAY_AUD_ACT" description="Export accessed"/>
+
+    <!-- Optional generic verbs (only keep if you really use them) -->
+    <StatusItem statusId="CREATE" statusTypeId="PAY_AUD_ACT" description="Create record"/>
+    <StatusItem statusId="UPDATE" statusTypeId="PAY_AUD_ACT" description="Update record"/>
+    <StatusItem statusId="DELETE" statusTypeId="PAY_AUD_ACT" description="Delete record"/>
+    <StatusItem statusId="POST"   statusTypeId="PAY_AUD_ACT" description="Posting action"/>
+
+
+</entity-engine-xml>
+
+

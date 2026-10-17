@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ====================================================== -->
+    <!-- Payroll Action Types                                   -->
+    <!-- ====================================================== -->
+    <EnumerationType enumTypeId="PAYROLL_ACTION_TYPE"
+                     description="Payroll Action Type"
+                     hasTable="N"/>
+
+    <Enumeration enumId="PACT_SNAPSHOT"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Build Payroll Snapshot"/>
+
+    <Enumeration enumId="PACT_PROCESS"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Process Payroll Run"/>
+
+    <Enumeration enumId="PACT_POST"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Post Payroll Results"/>
+
+    <Enumeration enumId="PACT_ROUTE_PAY"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Route Employee Payments"/>
+
+    <Enumeration enumId="PACT_BATCH_GEN"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Generate Bank Batch"/>
+
+    <Enumeration enumId="PACT_BATCH_APPR"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Approve Bank Batch"/>
+
+    <Enumeration enumId="PACT_BATCH_EXP"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Export Bank Batch CSV"/>
+
+    <Enumeration enumId="PACT_RUN_LOCK"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Lock Payroll Run"/>
+
+    <Enumeration enumId="PACT_RUN_UNLOCK"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Unlock Payroll Run"/>
+
+    <Enumeration enumId="PACT_PERIOD_LOCK"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Lock Payroll Period"/>
+
+    <Enumeration enumId="PACT_PERIOD_CLOSE"
+                 enumTypeId="PAYROLL_ACTION_TYPE"
+                 description="Close Payroll Period"/>
+
+    <!-- ====================================================== -->
+    <!-- Payroll Run Lock Status                                -->
+    <!-- ====================================================== -->
+    <EnumerationType enumTypeId="PAYROLL_LOCK_STAT"
+                     description="Payroll Lock Status"
+                     hasTable="N"/>
+
+    <Enumeration enumId="PRUN_UNLOCKED"
+                 enumTypeId="PAYROLL_LOCK_STAT"
+                 description="Run Unlocked"/>
+
+    <Enumeration enumId="PRUN_LOCKED"
+                 enumTypeId="PAYROLL_LOCK_STAT"
+                 description="Run Locked"/>
+
+    <!-- ====================================================== -->
+    <!-- Payroll Period Control Status                          -->
+    <!-- ====================================================== -->
+    <EnumerationType enumTypeId="PAYROLL_PERIOD_CTRL"
+                     description="Payroll Period Control Status"
+                     hasTable="N"/>
+
+    <Enumeration enumId="PPER_OPEN"
+                 enumTypeId="PAYROLL_PERIOD_CTRL"
+                 description="Period Open"/>
+
+    <Enumeration enumId="PPER_LOCKED"
+                 enumTypeId="PAYROLL_PERIOD_CTRL"
+                 description="Period Locked"/>
+
+    <Enumeration enumId="PPER_CLOSED"
+                 enumTypeId="PAYROLL_PERIOD_CTRL"
+                 description="Period Closed"/>
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+				 
+
+  <!-- ========================= -->
+    <!-- ADDITION TYPES            -->
+    <!-- ========================= -->
+    <AdditionType additionTypeId="ADD_BONUS"
+                  organizationPartyId="Company"
+                  description="Manual Bonus"
+                  isTaxable="Y"
+                  calculationMethodId="CALC_FIXED"
+                  defaultAmount="500"
+                  currencyUomId="EUR"
+                  statusId="PAYADD_ACT"/>
+
+    <AdditionType additionTypeId="ADD_VAR"
+                  organizationPartyId="Company"
+                  description="Variable Addition"
+                  isTaxable="Y"
+                  calculationMethodId="CALC_FIXED"
+                  defaultAmount="275"
+                  currencyUomId="EUR"
+                  statusId="PAYADD_ACT"/>
+
+    <AdditionType additionTypeId="ADD_ONETIME"
+                  organizationPartyId="Company"
+                  description="One Time Addition"
+                  isTaxable="Y"
+                  calculationMethodId="CALC_FIXED"
+                  defaultAmount="350"
+                  currencyUomId="EUR"
+                  statusId="PAYADD_ACT"/>
+				  
+				   <!-- ========================= -->
+    <!-- DEDUCTION TYPES           -->
+    <!-- ========================= -->
+    <DeductionType deductionTypeId="DED_ADV"
+                   organizationPartyId="Company"
+                   description="Advance Recovery"
+                   isPreTax="N"
+                   calculationMethodId="CALC_FIXED"
+                   defaultAmount="82"
+                   currencyUomId="EUR"
+                   statusId="PAYDED_ACT"/>
+
+    <DeductionType deductionTypeId="DED_LOAN"
+                   organizationPartyId="Company"
+                   description="Loan Deduction"
+                   isPreTax="N"
+                   calculationMethodId="CALC_FIXED"
+                   defaultAmount="150"
+                   currencyUomId="EUR"
+                   statusId="PAYDED_ACT"/>
+
+    <DeductionType deductionTypeId="DED_MISC"
+                   organizationPartyId="Company"
+                   description="Misc Deduction"
+                   isPreTax="N"
+                   calculationMethodId="CALC_FIXED"
+                   defaultAmount="45"
+                   currencyUomId="EUR"
+                   statusId="PAYDED_ACT"/>
+
+<!--  ===== payslip stage 4.1 =====  -->
+
+<EnumerationType enumTypeId="PAYSLIP_FORMAT"
+                 description="Payslip Format"/>
+<Enumeration enumId="PLS_HTML"
+             enumTypeId="PAYSLIP_FORMAT"
+             description="Payslip HTML"/>
+
+<Enumeration enumId="PLS_PDF"
+             enumTypeId="PAYSLIP_FORMAT"
+             description="Payslip PDF"/>
+		<StatusType statusTypeId="PAYSLIP_STATUS"
+            description="Payslip Status"/>	 
+		<StatusItem statusId="PPS_DRAFT"
+            statusTypeId="PAYSLIP_STATUS"
+            description="Draft"/>
+
+<StatusItem statusId="PPS_GEN"
+            statusTypeId="PAYSLIP_STATUS"
+            description="Generated"/>
+
+<StatusItem statusId="PPS_ERR"
+            statusTypeId="PAYSLIP_STATUS"
+            description="Error"/>
+
+	<Enumeration enumId="PA_ACT_PAYSLIP_GEN"
+             enumTypeId="PAYROLL_ACTION_TYPE"
+             description="Payslip Generation"/>
+
+<Enumeration enumId="PA_ACT_RECON"
+             enumTypeId="PAYROLL_ACTION_TYPE"
+             description="Payroll Reconciliation"/>
+
+<Enumeration enumId="PA_ACT_REPORT_RUN"
+             enumTypeId="PAYROLL_ACTION_TYPE"
+             description="Payroll Report Run"/>		
+			 
+			 
+			 
+			 
+
+
+</entity-engine-xml>

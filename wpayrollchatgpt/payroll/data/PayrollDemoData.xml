@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================================================= -->
+    <!-- 0) CORE REFERENCES (PARENTS FIRST) -->
+    <!-- ========================================================= -->
+
+    <!-- Geo (Countries) -->
+    <Geo geoId="UAE" geoTypeId="COUNTRY" geoName="United Arab Emirates" geoCode="UAE"/>
+    <Geo geoId="IND" geoTypeId="COUNTRY" geoName="India" geoCode="IND"/>
+    <Geo geoId="USA" geoTypeId="COUNTRY" geoName="United States" geoCode="USA"/>
+
+    <!-- Uom (Currencies) -->
+    <Uom uomId="USD" uomTypeId="CURRENCY_MEASURE" abbreviation="$" description="US Dollar"/>
+    <Uom uomId="AED" uomTypeId="CURRENCY_MEASURE" abbreviation="AED" description="UAE Dirham"/>
+
+    <!-- MimeType (Attachments) -->
+    <MimeType mimeTypeId="excel" description="Excel Spreadsheet"/>
+    <MimeType mimeTypeId="text" description="Plain Text"/>
+    <MimeType mimeTypeId="pdf" description="PDF Document"/>
+
+    <!-- PartyType (Employees) -->
+    <PartyType partyTypeId="PERSON" description="Person"/>
+
+    <!-- ========================================================= -->
+    <!-- 1) ORGS + EMPLOYEES (Party, Person) -->
+    <!-- ========================================================= -->
+
+    <!-- Orgs (multi-org) -->
+    <Party partyId="ORG_PAY_A" partyTypeId="PARTY_GROUP"/>
+    <PartyGroup partyId="ORG_PAY_A" groupName="Payroll Org A"/>
+
+    <Party partyId="ORG_PAY_B" partyTypeId="PARTY_GROUP"/>
+    <PartyGroup partyId="ORG_PAY_B" groupName="Payroll Org B"/>
+
+    <!-- Employees -->
+    <Party partyId="EMP001" partyTypeId="PERSON"/>
+    <Person partyId="EMP001" firstName="John" lastName="Smith" gender="M"/>
+
+    <Party partyId="EMP002" partyTypeId="PERSON"/>
+    <Person partyId="EMP002" firstName="Sarah" lastName="Johnson" gender="F"/>
+
+    <Party partyId="EMP003" partyTypeId="PERSON"/>
+    <Person partyId="EMP003" firstName="Michael" lastName="Chen" gender="M"/>
+
+    <!-- ========================================================= -->
+    <!-- 2) USER LOGINS (FK TARGETS) -->
+    <!-- ========================================================= -->
+
+    <UserLogin userLoginId="pay_admin" currentPassword="admin123" enabled="Y"/>
+    <UserLogin userLoginId="pay_mgr" currentPassword="manager123" enabled="Y"/>
+    <UserLogin userLoginId="pay_clk" currentPassword="clerk123" enabled="Y"/>
+
+    <!-- ========================================================= -->
+    <!-- 3) STATUS TYPES + ITEMS (CONSOLIDATED) -->
+    <!--    All IDs <= 20 chars -->
+    <!-- ========================================================= -->
+
+    <!-- Status Types -->
+    <StatusType statusTypeId="PAY_ITER_STS" description="Payroll Iteration Status"/>
+    <StatusType statusTypeId="PAY_ASG_STS" description="Payroll Assignment Status"/>
+    <StatusType statusTypeId="PAY_EMP_TYPE" description="Employment Type"/>
+    <StatusType statusTypeId="PAY_CNT_TYPE" description="Contract Type"/>
+    <StatusType statusTypeId="PAY_FREQ" description="Pay Frequency"/>
+    <StatusType statusTypeId="PAY_VISA_TYPE" description="Visa Type"/>
+    <StatusType statusTypeId="PAY_LOAN_TYPE" description="Loan Type"/>
+    <StatusType statusTypeId="PAY_LOAN_STS" description="Loan Status"/>
+    <StatusType statusTypeId="PAY_INST_STS" description="Installment Status"/>
+    <StatusType statusTypeId="PAY_EMAIL_TYPE" description="Email Type"/>
+    <StatusType statusTypeId="PAY_EMAIL_STS" description="Email Status"/>
+    <StatusType statusTypeId="PAY_POL_TYPE" description="Policy Type"/>
+    <StatusType statusTypeId="PAY_BC_TYPE" description="Barcode Type"/>
+    <StatusType statusTypeId="PAY_CALC_MTH" description="Calc Method"/>
+    <StatusType statusTypeId="PAY_TAX_TYPE" description="Tax Type"/>
+    <StatusType statusTypeId="PAY_FILE_FMT" description="Bank File Format"/>
+    <StatusType statusTypeId="PAY_BATCH_STS" description="Batch Status"/>
+    <StatusType statusTypeId="PAY_FILE_TYPE" description="File Type"/>
+    <StatusType statusTypeId="PAY_ACC_TYPE" description="Access Type"/>
+    <StatusType statusTypeId="PAY_CHG_TYPE" description="Iteration Change Type"/>
+
+    <!-- Status Items -->
+    <StatusItem statusId="PIT_DRAFT" statusTypeId="PAY_ITER_STS" description="Draft" sequenceId="10"/>
+    <StatusItem statusId="PIT_CALC" statusTypeId="PAY_ITER_STS" description="Calculated" sequenceId="20"/>
+    <StatusItem statusId="PIT_APPR" statusTypeId="PAY_ITER_STS" description="Approved" sequenceId="30"/>
+
+    <StatusItem statusId="PAS_ACTIVE" statusTypeId="PAY_ASG_STS" description="Active" sequenceId="10"/>
+    <StatusItem statusId="PAS_INACT" statusTypeId="PAY_ASG_STS" description="Inactive" sequenceId="20"/>
+
+    <StatusItem statusId="PET_REG" statusTypeId="PAY_EMP_TYPE" description="Regular Employee" sequenceId="10"/>
+    <StatusItem statusId="PET_CONTR" statusTypeId="PAY_EMP_TYPE" description="Contract Employee" sequenceId="20"/>
+    <StatusItem statusId="PET_INTL" statusTypeId="PAY_EMP_TYPE" description="International Employee" sequenceId="30"/>
+
+    <StatusItem statusId="PCT_FIX" statusTypeId="PAY_CNT_TYPE" description="Fixed Term" sequenceId="10"/>
+    <StatusItem statusId="PCT_PERM" statusTypeId="PAY_CNT_TYPE" description="Permanent" sequenceId="20"/>
+
+    <StatusItem statusId="PF_MON" statusTypeId="PAY_FREQ" description="Monthly" sequenceId="10"/>
+    <StatusItem statusId="PF_BIWK" statusTypeId="PAY_FREQ" description="Bi-weekly" sequenceId="20"/>
+
+    <StatusItem statusId="PVT_WORK" statusTypeId="PAY_VISA_TYPE" description="Work Visa" sequenceId="10"/>
+    <StatusItem statusId="PVT_RES" statusTypeId="PAY_VISA_TYPE" description="Residence Visa" sequenceId="20"/>
+
+    <StatusItem statusId="PLT_PERS" statusTypeId="PAY_LOAN_TYPE" description="Personal Loan" sequenceId="10"/>
+    <StatusItem statusId="PLT_CAR" statusTypeId="PAY_LOAN_TYPE" description="Car Loan" sequenceId="20"/>
+    <StatusItem statusId="PLT_HOUS" statusTypeId="PAY_LOAN_TYPE" description="Housing Loan" sequenceId="30"/>
+
+    <StatusItem statusId="PLS_PEND" statusTypeId="PAY_LOAN_STS" description="Pending" sequenceId="10"/>
+    <StatusItem statusId="PLS_APPR" statusTypeId="PAY_LOAN_STS" description="Approved" sequenceId="20"/>
+    <StatusItem statusId="PLS_ACTV" statusTypeId="PAY_LOAN_STS" description="Active" sequenceId="30"/>
+
+    <StatusItem statusId="PIS_PAID" statusTypeId="PAY_INST_STS" description="Paid" sequenceId="10"/>
+    <StatusItem statusId="PIS_DUE" statusTypeId="PAY_INST_STS" description="Due" sequenceId="20"/>
+
+    <StatusItem statusId="PEM_PAYSL" statusTypeId="PAY_EMAIL_TYPE" description="Payslip Email" sequenceId="10"/>
+
+    <StatusItem statusId="PES_SENT" statusTypeId="PAY_EMAIL_STS" description="Sent" sequenceId="10"/>
+    <StatusItem statusId="PES_PEND" statusTypeId="PAY_EMAIL_STS" description="Pending" sequenceId="20"/>
+
+    <StatusItem statusId="PPT_OVRT" statusTypeId="PAY_POL_TYPE" description="Overtime Policy" sequenceId="10"/>
+    <StatusItem statusId="PPT_TAX" statusTypeId="PAY_POL_TYPE" description="Tax Policy" sequenceId="20"/>
+
+    <StatusItem statusId="PBC_QR" statusTypeId="PAY_BC_TYPE" description="QR Code" sequenceId="10"/>
+    <StatusItem statusId="PBC_128" statusTypeId="PAY_BC_TYPE" description="Code 128" sequenceId="20"/>
+
+    <StatusItem statusId="PCM_FIX" statusTypeId="PAY_CALC_MTH" description="Fixed Amount" sequenceId="10"/>
+    <StatusItem statusId="PCM_DAY" statusTypeId="PAY_CALC_MTH" description="Daily Rate" sequenceId="20"/>
+    <StatusItem statusId="PCM_PCT" statusTypeId="PAY_CALC_MTH" description="Percentage" sequenceId="30"/>
+
+    <StatusItem statusId="PTX_INC" statusTypeId="PAY_TAX_TYPE" description="Income Tax" sequenceId="10"/>
+    <StatusItem statusId="PTX_SOC" statusTypeId="PAY_TAX_TYPE" description="Social Security" sequenceId="20"/>
+
+    <StatusItem statusId="PFF_ABA" statusTypeId="PAY_FILE_FMT" description="ABA Format" sequenceId="10"/>
+    <StatusItem statusId="PFF_CSV" statusTypeId="PAY_FILE_FMT" description="CSV Format" sequenceId="20"/>
+
+    <StatusItem statusId="PBS_GEN" statusTypeId="PAY_BATCH_STS" description="Generated" sequenceId="10"/>
+    <StatusItem statusId="PBS_SENT" statusTypeId="PAY_BATCH_STS" description="Sent" sequenceId="20"/>
+
+    <StatusItem statusId="PFT_PDF" statusTypeId="PAY_FILE_TYPE" description="PDF" sequenceId="10"/>
+    <StatusItem statusId="PFT_XLS" statusTypeId="PAY_FILE_TYPE" description="Excel" sequenceId="20"/>
+    <StatusItem statusId="PFT_BANK" statusTypeId="PAY_FILE_TYPE" description="Bank File" sequenceId="30"/>
+
+    <StatusItem statusId="PAT_VIEW" statusTypeId="PAY_ACC_TYPE" description="View" sequenceId="10"/>
+    <StatusItem statusId="PAT_DNLD" statusTypeId="PAY_ACC_TYPE" description="Download" sequenceId="20"/>
+
+    <StatusItem statusId="PCH_CALC" statusTypeId="PAY_CHG_TYPE" description="Calculation" sequenceId="10"/>
+    <StatusItem statusId="PCH_ADJ" statusTypeId="PAY_CHG_TYPE" description="Adjustment" sequenceId="20"/>
+    <StatusItem statusId="PCH_CORR" statusTypeId="PAY_CHG_TYPE" description="Correction" sequenceId="30"/>
+
+    <!-- ========================================================= -->
+    <!-- 4) PAYROLL STRUCTURES (multi-org + multi-currency) -->
+    <!-- ========================================================= -->
+
+    <PayrollStructure payrollStructureId="PSTR_A_M01"
+                     organizationPartyId="ORG_PAY_A"
+                     structureName="OrgA Monthly USD"
+                     description="Monthly payroll - Org A"
+                     payFrequencyStatusId="PF_MON"
+                     currencyUomId="USD"
+                     fromDate="2024-01-01 00:00:00.0"
+                     thruDate="2024-12-31 23:59:59.0"
+                     isActive="Y"
+                     createdByUserLoginId="pay_admin"
+                     createdDate="2024-01-01 09:00:00.0"/>
+
+    <PayrollStructure payrollStructureId="PSTR_B_M01"
+                     organizationPartyId="ORG_PAY_B"
+                     structureName="OrgB Monthly AED"
+                     description="Monthly payroll - Org B"
+                     payFrequencyStatusId="PF_MON"
+                     currencyUomId="AED"
+                     fromDate="2024-01-01 00:00:00.0"
+                     thruDate="2024-12-31 23:59:59.0"
+                     isActive="Y"
+                     createdByUserLoginId="pay_admin"
+                     createdDate="2024-01-01 09:05:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 5) EMPLOYEE ASSIGNMENTS (multi-org) -->
+    <!-- ========================================================= -->
+
+    <EmployeePayrollAssignment assignmentId="ASG_A_001"
+                              organizationPartyId="ORG_PAY_A"
+                              partyId="EMP001"
+                              payrollStructureId="PSTR_A_M01"
+                              employmentTypeStatusId="PET_REG"
+                              contractTypeStatusId="PCT_PERM"
+                              assignmentStatusId="PAS_ACTIVE"
+                              baseSalary="5500.00"
+                              effectiveDate="2024-01-01 00:00:00.0"
+                              createdByUserLoginId="pay_admin"
+                              createdDate="2024-01-01 10:00:00.0"/>
+
+    <EmployeePayrollAssignment assignmentId="ASG_A_002"
+                              organizationPartyId="ORG_PAY_A"
+                              partyId="EMP002"
+                              payrollStructureId="PSTR_A_M01"
+                              employmentTypeStatusId="PET_REG"
+                              contractTypeStatusId="PCT_PERM"
+                              assignmentStatusId="PAS_ACTIVE"
+                              baseSalary="6000.00"
+                              effectiveDate="2024-01-01 00:00:00.0"
+                              createdByUserLoginId="pay_admin"
+                              createdDate="2024-01-01 10:05:00.0"/>
+
+    <EmployeePayrollAssignment assignmentId="ASG_B_003"
+                              organizationPartyId="ORG_PAY_B"
+                              partyId="EMP003"
+                              payrollStructureId="PSTR_B_M01"
+                              employmentTypeStatusId="PET_INTL"
+                              contractTypeStatusId="PCT_FIX"
+                              assignmentStatusId="PAS_ACTIVE"
+                              baseSalary="7000.00"
+                              effectiveDate="2024-01-01 00:00:00.0"
+                              createdByUserLoginId="pay_admin"
+                              createdDate="2024-01-01 10:10:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 6) INTERNATIONAL EMPLOYEE DETAILS -->
+    <!-- ========================================================= -->
+
+    <InternationalEmployee partyId="EMP003"
+                          organizationPartyId="ORG_PAY_B"
+                          nationalityCountryGeoId="IND"
+                          residenceCountryGeoId="UAE"
+                          visaTypeStatusId="PVT_WORK"
+                          visaNumber="VISA000001"
+                          visaExpiryDate="2025-12-31"
+                          workPermitNumber="WPERM00001"
+                          workPermitExpiry="2025-12-31"
+                          isTaxEqualization="Y"
+                          housingAllowance="1200.00"
+                          educationAllowance="500.00"
+                          transportationAllowance="300.00"
+                          repatriationAllowance="1000.00"
+                          createdByUserLoginId="pay_admin"
+                          createdDate="2024-01-02 09:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 7) ALLOWANCE TYPES + EMPLOYEE ALLOWANCES -->
+    <!-- ========================================================= -->
+
+    <AllowanceType allowanceTypeId="ALLW_HOUS"
+                  description="Housing Allowance"
+                  isTaxable="N"
+                  calculationMethodStatusId="PCM_FIX"
+                  defaultAmount="1000.00"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 09:30:00.0"/>
+
+    <AllowanceType allowanceTypeId="ALLW_TRNS"
+                  description="Transportation Allowance"
+                  isTaxable="N"
+                  calculationMethodStatusId="PCM_FIX"
+                  defaultAmount="300.00"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 09:31:00.0"/>
+
+    <AllowanceType allowanceTypeId="ALLW_MEAL"
+                  description="Meal Allowance"
+                  isTaxable="N"
+                  calculationMethodStatusId="PCM_DAY"
+                  defaultAmount="15.00"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 09:32:00.0"/>
+
+    <EmployeeAllowance employeeAllowanceId="EAL_A_001"
+                      organizationPartyId="ORG_PAY_A"
+                      partyId="EMP001"
+                      allowanceTypeId="ALLW_MEAL"
+                      amount="300.00"
+                      effectiveDate="2024-01-01 00:00:00.0"
+                      statusId="PAS_ACTIVE"
+                      createdByUserLoginId="pay_admin"
+                      createdDate="2024-01-01 11:00:00.0"/>
+
+    <EmployeeAllowance employeeAllowanceId="EAL_B_003"
+                      organizationPartyId="ORG_PAY_B"
+                      partyId="EMP003"
+                      allowanceTypeId="ALLW_HOUS"
+                      amount="1200.00"
+                      effectiveDate="2024-01-01 00:00:00.0"
+                      statusId="PAS_ACTIVE"
+                      createdByUserLoginId="pay_admin"
+                      createdDate="2024-01-01 11:05:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 8) TAX / SOCIAL SECURITY CONFIG -->
+    <!-- ========================================================= -->
+
+    <PayrollTaxConfig taxConfigId="TAX_UAE_01"
+                     organizationPartyId="ORG_PAY_B"
+                     countryGeoId="UAE"
+                     taxYear="2024"
+                     taxTypeStatusId="PTX_INC"
+                     minIncome="0.00"
+                     maxIncome="50000.00"
+                     taxRate="0.00"
+                     additionalAmount="0.00"
+                     isActive="Y"
+                     createdByUserLoginId="pay_admin"
+                     createdDate="2024-01-03 09:00:00.0"/>
+
+    <SocialSecurityConfig ssConfigId="SS_UAE_01"
+                         organizationPartyId="ORG_PAY_B"
+                         countryGeoId="UAE"
+                         effectiveDate="2024-01-01 00:00:00.0"
+                         employeeRate="5.00"
+                         employerRate="12.50"
+                         maxContributionBase="50000.00"
+                         minContributionBase="1000.00"
+                         createdByUserLoginId="pay_admin"
+                         createdDate="2024-01-03 09:05:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 9) LOANS + INSTALLMENTS (org + currency) -->
+    <!-- ========================================================= -->
+
+    <EmployeeLoan loanId="LOAN_A_01"
+                 organizationPartyId="ORG_PAY_A"
+                 partyId="EMP001"
+                 currencyUomId="USD"
+                 loanTypeStatusId="PLT_PERS"
+                 statusId="PLS_ACTV"
+                 loanAmount="5000.00"
+                 interestRate="5.00"
+                 totalInstallments="12"
+                 remainingInstallments="8"
+                 monthlyInstallment="438.71"
+                 startDate="2024-01-01 00:00:00.0"
+                 endDate="2024-12-01 00:00:00.0"
+                 approvedByUserLoginId="pay_mgr"
+                 approvedDate="2024-01-01 10:00:00.0"
+                 createdByUserLoginId="pay_admin"
+                 createdDate="2024-01-01 10:10:00.0"/>
+
+    <LoanInstallment installmentId="INST_A_01"
+                    organizationPartyId="ORG_PAY_A"
+                    loanId="LOAN_A_01"
+                    installmentNumber="1"
+                    dueDate="2024-02-01 00:00:00.0"
+                    installmentAmount="438.71"
+                    principalAmount="406.54"
+                    interestAmount="32.17"
+                    statusId="PIS_PAID"
+                    paidDate="2024-02-01 09:15:00.0"
+                    createdByUserLoginId="pay_admin"
+                    createdDate="2024-02-01 09:20:00.0"/>
+
+    <LoanInstallment installmentId="INST_A_02"
+                    organizationPartyId="ORG_PAY_A"
+                    loanId="LOAN_A_01"
+                    installmentNumber="2"
+                    dueDate="2024-03-01 00:00:00.0"
+                    installmentAmount="438.71"
+                    principalAmount="408.86"
+                    interestAmount="29.85"
+                    statusId="PIS_DUE"
+                    createdByUserLoginId="pay_admin"
+                    createdDate="2024-03-01 09:20:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 10) PAYROLL ITERATIONS (org + currency) -->
+    <!-- ========================================================= -->
+
+    <PayrollIteration payrollIterationId="ITER_A_01"
+                     organizationPartyId="ORG_PAY_A"
+                     currencyUomId="USD"
+                     iterationName="Jan 2024 OrgA"
+                     payPeriodFrom="2024-01-01 00:00:00.0"
+                     payPeriodThru="2024-01-31 23:59:59.0"
+                     payDate="2024-02-05 00:00:00.0"
+                     statusId="PIT_APPR"
+                     totalEmployees="2"
+                     totalNetPay="10770.06"
+                     totalGrossPay="12950.00"
+                     totalDeductions="2179.94"
+                     createdByUserLoginId="pay_clk"
+                     createdDate="2024-01-25 09:00:00.0"
+                     approvedByUserLoginId="pay_mgr"
+                     approvedDate="2024-01-30 15:30:00.0"/>
+
+    <PayrollIteration payrollIterationId="ITER_B_01"
+                     organizationPartyId="ORG_PAY_B"
+                     currencyUomId="AED"
+                     iterationName="Jan 2024 OrgB"
+                     payPeriodFrom="2024-01-01 00:00:00.0"
+                     payPeriodThru="2024-01-31 23:59:59.0"
+                     payDate="2024-02-05 00:00:00.0"
+                     statusId="PIT_CALC"
+                     totalEmployees="1"
+                     totalNetPay="7920.00"
+                     totalGrossPay="8800.00"
+                     totalDeductions="880.00"
+                     createdByUserLoginId="pay_clk"
+                     createdDate="2024-01-25 09:10:00.0"/>
+
+    <!-- Iteration History -->
+    <PayrollIterationHistory historyId="HIST_A_01"
+                            organizationPartyId="ORG_PAY_A"
+                            payrollIterationId="ITER_A_01"
+                            previousIterationId=""
+                            changeTypeStatusId="PCH_CALC"
+                            changeDescription="Initial calculation"
+                            changedByUserLoginId="pay_clk"
+                            changedDate="2024-01-25 09:05:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 11) PAYROLL RESULTS (org + currency) -->
+    <!-- ========================================================= -->
+
+    <EmployeePayrollResult payrollResultId="RES_A_01"
+                          organizationPartyId="ORG_PAY_A"
+                          currencyUomId="USD"
+                          payrollIterationId="ITER_A_01"
+                          partyId="EMP001"
+                          basicSalary="5500.00"
+                          overtimeAmount="200.00"
+                          allowancesTotal="300.00"
+                          bonuses="0.00"
+                          grossSalary="6000.00"
+                          incomeTax="300.00"
+                          socialSecurity="300.00"
+                          loanDeductions="438.71"
+                          otherDeductions="0.00"
+                          totalDeductions="1038.71"
+                          netSalary="4961.29"
+                          bankAccountNumber="001234567890"
+                          bankName="Emirates NBD"
+                          payslipBarcode="BC_RES_A_01"
+                          isPayslipSent="Y"
+                          createdByUserLoginId="pay_clk"
+                          createdDate="2024-01-31 14:00:00.0"/>
+
+    <EmployeePayrollResult payrollResultId="RES_A_02"
+                          organizationPartyId="ORG_PAY_A"
+                          currencyUomId="USD"
+                          payrollIterationId="ITER_A_01"
+                          partyId="EMP002"
+                          basicSalary="6000.00"
+                          overtimeAmount="150.00"
+                          allowancesTotal="0.00"
+                          bonuses="0.00"
+                          grossSalary="6150.00"
+                          incomeTax="307.50"
+                          socialSecurity="307.50"
+                          loanDeductions="0.00"
+                          otherDeductions="0.00"
+                          totalDeductions="615.00"
+                          netSalary="5535.00"
+                          bankAccountNumber="009876543210"
+                          bankName="ADCB"
+                          payslipBarcode="BC_RES_A_02"
+                          isPayslipSent="Y"
+                          createdByUserLoginId="pay_clk"
+                          createdDate="2024-01-31 14:05:00.0"/>
+
+    <EmployeePayrollResult payrollResultId="RES_B_01"
+                          organizationPartyId="ORG_PAY_B"
+                          currencyUomId="AED"
+                          payrollIterationId="ITER_B_01"
+                          partyId="EMP003"
+                          basicSalary="7000.00"
+                          overtimeAmount="300.00"
+                          allowancesTotal="1500.00"
+                          bonuses="0.00"
+                          grossSalary="8800.00"
+                          incomeTax="440.00"
+                          socialSecurity="440.00"
+                          loanDeductions="0.00"
+                          otherDeductions="0.00"
+                          totalDeductions="880.00"
+                          netSalary="7920.00"
+                          bankAccountNumber="005678901234"
+                          bankName="Mashreq"
+                          payslipBarcode="BC_RES_B_01"
+                          isPayslipSent="N"
+                          createdByUserLoginId="pay_clk"
+                          createdDate="2024-01-31 14:10:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 12) BARCODE TRACKING -->
+    <!-- ========================================================= -->
+
+    <PayslipBarcode barcodeId="BC_A_01"
+                   organizationPartyId="ORG_PAY_A"
+                   payrollResultId="RES_A_01"
+                   barcodeValue="BC_RES_A_01"
+                   barcodeTypeStatusId="PBC_QR"
+                   generatedDate="2024-01-30 10:00:00.0"
+                   scannedDate="2024-02-05 14:30:00.0"
+                   scanCount="1"
+                   createdByUserLoginId="pay_clk"
+                   createdDate="2024-01-30 10:05:00.0"/>
+
+    <PayslipBarcode barcodeId="BC_B_01"
+                   organizationPartyId="ORG_PAY_B"
+                   payrollResultId="RES_B_01"
+                   barcodeValue="BC_RES_B_01"
+                   barcodeTypeStatusId="PBC_128"
+                   generatedDate="2024-01-30 10:10:00.0"
+                   scanCount="0"
+                   createdByUserLoginId="pay_clk"
+                   createdDate="2024-01-30 10:12:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 13) EMAIL QUEUE -->
+    <!-- ========================================================= -->
+
+    <PayrollEmailQueue emailQueueId="EMQ_A_01"
+                      organizationPartyId="ORG_PAY_A"
+                      payrollIterationId="ITER_A_01"
+                      partyId="EMP001"
+                      emailTypeStatusId="PEM_PAYSL"
+                      statusId="PES_SENT"
+                      toAddress="john.smith@company.com"
+                      subject="Payslip Jan 2024"
+                      content="Please find your payslip attached."
+                      attachmentPath="/payslips/EMP001_JAN24.pdf"
+                      sentDate="2024-02-05 09:00:00.0"
+                      createdByUserLoginId="pay_clk"
+                      createdDate="2024-02-05 08:55:00.0"/>
+
+    <PayrollEmailQueue emailQueueId="EMQ_B_01"
+                      organizationPartyId="ORG_PAY_B"
+                      payrollIterationId="ITER_B_01"
+                      partyId="EMP003"
+                      emailTypeStatusId="PEM_PAYSL"
+                      statusId="PES_PEND"
+                      toAddress="michael.chen@company.com"
+                      subject="Payslip Jan 2024"
+                      content="Please find your payslip attached."
+                      attachmentPath="/payslips/EMP003_JAN24.pdf"
+                      createdByUserLoginId="pay_clk"
+                      createdDate="2024-02-05 08:57:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 14) PAYROLL POLICY (RENAMED from HRPolicy) -->
+    <!-- ========================================================= -->
+
+    <PayrollPolicy policyId="POL_A_01"
+                 organizationPartyId="ORG_PAY_A"
+                 policyName="Overtime 2024"
+                 policyTypeStatusId="PPT_OVRT"
+                 countryGeoId="USA"
+                 effectiveDate="2024-01-01 00:00:00.0"
+                 policyContent="OT weekdays 1.5x, weekends 2x."
+                 isActive="Y"
+                 createdByUserLoginId="pay_admin"
+                 createdDate="2024-01-05 09:00:00.0"/>
+
+    <PayrollPolicy policyId="POL_B_01"
+                 organizationPartyId="ORG_PAY_B"
+                 policyName="Tax UAE 2024"
+                 policyTypeStatusId="PPT_TAX"
+                 countryGeoId="UAE"
+                 effectiveDate="2024-01-01 00:00:00.0"
+                 policyContent="Tax rules per UAE."
+                 isActive="Y"
+                 createdByUserLoginId="pay_admin"
+                 createdDate="2024-01-05 09:05:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 15) BANK CONFIG + BATCH -->
+    <!-- ========================================================= -->
+
+    <BankTransferConfig configId="BNK_A_01"
+                       organizationPartyId="ORG_PAY_A"
+                       bankName="Emirates NBD"
+                       fileFormatStatusId="PFF_ABA"
+                       headerTemplate="01,COMPANY,${date},${batchId}"
+                       detailTemplate="${acct},${amt},${name}"
+                       footerTemplate="98,${total},${count}"
+                       fieldSeparator=","
+                       isActive="Y"
+                       createdByUserLoginId="pay_admin"
+                       createdDate="2024-01-10 09:00:00.0"/>
+
+    <BankTransferBatch batchId="BAT_A_01"
+                      organizationPartyId="ORG_PAY_A"
+                      payrollIterationId="ITER_A_01"
+                      bankConfigId="BNK_A_01"
+                      totalAmount="10496.29"
+                      totalRecords="2"
+                      generatedFile="/bank/ITER_A_01.aba"
+                      generatedDate="2024-01-31 16:00:00.0"
+                      statusId="PBS_GEN"
+                      createdByUserLoginId="pay_clk"
+                      createdDate="2024-01-31 16:05:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 16) FILE ATTACHMENTS + ACCESS -->
+    <!-- ========================================================= -->
+
+    <PayrollFileAttachment attachmentId="ATT_A_01"
+                          organizationPartyId="ORG_PAY_A"
+                          payrollIterationId="ITER_A_01"
+                          fileName="JanSummary.xlsx"
+                          filePath="/reports/ITER_A_01.xlsx"
+                          fileTypeStatusId="PFT_XLS"
+                          mimeTypeId="excel"
+                          fileSize="204800"
+                          uploadedByUserLoginId="pay_admin"
+                          uploadedDate="2024-02-01 11:00:00.0"
+                          description="Payroll summary report"/>
+
+    <EmployeeDocumentAccess accessId="ACC_A_01"
+                           organizationPartyId="ORG_PAY_A"
+                           partyId="EMP001"
+                           attachmentId="ATT_A_01"
+                           accessDate="2024-02-02 10:30:00.0"
+                           accessTypeStatusId="PAT_VIEW"
+                           ipAddress="192.168.1.100"/>
+
+</entity-engine-xml>

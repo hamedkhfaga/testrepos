@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/entitymodel.xsd">
+    <title>QrCore Entity Model — central secured QR/barcode infrastructure</title>
+    <description>
+        One QrCode row per (docType, docId, channel): the stable, verifiable tag for a
+        document, asset, inventory item, or e-commerce touchpoint. The printable token is
+        never stored — only its SHA-256 hash — and is recomputed on demand with the
+        server-side HMAC secret, so tokens cannot be forged or leaked from the database.
+        Every verification attempt (valid or not) is recorded as a QrScanEvent for
+        tracking and analytics (B2B / customer scans).
+    </description>
+
+    <entity entity-name="QrCode" package-name="org.apache.ofbiz.qrcore" title="Registered QR Code">
+        <field name="qrCodeId" type="id"><description>primary key</description></field>
+        <field name="docType" type="id-long">
+            <description>document kind, e.g. ACCTG_TRANS, INVOICE, QUOTE, ORDER, FIXED_ASSET, INVENTORY_ITEM, PRODUCT, URL</description></field>
+        <field name="docId" type="id-vlong"><description>identifier of the tagged record</description></field>
+        <field name="organizationPartyId" type="id"/>
+        <field name="channel" type="id">
+            <description>issuing context: DOCUMENT, ASSET_TAG, INV_LABEL, ECOMMERCE, B2B</description></field>
+        <field name="statusId" type="id"/>
+        <field name="tokenHash" type="long-varchar">
+            <description>SHA-256 (base64url) of the full token; token itself is never persisted</description></field>
+        <field name="issuedAtMillis" type="numeric">
+            <description>issue instant baked into the HMAC so the token is reproducible</description></field>
+        <field name="expireAt" type="date-time"/>
+        <field name="issuedByUserLogin" type="id-vlong"/>
+        <field name="targetUrl" type="url">
+            <description>optional landing URL for e-commerce/B2B QRs</description></field>
+        <field name="scanCount" type="numeric"><description>denormalized total scans</description></field>
+        <field name="lastScanDate" type="date-time"/>
+        <prim-key field="qrCodeId"/>
+        <relation type="one" fk-name="QRC_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <index name="QRC_DOC_IDX">
+            <index-field name="docType"/>
+            <index-field name="docId"/>
+        </index>
+    </entity>
+
+    <entity entity-name="QrPolicy" package-name="org.apache.ofbiz.qrcore" title="QR Rendering / Access Policy">
+        <description>
+            Per-organization, per-docType barcode policy consumed by print engines.
+            docType "_DEFAULT" is the organization-wide fallback row. The server
+            never enforces rendering (that is presentation); it stores the policy
+            centrally so every app (React UI, FOP, storefront) renders identically.
+        </description>
+        <field name="docType" type="id-long"><description>document kind or _DEFAULT</description></field>
+        <field name="organizationPartyId" type="id"><description>org or _ALL</description></field>
+        <field name="enabled" type="indicator"/>
+        <field name="contentFormat" type="id">
+            <description>QR_FMT_TOKEN (raw signed token) or QR_FMT_URL (scan URL wrapping the token)</description></field>
+        <field name="symbology" type="id">
+            <description>QR_SYM_QR (square QR, carries the full signed content) or
+                QR_SYM_CODE128 (linear bars — encodes only the short qrCodeId,
+                verification is by registry lookup)</description></field>
+        <field name="scanBaseUrl" type="url">
+            <description>base of the scan landing page, e.g. https://apps.example.com/scan — required for QR_FMT_URL</description></field>
+        <field name="position" type="id">
+            <description>QR_POS_FOOTER_R, QR_POS_FOOTER_L, QR_POS_HEADER_R, QR_POS_NONE</description></field>
+        <field name="sizePx" type="numeric">
+            <description>legacy square size; superseded by widthPx/heightPx</description></field>
+        <field name="widthPx" type="numeric"/>
+        <field name="heightPx" type="numeric">
+            <description>QR is square (width governs); linear types use width × height</description></field>
+        <field name="labelText" type="long-varchar"/>
+        <field name="channel" type="id"><description>default issuing channel for this doc type</description></field>
+        <field name="publicAccess" type="indicator">
+            <description>Y = scan landing may show summary without login (e-commerce); N = login required</description></field>
+        <prim-key field="docType"/>
+        <prim-key field="organizationPartyId"/>
+    </entity>
+
+    <entity entity-name="QrScanEvent" package-name="org.apache.ofbiz.qrcore" title="QR Scan / Verification Event">
+        <field name="scanEventId" type="id"/>
+        <field name="qrCodeId" type="id"><description>null when an unknown/forged token was presented</description></field>
+        <field name="scanDate" type="date-time"/>
+        <field name="result" type="id">
+            <description>VALID, INVALID_SIGNATURE, REVOKED, EXPIRED, UNKNOWN</description></field>
+        <field name="scannedByUserLogin" type="id-vlong"/>
+        <field name="sourceIp" type="short-varchar"/>
+        <field name="userAgent" type="long-varchar"/>
+        <field name="note" type="long-varchar"/>
+        <prim-key field="scanEventId"/>
+        <relation type="one" fk-name="QRSE_QRC" rel-entity-name="QrCode">
+            <key-map field-name="qrCodeId"/>
+        </relation>
+        <index name="QRSE_QRC_IDX"><index-field name="qrCodeId"/></index>
+    </entity>
+
+</entitymodel>

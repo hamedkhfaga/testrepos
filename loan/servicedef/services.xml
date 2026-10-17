@@ -1,0 +1,2448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+
+    <!--
+      REST-safe adjustment:
+      userLogin remains GenericValue so Java services can keep using the injected OFBiz userLogin.
+      But for exported/authenticated REST services it should be optional, because the authenticated
+      request/session/token should supply it internally. This prevents REST clients from sending
+      a JSON object for userLogin, which is what causes:
+      LinkedHashMap -> GenericValue conversion warnings in the system log.
+
+      Client rule after this change:
+      - DO NOT send userLogin in JSON body
+      - Call approve/disburse/create/etc. with POST only
+    -->
+
+    <service name="createPartyLoan"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanServices"
+             invoke="createPartyLoan"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanTypeEnumId" type="String" mode="IN" optional="false"/>
+        <attribute name="borrowerRoleTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="borrowerTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="false"/>
+        <attribute name="principalAmount" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="interestAmount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="feeAmount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="installmentCount" type="Long" mode="IN" optional="false"/>
+        <attribute name="interestMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="repaymentPatternEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="allocationOrderEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="settlementPolicyEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="repaymentChannelEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="preferredRepaymentMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="firstDueDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="applicationDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="remarks" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanNumber" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="partyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanTypeEnumId" type="String" mode="OUT" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="OUT" optional="true"/>
+        <attribute name="principalAmount" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="totalRepayableAmount" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="installmentCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="approvePartyLoan"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanServices"
+             invoke="approvePartyLoan"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="approvalDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="previousLoanStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="approvalDate" type="Timestamp" mode="OUT" optional="true"/>
+        <attribute name="agreementId" type="String" mode="OUT" optional="true"/>
+        <attribute name="billingAccountId" type="String" mode="OUT" optional="true"/>
+        <attribute name="generatedScheduleCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="existingScheduleCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="disbursePartyLoan"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanServices"
+             invoke="disbursePartyLoan"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="disbursementDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="createPaymentFlag" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="previousLoanStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="disbursementDate" type="Timestamp" mode="OUT" optional="true"/>
+        <attribute name="disbursementAmount" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="OUT" optional="true"/>
+        <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+        <attribute name="payrollRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="payrollResultId" type="String" mode="OUT" optional="true"/>
+        <attribute name="createPaymentFlag" type="String" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="generatePartyLoanSchedule"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanScheduleServices"
+             invoke="generatePartyLoanSchedule"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="forceRebuild" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="generatedCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="generatedScheduleCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="existingScheduleCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="forceRebuild" type="String" mode="OUT" optional="true"/>
+        <attribute name="installmentCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="totalRepayableAmount" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+  <service name="recordPartyLoanRepayment"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanRepaymentServices"
+         invoke="recordPartyLoanRepayment"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="false"/>
+    <attribute name="financeProcessingMode" type="String" mode="IN" optional="true"/>
+    <attribute name="repaymentDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="repaymentSourceEnumId" type="String" mode="IN" optional="true"/>
+    <attribute name="remarks" type="String" mode="IN" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="partyId" type="String" mode="IN" optional="true"/>
+    <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+    <attribute name="finAccountId" type="String" mode="IN" optional="true"/>
+    <attribute name="agreementId" type="String" mode="IN" optional="true"/>
+    <attribute name="billingAccountId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+    <attribute name="createPaymentFlag" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanScheduleId" type="String" mode="OUT" optional="true"/>
+    <attribute name="requestedAmountApplied" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="totalApplied" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="unappliedAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="allocationCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="repaymentDate" type="Timestamp" mode="OUT" optional="true"/>
+    <attribute name="repaymentSourceEnumId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="payrollRunId" type="String" mode="OUT" optional="true"/>
+    <attribute name="payrollResultId" type="String" mode="OUT" optional="true"/>
+    <attribute name="repaymentRecordId" type="String" mode="OUT" optional="true"/>
+    <attribute name="outstandingAmountAfter" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="loanStatusIdAfter" type="String" mode="OUT" optional="true"/>
+    <attribute name="financeProcessingMode" type="String" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+    <service name="applyPayrollDeductionToPartyLoan"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepaymentServices"
+             invoke="applyPayrollDeductionToPartyLoan"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanScheduleId" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+        <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="repaymentDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="remarks" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+    
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanScheduleId" type="String" mode="OUT" optional="true"/>
+        <attribute name="amountApplied" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="outstandingAmountAfter" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="scheduleStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanStatusIdAfter" type="String" mode="OUT" optional="true"/>
+        <attribute name="repaymentSourceEnumId" type="String" mode="OUT" optional="true"/>
+        <attribute name="payrollRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="payrollResultId" type="String" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="reschedulePartyLoanInstallment"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanScheduleServices"
+             invoke="reschedulePartyLoanInstallment"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="loanScheduleId" type="String" mode="IN" optional="false"/>
+        <attribute name="newDueDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="changeReasonEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="remarks" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+    </service>
+
+    <service name="settlePartyLoanEarly"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepaymentServices"
+             invoke="settlePartyLoanEarly"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+        <attribute name="remarks" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="settlementAmount" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+        <attribute name="payrollRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="payrollResultId" type="String" mode="OUT" optional="true"/>
+        <attribute name="generatedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="repaymentRecordId" type="String" mode="OUT" optional="true"/>
+        <attribute name="outstandingAmountAfter" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="loanStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getDuePartyLoanInstallmentsForPayroll"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanUiServices"
+             invoke="getDuePartyLoanInstallmentsForPayroll"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollPeriodId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="dueRows" type="List" mode="OUT" optional="false"/>
+    </service>
+
+
+    <service name="previewPartyLoanPayrollAllocationPlan"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanStrategyServices"
+             invoke="previewPartyLoanPayrollAllocationPlan"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollPeriodId" type="String" mode="IN" optional="false"/>
+        <attribute name="netAvailableForLoans" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="plannedRows" type="List" mode="OUT" optional="true"/>
+        <attribute name="plannedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="totalDue" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="totalPlannedApply" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="totalShortfall" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="remainingNetAfterPlan" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="skippedInstallmentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="partialInstallmentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="reviewMissedPartyLoanSchedules"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanStrategyServices"
+             invoke="reviewMissedPartyLoanSchedules"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollPeriodId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="reviewedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="markedOverdueCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+    <service name="getActiveLoanAcctgCfg"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanAccountingServices"
+             invoke="getActiveLoanAcctgCfg"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="repaymentSourceEnumId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanAcctgCfgId" type="String" mode="OUT" optional="true"/>
+        <attribute name="acctgTransTypeId" type="String" mode="OUT" optional="true"/>
+        <attribute name="glFiscalTypeId" type="String" mode="OUT" optional="true"/>
+        <attribute name="debitGlAccountId" type="String" mode="OUT" optional="true"/>
+        <attribute name="creditGlAccountId" type="String" mode="OUT" optional="true"/>
+        <attribute name="finAccountTransTypeId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+<service name="createAcctgTransForLoanRepayment"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanAccountingServices"
+         invoke="createAcctgTransForLoanRepayment"
+        auth="true"
+             export="true"
+             action="POST">
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="amount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="repaymentSourceEnumId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+</service>
+
+<service name="createFinAccountTransForLoanRepayment"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanAccountingServices"
+         invoke="createFinAccountTransForLoanRepayment"
+         auth="true"
+             export="true"
+             action="POST">
+    <attribute name="finAccountId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="amount" type="BigDecimal" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+</service>
+
+
+<service name="generateDueLoanRepaymentInvoiceV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="generateDueLoanRepaymentInvoiceV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="invoiceDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="principalAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="interestAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="feeAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanScheduleId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="billingAccountId" type="String" mode="OUT" optional="true"/>
+    <attribute name="principalAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="interestAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="feeAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="duplicateSkipped" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="captureLoanRepaymentPaymentV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanRepaymentServices"
+         invoke="captureLoanRepaymentPaymentV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="false"/>
+    <attribute name="repaymentDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="repaymentSourceEnumId" type="String" mode="IN" optional="true"/>
+    <attribute name="remarks" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+    <attribute name="createPaymentFlag" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+    <attribute name="finAccountId" type="String" mode="IN" optional="true"/>
+    <attribute name="financeProcessingMode" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTargetStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceApprovedStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceReadyStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoicePaidStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanScheduleId" type="String" mode="OUT" optional="true"/>
+    <attribute name="repaymentRecordId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentApplicationId" type="String" mode="OUT" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="paymentStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanStatusIdAfter" type="String" mode="OUT" optional="true"/>
+    <attribute name="outstandingAmountAfter" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="financeProcessingMode" type="String" mode="OUT" optional="true"/>
+    <attribute name="duplicateSkipped" type="String" mode="OUT" optional="true"/>
+    <attribute name="idempotentReplay" type="String" mode="OUT" optional="true"/>
+</service>
+
+  <service name="reconcileLoanAccountingV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationServices"
+             invoke="reconcileLoanAccountingV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Reconcile loan schedules, repayments, payments, and accounting transactions</description>
+
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="strictDuplicateAcctg" type="String" mode="IN" optional="true"/>
+        <attribute name="requireFinAccountTrans" type="String" mode="IN" optional="true"/>
+
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="strictDuplicateAcctg" type="String" mode="OUT" optional="true"/>
+        <attribute name="requireFinAccountTrans" type="String" mode="OUT" optional="true"/>
+        <attribute name="checkedLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedScheduleCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedPaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedAcctgTransCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="warningCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="infoCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="issueCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="issues" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+	
+	 <service name="backfillLoanRepaymentAccountingV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanAccountingRepairServices"
+             invoke="backfillLoanRepaymentAccountingV1"
+              auth="true"
+             export="true"
+             action="POST">
+        <description>Backfill missing accounting and optional fin account transactions for repayment-backed payments</description>
+
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="repairPaymentAmount" type="String" mode="IN" optional="true"/>
+    <attribute name="repairPaymentApplicationAmount" type="String" mode="IN" optional="true"/>
+    <attribute name="repairAcctgEntryAmount" type="String" mode="IN" optional="true"/>
+        <attribute name="createFinAccountTrans" type="String" mode="IN" optional="true"/>
+
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="OUT" optional="true"/>
+        <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+        <attribute name="createFinAccountTrans" type="String" mode="OUT" optional="true"/>
+        <attribute name="checkedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="candidateCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="existingAcctgCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="createdAcctgCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="existingFinTransCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="createdFinTransCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="repairedIncomingPaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="repairedPaymentApplicationCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="actions" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="linkOrphanLoanRepaymentPaymentV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanPaymentRepairServices"
+             invoke="linkOrphanLoanRepaymentPaymentV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Safely link an existing orphan/duplicate Payment to PartyLoanRepayment after validating payment application and accepted 3-transaction accounting model.</description>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="IN" optional="false"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="requirePaymentApplication" type="String" mode="IN" optional="true"/>
+        <attribute name="requireAccounting" type="String" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+	
+	
+	  <service name="backfillLoanRepaymentPaymentV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanPaymentRepairServices"
+             invoke="backfillLoanRepaymentPaymentV1"
+            auth="true"
+             export="true"
+             action="POST">
+        <description>Backfill missing paymentId on PartyLoanRepayment and optionally create accounting artifacts</description>
+
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateAccounting" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateFinAccountTrans" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="linkDuplicatePaymentIfSafe" type="String" mode="IN" optional="true"/>
+
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+        <attribute name="autoCreateAccounting" type="String" mode="OUT" optional="true"/>
+        <attribute name="autoCreateFinAccountTrans" type="String" mode="OUT" optional="true"/>
+        <attribute name="checkedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="candidateCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="existingPaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="createdPaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="createdAcctgCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="createdFinTransCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="actions" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+	
+	
+	
+
+    <service name="backfillLoanRepaymentPaymentApplicationV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanPaymentApplicationRepairServices"
+             invoke="backfillLoanRepaymentPaymentApplicationV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Backfill missing repayment invoice/payment application dependencies for repayment-backed payments</description>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="createInvoiceIfMissing" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="OUT" optional="true"/>
+        <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+        <attribute name="createInvoiceIfMissing" type="String" mode="OUT" optional="true"/>
+        <attribute name="checkedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="candidateCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="existingPaymentApplicationCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="existingInvoiceCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="createdInvoiceCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="createdPaymentApplicationCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="actions" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+<service name="repairLoanFinancialIntegrityV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanFinancialRepairOrchestratorServices"
+         invoke="repairLoanFinancialIntegrityV1"
+        auth="true"
+             export="true"
+             action="POST">
+
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="autoCreateAccounting" type="String" mode="IN" optional="true"/>
+    <attribute name="autoCreateFinAccountTrans" type="String" mode="IN" optional="true"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+
+    <attribute name="initialReconciliation" type="Map" mode="OUT"/>
+    <attribute name="paymentRepair" type="Map" mode="OUT"/>
+    <attribute name="paymentApplicationRepair" type="Map" mode="OUT" optional="true"/>
+    <attribute name="accountingRepair" type="Map" mode="OUT"/>
+    <attribute name="amountConsistencyRepair" type="Map" mode="OUT" optional="true"/>
+    <attribute name="finalReconciliation" type="Map" mode="OUT"/>
+    <attribute name="initialErrorCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="finalErrorCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+    <attribute name="finalStatus" type="String" mode="OUT"/>
+
+</service>
+
+
+  <service name="persistLoanReconciliationRunV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationPersistenceServices"
+             invoke="persistLoanReconciliationRunV1"
+            auth="true"
+             export="true"
+             action="POST">
+        <description>Run loan reconciliation and persist the run header plus issue rows</description>
+
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="strictDuplicateAcctg" type="String" mode="IN" optional="true"/>
+        <attribute name="requireFinAccountTrans" type="String" mode="IN" optional="true"/>
+
+        <attribute name="reconciliationRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="strictDuplicateAcctg" type="String" mode="OUT" optional="true"/>
+        <attribute name="requireFinAccountTrans" type="String" mode="OUT" optional="true"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="checkedLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedScheduleCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedPaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedAcctgTransCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="warningCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="infoCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="issueCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="persistedIssueCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+    <service name="getLoanReconciliationRunListV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationPersistenceServices"
+             invoke="getLoanReconciliationRunListV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>List persisted loan reconciliation runs for dashboard/reporting</description>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+        <attribute name="runList" type="List" mode="OUT" optional="true"/>
+        <attribute name="totalCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="viewIndex" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="viewSize" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLoanReconciliationRunDetailV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationPersistenceServices"
+             invoke="getLoanReconciliationRunDetailV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Get persisted reconciliation run detail with issue rows</description>
+        <attribute name="reconciliationRunId" type="String" mode="IN" optional="false"/>
+        <attribute name="reconciliationRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="checkedLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedScheduleCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedPaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="checkedAcctgTransCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="warningCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="infoCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="issueCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="persistedIssueCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="issueList" type="List" mode="OUT" optional="true"/>
+        <attribute name="issues" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLoanReconciliationIssueListV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationPersistenceServices"
+             invoke="getLoanReconciliationIssueListV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>List persisted reconciliation issues with filters</description>
+        <attribute name="reconciliationRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="severityEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="issueTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="issueList" type="List" mode="OUT" optional="true"/>
+        <attribute name="issues" type="List" mode="OUT" optional="true"/>
+        <attribute name="issueCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="reconciliationRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="severityEnumId" type="String" mode="OUT" optional="true"/>
+        <attribute name="issueTypeEnumId" type="String" mode="OUT" optional="true"/>
+        <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLatestLoanReconciliationStatusV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationPersistenceServices"
+             invoke="getLatestLoanReconciliationStatusV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Get latest persisted reconciliation status for a loan or organization</description>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="hasRun" type="String" mode="OUT" optional="true"/>
+        <attribute name="latestStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="latestRun" type="Map" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="warningCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="issueCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLoanReconciliationDashboardV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationPersistenceServices"
+             invoke="getLoanReconciliationDashboardV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Get reconciliation dashboard summary from persisted run and issue history</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="totalRunCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="cleanRunCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="issueRunCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="totalErrorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="totalWarningCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="totalIssueCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="latestRun" type="Map" mode="OUT" optional="true"/>
+        <attribute name="recentRuns" type="List" mode="OUT" optional="true"/>
+        <attribute name="issueSummaryBySeverity" type="List" mode="OUT" optional="true"/>
+        <attribute name="issueSummaryByType" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+
+<service name="getLoanDashboardV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDashboardServices"
+         invoke="getLoanDashboardV1"
+         auth="true"
+             export="true"
+             action="POST" 
+         require-new-transaction="false">
+
+    <description>Loan dashboard aggregate service for React workbench</description>
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+<attribute name="asOfDate" type="java.sql.Timestamp" mode="IN" optional="true"/>
+<attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="kpis" type="java.util.List" mode="OUT" optional="true"/>
+    <attribute name="monthlyTrend" type="java.util.List" mode="OUT" optional="true"/>
+    <attribute name="statusSplit" type="java.util.List" mode="OUT" optional="true"/>
+    <attribute name="flowMetrics" type="java.util.List" mode="OUT" optional="true"/>
+    <attribute name="workQueue" type="java.util.List" mode="OUT" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+    <attribute name="asOfDate" type="java.sql.Timestamp" mode="OUT" optional="true"/>
+    <attribute name="dashboardSource" type="String" mode="OUT" optional="true"/>
+	
+
+</service>
+	<service name="getPartyLoanListV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanOriginationServices"
+         invoke="getPartyLoanListV1"
+         auth="true"
+         export="true"
+         action="POST">
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanId" type="String" mode="IN" optional="true"/>
+    <attribute name="partyId" type="String" mode="IN" optional="true"/>
+    <attribute name="statusId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanList" type="List" mode="OUT"/>
+    <attribute name="count" type="Integer" mode="OUT"/>
+</service>
+
+
+
+    <service name="getLoanTypeOptionsV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanOriginationServices"
+             invoke="getLoanTypeOptionsV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="loanTypeOptions" type="List" mode="OUT" optional="true"/>
+        <attribute name="count" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+    <service name="getPartyLoanScheduleListV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanScheduleReadServices"
+             invoke="getPartyLoanScheduleListV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="scheduleRows" type="List" mode="OUT" optional="true"/>
+        <attribute name="count" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+    <service name="getLoanStatusOptionsV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanOriginationServices"
+             invoke="getLoanStatusOptionsV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="statusOptions" type="List" mode="OUT" optional="true"/>
+        <attribute name="count" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+	
+	<service name="searchPartyLovV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.PartyLovServices"
+         invoke="searchPartyLovV1"
+          auth="true"
+             export="true"
+             action="POST">
+    <description>Search Party LOV for loan creation</description>
+<attribute name="roleTypeIds" type="List" mode="IN" optional="true"/>
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="partyId" type="String" mode="IN" optional="true"/>
+    <attribute name="query" type="String" mode="IN" optional="true"/>
+    <attribute name="roleTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+    <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+
+    <attribute name="partyList" type="List" mode="OUT"/>
+    <attribute name="partyCount" type="Integer" mode="OUT"/>
+</service>
+
+
+
+
+<service name="completeLoanDisbursementFromFinance"
+         engine="java"
+         location="org.apache.ofbiz.loan.LoanDisbursementServices"
+         invoke="completeLoanDisbursementFromFinance"
+         auth="true"
+         export="true"
+         action="POST"
+         require-new-transaction="true">
+    <description>Complete loan disbursement after finance/payment/accounting success</description>
+
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="acctgTransId" type="String" mode="IN" optional="true"/>
+    <attribute name="disbursementDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="disbursementMethodTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="disbursementReference" type="String" mode="IN" optional="true"/>
+    <attribute name="eventNotes" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="false"/>
+    <attribute name="loanStatusId" type="String" mode="OUT" optional="false"/>
+    <attribute name="oldLoanStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="false"/>
+    <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    <attribute name="disbursementDate" type="Timestamp" mode="OUT" optional="true"/>
+    <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="finalizeLoanDisbursementV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanServices"
+         invoke="finalizeLoanDisbursementV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+    <attribute name="acctgTransId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    <attribute name="previousLoanStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="getActiveLoanDisbursementAcctgCfg"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanAccountingServices"
+         invoke="getActiveLoanDisbursementAcctgCfg"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+
+    <attribute name="paymentTypeId" type="String" mode="OUT" optional="true"/>
+    <attribute name="acctgTransTypeId" type="String" mode="OUT" optional="true"/>
+    <attribute name="glFiscalTypeId" type="String" mode="OUT" optional="true"/>
+    <attribute name="debitGlAccountId" type="String" mode="OUT" optional="true"/>
+    <attribute name="creditGlAccountId" type="String" mode="OUT" optional="true"/>
+    <attribute name="creditSourceType" type="String" mode="OUT" optional="true"/>
+</service>
+<service name="createAcctgTransForLoanDisbursementV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanAccountingServices"
+         invoke="createAcctgTransForLoanDisbursementV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="amount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="transactionDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="remarks" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    <attribute name="debitGlAccountId" type="String" mode="OUT" optional="true"/>
+    <attribute name="creditGlAccountId" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="markLoanDisbursementPaymentSentV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanServices"
+         invoke="markLoanDisbursementPaymentSentV1"
+          auth="true"
+         export="true"
+         action="POST">
+    <description>Mark loan disbursement payment as sent</description>
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+
+    <attribute name="loanId" type="String" mode="OUT"/>
+    <attribute name="paymentId" type="String" mode="OUT"/>
+    <attribute name="statusId" type="String" mode="OUT"/>
+</service>
+
+
+<service name="updateLoanDisbursementPaymentStatusV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanServices"
+         invoke="updateLoanDisbursementPaymentStatusV1"
+         auth="true"
+         export="true"
+         action="POST">
+
+    <description>Update loan disbursement payment status (controlled)</description>
+
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="statusId" type="String" mode="IN" optional="false"/>
+    <attribute name="runAccountingFlag" type="String" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT"/>
+    <attribute name="paymentId" type="String" mode="OUT"/>
+    <attribute name="statusId" type="String" mode="OUT"/>
+	<attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+</service>
+
+
+
+<service name="createLoanDisbursementInvoiceV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="createLoanDisbursementInvoiceV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="duplicateSkipped" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="applyLoanDisbursementPaymentToInvoiceV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="applyLoanDisbursementPaymentToInvoiceV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="invoiceId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="paymentTargetStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceApprovedStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceReadyStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoicePaidStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="runAccountingFlag" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentApplicationId" type="String" mode="OUT" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="paymentStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="duplicateSkipped" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="processLoanDisbursementFinanceV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="processLoanDisbursementFinanceV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="invoiceDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentApplicationId" type="String" mode="OUT" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="OUT" optional="true"/>
+</service>
+<!-- Loan Agreement -->
+<service name="createLoanAgreementV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanAgreementServices"
+         invoke="createLoanAgreementV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <description>Create agreement for approved loan</description>
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="agreementDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT"/>
+    <attribute name="agreementId" type="String" mode="OUT"/>
+    <attribute name="organizationPartyId" type="String" mode="OUT"/>
+    <attribute name="partyId" type="String" mode="OUT"/>
+    <attribute name="agreementTypeId" type="String" mode="OUT"/>
+    <attribute name="providerRoleTypeId" type="String" mode="OUT"/>
+    <attribute name="borrowerRoleTypeId" type="String" mode="OUT"/>
+    <attribute name="duplicateSkipped" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="applyLoanRepaymentPaymentToInvoiceV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="applyLoanRepaymentPaymentToInvoiceV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="invoiceId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentApplicationId" type="String" mode="OUT" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="duplicateSkipped" type="String" mode="OUT" optional="true"/>
+	
+	<attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+</service>
+
+<service name="processLoanRepaymentFinanceV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="processLoanRepaymentFinanceV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="false"/>
+    <attribute name="repaymentDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="repaymentSourceEnumId" type="String" mode="IN" optional="true"/>
+    <attribute name="remarks" type="String" mode="IN" optional="true"/>
+
+    <attribute name="principalAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="interestAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="feeAmount" type="BigDecimal" mode="IN" optional="true"/>
+
+    <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+    <attribute name="createPaymentFlag" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+    <attribute name="finAccountId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanScheduleId" type="String" mode="OUT" optional="true"/>
+    <attribute name="repaymentRecordId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="financeProcessingMode" type="String" mode="OUT" optional="true"/>
+    <attribute name="principalAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="interestAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="feeAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="loanStatusIdAfter" type="String" mode="OUT" optional="true"/>
+    <attribute name="outstandingAmountAfter" type="BigDecimal" mode="OUT" optional="true"/>
+</service>
+
+
+<service name="createLoanRepaymentInvoiceV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="createLoanRepaymentInvoiceV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="invoiceDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="principalAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="interestAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="feeAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanScheduleId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="billingAccountId" type="String" mode="OUT" optional="true"/>
+    <attribute name="principalAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="interestAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="feeAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="duplicateSkipped" type="String" mode="OUT" optional="true"/>
+</service>
+
+
+
+
+<service name="createOrLinkLoanBillingAccountV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanServices"
+         invoke="createOrLinkLoanBillingAccountV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="billingAccountId" type="String" mode="OUT" optional="true"/>
+    <attribute name="partyId" type="String" mode="OUT" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+    <attribute name="createdByUserLoginId" type="String" mode="OUT" optional="true"/>
+    <attribute name="duplicateSkipped" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="closeLoanPaymentV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="closeLoanPaymentV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="paymentId" type="String" mode="IN" optional="false"/>
+    <attribute name="targetStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="closeLoanInvoiceV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="closeLoanInvoiceV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="invoiceId" type="String" mode="IN" optional="false"/>
+    <attribute name="targetStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceTotal" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="totalApplied" type="BigDecimal" mode="OUT" optional="true"/>
+</service>
+
+<service name="processLoanDisbursementEndToEndV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="processLoanDisbursementEndToEndV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="disbursementDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="financeProcessingMode" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTargetStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceTargetStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentApplicationId" type="String" mode="OUT" optional="true"/>
+    <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="financeProcessingMode" type="String" mode="OUT" optional="true"/>
+</service>
+
+<service name="processLoanRepaymentEndToEndV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+         invoke="processLoanRepaymentEndToEndV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="loanId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="false"/>
+    <attribute name="repaymentDate" type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="repaymentSourceEnumId" type="String" mode="IN" optional="true"/>
+    <attribute name="remarks" type="String" mode="IN" optional="true"/>
+    <attribute name="principalAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="interestAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="feeAmount" type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+    <attribute name="createPaymentFlag" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+    <attribute name="payrollResultId" type="String" mode="IN" optional="true"/>
+    <attribute name="finAccountId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTargetStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="invoiceTargetStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanScheduleId" type="String" mode="OUT" optional="true"/>
+    <attribute name="repaymentRecordId" type="String" mode="OUT" optional="true"/>
+    <attribute name="paymentId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+    <attribute name="billingAccountId" type="String" mode="OUT" optional="true"/>
+    <attribute name="amountApplied" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="principalAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="interestAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="feeAmount" type="BigDecimal" mode="OUT" optional="true"/>
+    <attribute name="paymentStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="invoiceStatusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanStatusIdAfter" type="String" mode="OUT" optional="true"/>
+    <attribute name="outstandingAmountAfter" type="BigDecimal" mode="OUT" optional="true"/>
+</service>
+
+
+
+<!-- Phase 6A: Scheduled/Batch Reconciliation Automation - read-only automation, no repair mutation -->
+<service name="runLoanReconciliationForLoanListV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanReconciliationAutomationServices"
+         invoke="runLoanReconciliationForLoanListV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <description>Run reconciliation for an explicit loanId list. Does not repair financial data.</description>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanIds" type="String" mode="IN" optional="false"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="persistRuns" type="String" mode="IN" optional="true"/>
+    <attribute name="persistBatchRun" type="String" mode="IN" optional="true"/>
+    <attribute name="batchRunTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="strictDuplicateAcctg" type="String" mode="IN" optional="true"/>
+    <attribute name="requireFinAccountTrans" type="String" mode="IN" optional="true"/>
+    <attribute name="maxLoans" type="Integer" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="batchRunId" type="String" mode="OUT" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+    <attribute name="batchRunTypeId" type="String" mode="OUT" optional="true"/>
+    <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+    <attribute name="persistRuns" type="String" mode="OUT" optional="true"/>
+    <attribute name="persistBatchRun" type="String" mode="OUT" optional="true"/>
+    <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="requestedLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="checkedLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="successCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="cleanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="issueLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="persistedRunCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="totalReconciliationIssueCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="results" type="List" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="runLoanReconciliationForOrgV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanReconciliationAutomationServices"
+         invoke="runLoanReconciliationForOrgV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <description>Run reconciliation batch for loans in an organization. Does not repair financial data.</description>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="persistRuns" type="String" mode="IN" optional="true"/>
+    <attribute name="persistBatchRun" type="String" mode="IN" optional="true"/>
+    <attribute name="batchRunTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="strictDuplicateAcctg" type="String" mode="IN" optional="true"/>
+    <attribute name="requireFinAccountTrans" type="String" mode="IN" optional="true"/>
+    <attribute name="maxLoans" type="Integer" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="batchRunId" type="String" mode="OUT" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+    <attribute name="batchRunTypeId" type="String" mode="OUT" optional="true"/>
+    <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+    <attribute name="persistRuns" type="String" mode="OUT" optional="true"/>
+    <attribute name="persistBatchRun" type="String" mode="OUT" optional="true"/>
+    <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="requestedLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="checkedLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="successCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="cleanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="issueLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="persistedRunCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="totalReconciliationIssueCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="results" type="List" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="runDailyLoanReconciliationBatchV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanReconciliationAutomationServices"
+         invoke="runDailyLoanReconciliationBatchV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <description>Scheduler-ready daily reconciliation batch. Defaults dryRun=Y and persistBatchRun=Y.</description>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="persistRuns" type="String" mode="IN" optional="true"/>
+    <attribute name="persistBatchRun" type="String" mode="IN" optional="true"/>
+    <attribute name="strictDuplicateAcctg" type="String" mode="IN" optional="true"/>
+    <attribute name="requireFinAccountTrans" type="String" mode="IN" optional="true"/>
+    <attribute name="maxLoans" type="Integer" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="batchRunId" type="String" mode="OUT" optional="true"/>
+    <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+    <attribute name="batchRunTypeId" type="String" mode="OUT" optional="true"/>
+    <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+    <attribute name="persistRuns" type="String" mode="OUT" optional="true"/>
+    <attribute name="persistBatchRun" type="String" mode="OUT" optional="true"/>
+    <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+    <attribute name="requestedLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="checkedLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="successCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="cleanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="issueLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="persistedRunCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="totalReconciliationIssueCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="results" type="List" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+
+    <!-- Phase 6B - Reconciliation Governance Policy Engine -->
+    <service name="getLoanReconciliationIssuePolicyV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationGovernanceServices"
+             invoke="getLoanReconciliationIssuePolicyV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="policyId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="issueTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="severityEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="activeOnly" type="String" mode="IN" optional="true"/>
+        <attribute name="policyCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="policyList" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getRepairEligibilityForIssueV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationGovernanceServices"
+             invoke="getRepairEligibilityForIssueV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="reconciliationIssueId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="issueTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="severityEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="policyFound" type="String" mode="OUT" optional="true"/>
+        <attribute name="repairEligibilityStatus" type="String" mode="OUT" optional="true"/>
+        <attribute name="policyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="autoRepairAllowed" type="String" mode="OUT" optional="true"/>
+        <attribute name="manualApprovalRequired" type="String" mode="OUT" optional="true"/>
+        <attribute name="blockBatchRepair" type="String" mode="OUT" optional="true"/>
+        <attribute name="requiresDryRun" type="String" mode="OUT" optional="true"/>
+        <attribute name="requiresBackupReview" type="String" mode="OUT" optional="true"/>
+        <attribute name="riskLevelEnumId" type="String" mode="OUT" optional="true"/>
+        <attribute name="repairServiceName" type="String" mode="OUT" optional="true"/>
+        <attribute name="recommendedAction" type="String" mode="OUT" optional="true"/>
+        <attribute name="policy" type="Map" mode="OUT" optional="true"/>
+        <attribute name="issue" type="Map" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="evaluateLoanReconciliationIssueRepairabilityV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationGovernanceServices"
+             invoke="evaluateLoanReconciliationIssueRepairabilityV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <attribute name="reconciliationRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="severityEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="issueTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+        <attribute name="totalCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="evaluatedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="autoRepairAllowedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="manualApprovalRequiredCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="blockedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="noPolicyCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="criticalRiskCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="highRiskCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="mediumRiskCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="lowRiskCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="eligibilityList" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+    <!-- Phase 6C - Repair Approval Workflow -->
+    <service name="createLoanRepairProposalV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+             invoke="createLoanRepairProposalV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Create governed repair proposal from a reconciliation issue or issue type. Does not execute repair.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="reconciliationIssueId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="IN" optional="true"/>
+        <attribute name="issueTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="severityEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="repairServiceName" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateAccounting" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateFinAccountTrans" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="repairProposalId" type="String" mode="OUT" optional="true"/>
+        <attribute name="proposalStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRunStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="repairEligibilityStatus" type="String" mode="OUT" optional="true"/>
+        <attribute name="autoRepairAllowed" type="String" mode="OUT" optional="true"/>
+        <attribute name="manualApprovalRequired" type="String" mode="OUT" optional="true"/>
+        <attribute name="blockBatchRepair" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRunRequired" type="String" mode="OUT" optional="true"/>
+        <attribute name="riskLevelEnumId" type="String" mode="OUT" optional="true"/>
+        <attribute name="repairServiceName" type="String" mode="OUT" optional="true"/>
+        <attribute name="recommendedAction" type="String" mode="OUT" optional="true"/>
+        <attribute name="eligibility" type="Map" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="approveLoanRepairProposalV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+             invoke="approveLoanRepairProposalV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Approve a pending governed repair proposal. Does not execute repair.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="repairProposalId" type="String" mode="OUT" optional="true"/>
+        <attribute name="proposalStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="approvedByUserLoginId" type="String" mode="OUT" optional="true"/>
+        <attribute name="approvedDate" type="Timestamp" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="rejectLoanRepairProposalV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+             invoke="rejectLoanRepairProposalV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Reject a governed repair proposal. Does not execute repair.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="rejectionReason" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="repairProposalId" type="String" mode="OUT" optional="true"/>
+        <attribute name="proposalStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="rejectedByUserLoginId" type="String" mode="OUT" optional="true"/>
+        <attribute name="rejectedDate" type="Timestamp" mode="OUT" optional="true"/>
+        <attribute name="rejectionReason" type="String" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="dryRunLoanRepairProposalV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+             invoke="dryRunLoanRepairProposalV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Execute the proposal repair service in dry-run mode only. Required before controlled execution.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateAccounting" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateFinAccountTrans" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="repairProposalId" type="String" mode="OUT" optional="true"/>
+        <attribute name="proposalStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRunStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRunDate" type="Timestamp" mode="OUT" optional="true"/>
+        <attribute name="dryRunResult" type="Map" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+<!-- Phase 6I v2 - Approval execution + retry orchestration -->
+<service name="executeApprovedLoanRepairBatchV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanRepairExecutionOrchestratorServices"
+         invoke="executeApprovedLoanRepairBatchV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="repairProposalId" type="String" mode="IN" optional="true"/>
+    <attribute name="loanId" type="String" mode="IN" optional="true"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="maxBatchSize" type="Integer" mode="IN" optional="true"/>
+    <attribute name="maxProposals" type="Integer" mode="IN" optional="true"/>
+    <attribute name="runDryRunBeforeExecute" type="String" mode="IN" optional="true"/>
+    <attribute name="rerunReconciliation" type="String" mode="IN" optional="true"/>
+    <attribute name="stopOnError" type="String" mode="IN" optional="true"/>
+    <attribute name="maxRepayments" type="Integer" mode="IN" optional="true"/>
+    <attribute name="runPaymentRepair" type="String" mode="IN" optional="true"/>
+    <attribute name="runPaymentApplicationRepair" type="String" mode="IN" optional="true"/>
+    <attribute name="runAccountingRepair" type="String" mode="IN" optional="true"/>
+    <attribute name="runAmountConsistencyRepair" type="String" mode="IN" optional="true"/>
+    <attribute name="autoCreateAccounting" type="String" mode="IN" optional="true"/>
+    <attribute name="autoCreateFinAccountTrans" type="String" mode="IN" optional="true"/>
+    <attribute name="repairPaymentApplicationAmount" type="String" mode="IN" optional="true"/>
+    <attribute name="repairAcctgEntryAmount" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="retryFailedLoanRepairProposalsV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanRepairExecutionOrchestratorServices"
+         invoke="retryFailedLoanRepairProposalsV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="repairProposalId" type="String" mode="IN" optional="true"/>
+    <attribute name="loanId" type="String" mode="IN" optional="true"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="maxBatchSize" type="Integer" mode="IN" optional="true"/>
+    <attribute name="maxProposals" type="Integer" mode="IN" optional="true"/>
+    <attribute name="runDryRunBeforeExecute" type="String" mode="IN" optional="true"/>
+    <attribute name="rerunReconciliation" type="String" mode="IN" optional="true"/>
+    <attribute name="stopOnError" type="String" mode="IN" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+    <service name="executeApprovedLoanRepairProposalV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+             invoke="executeApprovedLoanRepairProposalV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Governance re-check, dry-run enforcement, and controlled execution of an approved repair proposal.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateAccounting" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateFinAccountTrans" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="repairProposalId" type="String" mode="OUT" optional="true"/>
+        <attribute name="proposalStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="executionStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="executionDate" type="Timestamp" mode="OUT" optional="true"/>
+        <attribute name="executionResult" type="Map" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLoanRepairProposalListV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+             invoke="getLoanRepairProposalListV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>List repair proposals for approval queue and repair tracking.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="reconciliationIssueId" type="String" mode="IN" optional="true"/>
+        <attribute name="proposalStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="issueTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="proposalCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="proposalList" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLoanRepairProposalAuditListV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+             invoke="getLoanRepairProposalAuditListV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>List audit events for a repair proposal.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="repairProposalId" type="String" mode="OUT" optional="true"/>
+        <attribute name="auditCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="auditList" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+<service name="backfillLoanRepaymentAmountConsistencyV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanAccountingRepairServices"
+         invoke="backfillLoanRepaymentAmountConsistencyV1"
+         auth="true" export="true" action="POST">
+
+    <description>
+        Phase 6E - Controlled repair for repayment/payment/accounting amount mismatches
+    </description>
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+    <attribute name="loanId" type="String" mode="IN" optional="true"/>
+    <attribute name="loanRepaymentId" type="String" mode="IN" optional="true"/>
+    <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+
+    <attribute name="repairPaymentApplicationAmount"
+               type="String"
+               mode="IN"
+               optional="true"/>
+
+    <attribute name="repairPaymentAmount"
+               type="String"
+               mode="IN"
+               optional="true"/>
+
+    <attribute name="repairAccountingAmount"
+               type="String"
+               mode="IN"
+               optional="true"/>
+
+    <attribute name="responseMessage" type="String" mode="OUT" optional="true"/>
+    <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+    
+    <attribute name="checkedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="candidateCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="repairedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+
+    <attribute name="actions" type="List" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mmode="OUT" optional="true"/>
+	
+	<attribute name="errorMessage" type="String" mode="OUT" optional="true"/>
+<attribute name="repairedCount" type="Integer" mode="OUT" optional="true"/>
+
+</service>
+
+
+
+    <service name="repairLoanFinancialIntegrityBatchV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanFinancialRepairOrchestratorServices"
+             invoke="repairLoanFinancialIntegrityBatchV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Phase 6F - Enterprise batch financial integrity repair orchestration</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="maxLoans" type="Integer" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="stopOnError" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateAccounting" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateFinAccountTrans" type="String" mode="IN" optional="true"/>
+        <attribute name="repairPaymentAmount" type="String" mode="IN" optional="true"/>
+        <attribute name="repairPaymentApplicationAmount" type="String" mode="IN" optional="true"/>
+        <attribute name="repairAcctgEntryAmount" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+        <attribute name="maxLoans" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="queuedLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="processedLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="improvedLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="cleanLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="partialLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="skippedLoanCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="initialErrorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="finalErrorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="initialIssueTypeCounts" type="Map" mode="OUT" optional="true"/>
+        <attribute name="loanResults" type="List" mode="OUT" optional="true"/>
+        <attribute name="initialReconciliation" type="Map" mode="OUT" optional="true"/>
+        <attribute name="finalReconciliation" type="Map" mode="OUT" optional="true"/>
+        <attribute name="finalStatus" type="String" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+    <service name="repairLoanFinancialIntegrityChunkedV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanFinancialRepairOrchestratorServices"
+             invoke="repairLoanFinancialIntegrityChunkedV1"
+             auth="true"
+             export="true"
+             action="POST"
+             use-transaction="false">
+        <description>Phase 6F.2 - Chunked repayment-level financial integrity repair executor</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="maxRepayments" type="Integer" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="stopOnError" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="autoCreateFinAccountTrans" type="String" mode="IN" optional="true"/>
+        <attribute name="repairPaymentAmount" type="String" mode="IN" optional="true"/>
+        <attribute name="repairPaymentApplicationAmount" type="String" mode="IN" optional="true"/>
+        <attribute name="repairAcctgEntryAmount" type="String" mode="IN" optional="true"/>
+        <attribute name="runPaymentRepair" type="String" mode="IN" optional="true"/>
+        <attribute name="runPaymentApplicationRepair" type="String" mode="IN" optional="true"/>
+        <attribute name="runAccountingRepair" type="String" mode="IN" optional="true"/>
+        <attribute name="runAmountConsistencyRepair" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+        <attribute name="maxRepayments" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="queuedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="processedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="improvedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="skippedRepaymentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="initialErrorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="finalErrorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="initialIssueTypeCounts" type="Map" mode="OUT" optional="true"/>
+        <attribute name="repaymentResults" type="List" mode="OUT" optional="true"/>
+        <attribute name="initialReconciliation" type="Map" mode="OUT" optional="true"/>
+        <attribute name="finalReconciliation" type="Map" mode="OUT" optional="true"/>
+        <attribute name="finalStatus" type="String" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+<service name="runLoanReconciliationAutomationV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanReconciliationAutomationServices"
+         invoke="runLoanReconciliationForOrgV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanStatusId" type="String" mode="IN" optional="true"/>
+    <attribute name="maxLoans" type="Integer" mode="IN" optional="true"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="persistRuns" type="String" mode="IN" optional="true"/>
+    <attribute name="persistBatchRun" type="String" mode="IN" optional="true"/>
+    <attribute name="strictDuplicateAcctg" type="String" mode="IN" optional="true"/>
+    <attribute name="requireFinAccountTrans" type="String" mode="IN" optional="true"/>
+    <attribute name="batchRunTypeId" type="String" mode="IN" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="getLoanRepairAutomationDashboardV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanReconciliationPersistenceServices"
+         invoke="getLoanReconciliationDashboardV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanId" type="String" mode="IN" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+
+
+<!-- Phase 6H - Autonomous Repair Orchestration & Governance Enforcement -->
+<service name="runAutonomousLoanRepairOrchestrationV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanAutonomousRepairOrchestrationServices"
+         invoke="runAutonomousLoanRepairOrchestrationV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <description>
+        Autonomous governance-aware reconciliation repair orchestration.
+        AUTO_REPAIR_ELIGIBLE issues are repaired via the validated chunked repair engine;
+        HIGH_RISK/manual-approval issues are queued as repair proposals;
+        failed repairs are returned in retryQueue; post-repair reconciliation is rerun.
+    </description>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="loanId" type="String" mode="IN" optional="true"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="maxLoans" type="Integer" mode="IN" optional="true"/>
+    <attribute name="maxRepairs" type="Integer" mode="IN" optional="true"/>
+    <attribute name="maxRepaymentsPerLoan" type="Integer" mode="IN" optional="true"/>
+    <attribute name="persistFinalRuns" type="String" mode="IN" optional="true"/>
+    <attribute name="stopOnError" type="String" mode="IN" optional="true"/>
+    <attribute name="autoCreateAccounting" type="String" mode="IN" optional="true"/>
+    <attribute name="autoCreateFinAccountTrans" type="String" mode="IN" optional="true"/>
+    <attribute name="repairPaymentApplicationAmount" type="String" mode="IN" optional="true"/>
+    <attribute name="repairAcctgEntryAmount" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+    <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+    <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+    <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+    <attribute name="finalStatus" type="String" mode="OUT" optional="true"/>
+    <attribute name="evaluatedLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="autoRepairLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="repairedIssueLoanCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="approvalQueuedCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="failedRepairCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="retryQueueCount" type="Integer" mode="OUT" optional="true"/>
+    <attribute name="decisionCounts" type="Map" mode="OUT" optional="true"/>
+    <attribute name="discovery" type="Map" mode="OUT" optional="true"/>
+    <attribute name="autoRepairResults" type="List" mode="OUT" optional="true"/>
+    <attribute name="approvalQueue" type="List" mode="OUT" optional="true"/>
+    <attribute name="retryQueue" type="List" mode="OUT" optional="true"/>
+    <attribute name="postRepairReconciliationResults" type="List" mode="OUT" optional="true"/>
+    <attribute name="dashboard" type="Map" mode="OUT" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+
+
+    <!-- Phase 6K - Backend Closure & Enterprise Hardening -->
+    <service name="closeDuplicateLoanRepairProposalsV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+             invoke="closeDuplicateLoanRepairProposalsV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Close stale duplicate repair proposals while preserving latest active proposal and audit trail.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="maxRows" type="Integer" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="persistLoanRepairExecutionAuditV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationPersistenceServices"
+             invoke="persistLoanRepairExecutionAuditV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Persist repair execution audit details for dashboard and compliance traceability.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="executionStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="repairServiceName" type="String" mode="IN" optional="true"/>
+        <attribute name="beforeErrorCount" type="Integer" mode="IN" optional="true"/>
+        <attribute name="afterErrorCount" type="Integer" mode="IN" optional="true"/>
+        <attribute name="finalStatus" type="String" mode="IN" optional="true"/>
+        <attribute name="resultPayload" type="Object" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="enqueueLoanRepairRetryV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanReconciliationPersistenceServices"
+             invoke="enqueueLoanRepairRetryV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Persist a failed repair proposal into durable retry queue.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="failureReason" type="String" mode="IN" optional="true"/>
+        <attribute name="retryCount" type="Integer" mode="IN" optional="true"/>
+        <attribute name="nextRetryDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+	
+	
+	<service name="cleanupDuplicateLoanRepairProposalsV1"
+         engine="java"
+         location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+         invoke="cleanupDuplicateLoanRepairProposalsV1"
+         auth="true"
+         export="true"
+         action="POST">
+    <description>Close stale duplicate repair proposals while retaining the latest active proposal for each issue key.</description>
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+    <attribute name="maxRows" type="Integer" mode="IN" optional="true"/>
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+
+
+    <!-- Phase 6L - Obsolete Proposal Resolution -->
+    <service name="closeObsoleteLoanRepairProposalsV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices"
+             invoke="closeObsoleteLoanRepairProposalsV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Mark open repair proposals obsolete when current reconciliation is clean.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="maxRows" type="Integer" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+
+    <service name="getLoanGovernanceQueueV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="getLoanGovernanceQueueV1" auth="true" export="true" action="POST">
+        <description>Retrieve proposal-backed loan governance queue rows with SLA and assignment metadata.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="proposalStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="issueTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="severityEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="riskLevelEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="assignedToUserLoginId" type="String" mode="IN" optional="true"/>
+        <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assignLoanGovernanceProposalV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="assignLoanGovernanceProposalV1" auth="true" export="true" action="POST">
+        <description>Assign a repair proposal to an operator.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="assignedToUserLoginId" type="String" mode="IN" optional="false"/>
+        <attribute name="assignmentComment" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="unassignLoanGovernanceProposalV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="unassignLoanGovernanceProposalV1" auth="true" export="true" action="POST">
+        <description>Close active assignment for a repair proposal.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="unassignmentComment" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="addLoanGovernanceCommentV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="addLoanGovernanceCommentV1" auth="true" export="true" action="POST">
+        <description>Add an operator governance comment to a repair proposal.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="commentText" type="String" mode="IN" optional="false"/>
+        <attribute name="commentTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLoanGovernanceCommentListV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="getLoanGovernanceCommentListV1" auth="true" export="true" action="POST">
+        <description>Retrieve operator governance comments.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="approveLoanGovernanceProposalV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="approveLoanGovernanceProposalV1" auth="true" export="true" action="POST">
+        <description>Governance alias for approving a repair proposal.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="decisionComment" type="String" mode="IN" optional="true"/>
+        <attribute name="approvalComment" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="rejectLoanGovernanceProposalV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="rejectLoanGovernanceProposalV1" auth="true" export="true" action="POST">
+        <description>Governance alias for rejecting a repair proposal.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="decisionComment" type="String" mode="IN" optional="true"/>
+        <attribute name="rejectionReason" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+    <service name="getLoanGovernanceProposalDetailV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="getLoanGovernanceProposalDetailV1" auth="true" export="true" action="POST">
+        <description>Retrieve proposal drilldown detail including timeline, comments, assignments, related entities, finance trace, and latest reconciliation.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLoanGovernanceProposalTimelineV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="getLoanGovernanceProposalTimelineV1" auth="true" export="true" action="POST">
+        <description>Retrieve chronological governance proposal timeline.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLoanGovernanceRelatedFinanceTraceV1" engine="java" location="org.apache.ofbiz.loan.services.LoanRepairApprovalServices" invoke="getLoanGovernanceRelatedFinanceTraceV1" auth="true" export="true" action="POST">
+        <description>Retrieve repayment, payment, invoice, payment application, and accounting trace for a governance proposal.</description>
+        <attribute name="repairProposalId" type="String" mode="IN" optional="false"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+
+    <!-- Phase 12A - Unified Borrower Repayment Engine -->
+    <service name="previewUnifiedLoanRepaymentV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanServices"
+             invoke="previewUnifiedLoanRepaymentV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Preview borrower-neutral loan repayment without posting financial records.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+        <attribute name="borrowerPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="repaymentMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="repaymentDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="externalReference" type="String" mode="IN" optional="true"/>
+        <attribute name="bankReference" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentChannelNote" type="String" mode="IN" optional="true"/>
+        <attribute name="remarks" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="recordUnifiedLoanRepaymentV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanServices"
+             invoke="recordUnifiedLoanRepaymentV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Record borrower-neutral loan repayment through payroll, cash, bank transfer, check, card, manual, or settlement channels.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+        <attribute name="borrowerPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="repaymentMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="repaymentDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="externalReference" type="String" mode="IN" optional="true"/>
+        <attribute name="bankReference" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentChannelNote" type="String" mode="IN" optional="true"/>
+        <attribute name="remarks" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="runReconciliation" type="String" mode="IN" optional="true"/>
+        <attribute name="createPaymentFlag" type="String" mode="IN" optional="true"/>
+        <attribute name="financeProcessingMode" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+    <service name="completeUnifiedLoanRepaymentFinancialsV1" engine="java" location="org.apache.ofbiz.loan.services.LoanServices" invoke="completeUnifiedLoanRepaymentFinancialsV1" auth="true" export="true" action="POST">
+        <description>Complete repayment invoice, payment application, and accounting markers for unified borrower repayments.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="repaymentMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="repaymentSourceEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+    <service name="recordUnifiedLoanRepaymentFinancialFirstV1" engine="java" location="org.apache.ofbiz.loan.services.LoanServices" invoke="recordUnifiedLoanRepaymentFinancialFirstV1" auth="true" export="true" action="POST">
+        <description>Record unified borrower repayment with repayment invoice generated before schedule reduction.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanScheduleId" type="String" mode="IN" optional="true"/>
+        <attribute name="borrowerPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="repaymentMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="amountApplied" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="repaymentDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentMethodId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="externalReference" type="String" mode="IN" optional="true"/>
+        <attribute name="bankReference" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentChannelNote" type="String" mode="IN" optional="true"/>
+        <attribute name="remarks" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="runReconciliation" type="String" mode="IN" optional="true"/>
+        <attribute name="skipAccounting" type="String" mode="IN" optional="true"/>
+        <attribute name="createPaymentFlag" type="String" mode="IN" optional="true"/>
+        <attribute name="financeProcessingMode" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+
+    <service name="ensureLoanRepaymentBalancedAccountingV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanServices"
+             invoke="ensureLoanRepaymentBalancedAccountingV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Ensure historical loan repayments have PaymentApplication and balanced 3-transaction accounting entries.</description>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanRepaymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+
+    <service name="orchestrateLoanDisbursementFinanceV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanServices"
+             invoke="orchestrateLoanDisbursementFinanceV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Create/post disbursement accounting and return nextAction to call finalizeLoanDisbursementV1 separately.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+
+    <service name="orchestrateLoanRepaymentAccountingV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanServices"
+             invoke="orchestrateLoanRepaymentAccountingV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Create/post repayment accounting and return nextAction to call reconcileLoanAccountingV1 separately.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanRepaymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="repaymentSourceEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="IN" optional="true"/>
+        <attribute name="amount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+
+    <service name="getLoanPortfolioDashboardV1" engine="java" location="org.apache.ofbiz.loan.services.LoanUiServices" invoke="getLoanPortfolioDashboardV1" auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/><attribute name="loanStatusId" type="String" mode="IN" optional="true"/><attribute name="data" type="Map" mode="OUT" optional="true"/><attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+    <service name="getLoanRepaymentDashboardV1" engine="java" location="org.apache.ofbiz.loan.services.LoanUiServices" invoke="getLoanRepaymentDashboardV1" auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/><attribute name="loanId" type="String" mode="IN" optional="true"/><attribute name="data" type="Map" mode="OUT" optional="true"/><attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+    <service name="getLoanAccountingDashboardV1" engine="java" location="org.apache.ofbiz.loan.services.LoanUiServices" invoke="getLoanAccountingDashboardV1" auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/><attribute name="loanId" type="String" mode="IN" optional="true"/><attribute name="data" type="Map" mode="OUT" optional="true"/><attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+    <service name="getLoanScheduleAgingDashboardV1" engine="java" location="org.apache.ofbiz.loan.services.LoanUiServices" invoke="getLoanScheduleAgingDashboardV1" auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/><attribute name="loanId" type="String" mode="IN" optional="true"/><attribute name="data" type="Map" mode="OUT" optional="true"/><attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+
+    <service name="getLoanDashboardDetailRowsV1" engine="java" location="org.apache.ofbiz.loan.services.LoanUiServices" invoke="getLoanDashboardDetailRowsV1" auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/><attribute name="loanId" type="String" mode="IN" optional="true"/><attribute name="loanStatusId" type="String" mode="IN" optional="true"/><attribute name="data" type="Map" mode="OUT" optional="true"/><attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+    <service name="getLoanScheduleDetailRowsV1" engine="java" location="org.apache.ofbiz.loan.services.LoanUiServices" invoke="getLoanScheduleDetailRowsV1" auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/><attribute name="loanId" type="String" mode="IN" optional="true"/><attribute name="scheduleStatusId" type="String" mode="IN" optional="true"/><attribute name="data" type="Map" mode="OUT" optional="true"/><attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+    <service name="getLoanRepaymentDetailRowsV1" engine="java" location="org.apache.ofbiz.loan.services.LoanUiServices" invoke="getLoanRepaymentDetailRowsV1" auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/><attribute name="loanId" type="String" mode="IN" optional="true"/><attribute name="repaymentSourceEnumId" type="String" mode="IN" optional="true"/><attribute name="data" type="Map" mode="OUT" optional="true"/><attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+    <service name="getLoanAccountingDetailRowsV1" engine="java" location="org.apache.ofbiz.loan.services.LoanUiServices" invoke="getLoanAccountingDetailRowsV1" auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/><attribute name="loanId" type="String" mode="IN" optional="true"/><attribute name="paymentId" type="String" mode="IN" optional="true"/><attribute name="acctgTransTypeId" type="String" mode="IN" optional="true"/><attribute name="data" type="Map" mode="OUT" optional="true"/><attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+
+    <service name="finalizeFullyAppliedLoanRepaymentInvoicesV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanDisbursementInvoiceServices"
+             invoke="finalizeFullyAppliedLoanRepaymentInvoicesV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Mark fully-applied loan repayment invoices as INVOICE_PAID. Safe to run as dry-run first.</description>
+        <attribute name="loanId" type="String" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+        <attribute name="invoicePaidStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+        <attribute name="checkedInvoiceCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="fullyAppliedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="alreadyPaidCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="updatedInvoiceCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="actions" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="getLoanProfileV1"
+             engine="java"
+             location="org.apache.ofbiz.loan.services.LoanUiServices"
+             invoke="getLoanProfileV1"
+             auth="true"
+             export="true"
+             action="POST">
+        <description>Read-only loan profile payload with header, party, agreement, billing, schedules, repayments, invoices, payments, accounting, and workflow state.</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="loanId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loanId" type="String" mode="OUT" optional="true"/>
+        <attribute name="loan" type="Map" mode="OUT" optional="true"/>
+        <attribute name="workflowState" type="Map" mode="OUT" optional="true"/>
+        <attribute name="schedules" type="List" mode="OUT" optional="true"/>
+        <attribute name="repayments" type="List" mode="OUT" optional="true"/>
+        <attribute name="invoices" type="List" mode="OUT" optional="true"/>
+        <attribute name="payments" type="List" mode="OUT" optional="true"/>
+        <attribute name="accounting" type="List" mode="OUT" optional="true"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+</services>

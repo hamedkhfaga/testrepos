@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    POCasseterp_patch1.xml — GlAccountOrganization fix
+    Problem: ASSETERP-* GL accounts were created by POCasseterp.xml but were never
+             registered in GlAccountOrganization, so OFBiz standard Accounting module
+             cannot find depreciation journals that use these accounts.
+    Fix:     Add one GlAccountOrganization record per GL account, linking each to
+             organizationPartyId="Company" with roleTypeId="INTERNAL_ORGANIZATIO".
+    Import:  Admin > Entity Engine XML Import (same way as POCasseterp.xml)
+             Safe to import multiple times — OFBiz upserts on PK.
+-->
+<entity-engine-xml>
+
+    <!-- ================================================================
+         GlAccountOrganization — wire all ASSETERP accounts to Company
+         PK = glAccountId + organizationPartyId
+         ================================================================ -->
+
+    <!-- Asset Cost accounts -->
+    <GlAccountOrganization glAccountId="ASSETERP-141000" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141100" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141200" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141300" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141400" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-145000" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+
+    <!-- Accumulated Depreciation accounts -->
+    <GlAccountOrganization glAccountId="ASSETERP-142000" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142100" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142200" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142300" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142400" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+
+    <!-- Depreciation Expense accounts -->
+    <GlAccountOrganization glAccountId="ASSETERP-741000" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741100" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741200" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741300" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741400" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+
+    <!-- Disposal GL accounts -->
+    <GlAccountOrganization glAccountId="ASSETERP-881000" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-882000" organizationPartyId="Company"
+        roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2022-01-01 00:00:00.0"/>
+
+    <!-- ================================================================
+         Also ensure Company has the INTERNAL_ORGANIZATIO role
+         (already seeded in OFBiz demo data, but harmless to re-upsert)
+         ================================================================ -->
+    <PartyRole partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"/>
+
+</entity-engine-xml>

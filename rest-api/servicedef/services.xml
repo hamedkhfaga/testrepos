@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>rest-api Services</description>
+    <vendor></vendor>
+    <version>1.0</version>
+
+    <service name="generateAuthTokenService" engine="java" require-new-transaction="true" max-retry="3"
+            location="org.apache.ofbiz.ws.rs.services.RestServices" invoke="generateAuthToken" export="true" action="POST">
+        <description>Generates Authorization Token for the userLogin</description>
+        <attribute name="access_token" type="String" mode="OUT" optional="false"/>
+        <attribute name="expires_in" type="String" mode="OUT" optional="false"/>
+        <attribute name="token_type" type="String" mode="OUT" optional="false"/>
+    </service>
+<service name="createPayrollAssignmentRest"
+         engine="java"
+         location="org.apache.ofbiz.payroll.PayrollEngine"
+         invoke="createPayrollAssignmentRest"
+         export="true"
+         action="POST">
+    <description>REST API to create Employee Payroll Assignment</description>
+
+    <!-- Parameters expected in JSON payload -->
+    <param name="partyId" type="id" required="true"/>
+    <param name="payrollStructureId" type="id" required="true"/>
+    <param name="employmentType" type="string" required="true"/>
+    <param name="contractType" type="string"/>
+    <param name="baseSalary" type="currency"/>
+    <param name="effectiveDate" type="date" required="true"/>
+    <param name="thruDate" type="date"/>
+    <param name="statusId" type="id"/>
+    <param name="comments" type="string"/>
+    <param name="userLogin" type="object"/>
+</service>
+
+	
+	
+</services>

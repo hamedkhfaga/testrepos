@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership. The ASF licenses this file
+to you under the Apache License, Version 2.0.
+
+POC scope:
+- 2 laptop assets
+- Native OFBiz physical asset master data in FixedAsset
+- Assets* workflow/subledger extension rows for request, approval,
+  quote evaluation, capitalization, in-service, book detail, and
+  planned depreciation schedule
+- All demo IDs are 20 characters or less.
+-->
+
+<entity-engine-xml>
+    <!-- Minimal POC reference setup. Core OFBiz remains authoritative. -->
+    <RoleType roleTypeId="INTERNAL_ORGANIZATIO" description="Internal Organization"/>
+    <RoleType roleTypeId="EMPLOYEE" description="Employee"/>
+    <RoleType roleTypeId="MANAGER" description="Manager"/>
+    <RoleType roleTypeId="SUPPLIER" description="Supplier"/>
+
+    <Party partyId="ASSETREQ1" partyTypeId="PERSON" statusId="PARTY_ENABLED" createdDate="2026-07-01 08:00:00.0"/>
+    <Person partyId="ASSETREQ1" firstName="Maha" lastName="Requester"/>
+    <PartyRole partyId="ASSETREQ1" roleTypeId="EMPLOYEE"/>
+
+    <Party partyId="ASSETAPPR1" partyTypeId="PERSON" statusId="PARTY_ENABLED" createdDate="2026-07-01 08:00:00.0"/>
+    <Person partyId="ASSETAPPR1" firstName="Omar" lastName="Approver"/>
+    <PartyRole partyId="ASSETAPPR1" roleTypeId="MANAGER"/>
+
+    <Party partyId="ASSETSUP1" partyTypeId="PARTY_GROUP" statusId="PARTY_ENABLED" createdDate="2026-07-01 08:00:00.0"/>
+    <PartyGroup partyId="ASSETSUP1" groupName="POC Laptop Supplier"/>
+    <PartyRole partyId="ASSETSUP1" roleTypeId="SUPPLIER"/>
+    <PartyRole partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"/>
+
+    <EnumerationType enumTypeId="ASSETS_CLASS_TYPE" description="Assets Class Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_CLASS_IT" enumTypeId="ASSETS_CLASS_TYPE" sequenceId="01" description="Information Technology Assets"/>
+
+    <FixedAssetType fixedAssetTypeId="ASSET_LAPTOP" description="Laptop Computer"/>
+    <FixedAssetIdentType fixedAssetIdentTypeId="ASSETS_SERIAL" description="Serial Number"/>
+    <FixedAssetIdentType fixedAssetIdentTypeId="ASSETS_TAG" description="Asset Tag"/>
+
+    <Product productId="PROD-LAP-STD" productTypeId="FINISHED_GOOD" internalName="Standard Business Laptop" productName="Standard Business Laptop"/>
+    <Product productId="PROD-LAP-PRO" productTypeId="FINISHED_GOOD" internalName="Developer Laptop" productName="Developer Laptop"/>
+
+    <!-- POC GL accounts. Attach to Company so posting-book services can resolve explicit mapping. -->
+    <GlAccount glAccountId="ASSET161000" accountName="Computer Equipment"/>
+    <GlAccount glAccountId="ASSET162000" accountName="Accumulated Depreciation - Computers"/>
+    <GlAccount glAccountId="ASSET641000" accountName="Depreciation Expense - Computers"/>
+    <GlAccount glAccountId="ASSET141000" accountName="Computer Equipment CIP"/>
+    <GlAccountOrganization glAccountId="ASSET161000" organizationPartyId="Company" fromDate="2026-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSET162000" organizationPartyId="Company" fromDate="2026-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSET641000" organizationPartyId="Company" fromDate="2026-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSET141000" organizationPartyId="Company" fromDate="2026-01-01 00:00:00.0"/>
+
+    <!-- Parallel book setup: corporate posting book for Company. -->
+    <AssetsBook assetsBookId="ASSETS_CORP" partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                bookName="Corporate Book" description="POC corporate posting book for laptop assets"
+                bookTypeEnumId="ASSETS_BOOK_CORP" statusId="ASSETS_ACTIVE" currencyUomId="USD"
+                isPrimaryBook="Y" isPostingBook="Y" fromDate="2026-01-01 00:00:00.0"
+                comments="Primary financial book used by the laptop POC workflow."
+                createdDate="2026-07-01 08:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsBookGlAccount assetsBookGlAccountId="ASBGL-LAP-CORP" assetsBookId="ASSETS_CORP"
+                         fixedAssetTypeId="ASSET_LAPTOP" fixedAssetId="_NA_" partyId="Company"
+                         roleTypeId="INTERNAL_ORGANIZATIO" fromDate="2026-01-01 00:00:00.0"
+                         statusId="ASSETS_ACTIVE" assetGlAccountId="ASSET161000"
+                         cipGlAccountId="ASSET141000" accDepGlAccountId="ASSET162000"
+                         depGlAccountId="ASSET641000"
+                         comments="Default laptop GL mapping for the Company corporate book."
+                         createdDate="2026-07-01 08:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- Requirement header placeholders for OFBiz standard workflow linkage. -->
+    <Requirement requirementId="REQ-LAP-001"/>
+    <Requirement requirementId="REQ-LAP-002"/>
+
+    <!-- Quote header placeholders. Evaluation details are held in AssetsQuoteEvaluation. -->
+    <Quote quoteId="QT-LAP-001A"/>
+    <Quote quoteId="QT-LAP-001B"/>
+    <Quote quoteId="QT-LAP-002A"/>
+
+    <!-- Asset 1: budget secured standard laptop. -->
+    <FixedAsset fixedAssetId="POC-LAP-001" fixedAssetTypeId="ASSET_LAPTOP"
+                instanceOfProductId="PROD-LAP-STD" classEnumId="ASSETS_CLASS_IT"
+                partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                fixedAssetName="POC Standard Laptop 001" serialNumber="LTP-STD-0001"
+                dateAcquired="2026-07-09 10:00:00.0" expectedEndOfLife="2029-07-09"
+                salvageValue="100.00" depreciation="0.00" purchaseCost="1200.00"
+                purchaseCostUomId="USD"/>
+
+    <FixedAssetIdent fixedAssetId="POC-LAP-001" fixedAssetIdentTypeId="ASSETS_SERIAL" idValue="LTP-STD-0001"/>
+    <FixedAssetIdent fixedAssetId="POC-LAP-001" fixedAssetIdentTypeId="ASSETS_TAG" idValue="IT-LAP-0001"/>
+
+    <AssetsRequestDetail requirementId="REQ-LAP-001" fixedAssetId="POC-LAP-001"
+                         partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                         requestTypeEnumId="ASSETS_REQ_NEW" assetClassEnumId="ASSETS_CLASS_IT"
+                         priorityEnumId="ASSETS_PRI_NORMAL" budgetStatusEnumId="ASSETS_BUD_SECURED"
+                         budgetRequired="Y" quoteRequired="Y" estimatedCapitalizedCost="1200.00"
+                         currencyUomId="USD" requestedInServiceDate="2026-07-15 00:00:00.0"
+                         targetPlaceInServiceDate="2026-07-10 00:00:00.0" statusId="ASSETS_APPROVED"
+                         comments="Department requested one standard laptop with budget already secured."
+                         createdDate="2026-07-01 08:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsApprovalRule assetsApprovalRuleId="APR-LAP-BUD" partyId="Company"
+                        roleTypeId="INTERNAL_ORGANIZATIO" fixedAssetTypeId="ASSET_LAPTOP"
+                        requestTypeEnumId="ASSETS_REQ_NEW" budgetStatusEnumId="ASSETS_BUD_SECURED"
+                        minAmount="0.00" maxAmount="5000.00" currencyUomId="USD"
+                        approverRoleTypeId="MANAGER" sequenceNum="10" statusId="ASSETS_ACTIVE"
+                        fromDate="2026-01-01 00:00:00.0"
+                        description="Manager approval for budget-secured laptop requests."
+                        comments="POC rule used by REQ-LAP-001."/>
+
+    <AssetsApprovalDecision assetsApprovalDecisionId="APD-LAP-001" requirementId="REQ-LAP-001"
+                            fixedAssetId="POC-LAP-001" assetsApprovalRuleId="APR-LAP-BUD"
+                            approverPartyId="ASSETAPPR1" approverRoleTypeId="MANAGER"
+                            decisionEnumId="ASSETS_DEC_APPROVE" statusId="ASSETS_APPROVED"
+                            sequenceNum="10" decisionDate="2026-07-02 09:00:00.0"
+                            comments="Approved because budget was secured and device is required for onboarding."
+                            createdDate="2026-07-02 09:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsQuoteEvaluation assetsQuoteEvaluationId="QE-LAP-001A" requirementId="REQ-LAP-001"
+                           quoteId="QT-LAP-001A" quoteItemSeqId="00001" evaluatorPartyId="ASSETAPPR1"
+                           evaluatorRoleTypeId="MANAGER" score="92.00" evaluatedAmount="1200.00"
+                           currencyUomId="USD" selectedFlag="Y" statusId="ASSETS_APPROVED"
+                           evaluationDate="2026-07-03 10:00:00.0"
+                           comments="Selected quote: best delivery date and acceptable warranty."
+                           createdDate="2026-07-03 10:00:00.0" createdByUserLogin="admin"/>
+    <AssetsQuoteEvaluation assetsQuoteEvaluationId="QE-LAP-001B" requirementId="REQ-LAP-001"
+                           quoteId="QT-LAP-001B" quoteItemSeqId="00001" evaluatorPartyId="ASSETAPPR1"
+                           evaluatorRoleTypeId="MANAGER" score="80.00" evaluatedAmount="1255.00"
+                           currencyUomId="USD" selectedFlag="N" statusId="ASSETS_CLOSED"
+                           evaluationDate="2026-07-03 10:30:00.0"
+                           comments="Not selected: higher cost."
+                           createdDate="2026-07-03 10:30:00.0" createdByUserLogin="admin"/>
+
+    <AssetsCapitalization assetsCapitalizationId="CAP-LAP-001" fixedAssetId="POC-LAP-001"
+                          requirementId="REQ-LAP-001" capitalizationDate="2026-07-09 10:00:00.0"
+                          placedInServiceDate="2026-07-10 09:00:00.0" capitalizedAmount="1200.00"
+                          expensedAmount="0.00" currencyUomId="USD" statusId="ASSETS_IN_SERVICE"
+                          comments="Capitalized laptop cost and placed device in service."
+                          createdDate="2026-07-09 10:00:00.0" createdByUserLogin="admin"/>
+    <AssetsCapitalizationCost assetsCapitalizationId="CAP-LAP-001" costSeqId="00001"
+                              costTypeEnumId="ASSETS_COST_ASSET" amount="1150.00" currencyUomId="USD"
+                              capitalizedFlag="Y" comments="Laptop hardware cost."/>
+    <AssetsCapitalizationCost assetsCapitalizationId="CAP-LAP-001" costSeqId="00002"
+                              costTypeEnumId="ASSETS_COST_FREIGHT" amount="50.00" currencyUomId="USD"
+                              capitalizedFlag="Y" comments="Delivery cost capitalized with asset."/>
+
+    <AssetsFixedAssetRole fixedAssetId="POC-LAP-001" partyId="ASSETREQ1" roleTypeId="EMPLOYEE"
+                          fromDate="2026-07-10 09:00:00.0" statusId="ASSETS_ACTIVE"
+                          comments="Custodian assigned when laptop was placed in service."
+                          createdDate="2026-07-10 09:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsBookDetail fixedAssetId="POC-LAP-001" assetsBookId="ASSETS_CORP"
+                      fromDate="2026-07-10 09:00:00.0" statusId="ASSETS_IN_SERVICE"
+                      placedInServiceDate="2026-07-10 09:00:00.0" capitalizationDate="2026-07-09 10:00:00.0"
+                      originalCost="1200.00" capitalizedCost="1200.00" salvageValue="100.00"
+                      depreciableBasis="1100.00" usefulLifeMonths="36" remainingLifeMonths="36"
+                      depreciationCustomMethodId="ASSETS_DEP_SL_MO" depConventionEnumId="ASSETS_CONV_FULLMO"
+                      prorationMethodEnumId="ASSETS_PRORATE_NONE" accumulatedDepreciation="0.00"
+                      netBookValue="1200.00" nextDepreciationDate="2026-07-31 00:00:00.0"
+                      comments="Corporate book detail for straight-line monthly depreciation."
+                      createdDate="2026-07-10 09:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsBookDepSchedule assetsBookDepScheduleId="DS-LAP1-202607" fixedAssetId="POC-LAP-001"
+                           assetsBookId="ASSETS_CORP" periodStartDate="2026-07-01"
+                           periodEndDate="2026-07-31" depreciationAmount="30.56"
+                           accumulatedDepreciation="30.56" netBookValue="1169.44"
+                           statusId="ASSETS_PLANNED" assetsDepRunId="RUN-202607"
+                           comments="Planned July depreciation. Not posted." createdDate="2026-07-10 09:00:00.0"
+                           createdByUserLogin="admin"/>
+    <AssetsBookDepSchedule assetsBookDepScheduleId="DS-LAP1-202608" fixedAssetId="POC-LAP-001"
+                           assetsBookId="ASSETS_CORP" periodStartDate="2026-08-01"
+                           periodEndDate="2026-08-31" depreciationAmount="30.56"
+                           accumulatedDepreciation="61.12" netBookValue="1138.88"
+                           statusId="ASSETS_PLANNED" comments="Planned August depreciation. Not posted."
+                           createdDate="2026-07-10 09:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- Asset 2: urgent unbudgeted developer laptop. -->
+    <FixedAsset fixedAssetId="POC-LAP-002" fixedAssetTypeId="ASSET_LAPTOP"
+                instanceOfProductId="PROD-LAP-PRO" classEnumId="ASSETS_CLASS_IT"
+                partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                fixedAssetName="POC Developer Laptop 002" serialNumber="LTP-PRO-0002"
+                dateAcquired="2026-07-09 11:00:00.0" expectedEndOfLife="2029-07-09"
+                salvageValue="150.00" depreciation="0.00" purchaseCost="1800.00"
+                purchaseCostUomId="USD"/>
+
+    <FixedAssetIdent fixedAssetId="POC-LAP-002" fixedAssetIdentTypeId="ASSETS_SERIAL" idValue="LTP-PRO-0002"/>
+    <FixedAssetIdent fixedAssetId="POC-LAP-002" fixedAssetIdentTypeId="ASSETS_TAG" idValue="IT-LAP-0002"/>
+
+    <AssetsRequestDetail requirementId="REQ-LAP-002" fixedAssetId="POC-LAP-002"
+                         partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                         requestTypeEnumId="ASSETS_REQ_NEW" assetClassEnumId="ASSETS_CLASS_IT"
+                         priorityEnumId="ASSETS_PRI_URGENT" budgetStatusEnumId="ASSETS_BUD_UNBUDGT"
+                         budgetRequired="Y" quoteRequired="Y" estimatedCapitalizedCost="1800.00"
+                         currencyUomId="USD" requestedInServiceDate="2026-07-15 00:00:00.0"
+                         targetPlaceInServiceDate="2026-07-10 00:00:00.0" statusId="ASSETS_APPROVED"
+                         comments="Urgent unbudgeted developer laptop request approved through exception path."
+                         createdDate="2026-07-01 08:30:00.0" createdByUserLogin="admin"/>
+
+    <AssetsApprovalRule assetsApprovalRuleId="APR-LAP-UNB" partyId="Company"
+                        roleTypeId="INTERNAL_ORGANIZATIO" fixedAssetTypeId="ASSET_LAPTOP"
+                        requestTypeEnumId="ASSETS_REQ_NEW" budgetStatusEnumId="ASSETS_BUD_UNBUDGT"
+                        minAmount="0.00" maxAmount="5000.00" currencyUomId="USD"
+                        approverRoleTypeId="MANAGER" sequenceNum="10" statusId="ASSETS_ACTIVE"
+                        fromDate="2026-01-01 00:00:00.0"
+                        description="Manager approval for unbudgeted laptop requests."
+                        comments="POC exception approval rule used by REQ-LAP-002."/>
+
+    <AssetsApprovalDecision assetsApprovalDecisionId="APD-LAP-002" requirementId="REQ-LAP-002"
+                            fixedAssetId="POC-LAP-002" assetsApprovalRuleId="APR-LAP-UNB"
+                            approverPartyId="ASSETAPPR1" approverRoleTypeId="MANAGER"
+                            decisionEnumId="ASSETS_DEC_APPROVE" statusId="ASSETS_APPROVED"
+                            sequenceNum="10" decisionDate="2026-07-02 09:30:00.0"
+                            comments="Approved as unbudgeted exception because project start was immediate."
+                            createdDate="2026-07-02 09:30:00.0" createdByUserLogin="admin"/>
+
+    <AssetsQuoteEvaluation assetsQuoteEvaluationId="QE-LAP-002A" requirementId="REQ-LAP-002"
+                           quoteId="QT-LAP-002A" quoteItemSeqId="00001" evaluatorPartyId="ASSETAPPR1"
+                           evaluatorRoleTypeId="MANAGER" score="95.00" evaluatedAmount="1800.00"
+                           currencyUomId="USD" selectedFlag="Y" statusId="ASSETS_APPROVED"
+                           evaluationDate="2026-07-03 11:00:00.0"
+                           comments="Selected quote for developer workstation laptop."
+                           createdDate="2026-07-03 11:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsCapitalization assetsCapitalizationId="CAP-LAP-002" fixedAssetId="POC-LAP-002"
+                          requirementId="REQ-LAP-002" capitalizationDate="2026-07-09 11:00:00.0"
+                          placedInServiceDate="2026-07-10 10:00:00.0" capitalizedAmount="1800.00"
+                          expensedAmount="0.00" currencyUomId="USD" statusId="ASSETS_IN_SERVICE"
+                          comments="Capitalized developer laptop and placed in service."
+                          createdDate="2026-07-09 11:00:00.0" createdByUserLogin="admin"/>
+    <AssetsCapitalizationCost assetsCapitalizationId="CAP-LAP-002" costSeqId="00001"
+                              costTypeEnumId="ASSETS_COST_ASSET" amount="1700.00" currencyUomId="USD"
+                              capitalizedFlag="Y" comments="Developer laptop hardware cost."/>
+    <AssetsCapitalizationCost assetsCapitalizationId="CAP-LAP-002" costSeqId="00002"
+                              costTypeEnumId="ASSETS_COST_FREIGHT" amount="60.00" currencyUomId="USD"
+                              capitalizedFlag="Y" comments="Delivery cost capitalized with asset."/>
+    <AssetsCapitalizationCost assetsCapitalizationId="CAP-LAP-002" costSeqId="00003"
+                              costTypeEnumId="ASSETS_COST_SERVICE" amount="40.00" currencyUomId="USD"
+                              capitalizedFlag="Y" comments="Initial setup cost capitalized with asset."/>
+
+    <AssetsFixedAssetRole fixedAssetId="POC-LAP-002" partyId="ASSETREQ1" roleTypeId="EMPLOYEE"
+                          fromDate="2026-07-10 10:00:00.0" statusId="ASSETS_ACTIVE"
+                          comments="Custodian assigned when developer laptop was placed in service."
+                          createdDate="2026-07-10 10:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsBookDetail fixedAssetId="POC-LAP-002" assetsBookId="ASSETS_CORP"
+                      fromDate="2026-07-10 10:00:00.0" statusId="ASSETS_IN_SERVICE"
+                      placedInServiceDate="2026-07-10 10:00:00.0" capitalizationDate="2026-07-09 11:00:00.0"
+                      originalCost="1800.00" capitalizedCost="1800.00" salvageValue="150.00"
+                      depreciableBasis="1650.00" usefulLifeMonths="36" remainingLifeMonths="36"
+                      depreciationCustomMethodId="ASSETS_DEP_SL_MO" depConventionEnumId="ASSETS_CONV_FULLMO"
+                      prorationMethodEnumId="ASSETS_PRORATE_NONE" accumulatedDepreciation="0.00"
+                      netBookValue="1800.00" nextDepreciationDate="2026-07-31 00:00:00.0"
+                      comments="Corporate book detail for straight-line monthly depreciation."
+                      createdDate="2026-07-10 10:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsBookDepSchedule assetsBookDepScheduleId="DS-LAP2-202607" fixedAssetId="POC-LAP-002"
+                           assetsBookId="ASSETS_CORP" periodStartDate="2026-07-01"
+                           periodEndDate="2026-07-31" depreciationAmount="45.83"
+                           accumulatedDepreciation="45.83" netBookValue="1754.17"
+                           statusId="ASSETS_PLANNED" assetsDepRunId="RUN-202607"
+                           comments="Planned July depreciation. Not posted." createdDate="2026-07-10 10:00:00.0"
+                           createdByUserLogin="admin"/>
+    <AssetsBookDepSchedule assetsBookDepScheduleId="DS-LAP2-202608" fixedAssetId="POC-LAP-002"
+                           assetsBookId="ASSETS_CORP" periodStartDate="2026-08-01"
+                           periodEndDate="2026-08-31" depreciationAmount="45.83"
+                           accumulatedDepreciation="91.66" netBookValue="1708.34"
+                           statusId="ASSETS_PLANNED" comments="Planned August depreciation. Not posted."
+                           createdDate="2026-07-10 10:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- Depreciation batch skeleton. Posting service will convert PLANNED schedules to posted GL. -->
+    <AssetsDepRun assetsDepRunId="RUN-202607" assetsBookId="ASSETS_CORP" partyId="Company"
+                  roleTypeId="INTERNAL_ORGANIZATIO" statusId="ASSETS_PLANNED"
+                  runDate="2026-07-31 18:00:00.0" transactionDate="2026-07-31 18:00:00.0"
+                  fromDate="2026-07-01 00:00:00.0" thruDate="2026-07-31 23:59:59.0"
+                  description="POC July 2026 laptop depreciation dry run"
+                  comments="Planned only. No AcctgTrans rows are pre-created by demo data."
+                  createdDate="2026-07-10 10:30:00.0" createdByUserLogin="admin"/>
+    <AssetsDepRunItem assetsDepRunId="RUN-202607" assetsBookDepScheduleId="DS-LAP1-202607"
+                      fixedAssetId="POC-LAP-001" assetsBookId="ASSETS_CORP" amount="30.56"
+                      statusId="ASSETS_PLANNED" comments="POC planned depreciation line for POC-LAP-001."/>
+    <AssetsDepRunItem assetsDepRunId="RUN-202607" assetsBookDepScheduleId="DS-LAP2-202607"
+                      fixedAssetId="POC-LAP-002" assetsBookId="ASSETS_CORP" amount="45.83"
+                      statusId="ASSETS_PLANNED" comments="POC planned depreciation line for POC-LAP-002."/>
+
+    <!-- Lifecycle timeline. -->
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP1-REQ" fixedAssetId="POC-LAP-001"
+                          eventTypeEnumId="ASSETS_EVT_REQUEST" eventDate="2026-07-01 08:00:00.0"
+                          statusId="ASSETS_ACTIVE" performedByPartyId="ASSETREQ1" performedByRoleTypeId="EMPLOYEE"
+                          requirementId="REQ-LAP-001" description="Laptop requested"
+                          comments="Workflow start: user requested a standard laptop."
+                          createdDate="2026-07-01 08:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP1-APP" fixedAssetId="POC-LAP-001"
+                          eventTypeEnumId="ASSETS_EVT_APPROVE" eventDate="2026-07-02 09:00:00.0"
+                          statusId="ASSETS_APPROVED" performedByPartyId="ASSETAPPR1" performedByRoleTypeId="MANAGER"
+                          requirementId="REQ-LAP-001" description="Laptop request approved"
+                          comments="Budget-secured approval completed."
+                          createdDate="2026-07-02 09:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP1-ORD" fixedAssetId="POC-LAP-001"
+                          eventTypeEnumId="ASSETS_EVT_ORDER" eventDate="2026-07-04 10:00:00.0"
+                          statusId="ASSETS_ACTIVE" performedByPartyId="ASSETAPPR1" performedByRoleTypeId="MANAGER"
+                          requirementId="REQ-LAP-001" description="Laptop ordered"
+                          comments="Procurement selected quote QT-LAP-001A and released purchase action."
+                          createdDate="2026-07-04 10:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP1-REC" fixedAssetId="POC-LAP-001"
+                          eventTypeEnumId="ASSETS_EVT_RECEIVE" eventDate="2026-07-08 15:00:00.0"
+                          statusId="ASSETS_ACTIVE" performedByPartyId="ASSETREQ1" performedByRoleTypeId="EMPLOYEE"
+                          requirementId="REQ-LAP-001" description="Laptop received and accepted"
+                          comments="Receiving and inspection completed."
+                          createdDate="2026-07-08 15:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP1-CAP" fixedAssetId="POC-LAP-001"
+                          eventTypeEnumId="ASSETS_EVT_CAPITAL" eventDate="2026-07-09 10:00:00.0"
+                          statusId="ASSETS_ACTIVE" performedByPartyId="ASSETAPPR1" performedByRoleTypeId="MANAGER"
+                          requirementId="REQ-LAP-001" description="Laptop capitalized"
+                          comments="Capitalization cost CAP-LAP-001 created."
+                          createdDate="2026-07-09 10:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP1-SVC" fixedAssetId="POC-LAP-001"
+                          eventTypeEnumId="ASSETS_EVT_SERVICE" eventDate="2026-07-10 09:00:00.0"
+                          statusId="ASSETS_IN_SERVICE" performedByPartyId="ASSETREQ1" performedByRoleTypeId="EMPLOYEE"
+                          requirementId="REQ-LAP-001" description="Laptop placed in service"
+                          comments="Asset is now active for operational use and depreciation planning."
+                          createdDate="2026-07-10 09:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP2-REQ" fixedAssetId="POC-LAP-002"
+                          eventTypeEnumId="ASSETS_EVT_REQUEST" eventDate="2026-07-01 08:30:00.0"
+                          statusId="ASSETS_ACTIVE" performedByPartyId="ASSETREQ1" performedByRoleTypeId="EMPLOYEE"
+                          requirementId="REQ-LAP-002" description="Urgent laptop requested"
+                          comments="Workflow start: unbudgeted developer laptop requested."
+                          createdDate="2026-07-01 08:30:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP2-APP" fixedAssetId="POC-LAP-002"
+                          eventTypeEnumId="ASSETS_EVT_APPROVE" eventDate="2026-07-02 09:30:00.0"
+                          statusId="ASSETS_APPROVED" performedByPartyId="ASSETAPPR1" performedByRoleTypeId="MANAGER"
+                          requirementId="REQ-LAP-002" description="Urgent laptop approved"
+                          comments="Unbudgeted exception approved."
+                          createdDate="2026-07-02 09:30:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP2-ORD" fixedAssetId="POC-LAP-002"
+                          eventTypeEnumId="ASSETS_EVT_ORDER" eventDate="2026-07-04 11:00:00.0"
+                          statusId="ASSETS_ACTIVE" performedByPartyId="ASSETAPPR1" performedByRoleTypeId="MANAGER"
+                          requirementId="REQ-LAP-002" description="Urgent laptop ordered"
+                          comments="Procurement selected quote QT-LAP-002A and released purchase action."
+                          createdDate="2026-07-04 11:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP2-REC" fixedAssetId="POC-LAP-002"
+                          eventTypeEnumId="ASSETS_EVT_RECEIVE" eventDate="2026-07-08 16:00:00.0"
+                          statusId="ASSETS_ACTIVE" performedByPartyId="ASSETREQ1" performedByRoleTypeId="EMPLOYEE"
+                          requirementId="REQ-LAP-002" description="Urgent laptop received and accepted"
+                          comments="Receiving and inspection completed."
+                          createdDate="2026-07-08 16:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP2-CAP" fixedAssetId="POC-LAP-002"
+                          eventTypeEnumId="ASSETS_EVT_CAPITAL" eventDate="2026-07-09 11:00:00.0"
+                          statusId="ASSETS_ACTIVE" performedByPartyId="ASSETAPPR1" performedByRoleTypeId="MANAGER"
+                          requirementId="REQ-LAP-002" description="Urgent laptop capitalized"
+                          comments="Capitalization cost CAP-LAP-002 created."
+                          createdDate="2026-07-09 11:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="LE-LAP2-SVC" fixedAssetId="POC-LAP-002"
+                          eventTypeEnumId="ASSETS_EVT_SERVICE" eventDate="2026-07-10 10:00:00.0"
+                          statusId="ASSETS_IN_SERVICE" performedByPartyId="ASSETREQ1" performedByRoleTypeId="EMPLOYEE"
+                          requirementId="REQ-LAP-002" description="Urgent laptop placed in service"
+                          comments="Asset is now active for operational use and depreciation planning."
+                          createdDate="2026-07-10 10:00:00.0" createdByUserLogin="admin"/>
+</entity-engine-xml>

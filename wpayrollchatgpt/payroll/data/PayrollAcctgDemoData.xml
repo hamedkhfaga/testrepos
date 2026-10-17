@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================================================= -->
+    <!-- PAYROLL ACCOUNTING DEMO DATA (Aligned with PayrollAcctgTypeData.xml)
+         Pattern A (PAT_GL) + Pattern B (PAT_PAY)
+         Uses StatusItem IDs:
+           PAT_GL/PAT_PAY, LVL_SUM/LVL_EMP, PAC_*, PRN_*, PRI_*, CMP_*
+         NOTE: GlAccount / PaymentType / PaymentMethodType / InvoiceType must exist in your DB
+    ========================================================== -->
+
+    <!-- ========================================================= -->
+    <!-- 0) CONFIG (Org-level default + optional per-structure override)
+         Mandatory defaults required by entity model v1.1
+    ========================================================== -->
+
+    <!-- ORG A - default config (Pattern A, Summary) -->
+    <PayrollAcctgConfig payrollAcctgConfigId="PACFG_A"
+                        organizationPartyId="ORG_PAY_A"
+                        payrollStructureId=""
+                        acctgPatternStatusId="PAT_GL"
+                        postingLevelStatusId="LVL_SUM"
+                        defaultDebitGlAccountId="PAY_EXP_DEF"
+                        defaultCreditGlAccountId="PAY_PAY_DEF"
+                        payrollPayableGlAccountId="PAY_NET_PAY"
+                        taxPayableGlAccountId="PAY_TAX_PAY"
+                        ssPayableGlAccountId="PAY_SOC_PAY"
+                        loanPayableGlAccountId="PAY_LOAN_PAY"
+                        bankClearingGlAccountId="PAY_BNK_CLR"
+                        acctgTransTypeId="PAYROLL_TRANS"
+                        fromDate="2024-01-01 00:00:00.0"
+                        thruDate=""
+                        isActive="Y"
+                        createdByUserLoginId="pay_admin"
+                        createdDate="2024-01-01 08:00:00.0"/>
+
+    <!-- ORG A - structure override (still Pattern A, but Per Employee for this structure) -->
+    <PayrollAcctgConfig payrollAcctgConfigId="PACFG_A_S1"
+                        organizationPartyId="ORG_PAY_A"
+                        payrollStructureId="PSTR_A_M01"
+                        acctgPatternStatusId="PAT_GL"
+                        postingLevelStatusId="LVL_EMP"
+                        defaultDebitGlAccountId="PAY_EXP_DEF"
+                        defaultCreditGlAccountId="PAY_PAY_DEF"
+                        payrollPayableGlAccountId="PAY_NET_PAY"
+                        taxPayableGlAccountId="PAY_TAX_PAY"
+                        ssPayableGlAccountId="PAY_SOC_PAY"
+                        loanPayableGlAccountId="PAY_LOAN_PAY"
+                        bankClearingGlAccountId="PAY_BNK_CLR"
+                        acctgTransTypeId="PAYROLL_TRANS"
+                        fromDate="2024-01-01 00:00:00.0"
+                        thruDate=""
+                        isActive="Y"
+                        createdByUserLoginId="pay_admin"
+                        createdDate="2024-01-01 08:02:00.0"/>
+
+    <!-- ORG B - default config (Pattern B, Per Employee) -->
+    <PayrollAcctgConfig payrollAcctgConfigId="PACFG_B"
+                        organizationPartyId="ORG_PAY_B"
+                        payrollStructureId=""
+                        acctgPatternStatusId="PAT_PAY"
+                        postingLevelStatusId="LVL_EMP"
+                        defaultDebitGlAccountId="PAY_EXP_DEF"
+                        defaultCreditGlAccountId="PAY_PAY_DEF"
+                        payrollPayableGlAccountId="PAY_NET_PAY"
+                        taxPayableGlAccountId="PAY_TAX_PAY"
+                        ssPayableGlAccountId="PAY_SOC_PAY"
+                        loanPayableGlAccountId="PAY_LOAN_PAY"
+                        bankClearingGlAccountId="PAY_BNK_CLR"
+                        acctgTransTypeId="PAYROLL_TRANS"
+                        fromDate="2024-01-01 00:00:00.0"
+                        thruDate=""
+                        isActive="Y"
+                        createdByUserLoginId="pay_admin"
+                        createdDate="2024-01-01 08:05:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 1) PATTERN A: GL MAPPINGS (Org A + Org B examples)
+         Demo includes full mapping for Org A, partial for Org B
+    ========================================================== -->
+
+    <!-- ---------- ORG A (USD / PSTR_A_M01) ---------- -->
+    <PayrollGlMap payrollGlMapId="PGL_A_BAS"
+                  organizationPartyId="ORG_PAY_A"
+                  payrollStructureId="PSTR_A_M01"
+                  componentTypeStatusId="CMP_BASIC"
+                  drCrFlag="D"
+                  glAccountId="PAY_SAL_EXP"
+                  fromDate="2024-01-01 00:00:00.0"
+                  thruDate=""
+                  isActive="Y"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 08:30:00.0"/>
+
+    <PayrollGlMap payrollGlMapId="PGL_A_OT"
+                  organizationPartyId="ORG_PAY_A"
+                  payrollStructureId="PSTR_A_M01"
+                  componentTypeStatusId="CMP_OT"
+                  drCrFlag="D"
+                  glAccountId="PAY_OT_EXP"
+                  fromDate="2024-01-01 00:00:00.0"
+                  thruDate=""
+                  isActive="Y"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 08:31:00.0"/>
+
+    <PayrollGlMap payrollGlMapId="PGL_A_ALW"
+                  organizationPartyId="ORG_PAY_A"
+                  payrollStructureId="PSTR_A_M01"
+                  componentTypeStatusId="CMP_ALW"
+                  drCrFlag="D"
+                  glAccountId="PAY_ALW_EXP"
+                  fromDate="2024-01-01 00:00:00.0"
+                  thruDate=""
+                  isActive="Y"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 08:32:00.0"/>
+
+    <PayrollGlMap payrollGlMapId="PGL_A_TAX"
+                  organizationPartyId="ORG_PAY_A"
+                  payrollStructureId="PSTR_A_M01"
+                  componentTypeStatusId="CMP_TAX"
+                  drCrFlag="C"
+                  glAccountId="PAY_TAX_PAY"
+                  fromDate="2024-01-01 00:00:00.0"
+                  thruDate=""
+                  isActive="Y"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 08:33:00.0"/>
+
+    <PayrollGlMap payrollGlMapId="PGL_A_SS"
+                  organizationPartyId="ORG_PAY_A"
+                  payrollStructureId="PSTR_A_M01"
+                  componentTypeStatusId="CMP_SS"
+                  drCrFlag="C"
+                  glAccountId="PAY_SOC_PAY"
+                  fromDate="2024-01-01 00:00:00.0"
+                  thruDate=""
+                  isActive="Y"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 08:34:00.0"/>
+
+    <PayrollGlMap payrollGlMapId="PGL_A_LOAN"
+                  organizationPartyId="ORG_PAY_A"
+                  payrollStructureId="PSTR_A_M01"
+                  componentTypeStatusId="CMP_LOAN"
+                  drCrFlag="C"
+                  glAccountId="PAY_LOAN_PAY"
+                  fromDate="2024-01-01 00:00:00.0"
+                  thruDate=""
+                  isActive="Y"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 08:35:00.0"/>
+
+    <PayrollGlMap payrollGlMapId="PGL_A_NET"
+                  organizationPartyId="ORG_PAY_A"
+                  payrollStructureId="PSTR_A_M01"
+                  componentTypeStatusId="CMP_NET"
+                  drCrFlag="C"
+                  glAccountId="PAY_NET_PAY"
+                  fromDate="2024-01-01 00:00:00.0"
+                  thruDate=""
+                  isActive="Y"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 08:36:00.0"/>
+
+    <!-- ---------- ORG B (AED / PSTR_B_M01) - Partial mapping to prove fallback ---------- -->
+    <PayrollGlMap payrollGlMapId="PGL_B_BAS"
+                  organizationPartyId="ORG_PAY_B"
+                  payrollStructureId="PSTR_B_M01"
+                  componentTypeStatusId="CMP_BASIC"
+                  drCrFlag="D"
+                  glAccountId="PAY_SAL_EXP"
+                  fromDate="2024-01-01 00:00:00.0"
+                  thruDate=""
+                  isActive="Y"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 08:40:00.0"/>
+
+    <PayrollGlMap payrollGlMapId="PGL_B_NET"
+                  organizationPartyId="ORG_PAY_B"
+                  payrollStructureId="PSTR_B_M01"
+                  componentTypeStatusId="CMP_NET"
+                  drCrFlag="C"
+                  glAccountId="PAY_NET_PAY"
+                  fromDate="2024-01-01 00:00:00.0"
+                  thruDate=""
+                  isActive="Y"
+                  createdByUserLoginId="pay_admin"
+                  createdDate="2024-01-01 08:44:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 2) PATTERN A: POSTING HEADERS (audit records)
+         acctgTransId blank (created by posting service)
+         Use PAC_NEW / PAC_POST / PAC_ERR / PAC_REV
+    ========================================================== -->
+
+    <!-- ORG A / ITER_A_01 -->
+    <PayrollAcctgPosting postingId="PPOST_A_01"
+                         organizationPartyId="ORG_PAY_A"
+                         payrollIterationId="ITER_A_01"
+                         acctgTransId=""
+                         statusId="PAC_NEW"
+                         postedDate=""
+                         postedByUserLoginId=""
+                         errorMessage=""
+                         reversalPostingId=""
+                         createdStamp="2024-01-31 16:30:00.0"
+                         createdTxStamp="2024-01-31 16:30:00.0"/>
+
+    <!-- ORG A posted record (example after service posts to AcctgTrans) -->
+    <PayrollAcctgPosting postingId="PPOST_A_02"
+                         organizationPartyId="ORG_PAY_A"
+                         payrollIterationId="ITER_A_01"
+                         acctgTransId="ATX_PAY_A01"
+                         statusId="PAC_POST"
+                         postedDate="2024-02-01 12:00:00.0"
+                         postedByUserLoginId="pay_mgr"
+                         errorMessage=""
+                         reversalPostingId=""
+                         createdStamp="2024-02-01 12:00:00.0"
+                         createdTxStamp="2024-02-01 12:00:00.0"/>
+
+    <!-- ORG A reversal record (example) -->
+    <PayrollAcctgPosting postingId="PPOST_A_03"
+                         organizationPartyId="ORG_PAY_A"
+                         payrollIterationId="ITER_A_01"
+                         acctgTransId="ATX_REV_A01"
+                         statusId="PAC_REV"
+                         postedDate="2024-02-02 10:00:00.0"
+                         postedByUserLoginId="pay_mgr"
+                         errorMessage=""
+                         reversalPostingId="PPOST_A_02"
+                         createdStamp="2024-02-02 10:00:00.0"
+                         createdTxStamp="2024-02-02 10:00:00.0"/>
+
+    <!-- ORG B / ITER_B_01 (Pattern B org, but we still demo a PAC_ERR posting audit row) -->
+    <PayrollAcctgPosting postingId="PPOST_B_01"
+                         organizationPartyId="ORG_PAY_B"
+                         payrollIterationId="ITER_B_01"
+                         acctgTransId=""
+                         statusId="PAC_ERR"
+                         postedDate="2024-02-01 12:10:00.0"
+                         postedByUserLoginId="pay_mgr"
+                         errorMessage="Pattern is PAT_PAY; GL posting skipped. Use PayRun instead."
+                         reversalPostingId=""
+                         createdStamp="2024-02-01 12:10:00.0"
+                         createdTxStamp="2024-02-01 12:10:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 3) PATTERN B: PAY CONFIG (mandatory payMethodTypeId, paymentTypeId)
+         Replace these IDs with what exists in your OFBiz accounting seed
+    ========================================================== -->
+
+    <PayrollPayConfig payrollPayConfigId="PPYCFG_B_01"
+                      organizationPartyId="ORG_PAY_B"
+                      payrollStructureId="PSTR_B_M01"
+                      payMethodTypeId="COMPANY_CHECK"
+                      paymentTypeId="PAY_CHECK"
+                      invoiceTypeId="PAYROL_INVOICE"
+                      finAccountId=""
+                      fromDate="2024-01-01 00:00:00.0"
+                      thruDate=""
+                      isActive="Y"
+                      createdByUserLoginId="pay_admin"
+                      createdDate="2024-01-01 09:00:00.0"/>
+
+    <!-- Optional: Org-level PayConfig (fallback if structure config not found) -->
+    <PayrollPayConfig payrollPayConfigId="PPYCFG_B_DEF"
+                      organizationPartyId="ORG_PAY_B"
+                      payrollStructureId=""
+                      payMethodTypeId="COMPANY_CHECK"
+                      paymentTypeId="PAY_CHECK"
+                      invoiceTypeId="PAYROL_INVOICE"
+                      finAccountId=""
+                      fromDate="2024-01-01 00:00:00.0"
+                      thruDate=""
+                      isActive="Y"
+                      createdByUserLoginId="pay_admin"
+                      createdDate="2024-01-01 09:01:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 4) PATTERN B: PAY RUN + ITEMS (audit/demo)
+         statusId uses PRN_* and PRI_*
+         paymentId/invoiceId optional, blank until service generates them
+    ========================================================== -->
+
+    <!-- ORG B / ITER_B_01 -->
+    <PayrollPayRun payRunId="PRUN_B_01"
+                   organizationPartyId="ORG_PAY_B"
+                   payrollIterationId="ITER_B_01"
+                   statusId="PRN_NEW"
+                   createdByUserLoginId="pay_clk"
+                   createdDate="2024-02-01 09:20:00.0"/>
+
+    <PayrollPayRunItem payRunItemId="PRI_B_001"
+                       payRunId="PRUN_B_01"
+                       partyId="EMP003"
+                       amount="7920.00"
+                       currencyUomId="AED"
+                       paymentId=""
+                       invoiceId=""
+                       statusId="PRI_NEW"
+                       errorMessage=""
+                       createdStamp="2024-02-01 09:21:00.0"
+                       createdTxStamp="2024-02-01 09:21:00.0"/>
+
+    <!-- After generation -->
+    <PayrollPayRun payRunId="PRUN_B_02"
+                   organizationPartyId="ORG_PAY_B"
+                   payrollIterationId="ITER_B_01"
+                   statusId="PRN_GEN"
+                   createdByUserLoginId="pay_clk"
+                   createdDate="2024-02-01 10:00:00.0"/>
+
+    <PayrollPayRunItem payRunItemId="PRI_B_002"
+                       payRunId="PRUN_B_02"
+                       partyId="EMP003"
+                       amount="7920.00"
+                       currencyUomId="AED"
+                       paymentId="PMT_B_0001"
+                       invoiceId="INV_B_0001"
+                       statusId="PRI_GEN"
+                       errorMessage=""
+                       createdStamp="2024-02-01 10:01:00.0"
+                       createdTxStamp="2024-02-01 10:01:00.0"/>
+
+    <!-- Error example -->
+    <PayrollPayRun payRunId="PRUN_B_03"
+                   organizationPartyId="ORG_PAY_B"
+                   payrollIterationId="ITER_B_01"
+                   statusId="PRN_ERR"
+                   createdByUserLoginId="pay_clk"
+                   createdDate="2024-02-01 10:30:00.0"/>
+
+    <PayrollPayRunItem payRunItemId="PRI_B_003"
+                       payRunId="PRUN_B_03"
+                       partyId="EMP003"
+                       amount="7920.00"
+                       currencyUomId="AED"
+                       paymentId=""
+                       invoiceId=""
+                       statusId="PRI_ERR"
+                       errorMessage="Payment generation failed: missing PaymentMethodType mapping"
+                       createdStamp="2024-02-01 10:31:00.0"
+                       createdTxStamp="2024-02-01 10:31:00.0"/>
+
+</entity-engine-xml>

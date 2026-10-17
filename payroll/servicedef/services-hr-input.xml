@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ===================================================== -->
+    <!-- HR Inputs (Stage#1 scaffolding)                        -->
+    <!-- Entities: EmployeeOvertimeRequest, PayrollInputSnapshot -->
+    <!-- ===================================================== -->
+
+    <!-- ========================= -->
+    <!-- EmployeeOvertimeRequest   -->
+    <!-- ========================= -->
+
+    <service name="createEmployeeOvertimeRequest"
+             engine="entity-auto"
+             default-entity-name="EmployeeOvertimeRequest"
+             invoke="create"
+             auth="true" export="true" action="POST">
+        <description>Create Employee Overtime Request</description>
+        <auto-attributes mode="IN" include="pk" optional="false"/>
+        <auto-attributes mode="IN" include="nonpk" optional="true"/>
+        <auto-attributes mode="OUT" include="pk"/>
+    </service>
+
+    <service name="updateEmployeeOvertimeRequest"
+             engine="entity-auto"
+             default-entity-name="EmployeeOvertimeRequest"
+             invoke="store"
+             auth="true" export="true" action="POST">
+        <description>Update Employee Overtime Request</description>
+        <auto-attributes mode="IN" include="pk" optional="false"/>
+        <auto-attributes mode="IN" include="nonpk" optional="true"/>
+        <auto-attributes mode="OUT" include="pk"/>
+    </service>
+
+    <service name="deleteEmployeeOvertimeRequest"
+             engine="entity-auto"
+             default-entity-name="EmployeeOvertimeRequest"
+             invoke="remove"
+             auth="true" export="true" action="POST">
+        <description>Delete Employee Overtime Request</description>
+        <auto-attributes mode="IN" include="pk" optional="false"/>
+    </service>
+
+    <service name="approveEmployeeOvertimeRequest"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.HrInputServices"
+             invoke="approveEmployeeOvertimeRequest"
+             auth="true" export="true" action="POST">
+        <description>Approve OT Request (Stage#1 skeleton)</description>
+        <attribute name="employeeOvertimeRequestId" type="String" mode="IN" optional="false"/>
+        <attribute name="newStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+        <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- ========================= -->
+    <!-- PayrollInputSnapshot      -->
+    <!-- ========================= -->
+
+    <service name="createPayrollInputSnapshot"
+             engine="entity-auto"
+             default-entity-name="PayrollInputSnapshot"
+             invoke="create"
+             auth="true" export="true" action="POST">
+        <description>Create Payroll Input Snapshot</description>
+        <auto-attributes mode="IN" include="pk" optional="false"/>
+        <auto-attributes mode="IN" include="nonpk" optional="true"/>
+        <auto-attributes mode="OUT" include="pk"/>
+    </service>
+
+    <service name="updatePayrollInputSnapshot"
+             engine="entity-auto"
+             default-entity-name="PayrollInputSnapshot"
+             invoke="store"
+             auth="true" export="true" action="POST">
+        <description>Update Payroll Input Snapshot</description>
+        <auto-attributes mode="IN" include="pk" optional="false"/>
+        <auto-attributes mode="IN" include="nonpk" optional="true"/>
+        <auto-attributes mode="OUT" include="pk"/>
+    </service>
+
+    <service name="lockPayrollInputSnapshotForRun"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.HrInputServices"
+             invoke="lockPayrollInputSnapshotForRun"
+             auth="true" export="true" action="POST">
+        <description>Lock Snapshot for Run (Stage#1 skeleton)</description>
+        <attribute name="payrollInputSnapshotId" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+        <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+    </service>
+
+
+</services>

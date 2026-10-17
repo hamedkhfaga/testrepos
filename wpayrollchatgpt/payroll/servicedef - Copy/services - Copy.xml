@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    
+    <!-- ========================= -->
+    <!--   Get Recent Payrolls     -->
+    <!-- ========================= -->
+    <service name="getRecentPayrolls"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollEngine"
+             invoke="getRecentPayrolls"
+             auth="true">
+        <description>Returns the latest payroll iterations for dashboard list</description>
+        <attribute name="recentPayrolls" type="List" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- ENTITY-AUTO CRUD SERVICES -->
+    <!-- ==================== -->
+    
+    <!-- PayrollStructure CRUD -->
+    <service name="createPayrollStructure" default-entity-name="PayrollStructure"
+             engine="entity-auto" invoke="create">
+        <description>Create payroll structure</description>
+    </service>
+    <service name="updatePayrollStructure" default-entity-name="PayrollStructure"
+             engine="entity-auto" invoke="update">
+        <description>Update payroll structure</description>
+    </service>
+    <service name="deletePayrollStructure" default-entity-name="PayrollStructure"
+             engine="entity-auto" invoke="delete">
+        <description>Delete payroll structure</description>
+    </service>
+
+    <!-- EmployeePayrollAssignment CRUD -->
+    <service name="createEmployeePayrollAssignment" default-entity-name="EmployeePayrollAssignment"
+             engine="entity-auto" invoke="create">
+        <description>Create employee payroll assignment</description>
+    </service>
+    <service name="updateEmployeePayrollAssignment" default-entity-name="EmployeePayrollAssignment"
+             engine="entity-auto" invoke="update">
+        <description>Update employee payroll assignment</description>
+    </service>
+
+    <!-- AllowanceType CRUD -->
+    <service name="createAllowanceType" default-entity-name="AllowanceType"
+             engine="entity-auto" invoke="create">
+        <description>Create allowance type</description>
+    </service>
+    <service name="updateAllowanceType" default-entity-name="AllowanceType"
+             engine="entity-auto" invoke="update">
+        <description>Update allowance type</description>
+    </service>
+
+    <!-- EmployeeAllowance CRUD -->
+    <service name="createEmployeeAllowance" default-entity-name="EmployeeAllowance"
+             engine="entity-auto" invoke="create">
+        <description>Create employee allowance</description>
+    </service>
+    <service name="updateEmployeeAllowance" default-entity-name="EmployeeAllowance"
+             engine="entity-auto" invoke="update">
+        <description>Update employee allowance</description>
+    </service>
+
+    <!-- HRPolicy CRUD -->
+    <service name="createHRPolicy" default-entity-name="HRPolicy"
+             engine="entity-auto" invoke="create">
+        <description>Create HR policy</description>
+    </service>
+    <service name="updateHRPolicy" default-entity-name="HRPolicy"
+             engine="entity-auto" invoke="update">
+        <description>Update HR policy</description>
+    </service>
+
+    <!-- ==================== -->
+    <!-- CORE PAYROLL SERVICES -->
+    <!-- ==================== -->
+    
+    <service name="calculateComprehensivePayroll" default-entity-name="EnhancedPayrollIteration"
+             engine="java" location="org.apache.ofbiz.payroll.PayrollEngine" invoke="calculateComprehensivePayroll">
+        <description>Comprehensive payroll calculation for all employees</description>
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="payrollResults" type="java.util.List" mode="OUT"/>
+        <attribute name="totalEmployees" type="java.lang.Integer" mode="OUT"/>
+        <attribute name="totalGrossPay" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="totalNetPay" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="totalDeductions" type="java.math.BigDecimal" mode="OUT"/>
+    </service>
+
+    <service name="finalizePayrollRun" default-entity-name="EnhancedPayrollIteration"
+             engine="java" location="org.apache.ofbiz.payroll.PayrollEngine" invoke="finalizePayrollRun">
+        <description>Finalize and approve payroll run</description>
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="successMessage" type="java.lang.String" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- TAX & COMPLIANCE SERVICES -->
+    <!-- ==================== -->
+    
+    <service name="calculateIncomeTax" engine="java" location="org.apache.ofbiz.payroll.TaxCalculationService" 
+             invoke="calculateIncomeTax">
+        <description>Calculate income tax based on country-specific rules</description>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="grossSalary" type="java.math.BigDecimal" mode="IN" optional="false"/>
+        <attribute name="taxAmount" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="countryGeoId" type="String" mode="OUT"/>
+        <attribute name="employmentType" type="String" mode="OUT"/>
+    </service>
+
+    <service name="calculateSocialSecurity" engine="java" location="org.apache.ofbiz.payroll.TaxCalculationService" 
+             invoke="calculateSocialSecurity">
+        <description>Calculate social security contributions</description>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="grossSalary" type="java.math.BigDecimal" mode="IN" optional="false"/>
+        <attribute name="socialSecurityAmount" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="countryGeoId" type="String" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- LOAN MANAGEMENT SERVICES -->
+    <!-- ==================== -->
+    
+    <service name="calculateLoanDeductions" engine="java" location="org.apache.ofbiz.payroll.LoanManagementService" 
+             invoke="calculateLoanDeductions">
+        <description>Calculate loan deductions for payroll</description>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="totalLoanDeductions" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="activeLoans" type="java.util.List" mode="OUT"/>
+        <attribute name="loanCount" type="java.lang.Integer" mode="OUT"/>
+    </service>
+
+    <service name="createEmployeeLoan" default-entity-name="EmployeeLoan"
+             engine="java" location="org.apache.ofbiz.payroll.LoanManagementService" invoke="createEmployeeLoan">
+        <description>Create new employee loan</description>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="loanType" type="String" mode="IN" optional="false"/>
+        <attribute name="loanAmount" type="java.math.BigDecimal" mode="IN" optional="false"/>
+        <attribute name="interestRate" type="java.math.BigDecimal" mode="IN" optional="false"/>
+        <attribute name="totalInstallments" type="java.lang.Long" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="loanId" type="String" mode="OUT"/>
+        <attribute name="monthlyInstallment" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="statusId" type="String" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- INTERNATIONAL HR SERVICES -->
+    <!-- ==================== -->
+    
+    <service name="calculateAllowances" engine="java" location="org.apache.ofbiz.payroll.InternationalHRService" 
+             invoke="calculateAllowances">
+        <description>Calculate allowances for international employees</description>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="totalAllowances" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="allowanceBreakdown" type="java.util.Map" mode="OUT"/>
+    </service>
+
+    <service name="calculateOvertime" engine="java" location="org.apache.ofbiz.payroll.InternationalHRService" 
+             invoke="calculateOvertime">
+        <description>Calculate overtime for employees</description>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="overtimeAmount" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="overtimeHours" type="java.lang.Long" mode="OUT"/>
+    </service>
+
+    <service name="validateEmployeeDocuments" engine="java" location="org.apache.ofbiz.payroll.InternationalHRService" 
+             invoke="validateEmployeeDocuments">
+        <description>Validate work permit and visa expiry</description>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="expiringDocuments" type="java.util.List" mode="OUT"/>
+        <attribute name="expiredDocuments" type="java.util.List" mode="OUT"/>
+        <attribute name="isDocumentsValid" type="java.lang.Boolean" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- BARCODE & REPORTING SERVICES -->
+    <!-- ==================== -->
+    
+    <service name="generatePayslips" engine="java" location="org.apache.ofbiz.payroll.BarcodeReportService" 
+             invoke="generatePayslips">
+        <description>Generate payslips with barcodes</description>
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="generatedCount" type="java.lang.Integer" mode="OUT"/>
+        <attribute name="totalEmployees" type="java.lang.Integer" mode="OUT"/>
+    </service>
+
+    <service name="generatePayslipPDF" engine="java" location="org.apache.ofbiz.payroll.BarcodeReportService" 
+             invoke="generatePayslipPDF">
+        <description>Generate PDF payslip</description>
+        <attribute name="payrollResultId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="fileName" type="String" mode="OUT"/>
+        <attribute name="filePath" type="String" mode="OUT"/>
+    </service>
+
+    <service name="exportPayrollToExcel" engine="java" location="org.apache.ofbiz.payroll.BarcodeReportService" 
+             invoke="exportPayrollToExcel">
+        <description>Export payroll data to Excel</description>
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="exportType" type="String" mode="IN" optional="false"/>
+        <attribute name="fileName" type="String" mode="OUT"/>
+        <attribute name="filePath" type="String" mode="OUT"/>
+        <attribute name="recordCount" type="java.lang.Integer" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- EMAIL NOTIFICATION SERVICES -->
+    <!-- ==================== -->
+    
+    <service name="queuePayslipEmail" engine="java" location="org.apache.ofbiz.payroll.EmailNotificationService" 
+             invoke="queuePayslipEmail">
+        <description>Queue payslip email for employee</description>
+        <attribute name="payrollResultId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="emailQueueId" type="String" mode="OUT"/>
+        <attribute name="toAddress" type="String" mode="OUT"/>
+    </service>
+
+    <service name="processEmailQueue" engine="java" location="org.apache.ofbiz.payroll.EmailNotificationService" 
+             invoke="processEmailQueue">
+        <description>Process email queue</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="processedCount" type="java.lang.Integer" mode="OUT"/>
+        <attribute name="failedCount" type="java.lang.Integer" mode="OUT"/>
+        <attribute name="totalEmails" type="java.lang.Integer" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- BANK INTEGRATION SERVICES -->
+    <!-- ==================== -->
+    
+    <service name="generateBankTransferFiles" engine="java" location="org.apache.ofbiz.payroll.BankIntegrationService" 
+             invoke="generateBankTransferFiles">
+        <description>Generate bank transfer files</description>
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="bankConfigId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="batchId" type="String" mode="OUT"/>
+        <attribute name="fileName" type="String" mode="OUT"/>
+        <attribute name="filePath" type="String" mode="OUT"/>
+        <attribute name="totalRecords" type="java.lang.Integer" mode="OUT"/>
+        <attribute name="totalAmount" type="java.math.BigDecimal" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- HR POLICY SERVICES -->
+    <!-- ==================== -->
+    
+    <service name="validatePayrollAgainstPolicies" engine="java" location="org.apache.ofbiz.payroll.HRPolicyService" 
+             invoke="validatePayrollAgainstPolicies">
+        <description>Validate payroll against HR policies</description>
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="policyViolations" type="java.util.List" mode="OUT"/>
+        <attribute name="policyWarnings" type="java.util.List" mode="OUT"/>
+        <attribute name="isCompliant" type="java.lang.Boolean" mode="OUT"/>
+        <attribute name="checkedPolicies" type="java.lang.Integer" mode="OUT"/>
+    </service>
+
+    <service name="getEmployeePolicies" engine="java" location="org.apache.ofbiz.payroll.HRPolicyService" 
+             invoke="getEmployeePolicies">
+        <description>Get applicable policies for employee</description>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="applicablePolicies" type="java.util.List" mode="OUT"/>
+        <attribute name="countryGeoId" type="String" mode="OUT"/>
+        <attribute name="employmentType" type="String" mode="OUT"/>
+    </service>
+
+    <!-- ============================ -->
+    <!-- Payroll Services Definitions -->
+    <!-- ============================ -->
+
+    <service name="getPayrollStatistics"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollEngine"
+             invoke="getPayrollStatistics"
+             auth="true">
+        <description>Retrieve payroll statistics for dashboard</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="totalEmployees" type="Long" mode="OUT"/>
+        <attribute name="activePayrolls" type="Long" mode="OUT"/>
+        <attribute name="pendingLoans" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="thisMonthPayroll" type="Long" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- EMPLOYEE MANAGEMENT SERVICES (ADDED/MISSING) -->
+    <!-- ==================== -->
+    <service name="findEmployeeList" engine="java"
+    location="org.apache.ofbiz.payroll.PayrollEngine"
+    invoke="findEmployeeList"
+    auth="false">  <!-- Set auth to false for public access -->
+    <attribute name="firstName" type="String" mode="IN" optional="true"/>
+    <attribute name="lastName" type="String" mode="IN" optional="true"/>
+    <attribute name="department" type="String" mode="IN" optional="true"/>
+    <attribute name="employeeId" type="String" mode="IN" optional="true"/>
+    <attribute name="statusId" type="String" mode="IN" optional="true"/>
+    <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+    <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+    <attribute name="employeeList" type="List" mode="OUT"/>
+    <attribute name="listSize" type="Long" mode="OUT"/>
+</service>
+    <!-- Find Employee List Service -->
+    <service name="findEmployeeList123" 
+             engine="java" 
+             location="org.apache.ofbiz.payroll.PayrollEngine" 
+             invoke="findEmployeeList">
+        <description>Find Employee List</description>
+        <permission-service service-name="findEmployeeList" main-action="VIEW"/>
+        
+        <!-- Input Parameters -->
+        <attribute name="firstName" type="String" mode="IN" optional="true"/>
+        <attribute name="lastName" type="String" mode="IN" optional="true"/>
+        <attribute name="department" type="String" mode="IN" optional="true"/>
+        <attribute name="employeeId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        
+        <!-- Output Parameters -->
+        <attribute name="employeeList" type="java.util.List" mode="OUT"/>
+        <attribute name="listSize" type="Integer" mode="OUT"/>
+        <attribute name="viewIndex" type="Integer" mode="OUT"/>
+        <attribute name="viewSize" type="Integer" mode="OUT"/>
+    </service>
+
+    <!-- Create Employee Assignment Service -->
+    <service name="createEmployeeAssignment" 
+             engine="java" 
+             location="org.apache.ofbiz.payroll.PayrollEngine" 
+             invoke="createEmployeeAssignment">
+        <description>Create Employee Assignment</description>
+        <permission-service service-name="createEmployeeAssignment" main-action="CREATE"/>
+        
+        <!-- Input Parameters -->
+        <attribute name="employeeId" type="String" mode="IN" optional="false"/>
+        <attribute name="assignmentName" type="String" mode="IN" optional="false"/>
+        <attribute name="startDate" type="java.sql.Timestamp" mode="IN" optional="false"/>
+        <attribute name="endDate" type="java.sql.Timestamp" mode="IN" optional="true"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        
+        <!-- Output Parameters -->
+        <attribute name="assignmentId" type="String" mode="OUT"/>
+        <attribute name="assignmentName" type="String" mode="OUT"/>
+        <attribute name="employeeId" type="String" mode="OUT"/>
+        <attribute name="employeeName" type="String" mode="OUT"/>
+    </service>
+
+    <!-- Find International Employee List Service -->
+    <service name="findInternationalEmployeeList" 
+             engine="java" 
+             location="org.apache.ofbiz.payroll.PayrollEngine" 
+             invoke="findInternationalEmployeeList">
+        <description>Find International Employee List</description>
+        <permission-service service-name="findInternationalEmployeeList" main-action="VIEW"/>
+        
+        <!-- Input Parameters -->
+        <attribute name="nationality" type="String" mode="IN" optional="true"/>
+        <attribute name="visaType" type="String" mode="IN" optional="true"/>
+        <attribute name="visaExpiryFrom" type="java.sql.Timestamp" mode="IN" optional="true"/>
+        <attribute name="visaExpiryTo" type="java.sql.Timestamp" mode="IN" optional="true"/>
+        <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        
+        <!-- Output Parameters -->
+        <attribute name="intlEmployeeList" type="java.util.List" mode="OUT"/>
+        <attribute name="listSize" type="Integer" mode="OUT"/>
+    </service>
+
+    <!-- Create International Employee Service -->
+    <service name="createInternationalEmployee" 
+             engine="java" 
+             location="org.apache.ofbiz.payroll.PayrollEngine" 
+             invoke="createInternationalEmployee">
+        <description>Create International Employee</description>
+        <permission-service service-name="createInternationalEmployee" main-action="CREATE"/>
+        
+        <!-- Input Parameters -->
+        <attribute name="employeeId" type="String" mode="IN" optional="false"/>
+        <attribute name="nationality" type="String" mode="IN" optional="false"/>
+        <attribute name="visaType" type="String" mode="IN" optional="false"/>
+        <attribute name="visaExpiry" type="java.sql.Timestamp" mode="IN" optional="false"/>
+        <attribute name="passportNumber" type="String" mode="IN" optional="true"/>
+        <attribute name="residenceCountry" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        
+        <!-- Output Parameters -->
+        <attribute name="employeeId" type="String" mode="OUT"/>
+        <attribute name="employeeName" type="String" mode="OUT"/>
+        <attribute name="nationality" type="String" mode="OUT"/>
+        <attribute name="visaType" type="String" mode="OUT"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- ADDITIONAL MISSING SERVICES -->
+    <!-- ==================== -->
+    
+    <!-- Run Payroll Service -->
+    <service name="runPayroll" 
+             engine="java" 
+             location="org.apache.ofbiz.payroll.PayrollEngine" 
+             invoke="calculateComprehensivePayroll">
+        <description>Run Payroll Process</description>
+        <permission-service service-name="runPayroll" main-action="CREATE"/>
+        
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="payrollResults" type="java.util.List" mode="OUT"/>
+        <attribute name="totalEmployees" type="Integer" mode="OUT"/>
+        <attribute name="totalGrossPay" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="totalNetPay" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="totalDeductions" type="java.math.BigDecimal" mode="OUT"/>
+    </service>
+
+    <!-- Find Payroll Iteration List Service -->
+    <service name="findPayrollIterationList" 
+             engine="entity-auto" 
+             default-entity-name="PayrollIteration" 
+             invoke="find">
+        <description>Find Payroll Iteration List</description>
+        <permission-service service-name="findPayrollIterationList" main-action="VIEW"/>
+        <auto-attributes include="all" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- Calculate Payroll Service -->
+    <service name="calculatePayroll" 
+             engine="java" 
+             location="org.apache.ofbiz.payroll.PayrollEngine" 
+             invoke="calculateComprehensivePayroll">
+        <description>Calculate Payroll</description>
+        <permission-service service-name="calculatePayroll" main-action="CREATE"/>
+        
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="payrollResults" type="java.util.List" mode="OUT"/>
+        <attribute name="totalEmployees" type="Integer" mode="OUT"/>
+        <attribute name="totalGrossPay" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="totalNetPay" type="java.math.BigDecimal" mode="OUT"/>
+        <attribute name="totalDeductions" type="java.math.BigDecimal" mode="OUT"/>
+    </service>
+
+    <!-- Check Payroll Access Service -->
+    <service name="checkPayrollAccess" 
+             engine="simple" 
+             auth="true"
+             location="component://payroll/script/PayrollServices.xml"
+             invoke="checkPayrollAccess">
+        <description>Check payroll access</description>
+        <permission-service service-name="checkPayrollAccess" main-action="VIEW"/>
+    </service>
+
+    <!-- ==================== -->
+    <!-- DUMMY SERVICES FOR ENTITIES THAT DON'T EXIST -->
+    <!-- ==================== -->
+    
+    <!-- Tax Configuration Services -->
+    <service name="findTaxConfigurationList" 
+             engine="entity-auto" 
+             default-entity-name="TaxConfiguration" 
+             invoke="find">
+        <description>Find Tax Configuration List</description>
+        <permission-service service-name="findTaxConfigurationList" main-action="VIEW"/>
+        <auto-attributes include="all" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="createTaxConfiguration" 
+             engine="entity-auto" 
+             default-entity-name="TaxConfiguration" 
+             invoke="create">
+        <description>Create Tax Configuration</description>
+        <permission-service service-name="createTaxConfiguration" main-action="CREATE"/>
+    </service>
+
+    <!-- Employee Loan Services -->
+    <service name="findEmployeeLoanList" 
+             engine="entity-auto" 
+             default-entity-name="EmployeeLoan" 
+             invoke="find">
+        <description>Find Employee Loan List</description>
+        <permission-service service-name="findEmployeeLoanList" main-action="VIEW"/>
+        <auto-attributes include="all" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- Payroll Structure Services -->
+    <service name="findPayrollStructureList" 
+             engine="entity-auto" 
+             default-entity-name="PayrollStructure" 
+             invoke="find">
+        <description>Find Payroll Structure List</description>
+        <permission-service service-name="findPayrollStructureList" main-action="VIEW"/>
+        <auto-attributes include="all" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- Allowance Type Services -->
+    <service name="findAllowanceTypeList" 
+             engine="entity-auto" 
+             default-entity-name="AllowanceType" 
+             invoke="find">
+        <description>Find Allowance Type List</description>
+        <permission-service service-name="findAllowanceTypeList" main-action="VIEW"/>
+        <auto-attributes include="all" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- Bank Configuration Services -->
+    <service name="findBankConfigurationList" 
+             engine="entity-auto" 
+             default-entity-name="BankConfiguration" 
+             invoke="find">
+        <description>Find Bank Configuration List</description>
+        <permission-service service-name="findBankConfigurationList" main-action="VIEW"/>
+        <auto-attributes include="all" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- HR Policy Services -->
+    <service name="findHRPolicyList" 
+             engine="entity-auto" 
+             default-entity-name="HRPolicy" 
+             invoke="find">
+        <description>Find HR Policy List</description>
+        <permission-service service-name="findHRPolicyList" main-action="VIEW"/>
+        <auto-attributes include="all" mode="IN" optional="true"/>
+        <auto-attributes include="nonpk" mode="OUT" optional="true"/>
+    </service>
+
+ 
+    <service name="getEmployeeList" default-entity-name="EmployeeListView" engine="entity-auto">
+	
+	
+        <description>Get employee list with all related information</description>
+        <auto-attributes include="nonpk" mode="OUT" optional="false"/>
+        <override name="listSize" optional="true" mode="OUT" type="Long"/>
+        <override name="employeeList" optional="true" mode="OUT" type="List"/>
+        
+        <attributes>
+            <attribute name="pageSize" type="Integer" mode="IN" optional="true"/>
+            <attribute name="pageIndex" type="Integer" mode="IN" optional="true"/>
+            <attribute name="statusId" type="String" mode="IN" optional="true"/>
+            <attribute name="department" type="String" mode="IN" optional="true"/>
+            <attribute name="searchText" type="String" mode="IN" optional="true"/>
+        </attributes>
+        
+        <service-options>
+            <option name="paginate" value="list"/>
+        </service-options>
+    </service>
+ 
+ 
+ 
+    <!-- Entity-auto service - simplest option -->
+    <service name="getEmployeeListData" default-entity-name="Person" engine="entity-auto">
+        <description>Get employee list data for display</description>
+        <auto-attributes include="nonpk" mode="OUT" optional="false"/>
+        <override name="employeeList" mode="OUT" optional="true" type="List"/>
+        <override name="totalEmployees" mode="OUT" optional="true" type="Long"/>
+        <override name="activeEmployees" mode="OUT" optional="true" type="Long"/>
+        <override name="inactiveEmployees" mode="OUT" optional="true" type="Long"/>
+        
+        <service-options>
+            <option name="paginate" value="list"/>
+        </service-options>
+    </service>
+    
+</services>
+
+
+
+</services>

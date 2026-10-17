@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<entity-engine-xml>
+    <!-- Status values are shared by Assets* subledger entities. OFBiz core status entities remain authoritative. -->
+    <StatusType statusTypeId="ASSETS_STATUS" description="Assets Component Status" hasTable="N"/>
+    <StatusItem statusId="ASSETS_ACTIVE" statusTypeId="ASSETS_STATUS" statusCode="ACTIVE" sequenceId="01" description="Active"/>
+    <StatusItem statusId="ASSETS_INACTIVE" statusTypeId="ASSETS_STATUS" statusCode="INACTIVE" sequenceId="02" description="Inactive"/>
+    <StatusItem statusId="ASSETS_PENDING" statusTypeId="ASSETS_STATUS" statusCode="PENDING" sequenceId="03" description="Pending"/>
+    <StatusItem statusId="ASSETS_APPROVED" statusTypeId="ASSETS_STATUS" statusCode="APPROVED" sequenceId="04" description="Approved"/>
+    <StatusItem statusId="ASSETS_REJECTED" statusTypeId="ASSETS_STATUS" statusCode="REJECTED" sequenceId="05" description="Rejected"/>
+    <StatusItem statusId="ASSETS_PLANNED" statusTypeId="ASSETS_STATUS" statusCode="PLANNED" sequenceId="06" description="Planned"/>
+    <StatusItem statusId="ASSETS_POSTED" statusTypeId="ASSETS_STATUS" statusCode="POSTED" sequenceId="07" description="Posted"/>
+    <StatusItem statusId="ASSETS_REVERSED" statusTypeId="ASSETS_STATUS" statusCode="REVERSED" sequenceId="08" description="Reversed"/>
+    <StatusItem statusId="ASSETS_CLOSED" statusTypeId="ASSETS_STATUS" statusCode="CLOSED" sequenceId="09" description="Closed"/>
+    <StatusItem statusId="ASSETS_CANCELLED" statusTypeId="ASSETS_STATUS" statusCode="CANCELLED" sequenceId="99" description="Cancelled"/>
+    <StatusItem statusId="ASSETS_IN_SERVICE" statusTypeId="ASSETS_STATUS" statusCode="IN_SERVICE" sequenceId="20" description="In Service"/>
+    <StatusItem statusId="ASSETS_DISPOSED" statusTypeId="ASSETS_STATUS" statusCode="DISPOSED" sequenceId="90" description="Disposed"/>
+
+    <!-- Enumeration type families. RoleType, Party, PaymentMethod, Currency(Uom), GL, Requirement, Quote, Order, Invoice and Payment are OFBiz standard. -->
+    <EnumerationType enumTypeId="ASSETS_BOOK_TYPE" description="Assets Book Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_BOOK_CORP" enumTypeId="ASSETS_BOOK_TYPE" sequenceId="01" description="Corporate Book"/>
+    <Enumeration enumId="ASSETS_BOOK_TAX" enumTypeId="ASSETS_BOOK_TYPE" sequenceId="02" description="Tax Book"/>
+    <Enumeration enumId="ASSETS_BOOK_IFRS" enumTypeId="ASSETS_BOOK_TYPE" sequenceId="03" description="IFRS Book"/>
+    <Enumeration enumId="ASSETS_BOOK_MGMT" enumTypeId="ASSETS_BOOK_TYPE" sequenceId="04" description="Management Book"/>
+    <Enumeration enumId="ASSETS_BOOK_GROUP" enumTypeId="ASSETS_BOOK_TYPE" sequenceId="05" description="Group Book"/>
+
+    <EnumerationType enumTypeId="ASSETS_CONV_TYPE" description="Assets Depreciation Convention" hasTable="N"/>
+    <Enumeration enumId="ASSETS_CONV_FULLMO" enumTypeId="ASSETS_CONV_TYPE" sequenceId="01" description="Full Month"/>
+    <Enumeration enumId="ASSETS_CONV_MIDMO" enumTypeId="ASSETS_CONV_TYPE" sequenceId="02" description="Mid Month"/>
+    <Enumeration enumId="ASSETS_CONV_HALFYR" enumTypeId="ASSETS_CONV_TYPE" sequenceId="03" description="Half Year"/>
+    <Enumeration enumId="ASSETS_CONV_ACTUAL" enumTypeId="ASSETS_CONV_TYPE" sequenceId="04" description="Actual Days"/>
+
+    <EnumerationType enumTypeId="ASSETS_PRORATE_TYP" description="Assets Proration Method" hasTable="N"/>
+    <Enumeration enumId="ASSETS_PRORATE_NONE" enumTypeId="ASSETS_PRORATE_TYP" sequenceId="01" description="No Proration"/>
+    <Enumeration enumId="ASSETS_PRORATE_DAYS" enumTypeId="ASSETS_PRORATE_TYP" sequenceId="02" description="Prorate by Days"/>
+    <Enumeration enumId="ASSETS_PRORATE_MNTH" enumTypeId="ASSETS_PRORATE_TYP" sequenceId="03" description="Prorate by Months"/>
+
+    <EnumerationType enumTypeId="ASSETS_REQ_TYPE" description="Assets Request Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_REQ_NEW" enumTypeId="ASSETS_REQ_TYPE" sequenceId="01" description="New Asset"/>
+    <Enumeration enumId="ASSETS_REQ_REPL" enumTypeId="ASSETS_REQ_TYPE" sequenceId="02" description="Replacement Asset"/>
+    <Enumeration enumId="ASSETS_REQ_LEASE" enumTypeId="ASSETS_REQ_TYPE" sequenceId="03" description="Lease or Rental Asset"/>
+    <Enumeration enumId="ASSETS_REQ_TRANSFER" enumTypeId="ASSETS_REQ_TYPE" sequenceId="04" description="Transfer Asset"/>
+
+    <EnumerationType enumTypeId="ASSETS_PRIORITY" description="Assets Request Priority" hasTable="N"/>
+    <Enumeration enumId="ASSETS_PRI_LOW" enumTypeId="ASSETS_PRIORITY" sequenceId="01" description="Low"/>
+    <Enumeration enumId="ASSETS_PRI_NORMAL" enumTypeId="ASSETS_PRIORITY" sequenceId="02" description="Normal"/>
+    <Enumeration enumId="ASSETS_PRI_HIGH" enumTypeId="ASSETS_PRIORITY" sequenceId="03" description="High"/>
+    <Enumeration enumId="ASSETS_PRI_URGENT" enumTypeId="ASSETS_PRIORITY" sequenceId="04" description="Urgent"/>
+
+    <EnumerationType enumTypeId="ASSETS_BUDGET_TYP" description="Assets Budget Status Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_BUD_SECURED" enumTypeId="ASSETS_BUDGET_TYP" sequenceId="01" description="Budget Secured"/>
+    <Enumeration enumId="ASSETS_BUD_RESERVE" enumTypeId="ASSETS_BUDGET_TYP" sequenceId="02" description="Budget Reserved"/>
+    <Enumeration enumId="ASSETS_BUD_UNBUDGT" enumTypeId="ASSETS_BUDGET_TYP" sequenceId="03" description="Unbudgeted"/>
+    <Enumeration enumId="ASSETS_BUD_REJECT" enumTypeId="ASSETS_BUDGET_TYP" sequenceId="04" description="Budget Rejected"/>
+
+    <EnumerationType enumTypeId="ASSETS_DECISION" description="Assets Approval Decision" hasTable="N"/>
+    <Enumeration enumId="ASSETS_DEC_APPROVE" enumTypeId="ASSETS_DECISION" sequenceId="01" description="Approve"/>
+    <Enumeration enumId="ASSETS_DEC_REJECT" enumTypeId="ASSETS_DECISION" sequenceId="02" description="Reject"/>
+    <Enumeration enumId="ASSETS_DEC_RETURN" enumTypeId="ASSETS_DECISION" sequenceId="03" description="Return for Revision"/>
+    <Enumeration enumId="ASSETS_DEC_DELEGATE" enumTypeId="ASSETS_DECISION" sequenceId="04" description="Delegate"/>
+
+    <EnumerationType enumTypeId="ASSETS_COST_TYPE" description="Assets Capitalization Cost Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_COST_ASSET" enumTypeId="ASSETS_COST_TYPE" sequenceId="01" description="Asset Cost"/>
+    <Enumeration enumId="ASSETS_COST_FREIGHT" enumTypeId="ASSETS_COST_TYPE" sequenceId="02" description="Freight"/>
+    <Enumeration enumId="ASSETS_COST_INSTALL" enumTypeId="ASSETS_COST_TYPE" sequenceId="03" description="Installation"/>
+    <Enumeration enumId="ASSETS_COST_TAX" enumTypeId="ASSETS_COST_TYPE" sequenceId="04" description="Tax"/>
+    <Enumeration enumId="ASSETS_COST_SERVICE" enumTypeId="ASSETS_COST_TYPE" sequenceId="05" description="Service"/>
+
+    <EnumerationType enumTypeId="ASSETS_EVENT_TYPE" description="Assets Lifecycle Event Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_EVT_REQUEST" enumTypeId="ASSETS_EVENT_TYPE" sequenceId="01" description="Requested"/>
+    <Enumeration enumId="ASSETS_EVT_APPROVE" enumTypeId="ASSETS_EVENT_TYPE" sequenceId="02" description="Approved"/>
+    <Enumeration enumId="ASSETS_EVT_ORDER" enumTypeId="ASSETS_EVENT_TYPE" sequenceId="03" description="Ordered"/>
+    <Enumeration enumId="ASSETS_EVT_RECEIVE" enumTypeId="ASSETS_EVENT_TYPE" sequenceId="04" description="Received"/>
+    <Enumeration enumId="ASSETS_EVT_CAPITAL" enumTypeId="ASSETS_EVENT_TYPE" sequenceId="05" description="Capitalized"/>
+    <Enumeration enumId="ASSETS_EVT_SERVICE" enumTypeId="ASSETS_EVENT_TYPE" sequenceId="06" description="Placed In Service"/>
+    <Enumeration enumId="ASSETS_EVT_TRANSFER" enumTypeId="ASSETS_EVENT_TYPE" sequenceId="07" description="Transferred"/>
+    <Enumeration enumId="ASSETS_EVT_RETIRE" enumTypeId="ASSETS_EVENT_TYPE" sequenceId="08" description="Retired"/>
+
+    <EnumerationType enumTypeId="ASSETS_VAL_TYPE" description="Assets Valuation Event Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_VAL_IMPAIR" enumTypeId="ASSETS_VAL_TYPE" sequenceId="01" description="Impairment"/>
+    <Enumeration enumId="ASSETS_VAL_REVALUE" enumTypeId="ASSETS_VAL_TYPE" sequenceId="02" description="Revaluation"/>
+    <Enumeration enumId="ASSETS_VAL_WRITEUP" enumTypeId="ASSETS_VAL_TYPE" sequenceId="03" description="Write Up"/>
+    <Enumeration enumId="ASSETS_VAL_WRITEDN" enumTypeId="ASSETS_VAL_TYPE" sequenceId="04" description="Write Down"/>
+
+    <EnumerationType enumTypeId="ASSETS_DISP_TYPE" description="Assets Disposal Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_DISP_SALE" enumTypeId="ASSETS_DISP_TYPE" sequenceId="01" description="Sale"/>
+    <Enumeration enumId="ASSETS_DISP_SCRAP" enumTypeId="ASSETS_DISP_TYPE" sequenceId="02" description="Scrap"/>
+    <Enumeration enumId="ASSETS_DISP_DONATE" enumTypeId="ASSETS_DISP_TYPE" sequenceId="03" description="Donation"/>
+    <Enumeration enumId="ASSETS_DISP_LOSS" enumTypeId="ASSETS_DISP_TYPE" sequenceId="04" description="Loss"/>
+
+    <EnumerationType enumTypeId="ASSETS_LEASE_TYPE" description="Assets Lease Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_LEASE_IN" enumTypeId="ASSETS_LEASE_TYPE" sequenceId="01" description="Inbound Lease or Rental"/>
+    <Enumeration enumId="ASSETS_LEASE_OUT" enumTypeId="ASSETS_LEASE_TYPE" sequenceId="02" description="Outbound Lease or Rental"/>
+    <Enumeration enumId="ASSETS_LEASE_FIN" enumTypeId="ASSETS_LEASE_TYPE" sequenceId="03" description="Finance Lease"/>
+    <Enumeration enumId="ASSETS_LEASE_OPER" enumTypeId="ASSETS_LEASE_TYPE" sequenceId="04" description="Operating Lease"/>
+
+    <EnumerationType enumTypeId="ASSETS_ACCT_STD" description="Assets Accounting Standard" hasTable="N"/>
+    <Enumeration enumId="ASSETS_STD_LOCAL" enumTypeId="ASSETS_ACCT_STD" sequenceId="01" description="Local GAAP"/>
+    <Enumeration enumId="ASSETS_STD_IFRS16" enumTypeId="ASSETS_ACCT_STD" sequenceId="02" description="IFRS 16"/>
+    <Enumeration enumId="ASSETS_STD_ASC842" enumTypeId="ASSETS_ACCT_STD" sequenceId="03" description="ASC 842"/>
+
+    <EnumerationType enumTypeId="ASSETS_FREQ_TYPE" description="Assets Payment Frequency" hasTable="N"/>
+    <Enumeration enumId="ASSETS_FREQ_MONTH" enumTypeId="ASSETS_FREQ_TYPE" sequenceId="01" description="Monthly"/>
+    <Enumeration enumId="ASSETS_FREQ_QTR" enumTypeId="ASSETS_FREQ_TYPE" sequenceId="02" description="Quarterly"/>
+    <Enumeration enumId="ASSETS_FREQ_ANNUAL" enumTypeId="ASSETS_FREQ_TYPE" sequenceId="03" description="Annual"/>
+    <Enumeration enumId="ASSETS_FREQ_ONCE" enumTypeId="ASSETS_FREQ_TYPE" sequenceId="04" description="One Time"/>
+
+    <EnumerationType enumTypeId="ASSETS_COMP_TYPE" description="Assets Lease Component Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_COMP_LEASE" enumTypeId="ASSETS_COMP_TYPE" sequenceId="01" description="Lease Component"/>
+    <Enumeration enumId="ASSETS_COMP_INS" enumTypeId="ASSETS_COMP_TYPE" sequenceId="02" description="Insurance Component"/>
+    <Enumeration enumId="ASSETS_COMP_DRV" enumTypeId="ASSETS_COMP_TYPE" sequenceId="03" description="Driver Component"/>
+    <Enumeration enumId="ASSETS_COMP_SVC" enumTypeId="ASSETS_COMP_TYPE" sequenceId="04" description="Service Component"/>
+
+    <EnumerationType enumTypeId="ASSETS_INS_TYPE" description="Assets Insurance Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_INS_COMP" enumTypeId="ASSETS_INS_TYPE" sequenceId="01" description="Comprehensive"/>
+    <Enumeration enumId="ASSETS_INS_LIAB" enumTypeId="ASSETS_INS_TYPE" sequenceId="02" description="Liability"/>
+    <Enumeration enumId="ASSETS_INS_DAMAGE" enumTypeId="ASSETS_INS_TYPE" sequenceId="03" description="Damage Waiver"/>
+
+    <EnumerationType enumTypeId="ASSETS_POST_TYPE" description="Assets Posting Type" hasTable="N"/>
+    <Enumeration enumId="ASSETS_POST_DEPR" enumTypeId="ASSETS_POST_TYPE" sequenceId="01" description="Depreciation Posting"/>
+    <Enumeration enumId="ASSETS_POST_LEASE" enumTypeId="ASSETS_POST_TYPE" sequenceId="02" description="Lease Posting"/>
+    <Enumeration enumId="ASSETS_POST_DISP" enumTypeId="ASSETS_POST_TYPE" sequenceId="03" description="Disposal Posting"/>
+    <Enumeration enumId="ASSETS_POST_VAL" enumTypeId="ASSETS_POST_TYPE" sequenceId="04" description="Valuation Posting"/>
+</entity-engine-xml>

@@ -1,0 +1,19 @@
+{
+  "phase": "Phase 13-Fix2",
+  "title": "Config-driven repayment method mapping only",
+  "changedFiles": [
+    "LoanServices.java",
+    "LoanDemoData.xml"
+  ],
+  "includedDataFiles": [
+    "LoanRepaymentMethodConfigData.xml",
+    "LoanStatusData.xml",
+    "LoanTypeData.xml"
+  ],
+  "behavior": [
+    "No hardcoded repayment method fallback",
+    "Missing LoanRepaymentMethodConfig returns clear service error",
+    "recordUnifiedLoanRepaymentFinancialFirstV1 resolves paymentMethodTypeId/paymentMethodId from config",
+    "Company seed mappings included for cash, bank, check, card, wallet, direct debit, payroll"
+  ]
+}

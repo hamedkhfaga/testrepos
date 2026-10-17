@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://ofbiz.apache.org/Widget-Screen"
+         xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <screen name="main">
+        <section>
+            <actions><set field="headerItem" value="main"/></actions>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <label style="h1" text="Main Screen Wlcome Loan System"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="LoanDashboard">
+        <section>
+            <actions><set field="headerItem" value="LoanDashboard"/></actions>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap.LoanApplication}"/>
+                        <label text="${uiLabelMap.LoanDashboardTitle}"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="FindLoans">
+        <section>
+            <actions>
+                <entity-condition entity-name="PartyLoan" list="loanList">
+                    <order-by field-name="-createdStamp"/>
+                </entity-condition>
+            </actions>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap.LoanApplication}"/>
+                        <label text="${uiLabelMap.LoanFindLoans}"/>
+                        <include-form name="FindLoanForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="ListLoansForm" location="component://loan/widget/LoanForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="LoanOrigination">
+        <section>
+            <actions>
+                <set field="headerItem" value="LoanOrigination"/>
+                <entity-condition entity-name="PartyLoan" list="loanOriginationList">
+                    <condition-list combine="and">
+                        <condition-expr field-name="loanId" operator="like" from-field="parameters.loanId" ignore-if-empty="true"/>
+                        <condition-expr field-name="partyId" operator="like" from-field="parameters.partyId" ignore-if-empty="true"/>
+                        <condition-expr field-name="organizationPartyId" operator="like" from-field="parameters.organizationPartyId" ignore-if-empty="true"/>
+                        <condition-expr field-name="loanStatusId" operator="like" from-field="parameters.loanStatusId" ignore-if-empty="true"/>
+                    </condition-list>
+                    <order-by field-name="-createdStamp"/>
+                </entity-condition>
+            </actions>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap.LoanApplication}"/>
+                        <label text="Loan Origination"/>
+                        <include-form name="LoanOriginationToolbarForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="FindLoanOriginationForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="ListLoanOriginationForm" location="component://loan/widget/LoanForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="LoanCreate">
+        <section>
+            <actions><set field="headerItem" value="LoanOrigination"/></actions>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap.LoanApplication}"/>
+                        <label text="Create New Loan"/>
+                        <include-form name="LoanCreateToolbarForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="CreatePartyLoanUiForm" location="component://loan/widget/LoanForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+ <screen name="LoanScheduleMaintenance">
+    <section>
+        <actions>
+            <set field="headerItem" value="LoanOrigination"/>
+
+            <entity-one entity-name="PartyLoan" value-field="selectedLoan">
+                <field-map field-name="loanId" from-field="parameters.loanId"/>
+            </entity-one>
+
+            <entity-condition entity-name="PartyLoanSchedule" list="loanScheduleList">
+                <condition-expr field-name="loanId" operator="equals" from-field="parameters.loanId"/>
+                <order-by field-name="installmentSeqNum"/>
+            </entity-condition>
+
+            <entity-one entity-name="PartyLoanSchedule" value-field="selectedSchedule">
+                <field-map field-name="loanScheduleId" from-field="parameters.loanScheduleId"/>
+            </entity-one>
+
+            <set field="loanId" from-field="selectedLoan.loanId"/>
+            <set field="partyId" from-field="selectedLoan.partyId"/>
+            <set field="organizationPartyId" from-field="selectedLoan.organizationPartyId"/>
+            <set field="principalAmount" from-field="selectedLoan.principalAmount"/>
+            <set field="outstandingAmount" from-field="selectedLoan.outstandingAmount"/>
+            <set field="loanStatusId" from-field="selectedLoan.loanStatusId"/>
+
+            <set field="selectedScheduleId" from-field="selectedSchedule.loanScheduleId"/>
+            <set field="selectedInstallmentSeqNum" from-field="selectedSchedule.installmentSeqNum"/>
+            <set field="selectedDueDate" from-field="selectedSchedule.dueDate"/>
+            <set field="selectedInstallmentAmount" from-field="selectedSchedule.installmentAmount"/>
+            <set field="selectedScheduleOutstandingAmount" from-field="selectedSchedule.outstandingAmount"/>
+            <set field="selectedScheduleStatusId" from-field="selectedSchedule.scheduleStatusId"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                <decorator-section name="body">
+                    <label style="h1" text="${uiLabelMap.LoanApplication}"/>
+                    <label text="Loan Schedule Maintenance"/>
+                    <include-form name="LoanScheduleToolbarForm" location="component://loan/widget/LoanForms.xml"/>
+                    <include-form name="SelectedLoanOriginationSummary" location="component://loan/widget/LoanForms.xml"/>
+                    <include-form name="LoanScheduleListForm" location="component://loan/widget/LoanForms.xml"/>
+                    <include-form name="SelectedLoanScheduleSummary" location="component://loan/widget/LoanForms.xml"/>
+                    <include-form name="ReschedulePartyLoanInstallmentUiForm" location="component://loan/widget/LoanForms.xml"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+    <screen name="LoanServicing">
+        <section>
+            <actions>
+                <set field="headerItem" value="LoanServicing"/>
+                <entity-condition entity-name="PartyLoan" list="loanServicingList">
+                    <condition-list combine="and">
+                        <condition-expr field-name="loanId" operator="like" from-field="parameters.loanId" ignore-if-empty="true"/>
+                        <condition-expr field-name="partyId" operator="like" from-field="parameters.partyId" ignore-if-empty="true"/>
+                        <condition-expr field-name="organizationPartyId" operator="like" from-field="parameters.organizationPartyId" ignore-if-empty="true"/>
+                        <condition-expr field-name="loanStatusId" operator="like" from-field="parameters.loanStatusId" ignore-if-empty="true"/>
+                    </condition-list>
+                    <order-by field-name="-createdStamp"/>
+                </entity-condition>
+                <entity-one entity-name="PartyLoan" value-field="selectedLoan">
+                    <field-map field-name="loanId" from-field="parameters.selectedLoanId"/>
+                </entity-one>
+            </actions>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap.LoanApplication}"/>
+                        <label text="Loan Servicing"/>
+                        <include-form name="FindLoanServicingForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="ListLoanServicingForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="SelectedLoanServicingSummary" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="RecordPartyLoanRepaymentUiForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="SettlePartyLoanEarlyUiForm" location="component://loan/widget/LoanForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="LoanAuditRepair">
+        <section>
+            <actions>
+                <set field="headerItem" value="LoanAuditRepair"/>
+                <entity-condition entity-name="PartyLoan" list="loanAuditRepairList">
+                    <condition-list combine="and">
+                        <condition-expr field-name="loanId" operator="like" from-field="parameters.loanId" ignore-if-empty="true"/>
+                        <condition-expr field-name="organizationPartyId" operator="like" from-field="parameters.organizationPartyId" ignore-if-empty="true"/>
+                        <condition-expr field-name="loanStatusId" operator="like" from-field="parameters.loanStatusId" ignore-if-empty="true"/>
+                    </condition-list>
+                    <order-by field-name="-createdStamp"/>
+                </entity-condition>
+                <entity-one entity-name="PartyLoan" value-field="selectedLoan">
+                    <field-map field-name="loanId" from-field="parameters.selectedLoanId"/>
+                </entity-one>
+            </actions>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap.LoanApplication}"/>
+                        <label text="Loan Audit &amp; Repair"/>
+                        <include-form name="FindLoanAuditRepairForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="ListLoanAuditRepairForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="SelectedLoanAuditRepairSummary" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="BackfillLoanRepaymentPaymentUiForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="BackfillLoanRepaymentAccountingUiForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="ReconcileLoanAccountingUiForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="RepairLoanFinancialIntegrityUiForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="PersistLoanReconciliationRunUiForm" location="component://loan/widget/LoanForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="LoanReconciliationDashboard">
+        <section>
+            <actions>
+                <set field="headerItem" value="LoanReconciliationDashboard"/>
+                <entity-condition entity-name="LoanReconciliationRun" list="loanReconciliationRunList">
+                    <condition-list combine="and">
+                        <condition-expr field-name="loanId" operator="like" from-field="parameters.loanId" ignore-if-empty="true"/>
+                        <condition-expr field-name="organizationPartyId" operator="like" from-field="parameters.organizationPartyId" ignore-if-empty="true"/>
+                        <condition-expr field-name="statusId" operator="like" from-field="parameters.statusId" ignore-if-empty="true"/>
+                        <condition-expr field-name="reconciliationRunId" operator="equals" from-field="parameters.reconciliationRunId" ignore-if-empty="true"/>
+                    </condition-list>
+                    <order-by field-name="-startedStamp"/>
+                </entity-condition>
+            </actions>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap.LoanApplication}"/>
+                        <label text="Loan Reconciliation Dashboard"/>
+                        <include-form name="FindLoanReconciliationRunForm" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="ListLoanReconciliationRuns" location="component://loan/widget/LoanForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="ViewLoanReconciliationRun">
+        <section>
+            <actions>
+                <set field="headerItem" value="LoanReconciliationDashboard"/>
+                <entity-one entity-name="LoanReconciliationRun" value-field="reconciliationRun" auto-field-map="true"/>
+                <entity-and entity-name="LoanReconciliationIssue" list="reconciliationIssueList">
+                    <field-map field-name="reconciliationRunId" from-field="parameters.reconciliationRunId"/>
+                    <order-by field-name="severityEnumId"/>
+                    <order-by field-name="issueTypeEnumId"/>
+                    <order-by field-name="reconciliationIssueId"/>
+                </entity-and>
+            </actions>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap.LoanApplication}"/>
+                        <label text="Loan Reconciliation Dashboard"/>
+                        <include-form name="LoanReconciliationRunHeader" location="component://loan/widget/LoanForms.xml"/>
+                        <include-form name="ListLoanReconciliationIssues" location="component://loan/widget/LoanForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="EditLoan">
+        <section>
+            <widgets>
+                <decorator-screen name="LoanCommonDecorator" location="component://loan/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label text="${uiLabelMap.LoanEditLoan}"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+</screens>

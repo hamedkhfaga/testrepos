@@ -1,0 +1,20 @@
+{
+  "package": "phase17f_repayment_financial_first_completion_fix",
+  "changedFiles": [
+    "LoanServices.java",
+    "LoanDisbursementInvoiceServices.java"
+  ],
+  "servicesXmlChanged": false,
+  "purpose": "Complete financial-first repayment lifecycle inside API: mark repayment payment received and finalize fully-applied repayment invoice during recordUnifiedLoanRepaymentFinancialFirstV1 flow.",
+  "changes": [
+    "LoanServices.java: completeUnifiedLoanRepaymentFinancialsV1 now marks repayment Payment as PMNT_RECEIVED when completing financials.",
+    "LoanServices.java: completeUnifiedLoanRepaymentFinancialsV1 now calls finalizeFullyAppliedLoanRepaymentInvoicesV1 after payment application/accounting.",
+    "LoanServices.java: response includes paymentStatusBefore/paymentStatusAfter/invoiceStatusAfter/invoiceFinalizeResult for verification.",
+    "LoanDisbursementInvoiceServices.java included as latest deployed dependency containing safe fully-applied invoice finalization fallback."
+  ],
+  "expectedAfterRetest": [
+    "Repayment payment status becomes PMNT_RECEIVED",
+    "Fully-applied repayment invoice becomes INVOICE_PAID",
+    "reconcileLoanAccountingV1 returns issueCount=0 for the paid installment"
+  ]
+}

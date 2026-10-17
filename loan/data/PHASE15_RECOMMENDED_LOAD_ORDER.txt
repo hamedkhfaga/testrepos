@@ -1,0 +1,14 @@
+Recommended loan data load order (parent before child):
+
+1. LoanSecurityPermissionSeedData.xml
+2. LoanTypeData.xml
+3. LoanStatusData.xml
+4. LoanRepaymentMethodConfigData.xml
+5. LoanDemoData.xml
+6. LoanSecurityGroupDemoData.xml
+
+Notes:
+- LoanTypeData contains enum/status-like business references, agreement/role types, invoice types, and LoanTypePolicy.
+- LoanStatusData contains loan statuses, repair statuses, role assignments, demo agreement/fin account, and reconciliation issue policies.
+- LoanRepaymentMethodConfigData must load after repayment method enumerations exist.
+- LoanDemoData now contains accounting config only; repayment method config was removed from demo to avoid duplicate primary keys.

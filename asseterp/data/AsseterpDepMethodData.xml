@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Seed data: register Asset ERP custom depreciation formula services
+  into the OFBiz CustomMethod catalog so FixedAssetDepMethod can reference them.
+  These rows sit alongside the two OFBiz standard methods:
+    STR_LINE_DEP_FORMULA  -> straightLineDepreciation
+    DBL_DECL_DEP_FORMULA  -> doubleDecliningBalanceDepreciation
+-->
+<entity-engine-xml>
+
+    <!-- Sum-of-Years-Digits — IAS 16 / GAAP accelerated method -->
+    <CustomMethod customMethodId="SYD_DEP_FORMULA"
+                  customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="asseterpSydDepreciation"
+                  description="Sum-of-Years-Digits Depreciation (SYD)"/>
+
+    <!-- Units of Production — IAS 16 activity-based method -->
+    <CustomMethod customMethodId="UOP_DEP_FORMULA"
+                  customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="asseterpUopDepreciation"
+                  description="Units of Production Depreciation (UOP) — reads FixedAssetMeter"/>
+
+    <!-- MACRS — US IRS Rev. Proc. 87-57 half-year convention tables -->
+    <CustomMethod customMethodId="MACRS_DEP_FORMULA"
+                  customMethodTypeId="DEPRECIATION_FORMULA"
+                  customMethodName="asseterpMacrsDepreciation"
+                  description="MACRS Depreciation (US IRS Tables) — reads MACRS_PROPERTY_CLASS from FixedAssetAttribute"/>
+
+</entity-engine-xml>

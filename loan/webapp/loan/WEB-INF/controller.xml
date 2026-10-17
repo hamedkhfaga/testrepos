@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Site-Conf"
+        xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
+    <include location="component://common/webcommon/WEB-INF/common-controller.xml"/>
+    <description>Loan Component Site Configuration File</description>
+
+    <request-map uri="main">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="main"/>
+    </request-map>
+
+    <request-map uri="FindLoans">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="FindLoans"/>
+    </request-map>
+
+    <request-map uri="EditLoan">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="EditLoan"/>
+    </request-map>
+
+    <request-map uri="LoanDashboard">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="LoanDashboard"/>
+    </request-map>
+
+    <request-map uri="LoanOrigination">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="LoanOrigination"/>
+    </request-map>
+
+    <!-- Added: dedicated create-loan screen -->
+ 
+<request-map uri="LoanCreate">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="LoanCreate"/>
+</request-map>  
+
+    <request-map uri="LoanScheduleMaintenance">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="LoanScheduleMaintenance"/>
+    </request-map>
+
+    <request-map uri="LoanServicing">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="LoanServicing"/>
+    </request-map>
+
+    <request-map uri="LoanAuditRepair">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="LoanAuditRepair"/>
+    </request-map>
+
+    <request-map uri="LoanReconciliationDashboard">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="LoanReconciliationDashboard"/>
+    </request-map>
+
+    <request-map uri="ViewLoanReconciliationRun">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="ViewLoanReconciliationRun"/>
+    </request-map>
+
+    <!-- Updated only this flow:
+         success redirects back to Origination
+         error stays on LoanCreate -->
+    <request-map uri="doCreatePartyLoan">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createPartyLoan"/>
+        <response name="success" type="request-redirect" value="LoanOrigination"/>
+        <response name="error" type="view" value="LoanCreate"/>
+    </request-map>
+
+    <request-map uri="doApprovePartyLoan">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="approvePartyLoan"/>
+        <response name="success" type="view" value="LoanOrigination"/>
+        <response name="error" type="view" value="LoanOrigination"/>
+    </request-map>
+
+    <request-map uri="doDisbursePartyLoan">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="disbursePartyLoan"/>
+        <response name="success" type="view" value="LoanOrigination"/>
+        <response name="error" type="view" value="LoanOrigination"/>
+    </request-map>
+
+    <request-map uri="doGeneratePartyLoanSchedule">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="generatePartyLoanSchedule"/>
+        <response name="success" type="view" value="LoanOrigination"/>
+        <response name="error" type="view" value="LoanOrigination"/>
+    </request-map>
+
+    <request-map uri="doReschedulePartyLoanInstallment">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="reschedulePartyLoanInstallment"/>
+        <response name="success" type="view" value="LoanScheduleMaintenance"/>
+        <response name="error" type="view" value="LoanScheduleMaintenance"/>
+    </request-map>
+
+    <request-map uri="doRecordPartyLoanRepayment">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="recordPartyLoanRepayment"/>
+        <response name="success" type="view" value="LoanServicing"/>
+        <response name="error" type="view" value="LoanServicing"/>
+    </request-map>
+
+    <request-map uri="doSettlePartyLoanEarly">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="settlePartyLoanEarly"/>
+        <response name="success" type="view" value="LoanServicing"/>
+        <response name="error" type="view" value="LoanServicing"/>
+    </request-map>
+
+    <request-map uri="doBackfillLoanRepaymentPayment">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="backfillLoanRepaymentPaymentV1"/>
+        <response name="success" type="view" value="LoanAuditRepair"/>
+        <response name="error" type="view" value="LoanAuditRepair"/>
+    </request-map>
+
+    <request-map uri="doBackfillLoanRepaymentAccounting">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="backfillLoanRepaymentAccountingV1"/>
+        <response name="success" type="view" value="LoanAuditRepair"/>
+        <response name="error" type="view" value="LoanAuditRepair"/>
+    </request-map>
+
+    <request-map uri="doReconcileLoanAccounting">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="reconcileLoanAccountingV1"/>
+        <response name="success" type="view" value="LoanAuditRepair"/>
+        <response name="error" type="view" value="LoanAuditRepair"/>
+    </request-map>
+
+    <request-map uri="doRepairLoanFinancialIntegrity">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="repairLoanFinancialIntegrityV1"/>
+        <response name="success" type="view" value="LoanAuditRepair"/>
+        <response name="error" type="view" value="LoanAuditRepair"/>
+    </request-map>
+
+    <request-map uri="doPersistLoanReconciliationRun">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="persistLoanReconciliationRunV1"/>
+        <response name="success" type="view" value="LoanAuditRepair"/>
+        <response name="error" type="view" value="LoanAuditRepair"/>
+    </request-map>
+
+    <request-map uri="GetReactAuthContext">
+        <security https="true" auth="true"/>
+        <event type="java" path="org.apache.ofbiz.loan.events.LoanReactEvents" invoke="getReactAuthContext"/>
+        <response name="none" type="none"/>
+    </request-map>
+<request-map uri="LoanReactWorkbench">
+    <security https="true" auth="true"/>
+    <event type="java" path="org.apache.ofbiz.loan.events.LoanReactEvents" invoke="prepareReactContext"/>
+    <response name="success" type="view" value="LoanReactWorkbench"/>
+</request-map>
+<view-map name="LoanReactWorkbench" type="ftl"
+          page="component://loan/webapp/loan/WEB-INF/templates/LoanReactWorkbench.ftl"/>
+    <view-map name="LoanDashboard" type="screen" page="component://loan/widget/LoanScreens.xml#LoanDashboard"/>
+    <view-map name="LoanOrigination" type="screen" page="component://loan/widget/LoanScreens.xml#LoanOrigination"/>
+    <!-- Added: dedicated create-loan view -->
+    <view-map name="LoanCreate" type="screen" page="component://loan/widget/LoanScreens.xml#LoanCreate"/>
+	
+    <view-map name="LoanScheduleMaintenance" type="screen" page="component://loan/widget/LoanScreens.xml#LoanScheduleMaintenance"/>
+    <view-map name="LoanServicing" type="screen" page="component://loan/widget/LoanScreens.xml#LoanServicing"/>
+    <view-map name="LoanAuditRepair" type="screen" page="component://loan/widget/LoanScreens.xml#LoanAuditRepair"/>
+    <view-map name="LoanReconciliationDashboard" type="screen" page="component://loan/widget/LoanScreens.xml#LoanReconciliationDashboard"/>
+    <view-map name="ViewLoanReconciliationRun" type="screen" page="component://loan/widget/LoanScreens.xml#ViewLoanReconciliationRun"/>
+    <view-map name="FindLoans" type="screen" page="component://loan/widget/LoanScreens.xml#FindLoans"/>
+    <view-map name="EditLoan" type="screen" page="component://loan/widget/LoanScreens.xml#EditLoan"/>
+    <view-map name="main" type="screen" page="component://loan/widget/LoanScreens.xml#main"/>
+</site-conf>

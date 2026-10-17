@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under the Apache License, Version 2.0. -->
+<entity-engine-xml>
+    <SecurityPermission permissionId="ASSETERP_VIEW" description="View Asset ERP records."/>
+    <SecurityPermission permissionId="ASSETERP_CREATE" description="Create Asset ERP records."/>
+    <SecurityPermission permissionId="ASSETERP_UPDATE" description="Update Asset ERP records."/>
+    <SecurityPermission permissionId="ASSETERP_DELETE" description="Delete Asset ERP records."/>
+    <SecurityPermission permissionId="ASSETERP_APPROVE" description="Approve Asset ERP workflow steps."/>
+    <SecurityPermission permissionId="ASSETERP_ACCOUNTING" description="Run Asset ERP accounting services."/>
+    <SecurityPermission permissionId="ASSETERP_MAINT_VIEW" description="View Asset ERP maintenance records."/>
+    <SecurityPermission permissionId="ASSETERP_MAINT_UPDATE" description="Update Asset ERP maintenance records."/>
+    <SecurityPermission permissionId="ASSETERP_LEASE_VIEW" description="View Asset ERP lease and rental records."/>
+    <SecurityPermission permissionId="ASSETERP_LEASE_UPDATE" description="Update Asset ERP lease and rental records."/>
+    <SecurityPermission permissionId="ASSETERP_DISPOSAL" description="Run Asset ERP disposal services."/>
+    <SecurityPermission permissionId="ASSETERP_ADMIN" description="All Asset ERP operations."/>
+
+</entity-engine-xml>

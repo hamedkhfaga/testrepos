@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/entitymodel.xsd">
+    <title>Ui Component Entity Model — custom UI-support entities over standard OFBiz</title>
+    <description>
+        The ui plugin is the SINGLE container for everything custom the React UI
+        needs beyond stock OFBiz: audit trail, treasury/bank integration services,
+        workflow guards. OFBiz core is never modified.
+        (Entity moved here from the qrcore plugin 2026-07-24 — same entity name,
+        same AUDIT_EVENT table, so all existing audit history is preserved.)
+    </description>
+
+    <entity entity-name="AuditEvent" package-name="org.apache.ofbiz.ui"
+            title="Generic document audit trail (UI-support)">
+        <description>One row per business event on any document type —
+            payment status changes, bank-file exchanges, EFT registry changes,
+            reconciliation runs, etc. Generic by design (docType + docId) so
+            future document kinds reuse it.</description>
+        <field name="auditEventId" type="id"/>
+        <field name="docType" type="id"><description>PAYMENT, PAYMENT_GROUP, INVOICE, EFT_ACCOUNT, FIN_ACCOUNT, …</description></field>
+        <field name="docId" type="id-vlong"/>
+        <field name="eventType" type="id">
+            <description>STATUS_CHANGE, VOID, BANK_FILE_OUT, BANK_ACK, BANK_REJECT, BANK_RESPONSE, EFT_CREATED, RECON_RUN, …</description></field>
+        <field name="oldValue" type="long-varchar"/>
+        <field name="newValue" type="long-varchar"/>
+        <field name="userLoginId" type="id-vlong"/>
+        <field name="eventDate" type="date-time"/>
+        <field name="remark" type="long-varchar"/>
+        <prim-key field="auditEventId"/>
+        <index name="AUDEV_DOC_IDX">
+            <index-field name="docType"/><index-field name="docId"/></index>
+    </entity>
+
+    <entity entity-name="BankStatement" package-name="org.apache.ofbiz.ui"
+            title="Uploaded bank statement (reconciliation staging)">
+        <description>Staging row per uploaded bank statement file (CSV or
+            camt.053): the file itself, its detected period/account, and its
+            reconciliation lifecycle (LOADED → RECONCILED / DISCARDED).
+            contentHash (SHA-256) guards against re-uploading a file that was
+            already reconciled.</description>
+        <field name="bankStatementId" type="id"/>
+        <field name="finAccountId" type="id"><description>detected/confirmed bank Financial Account</description></field>
+        <field name="fileName" type="long-varchar"/>
+        <field name="fileContent" type="very-long"/>
+        <field name="contentHash" type="long-varchar"><description>SHA-256 hex of the raw file</description></field>
+        <field name="periodStart" type="date-time"/>
+        <field name="periodEnd" type="date-time"/>
+        <field name="lineCount" type="numeric"/>
+        <field name="statusId" type="id"><description>BKST_LOADED, BKST_RECONCILED, BKST_DISCARDED</description></field>
+        <field name="uploadUserLoginId" type="id-vlong"/>
+        <field name="uploadDate" type="date-time"/>
+        <field name="reconciledDate" type="date-time"/>
+        <field name="remark" type="long-varchar"/>
+        <prim-key field="bankStatementId"/>
+        <relation type="one" fk-name="BKST_FINACCT" rel-entity-name="FinAccount">
+            <key-map field-name="finAccountId"/>
+        </relation>
+        <index name="BKST_ACCT_IDX"><index-field name="finAccountId"/></index>
+    </entity>
+</entitymodel>

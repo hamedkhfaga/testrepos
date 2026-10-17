@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ===================================================== -->
+    <!-- OVERTIME REQUEST LIFECYCLE (V2) -->
+    <!-- ===================================================== -->
+
+ <service name="createEmployeeOvertimeRequestV2"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollOvertimeServices"
+         invoke="createEmployeeOvertimeRequestV2"
+         auth="true" use-transaction="true" export="true" action="POST">
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="employeePartyId"     type="String" mode="IN" optional="false"/>
+    <attribute name="payrollPeriodId"     type="String" mode="IN" optional="true"/>
+    <attribute name="fromDate"            type="Timestamp" mode="IN" optional="false"/>
+    <attribute name="thruDate"            type="Timestamp" mode="IN" optional="true"/>
+    <attribute name="overtimeHours"       type="BigDecimal" mode="IN" optional="false"/>
+    <attribute name="overtimeRate"        type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="overtimeAmount"      type="BigDecimal" mode="IN" optional="true"/>
+    <attribute name="reason"              type="String" mode="IN" optional="true"/>
+    <attribute name="comments"            type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin"           type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="employeeOvertimeRequestId" type="String" mode="OUT" optional="false"/>
+    <attribute name="statusId"                  type="String" mode="OUT" optional="false"/>
+</service>
+
+    <service name="submitEmployeeOvertimeRequestV2"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollOvertimeServices"
+             invoke="submitEmployeeOvertimeRequestV2"
+             auth="true"
+             use-transaction="true" export="true" action="POST">
+        <description>Submit overtime request for approval</description>
+ <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="employeeOvertimeRequestId" type="String" mode="IN" optional="false"/>
+        <attribute name="comments"                  type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin"                 type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="statusId"                  type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="approveEmployeeOvertimeRequestV2"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollOvertimeServices"
+             invoke="approveEmployeeOvertimeRequestV2"
+             auth="true"
+             use-transaction="true" export="true" action="POST">
+        <description>Approve overtime request</description>
+ <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="employeeOvertimeRequestId" type="String" mode="IN" optional="false"/>
+        <attribute name="approvalComments"          type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin"                 type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="statusId"                  type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="rejectEmployeeOvertimeRequestV2"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollOvertimeServices"
+             invoke="rejectEmployeeOvertimeRequestV2"
+             auth="true"
+             use-transaction="true" export="true" action="POST">
+        <description>Reject overtime request</description>
+ <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="employeeOvertimeRequestId" type="String" mode="IN" optional="false"/>
+        <attribute name="rejectionReason"           type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin"                 type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="statusId"                  type="String" mode="OUT" optional="false"/>
+    </service>
+
+
+    <!-- ===================================================== -->
+    <!-- SNAPSHOT BUILDER (V2) - CORE ENGINE INPUT -->
+    <!-- ===================================================== -->
+<service name="buildPayrollInputSnapshotV2"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollSnapshotServices"
+         invoke="buildPayrollInputSnapshotV2"
+         auth="true" export="true"  action="POST"
+         use-transaction="true">
+    <description>Build PAYROLL_INPUT_SNAPSHOT from approved inputs</description>
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="payrollRunId"        type="String" mode="IN" optional="false"/>
+    <attribute name="payrollPeriodId"     type="String" mode="IN" optional="false"/>
+
+    <!-- governance knobs -->
+    <attribute name="forceRebuild"        type="String" mode="IN" optional="true"/> <!-- Y/N -->
+    <attribute name="dryRun"              type="String" mode="IN" optional="true"/> <!-- Y/N -->
+
+    <attribute name="userLogin"           type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <!-- outputs -->
+    <attribute name="snapshotBatchId"     type="String" mode="OUT" optional="true"/>
+    <attribute name="snapshotCount"       type="Long"   mode="OUT" optional="true"/>
+	<attribute name="data" type="Map" mode="OUT" optional="true"/>
+<attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+
+<attribute name="snapshotBatchId" type="String" mode="OUT" optional="true"/>
+<attribute name="snapshotCount" type="Long" mode="OUT" optional="true"/>
+
+<attribute name="skippedNoActivity" type="Long" mode="OUT" optional="true"/>
+<attribute name="otSkippedAlreadySnap" type="Long" mode="OUT" optional="true"/>
+<attribute name="overtimeMarkedUsed" type="Long" mode="OUT" optional="true"/>
+<attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+<attribute name="forceRebuild" type="String" mode="OUT" optional="true"/>
+</service>
+
+</services>

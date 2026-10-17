@@ -1,0 +1,1027 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under the Apache License, Version 2.0. -->
+<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/ofbiz-properties.xsd">
+
+    <!-- ================================================================
+         APPLICATION BRANDING
+         ================================================================ -->
+
+    <property key="AsseterpApplication">
+        <value xml:lang="en">Asset ERP</value>
+        <value xml:lang="ar">إدارة الأصول</value>
+        <value xml:lang="fr">ERP des actifs</value>
+    </property>
+    <property key="AsseterpCompanyName">
+        <value xml:lang="en">OFBiz: Asset ERP</value>
+        <value xml:lang="ar">أوفBiz: إدارة الأصول</value>
+        <value xml:lang="fr">OFBiz : ERP des actifs</value>
+    </property>
+    <property key="AsseterpCompanySubtitle">
+        <value xml:lang="en">Enterprise asset lifecycle management</value>
+        <value xml:lang="ar">إدارة دورة حياة الأصول المؤسسية</value>
+        <value xml:lang="fr">Gestion du cycle de vie des actifs d'entreprise</value>
+    </property>
+
+    <!-- ================================================================
+         SECURITY AND PERMISSIONS
+         ================================================================ -->
+
+    <property key="AsseterpPermissionError">
+        <value xml:lang="en">Security error: Asset ERP ${mainAction} permission is required.</value>
+        <value xml:lang="ar">خطأ أمني: صلاحية ${mainAction} في إدارة الأصول مطلوبة.</value>
+        <value xml:lang="fr">Erreur de securite : la permission Asset ERP ${mainAction} est requise.</value>
+    </property>
+    <property key="AsseterpViewPermissionError">
+        <value xml:lang="en">You are not allowed to view this page.</value>
+        <value xml:lang="ar">غير مصرح لك بعرض هذه الصفحة.</value>
+        <value xml:lang="fr">Vous n'etes pas autorise a voir cette page.</value>
+    </property>
+
+    <!-- ================================================================
+         ENTITY NOT FOUND ERRORS
+         ================================================================ -->
+
+    <property key="AsseterpFixedAssetNotFound">
+        <value xml:lang="en">Fixed asset ${fixedAssetId} was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على الأصل ${fixedAssetId}.</value>
+        <value xml:lang="fr">L'actif immobilise ${fixedAssetId} est introuvable.</value>
+    </property>
+    <property key="AsseterpOrgConfigNotFound">
+        <value xml:lang="en">Organisation configuration for party ${partyId} was not found. Please set up Asset ERP configuration first.</value>
+        <value xml:lang="ar">لم يتم العثور على إعدادات المؤسسة للطرف ${partyId}. يرجى إعداد تهيئة إدارة الأصول أولاً.</value>
+        <value xml:lang="fr">La configuration de l'organisation pour le tiers ${partyId} est introuvable. Configurez Asset ERP en premier.</value>
+    </property>
+    <property key="AsseterpAssetRequestNotFound">
+        <value xml:lang="en">Asset request ${requestId} was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على طلب الأصل ${requestId}.</value>
+        <value xml:lang="fr">La demande d'actif ${requestId} est introuvable.</value>
+    </property>
+    <property key="AsseterpAssetBookNotFound">
+        <value xml:lang="en">Asset depreciation book ${bookId} was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على دفتر الإهلاك ${bookId}.</value>
+        <value xml:lang="fr">Le livre d'amortissement ${bookId} est introuvable.</value>
+    </property>
+    <property key="AsseterpMaintenanceNotFound">
+        <value xml:lang="en">Maintenance work order was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على أمر الصيانة.</value>
+        <value xml:lang="fr">L'ordre de maintenance est introuvable.</value>
+    </property>
+    <property key="AsseterpVerificationPlanNotFound">
+        <value xml:lang="en">Physical verification plan was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على خطة التحقق المادي.</value>
+        <value xml:lang="fr">Le plan de verification physique est introuvable.</value>
+    </property>
+    <property key="AsseterpAssetTagNotFound">
+        <value xml:lang="en">Asset tag was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على ملصق الأصل.</value>
+        <value xml:lang="fr">L'etiquette d'actif est introuvable.</value>
+    </property>
+    <property key="AsseterpAlertNotFound">
+        <value xml:lang="en">Asset ERP alert was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على تنبيه إدارة الأصول.</value>
+        <value xml:lang="fr">L'alerte Asset ERP est introuvable.</value>
+    </property>
+
+    <!-- ================================================================
+         VALIDATION ERRORS
+         ================================================================ -->
+
+    <property key="AsseterpAssetRequestNotEditable">
+        <value xml:lang="en">This asset request can no longer be edited because it is no longer in REQUESTED status.</value>
+        <value xml:lang="ar">لا يمكن تعديل طلب الأصل لأنه لم يعد في حالة "مطلوب".</value>
+        <value xml:lang="fr">Cette demande d'actif ne peut plus etre modifiee car elle n'est plus en statut DEMANDE.</value>
+    </property>
+    <property key="AsseterpDepreciationAmountRequired">
+        <value xml:lang="en">A positive depreciation amount is required.</value>
+        <value xml:lang="ar">مبلغ إهلاك موجب مطلوب.</value>
+        <value xml:lang="fr">Un montant d'amortissement positif est requis.</value>
+    </property>
+    <property key="AsseterpCurrencyRequired">
+        <value xml:lang="en">Currency is required for this asset transaction.</value>
+        <value xml:lang="ar">العملة مطلوبة لهذه معاملة الأصل.</value>
+        <value xml:lang="fr">La devise est requise pour cette transaction d'actif.</value>
+    </property>
+    <property key="AsseterpDepreciationGlRequired">
+        <value xml:lang="en">Depreciation debit and credit GL accounts are required. Set them on the organisation configuration or pass them explicitly.</value>
+        <value xml:lang="ar">حسابا المدين والدائن لإهلاك الأصل مطلوبان. قم بتعيينهما في إعدادات المؤسسة أو أدخلهما يدوياً.</value>
+        <value xml:lang="fr">Les comptes GL debit et credit pour l'amortissement sont requis. Definissez-les dans la configuration de l'organisation ou passez-les explicitement.</value>
+    </property>
+    <property key="AsseterpGlTransactionFailed">
+        <value xml:lang="en">Failed to create GL accounting transaction for this asset operation.</value>
+        <value xml:lang="ar">فشل إنشاء قيد المحاسبة لهذه العملية على الأصل.</value>
+        <value xml:lang="fr">Echec de la creation de la transaction comptable GL pour cette operation d'actif.</value>
+    </property>
+
+    <!-- ================================================================
+         ASSET REQUEST LIFECYCLE EVENTS
+         ================================================================ -->
+
+    <property key="AsseterpAssetRequestedEvent">
+        <value xml:lang="en">Asset acquisition request submitted.</value>
+        <value xml:lang="ar">تم تقديم طلب اقتناء الأصل.</value>
+        <value xml:lang="fr">Demande d'acquisition d'actif soumise.</value>
+    </property>
+    <property key="AsseterpAssetApprovedEvent">
+        <value xml:lang="en">Asset request fully approved at all required levels.</value>
+        <value xml:lang="ar">تمت الموافقة على طلب الأصل في جميع المستويات المطلوبة.</value>
+        <value xml:lang="fr">Demande d'actif approuvee a tous les niveaux requis.</value>
+    </property>
+    <property key="AsseterpAssetRejectedEvent">
+        <value xml:lang="en">Asset request rejected.</value>
+        <value xml:lang="ar">تم رفض طلب الأصل.</value>
+        <value xml:lang="fr">Demande d'actif rejetee.</value>
+    </property>
+    <property key="AsseterpAssetRequestCancelledEvent">
+        <value xml:lang="en">Asset request cancelled.</value>
+        <value xml:lang="ar">تم إلغاء طلب الأصل.</value>
+        <value xml:lang="fr">Demande d'actif annulee.</value>
+    </property>
+
+    <!-- ================================================================
+         ASSET REGISTRATION EVENTS
+         ================================================================ -->
+
+    <property key="AsseterpAssetRegisteredEvent">
+        <value xml:lang="en">Asset registered in the fixed asset register.</value>
+        <value xml:lang="ar">تم تسجيل الأصل في سجل الأصول الثابتة.</value>
+        <value xml:lang="fr">Actif enregistre dans le registre des immobilisations.</value>
+    </property>
+
+    <!-- ================================================================
+         DEPRECIATION BOOK EVENTS
+         ================================================================ -->
+
+    <property key="AsseterpAssetBookCreatedEvent">
+        <value xml:lang="en">Depreciation book created for fixed asset.</value>
+        <value xml:lang="ar">تم إنشاء دفتر الإهلاك للأصل الثابت.</value>
+        <value xml:lang="fr">Livre d'amortissement cree pour l'immobilisation.</value>
+    </property>
+    <property key="AsseterpAssetBookChangedEvent">
+        <value xml:lang="en">Depreciation estimate changed per IAS 8 prospective adjustment.</value>
+        <value xml:lang="ar">تم تغيير تقدير الإهلاك وفق التسوية المستقبلية لمعيار IAS 8.</value>
+        <value xml:lang="fr">Estimation d'amortissement modifiee conformement a l'ajustement prospectif IAS 8.</value>
+    </property>
+
+    <!-- ================================================================
+         CUSTODY AND TRANSFER EVENTS
+         ================================================================ -->
+
+    <property key="AsseterpAssetAssignedEvent">
+        <value xml:lang="en">Asset custody assigned.</value>
+        <value xml:lang="ar">تم إسناد عهدة الأصل.</value>
+        <value xml:lang="fr">Garde de l'actif affectee.</value>
+    </property>
+    <property key="AsseterpAssetTransferredEvent">
+        <value xml:lang="en">Asset transferred to new custodian.</value>
+        <value xml:lang="ar">تم نقل الأصل إلى عهدة جديدة.</value>
+        <value xml:lang="fr">Actif transfere au nouveau depositaire.</value>
+    </property>
+
+    <!-- ================================================================
+         MAINTENANCE EVENTS
+         ================================================================ -->
+
+    <property key="AsseterpMaintenanceCreatedEvent">
+        <value xml:lang="en">Maintenance work order created.</value>
+        <value xml:lang="ar">تم إنشاء أمر صيانة.</value>
+        <value xml:lang="fr">Ordre de maintenance cree.</value>
+    </property>
+    <property key="AsseterpMaintenanceCompletedEvent">
+        <value xml:lang="en">Maintenance work order completed.</value>
+        <value xml:lang="ar">تم إنجاز أمر الصيانة.</value>
+        <value xml:lang="fr">Ordre de maintenance termine.</value>
+    </property>
+    <property key="AsseterpMeterReadingEvent">
+        <value xml:lang="en">Meter reading recorded.</value>
+        <value xml:lang="ar">تم تسجيل قراءة العداد.</value>
+        <value xml:lang="fr">Lecture de compteur enregistree.</value>
+    </property>
+
+    <!-- ================================================================
+         DEPRECIATION EVENTS AND GL DESCRIPTIONS
+         ================================================================ -->
+
+    <property key="AsseterpDepreciationCalculatedEvent">
+        <value xml:lang="en">Asset depreciation calculated.</value>
+        <value xml:lang="ar">تم احتساب إهلاك الأصل.</value>
+        <value xml:lang="fr">Amortissement de l'actif calcule.</value>
+    </property>
+    <property key="AsseterpDepreciationPostedEvent">
+        <value xml:lang="en">Asset depreciation posted to GL.</value>
+        <value xml:lang="ar">تم ترحيل إهلاك الأصل إلى دفتر الأستاذ.</value>
+        <value xml:lang="fr">Amortissement de l'actif comptabilise dans le GL.</value>
+    </property>
+    <property key="AsseterpDepreciationRunEvent">
+        <value xml:lang="en">Batch depreciation run completed.</value>
+        <value xml:lang="ar">تم اكتمال دفعة احتساب الإهلاك.</value>
+        <value xml:lang="fr">Execution par lot de l'amortissement terminee.</value>
+    </property>
+    <property key="AsseterpDepreciationPostingDescription">
+        <value xml:lang="en">Asset ERP depreciation for asset ${fixedAssetId}</value>
+        <value xml:lang="ar">إهلاك إدارة الأصول للأصل ${fixedAssetId}</value>
+        <value xml:lang="fr">Amortissement Asset ERP pour l'actif ${fixedAssetId}</value>
+    </property>
+    <property key="AsseterpDepreciationDebitEntry">
+        <value xml:lang="en">Depreciation expense</value>
+        <value xml:lang="ar">مصروف الإهلاك</value>
+        <value xml:lang="fr">Charge d'amortissement</value>
+    </property>
+    <property key="AsseterpDepreciationCreditEntry">
+        <value xml:lang="en">Accumulated depreciation</value>
+        <value xml:lang="ar">مجمع الإهلاك</value>
+        <value xml:lang="fr">Amortissement cumule</value>
+    </property>
+
+    <!-- ================================================================
+         DISPOSAL EVENTS AND GL DESCRIPTIONS
+         ================================================================ -->
+
+    <property key="AsseterpAssetRetiredEvent">
+        <value xml:lang="en">Asset retired from service.</value>
+        <value xml:lang="ar">تم إيقاف الأصل عن الخدمة.</value>
+        <value xml:lang="fr">Actif retire du service.</value>
+    </property>
+    <property key="AsseterpAssetScrappedEvent">
+        <value xml:lang="en">Asset scrapped.</value>
+        <value xml:lang="ar">تم إلغاء الأصل وخردته.</value>
+        <value xml:lang="fr">Actif mis au rebut.</value>
+    </property>
+    <property key="AsseterpAssetSoldEvent">
+        <value xml:lang="en">Asset sold.</value>
+        <value xml:lang="ar">تم بيع الأصل.</value>
+        <value xml:lang="fr">Actif vendu.</value>
+    </property>
+    <property key="AsseterpDisposalPostingDescription">
+        <value xml:lang="en">Asset ERP disposal of asset ${fixedAssetId}</value>
+        <value xml:lang="ar">استبعاد الأصل ${fixedAssetId} في إدارة الأصول</value>
+        <value xml:lang="fr">Sortie d'actif Asset ERP pour l'actif ${fixedAssetId}</value>
+    </property>
+
+    <!-- ================================================================
+         PHYSICAL VERIFICATION EVENTS
+         ================================================================ -->
+
+    <property key="AsseterpAssetVerifiedEvent">
+        <value xml:lang="en">Asset physically verified and found.</value>
+        <value xml:lang="ar">تم التحقق المادي من الأصل والعثور عليه.</value>
+        <value xml:lang="fr">Actif verifie physiquement et localise.</value>
+    </property>
+
+    <!-- ================================================================
+         TAGGING EVENTS
+         ================================================================ -->
+
+    <property key="AsseterpAssetTaggedEvent">
+        <value xml:lang="en">Physical tag issued to asset.</value>
+        <value xml:lang="ar">تم إصدار ملصق مادي للأصل.</value>
+        <value xml:lang="fr">Etiquette physique emise pour l'actif.</value>
+    </property>
+
+    <!-- ================================================================
+         REVALUATION EVENTS AND GL DESCRIPTIONS
+         ================================================================ -->
+
+    <property key="AsseterpAssetRevaluedEvent">
+        <value xml:lang="en">Asset revalued per IAS 16.</value>
+        <value xml:lang="ar">تمت إعادة تقييم الأصل وفقاً لمعيار IAS 16.</value>
+        <value xml:lang="fr">Actif réévalue conformement a IAS 16.</value>
+    </property>
+    <property key="AsseterpRevaluationPostingDescription">
+        <value xml:lang="en">Asset ERP revaluation of asset ${fixedAssetId}</value>
+        <value xml:lang="ar">إعادة تقييم الأصل ${fixedAssetId} في إدارة الأصول</value>
+        <value xml:lang="fr">Reevaluation Asset ERP de l'actif ${fixedAssetId}</value>
+    </property>
+
+    <!-- ================================================================
+         UI FIELD LABELS — ENTITIES
+         ================================================================ -->
+
+    <!-- Common fields -->
+    <property key="AsseterpFieldPartyId">
+        <value xml:lang="en">Organisation / Party</value>
+        <value xml:lang="ar">المؤسسة / الطرف</value>
+        <value xml:lang="fr">Organisation / Tiers</value>
+    </property>
+    <property key="AsseterpFieldFixedAssetId">
+        <value xml:lang="en">Fixed Asset ID</value>
+        <value xml:lang="ar">رمز الأصل الثابت</value>
+        <value xml:lang="fr">ID Immobilisation</value>
+    </property>
+    <property key="AsseterpFieldStatusId">
+        <value xml:lang="en">Status</value>
+        <value xml:lang="ar">الحالة</value>
+        <value xml:lang="fr">Statut</value>
+    </property>
+    <property key="AsseterpFieldDescription">
+        <value xml:lang="en">Description</value>
+        <value xml:lang="ar">الوصف</value>
+        <value xml:lang="fr">Description</value>
+    </property>
+    <property key="AsseterpFieldFromDate">
+        <value xml:lang="en">From Date</value>
+        <value xml:lang="ar">تاريخ البدء</value>
+        <value xml:lang="fr">Date de debut</value>
+    </property>
+    <property key="AsseterpFieldThruDate">
+        <value xml:lang="en">Through Date</value>
+        <value xml:lang="ar">تاريخ الانتهاء</value>
+        <value xml:lang="fr">Date de fin</value>
+    </property>
+    <property key="AsseterpFieldCurrencyUomId">
+        <value xml:lang="en">Currency</value>
+        <value xml:lang="ar">العملة</value>
+        <value xml:lang="fr">Devise</value>
+    </property>
+    <property key="AsseterpFieldAmount">
+        <value xml:lang="en">Amount</value>
+        <value xml:lang="ar">المبلغ</value>
+        <value xml:lang="fr">Montant</value>
+    </property>
+    <property key="AsseterpFieldNotes">
+        <value xml:lang="en">Notes</value>
+        <value xml:lang="ar">ملاحظات</value>
+        <value xml:lang="fr">Notes</value>
+    </property>
+    <property key="AsseterpFieldComments">
+        <value xml:lang="en">Comments</value>
+        <value xml:lang="ar">تعليقات</value>
+        <value xml:lang="fr">Commentaires</value>
+    </property>
+
+    <!-- AsseterpOrgConfig -->
+    <property key="AsseterpOrgConfigTitle">
+        <value xml:lang="en">Organisation Configuration</value>
+        <value xml:lang="ar">إعدادات المؤسسة</value>
+        <value xml:lang="fr">Configuration de l'organisation</value>
+    </property>
+    <property key="AsseterpFieldCapitalizationThreshold">
+        <value xml:lang="en">Capitalisation Threshold</value>
+        <value xml:lang="ar">حد الرسملة</value>
+        <value xml:lang="fr">Seuil de capitalisation</value>
+    </property>
+    <property key="AsseterpFieldDefaultDepreciationMethodId">
+        <value xml:lang="en">Default Depreciation Method</value>
+        <value xml:lang="ar">طريقة الإهلاك الافتراضية</value>
+        <value xml:lang="fr">Methode d'amortissement par defaut</value>
+    </property>
+    <property key="AsseterpFieldFiscalYearStartMonth">
+        <value xml:lang="en">Fiscal Year Start Month</value>
+        <value xml:lang="ar">شهر بداية السنة المالية</value>
+        <value xml:lang="fr">Mois de debut de l'exercice</value>
+    </property>
+    <property key="AsseterpFieldAssetCostGlAccountId">
+        <value xml:lang="en">Asset Cost GL Account</value>
+        <value xml:lang="ar">حساب تكلفة الأصل في دفتر الأستاذ</value>
+        <value xml:lang="fr">Compte GL cout de l'actif</value>
+    </property>
+    <property key="AsseterpFieldAccumDepGlAccountId">
+        <value xml:lang="en">Accumulated Depreciation GL Account</value>
+        <value xml:lang="ar">حساب مجمع الإهلاك في دفتر الأستاذ</value>
+        <value xml:lang="fr">Compte GL amortissement cumule</value>
+    </property>
+    <property key="AsseterpFieldDepExpenseGlAccountId">
+        <value xml:lang="en">Depreciation Expense GL Account</value>
+        <value xml:lang="ar">حساب مصروف الإهلاك في دفتر الأستاذ</value>
+        <value xml:lang="fr">Compte GL charge d'amortissement</value>
+    </property>
+    <property key="AsseterpFieldGainOnDisposalGlAccountId">
+        <value xml:lang="en">Gain on Disposal GL Account</value>
+        <value xml:lang="ar">حساب الربح عند الاستبعاد في دفتر الأستاذ</value>
+        <value xml:lang="fr">Compte GL gain sur cession</value>
+    </property>
+    <property key="AsseterpFieldLossOnDisposalGlAccountId">
+        <value xml:lang="en">Loss on Disposal GL Account</value>
+        <value xml:lang="ar">حساب الخسارة عند الاستبعاد في دفتر الأستاذ</value>
+        <value xml:lang="fr">Compte GL perte sur cession</value>
+    </property>
+    <property key="AsseterpFieldCipGlAccountId">
+        <value xml:lang="en">Construction in Progress GL Account</value>
+        <value xml:lang="ar">حساب المشاريع تحت التنفيذ في دفتر الأستاذ</value>
+        <value xml:lang="fr">Compte GL immobilisations en cours</value>
+    </property>
+
+    <!-- AsseterpBudget -->
+    <property key="AsseterpBudgetTitle">
+        <value xml:lang="en">Asset Budget</value>
+        <value xml:lang="ar">ميزانية الأصول</value>
+        <value xml:lang="fr">Budget d'actifs</value>
+    </property>
+    <property key="AsseterpFieldBudgetTypeId">
+        <value xml:lang="en">Budget Type</value>
+        <value xml:lang="ar">نوع الميزانية</value>
+        <value xml:lang="fr">Type de budget</value>
+    </property>
+    <property key="AsseterpFieldFiscalYear">
+        <value xml:lang="en">Fiscal Year</value>
+        <value xml:lang="ar">السنة المالية</value>
+        <value xml:lang="fr">Exercice fiscal</value>
+    </property>
+    <property key="AsseterpFieldTotalBudget">
+        <value xml:lang="en">Total Budget</value>
+        <value xml:lang="ar">إجمالي الميزانية</value>
+        <value xml:lang="fr">Budget total</value>
+    </property>
+    <property key="AsseterpFieldBudgetedAmount">
+        <value xml:lang="en">Budgeted Amount</value>
+        <value xml:lang="ar">المبلغ المدرج في الميزانية</value>
+        <value xml:lang="fr">Montant budgetise</value>
+    </property>
+    <property key="AsseterpFieldCommittedAmount">
+        <value xml:lang="en">Committed Amount</value>
+        <value xml:lang="ar">المبلغ الملتزم به</value>
+        <value xml:lang="fr">Montant engage</value>
+    </property>
+    <property key="AsseterpFieldActualAmount">
+        <value xml:lang="en">Actual Amount</value>
+        <value xml:lang="ar">المبلغ الفعلي</value>
+        <value xml:lang="fr">Montant reel</value>
+    </property>
+
+    <!-- AsseterpAssetRequest -->
+    <property key="AsseterpAssetRequestTitle">
+        <value xml:lang="en">Asset Request</value>
+        <value xml:lang="ar">طلب الأصل</value>
+        <value xml:lang="fr">Demande d'actif</value>
+    </property>
+    <property key="AsseterpFieldFixedAssetTypeId">
+        <value xml:lang="en">Asset Type</value>
+        <value xml:lang="ar">نوع الأصل</value>
+        <value xml:lang="fr">Type d'actif</value>
+    </property>
+    <property key="AsseterpFieldEstimatedCost">
+        <value xml:lang="en">Estimated Cost</value>
+        <value xml:lang="ar">التكلفة التقديرية</value>
+        <value xml:lang="fr">Cout estime</value>
+    </property>
+    <property key="AsseterpFieldJustification">
+        <value xml:lang="en">Business Justification</value>
+        <value xml:lang="ar">المسوّغ التجاري</value>
+        <value xml:lang="fr">Justification metier</value>
+    </property>
+    <property key="AsseterpFieldQuantity">
+        <value xml:lang="en">Quantity</value>
+        <value xml:lang="ar">الكمية</value>
+        <value xml:lang="fr">Quantite</value>
+    </property>
+    <property key="AsseterpFieldRequestDate">
+        <value xml:lang="en">Request Date</value>
+        <value xml:lang="ar">تاريخ الطلب</value>
+        <value xml:lang="fr">Date de demande</value>
+    </property>
+    <property key="AsseterpFieldRequiredDate">
+        <value xml:lang="en">Required By Date</value>
+        <value xml:lang="ar">مطلوب بحلول تاريخ</value>
+        <value xml:lang="fr">Requis pour le</value>
+    </property>
+
+    <!-- AsseterpApprovalRecord -->
+    <property key="AsseterpApprovalRecordTitle">
+        <value xml:lang="en">Approval Record</value>
+        <value xml:lang="ar">سجل الموافقة</value>
+        <value xml:lang="fr">Enregistrement d'approbation</value>
+    </property>
+    <property key="AsseterpFieldApprovalLevel">
+        <value xml:lang="en">Approval Level</value>
+        <value xml:lang="ar">مستوى الموافقة</value>
+        <value xml:lang="fr">Niveau d'approbation</value>
+    </property>
+    <property key="AsseterpFieldDecision">
+        <value xml:lang="en">Decision</value>
+        <value xml:lang="ar">القرار</value>
+        <value xml:lang="fr">Decision</value>
+    </property>
+    <property key="AsseterpFieldDecidedByPartyId">
+        <value xml:lang="en">Decided By</value>
+        <value xml:lang="ar">بقرار من</value>
+        <value xml:lang="fr">Decide par</value>
+    </property>
+    <property key="AsseterpFieldDecisionDate">
+        <value xml:lang="en">Decision Date</value>
+        <value xml:lang="ar">تاريخ القرار</value>
+        <value xml:lang="fr">Date de decision</value>
+    </property>
+
+    <!-- AsseterpAssetBook -->
+    <property key="AsseterpAssetBookTitle">
+        <value xml:lang="en">Depreciation Book</value>
+        <value xml:lang="ar">دفتر الإهلاك</value>
+        <value xml:lang="fr">Livre d'amortissement</value>
+    </property>
+    <property key="AsseterpFieldBookTypeId">
+        <value xml:lang="en">Book Type</value>
+        <value xml:lang="ar">نوع الدفتر</value>
+        <value xml:lang="fr">Type de livre</value>
+    </property>
+    <property key="AsseterpFieldDepreciationMethodId">
+        <value xml:lang="en">Depreciation Method</value>
+        <value xml:lang="ar">طريقة الإهلاك</value>
+        <value xml:lang="fr">Methode d'amortissement</value>
+    </property>
+    <property key="AsseterpFieldUsefulLifeYears">
+        <value xml:lang="en">Useful Life (Years)</value>
+        <value xml:lang="ar">العمر الإنتاجي (سنوات)</value>
+        <value xml:lang="fr">Duree de vie utile (annees)</value>
+    </property>
+    <property key="AsseterpFieldSalvageValue">
+        <value xml:lang="en">Salvage Value</value>
+        <value xml:lang="ar">القيمة التخريدية</value>
+        <value xml:lang="fr">Valeur residuelle</value>
+    </property>
+    <property key="AsseterpFieldAccumulatedDepreciation">
+        <value xml:lang="en">Accumulated Depreciation</value>
+        <value xml:lang="ar">مجمع الإهلاك</value>
+        <value xml:lang="fr">Amortissement cumule</value>
+    </property>
+    <property key="AsseterpFieldNetBookValue">
+        <value xml:lang="en">Net Book Value</value>
+        <value xml:lang="ar">صافي القيمة الدفترية</value>
+        <value xml:lang="fr">Valeur nette comptable</value>
+    </property>
+    <property key="AsseterpFieldLastDepRunDate">
+        <value xml:lang="en">Last Depreciation Run Date</value>
+        <value xml:lang="ar">تاريخ آخر تشغيل للإهلاك</value>
+        <value xml:lang="fr">Date de derniere execution d'amortissement</value>
+    </property>
+
+    <!-- AsseterpCustodyRecord -->
+    <property key="AsseterpCustodyRecordTitle">
+        <value xml:lang="en">Custody Record</value>
+        <value xml:lang="ar">سجل العهدة</value>
+        <value xml:lang="fr">Fiche de garde</value>
+    </property>
+    <property key="AsseterpFieldCustodianPartyId">
+        <value xml:lang="en">Custodian</value>
+        <value xml:lang="ar">المسؤول عن العهدة</value>
+        <value xml:lang="fr">Depositaire</value>
+    </property>
+    <property key="AsseterpFieldAssignedDate">
+        <value xml:lang="en">Assigned Date</value>
+        <value xml:lang="ar">تاريخ الإسناد</value>
+        <value xml:lang="fr">Date d'affectation</value>
+    </property>
+    <property key="AsseterpFieldReturnDate">
+        <value xml:lang="en">Return Date</value>
+        <value xml:lang="ar">تاريخ الإعادة</value>
+        <value xml:lang="fr">Date de retour</value>
+    </property>
+
+    <!-- AsseterpMeterReading -->
+    <property key="AsseterpMeterReadingTitle">
+        <value xml:lang="en">Meter Reading</value>
+        <value xml:lang="ar">قراءة العداد</value>
+        <value xml:lang="fr">Releve de compteur</value>
+    </property>
+    <property key="AsseterpFieldMeterTypeId">
+        <value xml:lang="en">Meter Type</value>
+        <value xml:lang="ar">نوع العداد</value>
+        <value xml:lang="fr">Type de compteur</value>
+    </property>
+    <property key="AsseterpFieldReadingDate">
+        <value xml:lang="en">Reading Date</value>
+        <value xml:lang="ar">تاريخ القراءة</value>
+        <value xml:lang="fr">Date de releve</value>
+    </property>
+    <property key="AsseterpFieldReadingValue">
+        <value xml:lang="en">Reading Value</value>
+        <value xml:lang="ar">قيمة القراءة</value>
+        <value xml:lang="fr">Valeur relevee</value>
+    </property>
+    <property key="AsseterpFieldReadingUomId">
+        <value xml:lang="en">Unit of Measure</value>
+        <value xml:lang="ar">وحدة القياس</value>
+        <value xml:lang="fr">Unite de mesure</value>
+    </property>
+
+    <!-- AsseterpDepreciationRun -->
+    <property key="AsseterpDepreciationRunTitle">
+        <value xml:lang="en">Depreciation Run</value>
+        <value xml:lang="ar">تشغيل الإهلاك</value>
+        <value xml:lang="fr">Execution d'amortissement</value>
+    </property>
+    <property key="AsseterpFieldPeriodDate">
+        <value xml:lang="en">Period Date</value>
+        <value xml:lang="ar">تاريخ الفترة</value>
+        <value xml:lang="fr">Date de periode</value>
+    </property>
+    <property key="AsseterpFieldRunDate">
+        <value xml:lang="en">Run Date</value>
+        <value xml:lang="ar">تاريخ التشغيل</value>
+        <value xml:lang="fr">Date d'execution</value>
+    </property>
+    <property key="AsseterpFieldTotalDepAmount">
+        <value xml:lang="en">Total Depreciation Amount</value>
+        <value xml:lang="ar">إجمالي مبلغ الإهلاك</value>
+        <value xml:lang="fr">Montant total d'amortissement</value>
+    </property>
+
+    <!-- AsseterpVerificationPlan -->
+    <property key="AsseterpVerificationPlanTitle">
+        <value xml:lang="en">Physical Verification Plan</value>
+        <value xml:lang="ar">خطة التحقق المادي</value>
+        <value xml:lang="fr">Plan de verification physique</value>
+    </property>
+    <property key="AsseterpFieldPlanName">
+        <value xml:lang="en">Plan Name</value>
+        <value xml:lang="ar">اسم الخطة</value>
+        <value xml:lang="fr">Nom du plan</value>
+    </property>
+    <property key="AsseterpFieldPlanDate">
+        <value xml:lang="en">Plan Date</value>
+        <value xml:lang="ar">تاريخ الخطة</value>
+        <value xml:lang="fr">Date du plan</value>
+    </property>
+    <property key="AsseterpFieldCompletedDate">
+        <value xml:lang="en">Completed Date</value>
+        <value xml:lang="ar">تاريخ الاكتمال</value>
+        <value xml:lang="fr">Date d'achevement</value>
+    </property>
+
+    <!-- AsseterpVerificationLine -->
+    <property key="AsseterpVerificationLineTitle">
+        <value xml:lang="en">Verification Result</value>
+        <value xml:lang="ar">نتيجة التحقق</value>
+        <value xml:lang="fr">Resultat de verification</value>
+    </property>
+    <property key="AsseterpFieldResult">
+        <value xml:lang="en">Scan Result</value>
+        <value xml:lang="ar">نتيجة الفحص</value>
+        <value xml:lang="fr">Resultat de scan</value>
+    </property>
+    <property key="AsseterpFieldScanDate">
+        <value xml:lang="en">Scan Date</value>
+        <value xml:lang="ar">تاريخ الفحص</value>
+        <value xml:lang="fr">Date de scan</value>
+    </property>
+    <property key="AsseterpFieldScannedTagValue">
+        <value xml:lang="en">Scanned Tag Value</value>
+        <value xml:lang="ar">قيمة الملصق الممسوح</value>
+        <value xml:lang="fr">Valeur de l'etiquette scannee</value>
+    </property>
+
+    <!-- AsseterpAssetTag -->
+    <property key="AsseterpAssetTagTitle">
+        <value xml:lang="en">Asset Tag</value>
+        <value xml:lang="ar">ملصق الأصل</value>
+        <value xml:lang="fr">Etiquette d'actif</value>
+    </property>
+    <property key="AsseterpFieldTagTypeId">
+        <value xml:lang="en">Tag Type</value>
+        <value xml:lang="ar">نوع الملصق</value>
+        <value xml:lang="fr">Type d'etiquette</value>
+    </property>
+    <property key="AsseterpFieldTagValue">
+        <value xml:lang="en">Tag Value (Barcode / QR / RFID)</value>
+        <value xml:lang="ar">قيمة الملصق (باركود / QR / RFID)</value>
+        <value xml:lang="fr">Valeur de l'etiquette (code-barres / QR / RFID)</value>
+    </property>
+    <property key="AsseterpFieldIssuedDate">
+        <value xml:lang="en">Issued Date</value>
+        <value xml:lang="ar">تاريخ الإصدار</value>
+        <value xml:lang="fr">Date d'emission</value>
+    </property>
+
+    <!-- AsseterpRevaluation -->
+    <property key="AsseterpRevaluationTitle">
+        <value xml:lang="en">Asset Revaluation (IAS 16)</value>
+        <value xml:lang="ar">إعادة تقييم الأصل (IAS 16)</value>
+        <value xml:lang="fr">Reevaluation d'actif (IAS 16)</value>
+    </property>
+    <property key="AsseterpFieldRevaluationDate">
+        <value xml:lang="en">Revaluation Date</value>
+        <value xml:lang="ar">تاريخ إعادة التقييم</value>
+        <value xml:lang="fr">Date de reevaluation</value>
+    </property>
+    <property key="AsseterpFieldFairValue">
+        <value xml:lang="en">Fair Value</value>
+        <value xml:lang="ar">القيمة العادلة</value>
+        <value xml:lang="fr">Juste valeur</value>
+    </property>
+    <property key="AsseterpFieldSurplusAmount">
+        <value xml:lang="en">Revaluation Surplus</value>
+        <value xml:lang="ar">فائض إعادة التقييم</value>
+        <value xml:lang="fr">Excedent de reevaluation</value>
+    </property>
+    <property key="AsseterpFieldDeficitAmount">
+        <value xml:lang="en">Revaluation Deficit</value>
+        <value xml:lang="ar">عجز إعادة التقييم</value>
+        <value xml:lang="fr">Deficit de reevaluation</value>
+    </property>
+
+    <!-- AsseterpAlert -->
+    <property key="AsseterpAlertTitle">
+        <value xml:lang="en">Asset Alert</value>
+        <value xml:lang="ar">تنبيه الأصل</value>
+        <value xml:lang="fr">Alerte d'actif</value>
+    </property>
+    <property key="AsseterpFieldAlertTypeId">
+        <value xml:lang="en">Alert Type</value>
+        <value xml:lang="ar">نوع التنبيه</value>
+        <value xml:lang="fr">Type d'alerte</value>
+    </property>
+    <property key="AsseterpFieldAlertDate">
+        <value xml:lang="en">Alert Date</value>
+        <value xml:lang="ar">تاريخ التنبيه</value>
+        <value xml:lang="fr">Date d'alerte</value>
+    </property>
+    <property key="AsseterpFieldDueDate">
+        <value xml:lang="en">Due Date</value>
+        <value xml:lang="ar">تاريخ الاستحقاق</value>
+        <value xml:lang="fr">Date d'echeance</value>
+    </property>
+    <property key="AsseterpFieldAcknowledgedDate">
+        <value xml:lang="en">Acknowledged Date</value>
+        <value xml:lang="ar">تاريخ الإقرار</value>
+        <value xml:lang="fr">Date d'accusé de reception</value>
+    </property>
+
+    <!-- AsseterpValuation -->
+    <property key="AsseterpValuationTitle">
+        <value xml:lang="en">Asset Valuation</value>
+        <value xml:lang="ar">تقييم الأصل</value>
+        <value xml:lang="fr">Evaluation d'actif</value>
+    </property>
+    <property key="AsseterpFieldValuationDate">
+        <value xml:lang="en">Valuation Date</value>
+        <value xml:lang="ar">تاريخ التقييم</value>
+        <value xml:lang="fr">Date d'evaluation</value>
+    </property>
+    <property key="AsseterpFieldMarketValue">
+        <value xml:lang="en">Market Value</value>
+        <value xml:lang="ar">القيمة السوقية</value>
+        <value xml:lang="fr">Valeur de marche</value>
+    </property>
+    <property key="AsseterpFieldNextValuationDate">
+        <value xml:lang="en">Next Valuation Date</value>
+        <value xml:lang="ar">تاريخ التقييم القادم</value>
+        <value xml:lang="fr">Prochaine date d'evaluation</value>
+    </property>
+
+    <!-- AsseterpImpairment -->
+    <property key="AsseterpImpairmentTitle">
+        <value xml:lang="en">Impairment Assessment (IAS 36)</value>
+        <value xml:lang="ar">تقييم الانخفاض في القيمة (IAS 36)</value>
+        <value xml:lang="fr">Test de depreciation (IAS 36)</value>
+    </property>
+    <property key="AsseterpFieldCarryingAmount">
+        <value xml:lang="en">Carrying Amount</value>
+        <value xml:lang="ar">القيمة الدفترية</value>
+        <value xml:lang="fr">Valeur comptable</value>
+    </property>
+    <property key="AsseterpFieldRecoverableAmount">
+        <value xml:lang="en">Recoverable Amount</value>
+        <value xml:lang="ar">المبلغ القابل للاسترداد</value>
+        <value xml:lang="fr">Montant recouvrable</value>
+    </property>
+    <property key="AsseterpFieldImpairmentLoss">
+        <value xml:lang="en">Impairment Loss</value>
+        <value xml:lang="ar">خسارة الانخفاض في القيمة</value>
+        <value xml:lang="fr">Perte de valeur</value>
+    </property>
+
+    <!-- AsseterpLease -->
+    <property key="AsseterpLeaseTitle">
+        <value xml:lang="en">Lease (IFRS 16)</value>
+        <value xml:lang="ar">عقد الإيجار (IFRS 16)</value>
+        <value xml:lang="fr">Contrat de location (IFRS 16)</value>
+    </property>
+    <property key="AsseterpFieldLeaseStartDate">
+        <value xml:lang="en">Lease Start Date</value>
+        <value xml:lang="ar">تاريخ بدء الإيجار</value>
+        <value xml:lang="fr">Date de debut du bail</value>
+    </property>
+    <property key="AsseterpFieldLeaseEndDate">
+        <value xml:lang="en">Lease End Date</value>
+        <value xml:lang="ar">تاريخ انتهاء الإيجار</value>
+        <value xml:lang="fr">Date de fin du bail</value>
+    </property>
+    <property key="AsseterpFieldPresentValueLiability">
+        <value xml:lang="en">Present Value of Lease Liability</value>
+        <value xml:lang="ar">القيمة الحالية لالتزام الإيجار</value>
+        <value xml:lang="fr">Valeur actuelle du passif locatif</value>
+    </property>
+    <property key="AsseterpFieldRouAssetValue">
+        <value xml:lang="en">Right-of-Use Asset Value</value>
+        <value xml:lang="ar">قيمة أصل حق الاستخدام</value>
+        <value xml:lang="fr">Valeur de l'actif au titre du droit d'utilisation</value>
+    </property>
+    <property key="AsseterpFieldDiscountRate">
+        <value xml:lang="en">Discount Rate</value>
+        <value xml:lang="ar">معدل الخصم</value>
+        <value xml:lang="fr">Taux d'actualisation</value>
+    </property>
+
+    <!-- AsseterpAro -->
+    <property key="AsseterpAroTitle">
+        <value xml:lang="en">Asset Retirement Obligation (IAS 37)</value>
+        <value xml:lang="ar">التزام استبعاد الأصل (IAS 37)</value>
+        <value xml:lang="fr">Obligation de remise en etat (IAS 37)</value>
+    </property>
+    <property key="AsseterpFieldRecognitionDate">
+        <value xml:lang="en">Recognition Date</value>
+        <value xml:lang="ar">تاريخ الاعتراف</value>
+        <value xml:lang="fr">Date de comptabilisation</value>
+    </property>
+    <property key="AsseterpFieldPresentValue">
+        <value xml:lang="en">Present Value</value>
+        <value xml:lang="ar">القيمة الحالية</value>
+        <value xml:lang="fr">Valeur actuelle</value>
+    </property>
+    <property key="AsseterpFieldExpectedSettleDate">
+        <value xml:lang="en">Expected Settlement Date</value>
+        <value xml:lang="ar">تاريخ التسوية المتوقع</value>
+        <value xml:lang="fr">Date de reglement prevue</value>
+    </property>
+
+    <!-- AsseterpCipProject -->
+    <property key="AsseterpCipProjectTitle">
+        <value xml:lang="en">Construction in Progress Project</value>
+        <value xml:lang="ar">مشروع تحت التنفيذ</value>
+        <value xml:lang="fr">Projet d'immobilisation en cours</value>
+    </property>
+    <property key="AsseterpFieldProjectName">
+        <value xml:lang="en">Project Name</value>
+        <value xml:lang="ar">اسم المشروع</value>
+        <value xml:lang="fr">Nom du projet</value>
+    </property>
+    <property key="AsseterpFieldStartDate">
+        <value xml:lang="en">Start Date</value>
+        <value xml:lang="ar">تاريخ البدء</value>
+        <value xml:lang="fr">Date de debut</value>
+    </property>
+    <property key="AsseterpFieldCompletionDate">
+        <value xml:lang="en">Completion Date</value>
+        <value xml:lang="ar">تاريخ الإنجاز</value>
+        <value xml:lang="fr">Date d'achevement</value>
+    </property>
+    <property key="AsseterpFieldTotalCost">
+        <value xml:lang="en">Total Cost</value>
+        <value xml:lang="ar">إجمالي التكلفة</value>
+        <value xml:lang="fr">Cout total</value>
+    </property>
+    <property key="AsseterpFieldCapitalizedDate">
+        <value xml:lang="en">Capitalised Date</value>
+        <value xml:lang="ar">تاريخ الرسملة</value>
+        <value xml:lang="fr">Date de capitalisation</value>
+    </property>
+
+    <!-- AsseterpGovGrant -->
+    <property key="AsseterpGovGrantTitle">
+        <value xml:lang="en">Government Grant (IAS 20)</value>
+        <value xml:lang="ar">المنحة الحكومية (IAS 20)</value>
+        <value xml:lang="fr">Subvention publique (IAS 20)</value>
+    </property>
+    <property key="AsseterpFieldGrantAmount">
+        <value xml:lang="en">Grant Amount</value>
+        <value xml:lang="ar">مبلغ المنحة</value>
+        <value xml:lang="fr">Montant de la subvention</value>
+    </property>
+    <property key="AsseterpFieldReceivedDate">
+        <value xml:lang="en">Received Date</value>
+        <value xml:lang="ar">تاريخ الاستلام</value>
+        <value xml:lang="fr">Date de reception</value>
+    </property>
+    <property key="AsseterpFieldAmortizationPeriodMonths">
+        <value xml:lang="en">Amortisation Period (Months)</value>
+        <value xml:lang="ar">فترة الإطفاء (بالأشهر)</value>
+        <value xml:lang="fr">Periode d'amortissement (mois)</value>
+    </property>
+    <property key="AsseterpFieldDeferredBalance">
+        <value xml:lang="en">Deferred Balance</value>
+        <value xml:lang="ar">الرصيد المؤجل</value>
+        <value xml:lang="fr">Solde differe</value>
+    </property>
+
+    <!-- AsseterpDocument -->
+    <property key="AsseterpDocumentTitle">
+        <value xml:lang="en">Asset Document</value>
+        <value xml:lang="ar">مستند الأصل</value>
+        <value xml:lang="fr">Document d'actif</value>
+    </property>
+    <property key="AsseterpFieldDocTypeId">
+        <value xml:lang="en">Document Type</value>
+        <value xml:lang="ar">نوع المستند</value>
+        <value xml:lang="fr">Type de document</value>
+    </property>
+    <property key="AsseterpFieldUploadedDate">
+        <value xml:lang="en">Uploaded Date</value>
+        <value xml:lang="ar">تاريخ الرفع</value>
+        <value xml:lang="fr">Date de telechargement</value>
+    </property>
+
+    <!-- ================================================================
+         UI MENU LABELS
+         ================================================================ -->
+
+    <property key="AsseterpMenuMain">
+        <value xml:lang="en">Main</value>
+        <value xml:lang="ar">الرئيسية</value>
+        <value xml:lang="fr">Principal</value>
+    </property>
+    <property key="AsseterpMenuBooks">
+        <value xml:lang="en">Depreciation Books</value>
+        <value xml:lang="ar">دفاتر الإهلاك</value>
+        <value xml:lang="fr">Livres d'amortissement</value>
+    </property>
+
+    <!-- ================================================================
+         UI ACTION BUTTONS
+         ================================================================ -->
+
+    <property key="AsseterpButtonCreateRequest">
+        <value xml:lang="en">New Asset Request</value>
+        <value xml:lang="ar">طلب أصل جديد</value>
+        <value xml:lang="fr">Nouvelle demande d'actif</value>
+    </property>
+    <property key="AsseterpButtonApprove">
+        <value xml:lang="en">Approve</value>
+        <value xml:lang="ar">موافقة</value>
+        <value xml:lang="fr">Approuver</value>
+    </property>
+    <property key="AsseterpButtonReject">
+        <value xml:lang="en">Reject</value>
+        <value xml:lang="ar">رفض</value>
+        <value xml:lang="fr">Rejeter</value>
+    </property>
+    <property key="AsseterpButtonRegisterAsset">
+        <value xml:lang="en">Register Asset</value>
+        <value xml:lang="ar">تسجيل الأصل</value>
+        <value xml:lang="fr">Enregistrer l'actif</value>
+    </property>
+    <property key="AsseterpButtonAssignCustody">
+        <value xml:lang="en">Assign Custody</value>
+        <value xml:lang="ar">إسناد العهدة</value>
+        <value xml:lang="fr">Affecter la garde</value>
+    </property>
+    <property key="AsseterpButtonTransfer">
+        <value xml:lang="en">Transfer Asset</value>
+        <value xml:lang="ar">نقل الأصل</value>
+        <value xml:lang="fr">Transferer l'actif</value>
+    </property>
+    <property key="AsseterpButtonRunDepreciation">
+        <value xml:lang="en">Run Depreciation</value>
+        <value xml:lang="ar">تشغيل الإهلاك</value>
+        <value xml:lang="fr">Lancer l'amortissement</value>
+    </property>
+    <property key="AsseterpButtonRetire">
+        <value xml:lang="en">Retire Asset</value>
+        <value xml:lang="ar">إيقاف الأصل</value>
+        <value xml:lang="fr">Retirer l'actif</value>
+    </property>
+    <property key="AsseterpButtonScrap">
+        <value xml:lang="en">Scrap Asset</value>
+        <value xml:lang="ar">خردة الأصل</value>
+        <value xml:lang="fr">Mettre l'actif au rebut</value>
+    </property>
+    <property key="AsseterpButtonSell">
+        <value xml:lang="en">Sell Asset</value>
+        <value xml:lang="ar">بيع الأصل</value>
+        <value xml:lang="fr">Vendre l'actif</value>
+    </property>
+    <property key="AsseterpButtonIssueTag">
+        <value xml:lang="en">Issue Tag</value>
+        <value xml:lang="ar">إصدار ملصق</value>
+        <value xml:lang="fr">Emettre une etiquette</value>
+    </property>
+    <property key="AsseterpButtonAcknowledgeAlert">
+        <value xml:lang="en">Acknowledge Alert</value>
+        <value xml:lang="ar">إقرار التنبيه</value>
+        <value xml:lang="fr">Accuser reception de l'alerte</value>
+    </property>
+
+    <!-- ================================================================
+         UI SECTION HEADINGS
+         ================================================================ -->
+
+    <property key="AsseterpSectionLifecycleHistory">
+        <value xml:lang="en">Lifecycle History</value>
+        <value xml:lang="ar">سجل دورة الحياة</value>
+        <value xml:lang="fr">Historique du cycle de vie</value>
+    </property>
+    <property key="AsseterpSectionDepreciationBooks">
+        <value xml:lang="en">Depreciation Books</value>
+        <value xml:lang="ar">دفاتر الإهلاك</value>
+        <value xml:lang="fr">Livres d'amortissement</value>
+    </property>
+    <property key="AsseterpSectionCustodyHistory">
+        <value xml:lang="en">Custody History</value>
+        <value xml:lang="ar">سجل العهدة</value>
+        <value xml:lang="fr">Historique des gardes</value>
+    </property>
+    <property key="AsseterpSectionDocuments">
+        <value xml:lang="en">Documents</value>
+        <value xml:lang="ar">المستندات</value>
+        <value xml:lang="fr">Documents</value>
+    </property>
+    <property key="AsseterpSectionMaintenanceHistory">
+        <value xml:lang="en">Maintenance History</value>
+        <value xml:lang="ar">سجل الصيانة</value>
+        <value xml:lang="fr">Historique de maintenance</value>
+    </property>
+    <property key="AsseterpSectionApprovalHistory">
+        <value xml:lang="en">Approval History</value>
+        <value xml:lang="ar">سجل الموافقات</value>
+        <value xml:lang="fr">Historique des approbations</value>
+    </property>
+
+</resource>

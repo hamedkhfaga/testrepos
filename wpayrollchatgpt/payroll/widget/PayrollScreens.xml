@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+  <!-- ===================================================== -->
+  <!-- HOME -->
+  <!-- ===================================================== -->
+  <screen name="PayrollHomeScreen">
+    <section>
+      <widgets>
+        <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+          <decorator-section name="body">
+
+            <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+
+            <container style="margin:15px 0;">
+              <label text="Payroll Module" style="font-size:22px;font-weight:bold;"/>
+              <label text="Iterations, Assignments, and Accounting (Pattern A/B)" style="color:gray;"/>
+            </container>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+  <!-- ===================================================== -->
+  <!-- ITERATION LIST -->
+  <!-- ===================================================== -->
+  <screen name="PayrollIterationListScreen">
+    <section>
+      <actions>
+        <entity-condition entity-name="PayrollIteration" list="payrollIterationList">
+          <order-by field-name="payrollIterationId"/>
+        </entity-condition>
+      </actions>
+
+      <widgets>
+        <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+          <decorator-section name="body">
+
+            <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+
+            <container style="margin:15px 0;">
+              <label text="Payroll Iterations" style="font-size:20px;font-weight:bold;"/>
+            </container>
+
+            <grid title="PayrollIteration">
+              <grid-header>
+                <grid-column title="Iteration ID"/>
+                <grid-column title="Org"/>
+                <grid-column title="From"/>
+                <grid-column title="Thru"/>
+                <grid-column title="Pay Date"/>
+                <grid-column title="Status"/>
+                <grid-column title="Total Employees"/>
+                <grid-column title="Gross"/>
+                <grid-column title="Deductions"/>
+                <grid-column title="Net"/>
+              </grid-header>
+
+              <grid-rows list="payrollIterationList">
+                <grid-row>
+                  <grid-column><label text="${payrollIterationId}"/></grid-column>
+                  <grid-column><label text="${organizationPartyId}"/></grid-column>
+                  <grid-column><label text="${payPeriodFrom}"/></grid-column>
+                  <grid-column><label text="${payPeriodThru}"/></grid-column>
+                  <grid-column><label text="${payDate}"/></grid-column>
+                  <grid-column><label text="${statusId}"/></grid-column>
+                  <grid-column><label text="${totalEmployees}"/></grid-column>
+                  <grid-column><label text="${totalGrossPay}"/></grid-column>
+                  <grid-column><label text="${totalDeductions}"/></grid-column>
+                  <grid-column><label text="${totalNetPay}"/></grid-column>
+                </grid-row>
+              </grid-rows>
+            </grid>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+  <!-- ===================================================== -->
+  <!-- ITERATION CREATE -->
+  <!-- ===================================================== -->
+  <screen name="PayrollIterationCreateScreen">
+    <section>
+      <widgets>
+        <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+          <decorator-section name="body">
+
+            <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+            <include-form name="PayrollIterationCreateForm" location="component://payroll/widget/PayrollForms.xml"/>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+  <!-- ===================================================== -->
+  <!-- ITERATION APPROVE -->
+  <!-- ===================================================== -->
+  <screen name="PayrollIterationApproveScreen">
+    <section>
+      <widgets>
+        <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+          <decorator-section name="body">
+
+            <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+            <include-form name="PayrollIterationApproveForm" location="component://payroll/widget/PayrollForms.xml"/>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+  <!-- ===================================================== -->
+  <!-- ASSIGNMENT CREATE -->
+  <!-- ===================================================== -->
+  <screen name="PayrollAssignmentCreateScreen">
+    <section>
+      <widgets>
+        <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+          <decorator-section name="body">
+
+            <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+            <include-form name="EmployeePayrollAssignmentCreateForm" location="component://payroll/widget/PayrollForms.xml"/>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+  <!-- ===================================================== -->
+  <!-- ACCOUNTING CONFIG LIST (read-only list via entity-condition) -->
+  <!-- ===================================================== -->
+  <screen name="PayrollAcctgConfigListScreen">
+    <section>
+      <actions>
+        <entity-condition entity-name="PayrollAcctgConfig" list="payrollAcctgConfigList">
+          <order-by field-name="organizationPartyId"/>
+          <order-by field-name="payrollAcctgConfigId"/>
+        </entity-condition>
+      </actions>
+
+      <widgets>
+        <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+          <decorator-section name="body">
+
+            <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+
+            <container style="margin:15px 0;">
+              <label text="Payroll Accounting Config" style="font-size:20px;font-weight:bold;"/>
+            </container>
+
+            <grid title="PayrollAcctgConfig">
+              <grid-header>
+                <grid-column title="Config ID"/>
+                <grid-column title="Org"/>
+                <grid-column title="Structure"/>
+                <grid-column title="Pattern"/>
+                <grid-column title="Posting Level"/>
+                <grid-column title="Active"/>
+                <grid-column title="From"/>
+                <grid-column title="Thru"/>
+              </grid-header>
+
+              <grid-rows list="payrollAcctgConfigList">
+                <grid-row>
+                  <grid-column><label text="${payrollAcctgConfigId}"/></grid-column>
+                  <grid-column><label text="${organizationPartyId}"/></grid-column>
+                  <grid-column><label text="${payrollStructureId}"/></grid-column>
+                  <grid-column><label text="${acctgPatternStatusId}"/></grid-column>
+                  <grid-column><label text="${postingLevelStatusId}"/></grid-column>
+                  <grid-column><label text="${isActive}"/></grid-column>
+                  <grid-column><label text="${fromDate}"/></grid-column>
+                  <grid-column><label text="${thruDate}"/></grid-column>
+                </grid-row>
+              </grid-rows>
+            </grid>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+  <!-- ===================================================== -->
+  <!-- GL MAP LIST (read-only list via entity-condition) -->
+  <!-- ===================================================== -->
+  <screen name="PayrollGlMapListScreen">
+    <section>
+      <actions>
+        <entity-condition entity-name="PayrollGlMap" list="payrollGlMapList">
+          <order-by field-name="organizationPartyId"/>
+          <order-by field-name="componentTypeStatusId"/>
+        </entity-condition>
+      </actions>
+
+      <widgets>
+        <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+          <decorator-section name="body">
+
+            <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+
+            <container style="margin:15px 0;">
+              <label text="Payroll GL Mapping (Pattern A)" style="font-size:20px;font-weight:bold;"/>
+            </container>
+
+            <grid title="PayrollGlMap">
+              <grid-header>
+                <grid-column title="Map ID"/>
+                <grid-column title="Org"/>
+                <grid-column title="Structure"/>
+                <grid-column title="Component"/>
+                <grid-column title="D/C"/>
+                <grid-column title="GL Account"/>
+                <grid-column title="Active"/>
+                <grid-column title="From"/>
+                <grid-column title="Thru"/>
+              </grid-header>
+
+              <grid-rows list="payrollGlMapList">
+                <grid-row>
+                  <grid-column><label text="${payrollGlMapId}"/></grid-column>
+                  <grid-column><label text="${organizationPartyId}"/></grid-column>
+                  <grid-column><label text="${payrollStructureId}"/></grid-column>
+                  <grid-column><label text="${componentTypeStatusId}"/></grid-column>
+                  <grid-column><label text="${drCrFlag}"/></grid-column>
+                  <grid-column><label text="${glAccountId}"/></grid-column>
+                  <grid-column><label text="${isActive}"/></grid-column>
+                  <grid-column><label text="${fromDate}"/></grid-column>
+                  <grid-column><label text="${thruDate}"/></grid-column>
+                </grid-row>
+              </grid-rows>
+            </grid>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+  <!-- ===================================================== -->
+  <!-- PATTERN A POSTINGS LIST -->
+  <!-- ===================================================== -->
+  <screen name="PayrollAcctgPostingListScreen">
+    <section>
+      <actions>
+        <entity-condition entity-name="PayrollAcctgPosting" list="payrollPostingList">
+          <order-by field-name="postingId"/>
+        </entity-condition>
+      </actions>
+
+      <widgets>
+        <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+          <decorator-section name="body">
+
+            <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+
+            <container style="margin:15px 0;">
+              <label text="Payroll GL Postings (Pattern A)" style="font-size:20px;font-weight:bold;"/>
+            </container>
+
+            <grid title="PayrollAcctgPosting">
+              <grid-header>
+                <grid-column title="Posting ID"/>
+                <grid-column title="Org"/>
+                <grid-column title="Iteration"/>
+                <grid-column title="AcctgTrans"/>
+                <grid-column title="Status"/>
+                <grid-column title="Posted Date"/>
+                <grid-column title="Error"/>
+              </grid-header>
+
+              <grid-rows list="payrollPostingList">
+                <grid-row>
+                  <grid-column><label text="${postingId}"/></grid-column>
+                  <grid-column><label text="${organizationPartyId}"/></grid-column>
+                  <grid-column><label text="${payrollIterationId}"/></grid-column>
+                  <grid-column><label text="${acctgTransId}"/></grid-column>
+                  <grid-column><label text="${statusId}"/></grid-column>
+                  <grid-column><label text="${postedDate}"/></grid-column>
+                  <grid-column><label text="${errorMessage}"/></grid-column>
+                </grid-row>
+              </grid-rows>
+            </grid>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+  <!-- ===================================================== -->
+  <!-- PATTERN B PAYRUN LIST -->
+  <!-- ===================================================== -->
+  <screen name="PayrollPayRunListScreen">
+    <section>
+      <actions>
+        <entity-condition entity-name="PayrollPayRun" list="payRunList">
+          <order-by field-name="payRunId"/>
+        </entity-condition>
+      </actions>
+
+      <widgets>
+        <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+          <decorator-section name="body">
+
+            <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+
+            <container style="margin:15px 0;">
+              <label text="Payroll PayRuns (Pattern B)" style="font-size:20px;font-weight:bold;"/>
+            </container>
+
+            <grid title="PayrollPayRun">
+              <grid-header>
+                <grid-column title="PayRun ID"/>
+                <grid-column title="Org"/>
+                <grid-column title="Iteration"/>
+                <grid-column title="Status"/>
+                <grid-column title="Created Date"/>
+              </grid-header>
+
+              <grid-rows list="payRunList">
+                <grid-row>
+                  <grid-column><label text="${payRunId}"/></grid-column>
+                  <grid-column><label text="${organizationPartyId}"/></grid-column>
+                  <grid-column><label text="${payrollIterationId}"/></grid-column>
+                  <grid-column><label text="${statusId}"/></grid-column>
+                  <grid-column><label text="${createdDate}"/></grid-column>
+                </grid-row>
+              </grid-rows>
+            </grid>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+</screens>

@@ -1,0 +1,190 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+  <!-- =============================================== -->
+  <!-- POC WT EmployeePayrollAssignment (1..60)          -->
+  <!-- Parent refs: WT_ORG, WT_STR_2025, WTEMP###        -->
+  <!-- IDs <= 20, timestamp format correct              -->
+  <!-- =============================================== -->
+  <EmployeePayrollAssignment assignmentId="WTASG001" organizationpartyId="WTORG" partyId="WTEMP001"
+       payrollStructureId="WT_STR_2025" baseSalary="7180" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG002" organizationpartyId="WTORG" partyId="WTEMP002"
+       payrollStructureId="WT_STR_2025" baseSalary="7360" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG003" organizationpartyId="WTORG" partyId="WTEMP003"
+       payrollStructureId="WT_STR_2025" baseSalary="7540" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG004" organizationpartyId="WTORG" partyId="WTEMP004"
+       payrollStructureId="WT_STR_2025" baseSalary="7720" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG005" organizationpartyId="WTORG" partyId="WTEMP005"
+       payrollStructureId="WT_STR_2025" baseSalary="7900" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG006" organizationpartyId="WTORG" partyId="WTEMP006"
+       payrollStructureId="WT_STR_2025" baseSalary="8080" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG007" organizationpartyId="WTORG" partyId="WTEMP007"
+       payrollStructureId="WT_STR_2025" baseSalary="8260" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG008" organizationpartyId="WTORG" partyId="WTEMP008"
+       payrollStructureId="WT_STR_2025" baseSalary="8440" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG009" organizationpartyId="WTORG" partyId="WTEMP009"
+       payrollStructureId="WT_STR_2025" baseSalary="8620" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG010" organizationpartyId="WTORG" partyId="WTEMP010"
+       payrollStructureId="WT_STR_2025" baseSalary="8800" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG011" organizationpartyId="WTORG" partyId="WTEMP011"
+       payrollStructureId="WT_STR_2025" baseSalary="8980" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG012" organizationpartyId="WTORG" partyId="WTEMP012"
+       payrollStructureId="WT_STR_2025" baseSalary="9160" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG013" organizationpartyId="WTORG" partyId="WTEMP013"
+       payrollStructureId="WT_STR_2025" baseSalary="9340" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG014" organizationpartyId="WTORG" partyId="WTEMP014"
+       payrollStructureId="WT_STR_2025" baseSalary="9520" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG015" organizationpartyId="WTORG" partyId="WTEMP015"
+       payrollStructureId="WT_STR_2025" baseSalary="9700" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG016" organizationpartyId="WTORG" partyId="WTEMP016"
+       payrollStructureId="WT_STR_2025" baseSalary="9880" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG017" organizationpartyId="WTORG" partyId="WTEMP017"
+       payrollStructureId="WT_STR_2025" baseSalary="10060" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG018" organizationpartyId="WTORG" partyId="WTEMP018"
+       payrollStructureId="WT_STR_2025" baseSalary="10240" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG019" organizationpartyId="WTORG" partyId="WTEMP019"
+       payrollStructureId="WT_STR_2025" baseSalary="10420" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG020" organizationpartyId="WTORG" partyId="WTEMP020"
+       payrollStructureId="WT_STR_2025" baseSalary="10600" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG021" organizationpartyId="WTORG" partyId="WTEMP021"
+       payrollStructureId="WT_STR_2025" baseSalary="10780" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG022" organizationpartyId="WTORG" partyId="WTEMP022"
+       payrollStructureId="WT_STR_2025" baseSalary="10960" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG023" organizationpartyId="WTORG" partyId="WTEMP023"
+       payrollStructureId="WT_STR_2025" baseSalary="11140" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG024" organizationpartyId="WTORG" partyId="WTEMP024"
+       payrollStructureId="WT_STR_2025" baseSalary="11320" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG025" organizationpartyId="WTORG" partyId="WTEMP025"
+       payrollStructureId="WT_STR_2025" baseSalary="11500" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG026" organizationpartyId="WTORG" partyId="WTEMP026"
+       payrollStructureId="WT_STR_2025" baseSalary="11680" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG027" organizationpartyId="WTORG" partyId="WTEMP027"
+       payrollStructureId="WT_STR_2025" baseSalary="11860" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG028" organizationpartyId="WTORG" partyId="WTEMP028"
+       payrollStructureId="WT_STR_2025" baseSalary="12040" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG029" organizationpartyId="WTORG" partyId="WTEMP029"
+       payrollStructureId="WT_STR_2025" baseSalary="12220" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG030" organizationpartyId="WTORG" partyId="WTEMP030"
+       payrollStructureId="WT_STR_2025" baseSalary="12400" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG031" organizationpartyId="WTORG" partyId="WTEMP031"
+       payrollStructureId="WT_STR_2025" baseSalary="12580" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG032" organizationpartyId="WTORG" partyId="WTEMP032"
+       payrollStructureId="WT_STR_2025" baseSalary="12760" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG033" organizationpartyId="WTORG" partyId="WTEMP033"
+       payrollStructureId="WT_STR_2025" baseSalary="12940" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG034" organizationpartyId="WTORG" partyId="WTEMP034"
+       payrollStructureId="WT_STR_2025" baseSalary="13120" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG035" organizationpartyId="WTORG" partyId="WTEMP035"
+       payrollStructureId="WT_STR_2025" baseSalary="13300" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG036" organizationpartyId="WTORG" partyId="WTEMP036"
+       payrollStructureId="WT_STR_2025" baseSalary="12320" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG037" organizationpartyId="WTORG" partyId="WTEMP037"
+       payrollStructureId="WT_STR_2025" baseSalary="12640" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG038" organizationpartyId="WTORG" partyId="WTEMP038"
+       payrollStructureId="WT_STR_2025" baseSalary="12960" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG039" organizationpartyId="WTORG" partyId="WTEMP039"
+       payrollStructureId="WT_STR_2025" baseSalary="13280" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG040" organizationpartyId="WTORG" partyId="WTEMP040"
+       payrollStructureId="WT_STR_2025" baseSalary="13600" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG041" organizationpartyId="WTORG" partyId="WTEMP041"
+       payrollStructureId="WT_STR_2025" baseSalary="13920" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG042" organizationpartyId="WTORG" partyId="WTEMP042"
+       payrollStructureId="WT_STR_2025" baseSalary="14240" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG043" organizationpartyId="WTORG" partyId="WTEMP043"
+       payrollStructureId="WT_STR_2025" baseSalary="14560" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG044" organizationpartyId="WTORG" partyId="WTEMP044"
+       payrollStructureId="WT_STR_2025" baseSalary="14880" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG045" organizationpartyId="WTORG" partyId="WTEMP045"
+       payrollStructureId="WT_STR_2025" baseSalary="15200" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG046" organizationpartyId="WTORG" partyId="WTEMP046"
+       payrollStructureId="WT_STR_2025" baseSalary="15520" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG047" organizationpartyId="WTORG" partyId="WTEMP047"
+       payrollStructureId="WT_STR_2025" baseSalary="15840" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG048" organizationpartyId="WTORG" partyId="WTEMP048"
+       payrollStructureId="WT_STR_2025" baseSalary="16160" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG049" organizationpartyId="WTORG" partyId="WTEMP049"
+       payrollStructureId="WT_STR_2025" baseSalary="16480" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG050" organizationpartyId="WTORG" partyId="WTEMP050"
+       payrollStructureId="WT_STR_2025" baseSalary="16800" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG051" organizationpartyId="WTORG" partyId="WTEMP051"
+       payrollStructureId="WT_STR_2025" baseSalary="17120" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG052" organizationpartyId="WTORG" partyId="WTEMP052"
+       payrollStructureId="WT_STR_2025" baseSalary="17440" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG053" organizationpartyId="WTORG" partyId="WTEMP053"
+       payrollStructureId="WT_STR_2025" baseSalary="17760" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG054" organizationpartyId="WTORG" partyId="WTEMP054"
+       payrollStructureId="WT_STR_2025" baseSalary="18080" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG055" organizationpartyId="WTORG" partyId="WTEMP055"
+       payrollStructureId="WT_STR_2025" baseSalary="18400" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG056" organizationpartyId="WTORG" partyId="WTEMP056"
+       payrollStructureId="WT_STR_2025" baseSalary="18720" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG057" organizationpartyId="WTORG" partyId="WTEMP057"
+       payrollStructureId="WT_STR_2025" baseSalary="19040" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG058" organizationpartyId="WTORG" partyId="WTEMP058"
+       payrollStructureId="WT_STR_2025" baseSalary="19360" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG059" organizationpartyId="WTORG" partyId="WTEMP059"
+       payrollStructureId="WT_STR_2025" baseSalary="19680" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+  <EmployeePayrollAssignment assignmentId="WTASG060" organizationpartyId="WTORG" partyId="WTEMP060"
+       payrollStructureId="WT_STR_2025" baseSalary="20000" salaryCurrencyUomId="SAR"
+       effectiveDate="2025-01-01 00:00:00.000" statusId="PAY_ASG_ACT"/>
+</entity-engine-xml>
+
+

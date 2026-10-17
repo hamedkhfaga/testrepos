@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================================================= -->
+    <!-- Phase #2 Seed Data (UNIFIED / MATCHING KEYS / NO DUPES)   -->
+    <!-- Org: WTORG, Employee: PAY_EMP0001                          -->
+    <!-- IMPORTANT: Load AFTER base Party/Status/Enumeration data    -->
+    <!-- ========================================================= -->
+
+    <!-- ========================================================= -->
+    <!-- 0) Minimal Org Party (FK target for organizationPartyId)   -->
+    <!-- ========================================================= -->
+    <Party partyId="WTORG" partyTypeId="PARTY_GROUP" statusId="PARTY_ENABLED" replace="true"/>
+    <PartyGroup partyId="WTORG" groupName="WT Organization" replace="true"/>
+
+    <!-- ========================================================= -->
+    <!-- 1) Status Types + Status Items (composite PK safe)         -->
+    <!-- StatusItem PK = (statusId, statusTypeId)                   -->
+    <!-- ========================================================= -->
+
+    <!-- Payroll result statuses -->
+    <StatusType statusTypeId="PAY_RES_STAT" description="Payroll Result Status" replace="true"/>
+    <StatusItem statusId="RES_NEW"  statusTypeId="PAY_RES_STAT" description="New"        replace="true"/>
+    <StatusItem statusId="RES_CALC" statusTypeId="PAY_RES_STAT" description="Calculated" replace="true"/>
+    <StatusItem statusId="RES_DONE" statusTypeId="PAY_RES_STAT" description="Finalized"  replace="true"/>
+    <StatusItem statusId="RES_FAIL" statusTypeId="PAY_RES_STAT" description="Failed"     replace="true"/>
+
+    <!-- Payroll result line ids (P_LN_*) -->
+    <StatusType statusTypeId="PAY_RES_LINE" description="Payroll Result Line (P_LN_*)" replace="true"/>
+    <StatusItem statusId="P_LN_BAS"  statusTypeId="PAY_RES_LINE" description="Basic Salary"              replace="true"/>
+    <StatusItem statusId="P_LN_HOU"  statusTypeId="PAY_RES_LINE" description="Housing Allowance"         replace="true"/>
+    <StatusItem statusId="P_LN_TRA"  statusTypeId="PAY_RES_LINE" description="Transport Allowance"       replace="true"/>
+    <StatusItem statusId="P_LN_ALW"  statusTypeId="PAY_RES_LINE" description="Allowance (generic)"       replace="true"/>
+    <StatusItem statusId="P_LN_DED"  statusTypeId="PAY_RES_LINE" description="Deduction (generic)"       replace="true"/>
+    <StatusItem statusId="P_LN_NET"  statusTypeId="PAY_RES_LINE" description="Net Pay"                   replace="true"/>
+    <StatusItem statusId="P_LN_TAX"  statusTypeId="PAY_RES_LINE" description="Tax"                       replace="true"/>
+    <StatusItem statusId="P_LN_SSE"  statusTypeId="PAY_RES_LINE" description="Social Security (Employee)" replace="true"/>
+    <StatusItem statusId="P_LN_LOAN" statusTypeId="PAY_RES_LINE" description="Loan Installment"          replace="true"/>
+
+    <!-- Structure member/item active statuses (kept under PAY_RES_STAT as you requested) -->
+    <StatusItem statusId="PAYSTRM_ACT" statusTypeId="PAY_RES_STAT" description="Payroll Structure Member Active" replace="true"/>
+    <StatusItem statusId="PAYSTRI_ACT" statusTypeId="PAY_RES_STAT" description="Payroll Structure Item Active"   replace="true"/>
+
+    <!-- PayrollStructure.statusId = PAYSTR_ACT (you referenced it, so define it) -->
+    <StatusType statusTypeId="PAYSTR_STAT" description="Payroll Structure Status" replace="true"/>
+    <StatusItem statusId="PAYSTR_ACT" statusTypeId="PAYSTR_STAT" description="Active" replace="true"/>
+    <StatusItem statusId="PAYSTR_INA" statusTypeId="PAYSTR_STAT" description="Inactive" replace="true"/>
+
+    <!-- ========================================================= -->
+    <!-- 2) Enumerations (ensure enum types exist BEFORE enums)     -->
+    <!-- Enumeration PK = enumId                                   -->
+    <!-- ========================================================= -->
+    <EnumerationType enumTypeId="PAY_COMP_TYPE"   description="Payroll Component Type" replace="true"/>
+    <EnumerationType enumTypeId="PAY_CALC_METHOD" description="Payroll Calculation Method" replace="true"/>
+
+    <Enumeration enumId="EARNING"   enumTypeId="PAY_COMP_TYPE"   description="Earning"   replace="true"/>
+    <Enumeration enumId="ALLOWANCE" enumTypeId="PAY_COMP_TYPE"   description="Allowance" replace="true"/>
+    <Enumeration enumId="DEDUCTION" enumTypeId="PAY_COMP_TYPE"   description="Deduction" replace="true"/>
+
+    <Enumeration enumId="FIXED"   enumTypeId="PAY_CALC_METHOD" description="Fixed amount"           replace="true"/>
+    <Enumeration enumId="PERCENT" enumTypeId="PAY_CALC_METHOD" description="Percent of base amount" replace="true"/>
+
+    <!-- ========================================================= -->
+    <!-- 3) DeductionType master                                   -->
+    <!-- DeductionType PK = deductionTypeId                        -->
+    <!-- ========================================================= -->
+    <DeductionType deductionTypeId="SSC"   description="Social Security" replace="true"/>
+    <DeductionType deductionTypeId="LOAN"  description="Loan Deduction"  replace="true"/>
+    <DeductionType deductionTypeId="OTHER" description="Other Deduction" replace="true"/>
+
+    <!-- ========================================================= -->
+    <!-- 4) Overtime Policy                                        -->
+    <!-- NOTE: assumes your entity fields match these names         -->
+    <!-- ========================================================= -->
+    <OvertimePolicy overtimePolicyId="OTP_WTORG_01"
+                    organizationPartyId="WTORG"
+                    policyName="WT Standard Overtime"
+                    normalMultiplier="1.25"
+                    holidayMultiplier="2"
+                    weekendMultiplier="1.5"
+                    maxOvertimeHours="40"
+                    effectiveDate="2026-01-01 00:00:00.0"
+                    statusId="P_ACT"
+                    replace="true"/>
+
+    <!-- ========================================================= -->
+    <!-- 5) Payroll Structures                                     -->
+    <!-- ========================================================= -->
+    <PayrollStructure payrollStructureId="PSTR_EUR_M"
+                      organizationPartyId="WTORG"
+                      structureName="WT Monthly EUR"
+                      description="POC structure in EUR"
+                      payFrequencyTypeId="MONTHLY"
+                      currencyUomId="EUR"
+                      fromDate="2026-01-01 00:00:00.0"
+                      statusId="PAYSTR_ACT"
+                      overtimePolicyId="OTP_WTORG_01"
+                      hrPolicySetId="HRSET_WTORG_SA01"
+                      replace="true"/>
+
+    <PayrollStructure payrollStructureId="PSTR_SAR_M"
+                      organizationPartyId="WTORG"
+                      structureName="WT Monthly SAR"
+                      description="POC structure in SAR"
+                      payFrequencyTypeId="MONTHLY"
+                      currencyUomId="SAR"
+                      fromDate="2026-01-01 00:00:00.0"
+                      statusId="PAYSTR_ACT"
+                      overtimePolicyId="OTP_WTORG_01"
+                      hrPolicySetId="HRSET_WTORG_SA01"
+                      replace="true"/>
+
+    <PayrollStructure payrollStructureId="PSTR_USD_M"
+                      organizationPartyId="WTORG"
+                      structureName="WT Monthly USD"
+                      description="POC structure in USD"
+                      payFrequencyTypeId="MONTHLY"
+                      currencyUomId="USD"
+                      fromDate="2026-01-01 00:00:00.0"
+                      statusId="PAYSTR_ACT"
+                      overtimePolicyId="OTP_WTORG_01"
+                      hrPolicySetId="HRSET_WTORG_SA01"
+                      replace="true"/>
+
+    <!-- ========================================================= -->
+    <!-- 6) Structure Member (employee -> EUR structure)           -->
+    <!-- FK: PAY_EMP0001 must already exist in Party                -->
+    <!-- ========================================================= -->
+    <PayrollStructureMember payrollStructureId="PSTR_EUR_M"
+                            organizationPartyId="WTORG"
+                            partyId="PAY_EMP0001"
+                            fromDate="2026-01-01 00:00:00.0"
+                            statusId="PAYSTRM_ACT"
+                            replace="true"/>
+
+    <!-- ========================================================= -->
+    <!-- 7) Structure Items (EUR)                                  -->
+    <!-- FK: componentLineId -> StatusItem(statusId,statusTypeId)   -->
+    <!-- Using PAY_RES_LINE as defined above                        -->
+    <!-- ========================================================= -->
+    <PayrollStructureItem payrollStructureItemId="PSI_EUR_BAS"
+                          payrollStructureId="PSTR_EUR_M"
+                          componentLineId="P_LN_BAS"
+                          componentTypeEnumId="EARNING"
+                          calcMethodEnumId="FIXED"
+                          amount="5000"
+                          sequenceNum="10"
+                          statusId="PAYSTRI_ACT"
+                          fromDate="2026-01-01 00:00:00.0"
+                          replace="true"/>
+
+    <PayrollStructureItem payrollStructureItemId="PSI_EUR_HOU"
+                          payrollStructureId="PSTR_EUR_M"
+                          componentLineId="P_LN_HOU"
+                          componentTypeEnumId="ALLOWANCE"
+                          calcMethodEnumId="FIXED"
+                          amount="1000"
+                          sequenceNum="20"
+                          statusId="PAYSTRI_ACT"
+                          fromDate="2026-01-01 00:00:00.0"
+                          replace="true"/>
+
+    <PayrollStructureItem payrollStructureItemId="PSI_EUR_TRA"
+                          payrollStructureId="PSTR_EUR_M"
+                          componentLineId="P_LN_TRA"
+                          componentTypeEnumId="ALLOWANCE"
+                          calcMethodEnumId="FIXED"
+                          amount="300"
+                          sequenceNum="30"
+                          statusId="PAYSTRI_ACT"
+                          fromDate="2026-01-01 00:00:00.0"
+                          replace="true"/>
+
+    <!-- ========================================================= -->
+    <!-- 8) Payroll Tax Types + Config (single consistent model)    -->
+    <!-- Keep ONLY PTX_* model (remove WT_TAX model)                -->
+    <!-- ========================================================= -->
+    <PayrollTaxType taxTypeId="PTX_INC"
+                    taxTypeCode="INC"
+                    organizationPartyId="WTORG"
+                    taxTypeName="Income Tax"
+                    description="POC Income Tax"
+                    isWithholding="Y"
+                    isActive="Y"
+                    statusId="P_ACT"
+                    createdByUserLoginId="admin"
+                    createdDate="2026-02-11 12:00:00.0"
+                    lastModifiedByUserLoginId="admin"
+                    lastModifiedDate="2026-02-11 12:00:00.0"
+                    replace="true"/>
+
+    <PayrollTaxType taxTypeId="PTX_SSC"
+                    taxTypeCode="SSC"
+                    organizationPartyId="WTORG"
+                    taxTypeName="Social Security"
+                    description="POC Social Security"
+                    isWithholding="Y"
+                    isActive="Y"
+                    statusId="P_ACT"
+                    createdByUserLoginId="admin"
+                    createdDate="2026-02-11 12:00:00.0"
+                    lastModifiedByUserLoginId="admin"
+                    lastModifiedDate="2026-02-11 12:00:00.0"
+                    replace="true"/>
+
+    <PayrollTaxConfig taxConfigId="10000"
+                      organizationPartyId="WTORG"
+                      countryGeoId=""
+                      taxYear="2026"
+                      taxTypeId="PTX_INC"
+                      minIncome="0"
+                      maxIncome="0"
+                      taxRate="0"
+                      additionalAmount="0"
+                      currencyUomId="EUR"
+                      effectiveFromDate="2026-01-01"
+                      effectiveThruDate=""
+                      statusId="P_ACT"
+                      replace="true"/>
+
+</entity-engine-xml>

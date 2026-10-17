@@ -1,0 +1,14 @@
+{
+  "phase": "Phase 14",
+  "changedFiles": [
+    "LoanUiServices.java",
+    "services.xml"
+  ],
+  "newServices": [
+    "getLoanPortfolioDashboardV1",
+    "getLoanRepaymentDashboardV1",
+    "getLoanAccountingDashboardV1",
+    "getLoanScheduleAgingDashboardV1"
+  ],
+  "scope": "read-only dashboard/reporting"
+}

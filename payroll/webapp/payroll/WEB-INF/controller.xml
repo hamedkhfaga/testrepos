@@ -1,0 +1,837 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://ofbiz.apache.org/Site-Conf"
+           xsi:schemaLocation="http://ofbiz.apache.org/Site-Conf http://ofbiz.apache.org/dtds/site-conf.xsd">
+
+    <include location="component://common/webcommon/WEB-INF/common-controller.xml"/>
+    <description>Payroll Component Site Configuration File</description>
+
+    <default-request request-uri="main"/>
+
+
+ 
+    
+    <!-- ========================= -->
+    <!-- Navigation (requests)     -->
+    <!-- ========================= -->
+    <request-map uri="hrInputs">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="hrInputsHome"/>
+    </request-map>
+
+    <request-map uri="overtimeList">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="overtimeList"/>
+    </request-map>
+
+    <request-map uri="overtimeEdit">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="overtimeEdit"/>
+    </request-map>
+
+    <request-map uri="snapshotList">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="snapshotList"/>
+    </request-map>
+
+    <request-map uri="snapshotView">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="snapshotView"/>
+    </request-map>
+
+    <!-- ========================= -->
+    <!-- Actions -> Services       -->
+    <!-- ========================= -->
+
+    <request-map uri="createOvertimeRequest">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createEmployeeOvertimeRequest"/>
+        <response name="success" type="request" value="overtimeList"/>
+        <response name="error" type="view" value="overtimeEdit"/>
+    </request-map>
+
+    <request-map uri="updateOvertimeRequest">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="updateEmployeeOvertimeRequest"/>
+        <response name="success" type="request" value="overtimeList"/>
+        <response name="error" type="view" value="overtimeEdit"/>
+    </request-map>
+
+    <request-map uri="approveOvertimeRequest">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="approveEmployeeOvertimeRequest"/>
+        <response name="success" type="request" value="overtimeList"/>
+        <response name="error" type="request" value="overtimeList"/>
+    </request-map>
+
+    <request-map uri="createSnapshot">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="createPayrollInputSnapshot"/>
+        <response name="success" type="request" value="snapshotList"/>
+        <response name="error" type="request" value="snapshotList"/>
+    </request-map>
+
+    <request-map uri="lockSnapshot">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="lockPayrollInputSnapshotForRun"/>
+        <response name="success" type="request" value="snapshotList"/>
+        <response name="error" type="request" value="snapshotList"/>
+    </request-map>
+
+ 
+
+
+
+    <!-- ===================================================== -->
+    <!-- Landing / Main -->
+    <!-- ===================================================== -->
+    <request-map uri="main">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="main"/>
+    </request-map>
+
+    <request-map uri="PayrollMain">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollMainScreenView"/>
+    </request-map>
+
+    <!-- ===================================================== -->
+    <!-- Payroll Run - Screens -->
+    <!-- ===================================================== -->
+    <request-map uri="PayrollRunList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollRunListView"/>
+    </request-map>
+
+    <request-map uri="PayrollRunCreate">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollRunCreateView"/>
+    </request-map>
+
+    <request-map uri="PayrollRunView">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollRunView"/>
+    </request-map>
+
+    <!-- ===================================================== -->
+    <!-- Payroll Run - Workflow -->
+    <!-- ===================================================== -->
+
+    <!-- Payroll Run: Create Submit -->
+<request-map uri="PayrollRunCreateSubmit">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createPayrollRun"/> 
+
+        <response name="success" type="request" value="PayrollRunView">
+            <redirect-parameter name="payrollRunId"/>
+            <redirect-parameter name="orgPartyId"/>
+            <redirect-parameter name="organizationPartyId"/>
+        </response>
+        <response name="error" type="view" value="PayrollRunCreateView"/>
+    </request-map>
+
+    <request-map uri="PayrollRunProcessSubmit">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="processPayrollRun"/>
+        <response name="success" type="request" value="PayrollRunView"/>
+        <response name="error" type="request" value="PayrollRunView"/>
+    </request-map>
+
+    <request-map uri="PayrollRunApproveSubmit">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="approvePayrollRun"/>
+        <response name="success" type="request" value="PayrollRunView"/>
+        <response name="error" type="request" value="PayrollRunView"/>
+    </request-map>
+
+    <request-map uri="PayrollRunPostSubmit">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="postPayrollRun"/>
+        <response name="success" type="request" value="PayrollRunView"/>
+        <response name="error" type="request" value="PayrollRunView"/>
+    </request-map>
+
+    <request-map uri="PayrollRunBankBatchSubmit">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="generateBankTransferBatchForRun"/>
+        <response name="success" type="request" value="PayrollRunView"/>
+        <response name="error" type="request" value="PayrollRunView"/>
+    </request-map>
+    <!-- ===================================================== -->
+    <!-- Payroll Results (Screens) -->
+    <!-- ===================================================== -->
+    <request-map uri="EmployeePayrollResultList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="EmployeePayrollResultListView"/>
+    </request-map>
+
+    <request-map uri="EmployeePayrollResultView">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="EmployeePayrollResultViewView"/>
+    </request-map>
+
+    <!-- Payslip actions -->
+    <request-map uri="GeneratePayslipBarcode">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="generatePayslipBarcode"/>
+        <response name="success" type="request" value="EmployeePayrollResultView"/>
+        <response name="error" type="request" value="EmployeePayrollResultView"/>
+    </request-map>
+
+    <request-map uri="GeneratePayslipPdfOpenPdf">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="generatePayslipPdfOpenPdf"/>
+        <response name="success" type="request" value="EmployeePayrollResultView"/>
+        <response name="error" type="request" value="EmployeePayrollResultView"/>
+    </request-map>
+
+    <request-map uri="GeneratePayslipPdfFop">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="generatePayslipPdfFop"/>
+        <response name="success" type="request" value="EmployeePayrollResultView"/>
+        <response name="error" type="request" value="EmployeePayrollResultView"/>
+    </request-map>
+
+    <!-- Downloads (kept as-is) -->
+    <request-map uri="PayrollExportFileDownload">
+        <security auth="true" https="true"/>
+        <event type="java" path="org.apache.ofbiz.payroll.PayrollDownloadEvents" invoke="downloadExportFile"/>
+        <response name="success" type="none"/>
+        <response name="error" type="view" value="EmployeePayrollResultViewView"/>
+    </request-map>
+
+    <request-map uri="downloadExportFile">
+        <security auth="true" https="true"/>
+        <event type="java" path="org.apache.ofbiz.payroll.PayrollDownloadEvents" invoke="downloadExportFile"/>
+        <response name="success" type="none"/>
+        <response name="error" type="none"/>
+    </request-map>
+
+    <request-map uri="downloadPayslipPdf">
+        <security auth="false" https="true"/>
+        <event type="java" path="org.apache.ofbiz.payroll.web.PayslipDownloadEvents" invoke="downloadPayslipPdf"/>
+        <response name="success" type="none"/>
+        <response name="error" type="none"/>
+    </request-map>
+
+    <!-- ===================================================== -->
+    <!-- Posting / Mapping / Master Data Screens + CRUD -->
+    <!-- ===================================================== -->
+    <request-map uri="PayrollPostingList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollPostingList"/>
+    </request-map>
+
+    <request-map uri="PayrollPostingView">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollPostingView"/>
+    </request-map>
+
+    <request-map uri="PayrollRunPostOption">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollRunPostOption"/>
+    </request-map>
+
+    <request-map uri="updatePayrollRunPostOption">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="updatePayrollRunPostOption"/>
+        <response name="success" type="request" value="PayrollRunPostOption"/>
+        <response name="error" type="view" value="PayrollRunPostOption"/>
+    </request-map>
+
+    <request-map uri="PayrollGlMappingList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollGlMappingList"/>
+    </request-map>
+
+    <request-map uri="PayrollGlMappingEdit">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollGlMappingEdit"/>
+    </request-map>
+
+    <request-map uri="createPayrollGlMapping">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createPayrollGlMapping"/>
+        <response name="success" type="request" value="PayrollGlMappingList"/>
+        <response name="error" type="view" value="PayrollGlMappingEdit"/>
+    </request-map>
+
+    <request-map uri="updatePayrollGlMapping">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="updatePayrollGlMapping"/>
+        <response name="success" type="request" value="PayrollGlMappingList"/>
+        <response name="error" type="view" value="PayrollGlMappingEdit"/>
+    </request-map>
+
+    <request-map uri="deletePayrollGlMapping">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="deletePayrollGlMapping"/>
+        <response name="success" type="request" value="PayrollGlMappingList"/>
+        <response name="error" type="request" value="PayrollGlMappingList"/>
+    </request-map>
+
+    <request-map uri="PayrollInvoiceMappingList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollInvoiceMappingList"/>
+    </request-map>
+
+    <request-map uri="PayrollInvoiceMappingEdit">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollInvoiceMappingEdit"/>
+    </request-map>
+
+    <request-map uri="createPayrollInvoiceMapping">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createPayrollInvoiceMapping"/>
+        <response name="success" type="request" value="PayrollInvoiceMappingList"/>
+        <response name="error" type="view" value="PayrollInvoiceMappingEdit"/>
+    </request-map>
+
+    <request-map uri="updatePayrollInvoiceMapping">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="updatePayrollInvoiceMapping"/>
+        <response name="success" type="request" value="PayrollInvoiceMappingList"/>
+        <response name="error" type="view" value="PayrollInvoiceMappingEdit"/>
+    </request-map>
+
+    <request-map uri="deletePayrollInvoiceMapping">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="deletePayrollInvoiceMapping"/>
+        <response name="success" type="request" value="PayrollInvoiceMappingList"/>
+        <response name="error" type="request" value="PayrollInvoiceMappingList"/>
+    </request-map>
+<!-- ===================================================== -->
+<!-- Payroll Organization -->
+<!-- ===================================================== -->
+
+<request-map uri="PayrollOrganizationList">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollOrganizationList"/>
+</request-map>
+ 
+
+<request-map uri="PayrollOrganizationCreate">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollOrganizationCreate"/>
+</request-map>
+ 
+
+<request-map uri="PayrollOrganizationEdit">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollOrganizationEdit"/>
+</request-map>
+
+ 
+
+<request-map uri="PayrollOrganizationDelete">
+    <security https="true" auth="true"/>
+    <event type="service" invoke="payrollDeletePayrollOrganization"/>
+    <response name="success" type="request" value="PayrollOrganizationList"/>
+    <response name="error" type="request" value="PayrollOrganizationList"/>
+</request-map>
+
+ 
+
+<request-map uri="PayrollOrganizationList">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollOrganizationList"/>
+</request-map>
+
+    <request-map uri="PayrollStructureView">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollStructureView"/>
+    </request-map>
+
+    <request-map uri="CreatePayrollStructure">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createPayrollStructure"/>
+        <response name="success" type="request" value="PayrollStructureList"/>
+        <response name="error" type="request" value="PayrollStructureList"/>
+    </request-map>
+
+    <request-map uri="UpdatePayrollStructure">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="updatePayrollStructure"/>
+        <response name="success" type="request" value="PayrollStructureList"/>
+        <response name="error" type="request" value="PayrollStructureList"/>
+    </request-map>
+
+    <request-map uri="PayrollCurrencyRateList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollCurrencyRateList"/>
+    </request-map>
+
+    <request-map uri="CreatePayrollCurrencyRate">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createPayrollCurrencyRate"/>
+        <response name="success" type="request" value="PayrollCurrencyRateList"/>
+        <response name="error" type="request" value="PayrollCurrencyRateList"/>
+    </request-map>
+
+    <request-map uri="OvertimePolicyList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="OvertimePolicyList"/>
+    </request-map>
+
+    <request-map uri="CreateOvertimePolicy">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createOvertimePolicy"/>
+        <response name="success" type="request" value="OvertimePolicyList"/>
+        <response name="error" type="request" value="OvertimePolicyList"/>
+    </request-map>
+
+    <request-map uri="HrPolicySetList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="HrPolicySetList"/>
+    </request-map>
+
+    <request-map uri="CreateHrPolicySet">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createHrPolicySet"/>
+        <response name="success" type="request" value="HrPolicySetList"/>
+        <response name="error" type="request" value="HrPolicySetList"/>
+    </request-map>
+
+    <request-map uri="HrPolicyList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="HrPolicyList"/>
+    </request-map>
+
+    <request-map uri="CreateHrPolicy">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createHrPolicy"/>
+        <response name="success" type="request" value="HrPolicyList"/>
+        <response name="error" type="request" value="HrPolicyList"/>
+    </request-map>
+
+    <request-map uri="PayrollTaxConfigList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollTaxConfigList"/>
+    </request-map>
+
+    <request-map uri="CreatePayrollTaxConfig">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createPayrollTaxConfig"/>
+        <response name="success" type="request" value="PayrollTaxConfigList"/>
+        <response name="error" type="request" value="PayrollTaxConfigList"/>
+    </request-map>
+
+    <request-map uri="SocialSecurityConfigList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="SocialSecurityConfigList"/>
+    </request-map>
+
+    <request-map uri="CreateSocialSecurityConfig">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createSocialSecurityConfig"/>
+        <response name="success" type="request" value="SocialSecurityConfigList"/>
+        <response name="error" type="request" value="SocialSecurityConfigList"/>
+    </request-map>
+
+    <request-map uri="AllowanceTypeList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="AllowanceTypeList"/>
+    </request-map>
+
+    <request-map uri="CreateAllowanceType">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createAllowanceType"/>
+        <response name="success" type="request" value="AllowanceTypeList"/>
+        <response name="error" type="request" value="AllowanceTypeList"/>
+    </request-map>
+
+    <request-map uri="DeductionTypeList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="DeductionTypeList"/>
+    </request-map>
+
+    <request-map uri="CreateDeductionType">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createDeductionType"/>
+        <response name="success" type="request" value="DeductionTypeList"/>
+        <response name="error" type="request" value="DeductionTypeList"/>
+    </request-map>
+
+    <!-- ===================================================== -->
+    <!-- Export Request Screens + Workflow -->
+    <!-- ===================================================== -->
+    <request-map uri="PayrollExportRequestList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollExportRequestListView"/>
+    </request-map>
+
+    <!-- Keep your existing submit endpoint -->
+    <request-map uri="PayrollExportRequestCreateSubmit">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createPayrollExportRequest"/>
+        <response name="success" type="request" value="PayrollExportRequestList"/>
+        <response name="error" type="request" value="PayrollExportRequestList"/>
+    </request-map>
+
+    <!-- Alias used by unified menus -->
+    <request-map uri="CreatePayrollExportRequest">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createPayrollExportRequest"/>
+        <response name="success" type="request" value="PayrollExportRequestList"/>
+        <response name="error" type="request" value="PayrollExportRequestList"/>
+    </request-map>
+
+    <request-map uri="PayrollExportRequestProcessSubmit">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="processPayrollExportRequest"/>
+        <response name="success" type="request" value="PayrollExportRequestList"/>
+        <response name="error" type="request" value="PayrollExportRequestList"/>
+    </request-map>
+
+    <!-- ===================================================== -->
+    <!-- ADD: Period Type / Period (required by menus) -->
+    <!-- ===================================================== -->
+    <request-map uri="PayrollPeriodTypeList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollPeriodTypeList"/>
+    </request-map>
+
+    <request-map uri="PayrollPeriodList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollPeriodList"/>
+    </request-map>
+
+    <!-- ===================================================== -->
+    <!-- ADD: Employee Payroll Assignment (required by menus) -->
+    <!-- ===================================================== -->
+    <request-map uri="EmployeePayrollAssignmentList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="EmployeePayrollAssignmentList"/>
+    </request-map>
+
+    <!-- ===================================================== -->
+    <!-- Retro Payroll + Compliance (kept) -->
+    <!-- ===================================================== -->
+    <request-map uri="PayrollRetroBatchList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollRetroBatchListScreen"/>
+    </request-map>
+
+    <request-map uri="PayrollRetroBatchCreate">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollRetroBatchCreateScreen"/>
+    </request-map>
+
+    <request-map uri="CreatePayrollRetroBatch">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="createPayrollRetroBatch"/>
+        <response name="success" type="request" value="PayrollRetroBatchList"/>
+    </request-map>
+
+    <request-map uri="CalculatePayrollRetroBatch">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="calculatePayrollRetroBatch"/>
+        <response name="success" type="request" value="PayrollRetroBatchList"/>
+    </request-map>
+
+    <request-map uri="ApprovePayrollRetroBatch">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="approvePayrollRetroBatch"/>
+        <response name="success" type="request" value="PayrollRetroBatchList"/>
+    </request-map>
+
+    <request-map uri="PostPayrollRetroBatch">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="postPayrollRetroBatch"/>
+        <response name="success" type="request" value="PayrollRetroBatchList"/>
+    </request-map>
+
+    <request-map uri="PayrollRetroEmployeeAdd">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollRetroEmployeeAddScreen"/>
+    </request-map>
+
+    <request-map uri="AddEmployeesToRetroBatch">
+        <security auth="true" https="true"/>
+        <event type="java" path="org.apache.ofbiz.payroll.web.PayrollRetroEvents" invoke="addEmployeesToRetroBatchEvent"/>
+        <response name="success" type="request" value="PayrollRetroBatchList"/>
+        <response name="error" type="view" value="PayrollRetroEmployeeAddScreen"/>
+    </request-map>
+
+    <request-map uri="PayrollRetroDeltaList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollRetroDeltaListScreen"/>
+    </request-map>
+
+    <request-map uri="PayrollComplianceReportList">
+        <security auth="true" https="true"/>
+        <response name="success" type="view" value="PayrollComplianceReportListScreen"/>
+    </request-map>
+
+    <request-map uri="ExportPayrollComplianceReport">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="exportPayrollComplianceReport"/>
+        <response name="success" type="none"/>
+    </request-map>
+
+    <request-map uri="ApprovePayrollComplianceReport">
+        <security auth="true" https="true"/>
+        <event type="service" invoke="approvePayrollComplianceReport"/>
+        <response name="success" type="request" value="PayrollComplianceReportList"/>
+    </request-map>
+
+
+
+
+
+
+<request-map uri="PayrollPhase3Main">
+  <security https="true" auth="true"/>
+  <response name="success" type="view" value="PayrollPhase3Main"/>
+</request-map>
+
+<request-map uri="PostPayrollRunV3">
+  <security https="true" auth="true"/>
+  <event type="service" invoke="postPayrollRunV3"/>
+  <response name="success" type="view" value="PayrollPhase3Main"/>
+  <response name="error" type="view" value="PayrollPhase3Main"/>
+</request-map>
+
+<request-map uri="RoutePaymentsV3">
+  <security https="true" auth="true"/>
+  <event type="service" invoke="routeEmployeePaymentsForRunV3"/>
+  <response name="success" type="view" value="PayrollPhase3Main"/>
+  <response name="error" type="view" value="PayrollPhase3Main"/>
+</request-map>
+
+<request-map uri="GenerateBankBatchV3">
+  <security https="true" auth="true"/>
+  <event type="service" invoke="generateBankTransferBatchV3"/>
+  <response name="success" type="view" value="PayrollPhase3Main"/>
+  <response name="error" type="view" value="PayrollPhase3Main"/>
+</request-map>
+<request-map uri="ApproveBankBatchV3">
+  <security https="true" auth="true"/>
+  <event type="service" invoke="approveBankTransferBatchV3"/>
+  <response name="success" type="view" value="PayrollPhase3Main"/>
+  <response name="error" type="view" value="PayrollPhase3Main"/>
+</request-map>
+
+<request-map uri="ExportBankFileV3">
+  <security https="true" auth="true"/>
+  <event type="service" invoke="exportBankTransferFileV3"/>
+  <response name="success" type="view" value="PayrollPhase3Main"/>
+  <response name="error" type="view" value="PayrollPhase3Main"/>
+</request-map>
+
+
+
+<!-- Governance Home Navigation -->
+<request-map uri="viewPayrollGovernance">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollGovernanceHome"/>
+</request-map>
+
+<!-- Payroll Run Lock -->
+<request-map uri="lockPayrollRun">
+    <security https="true" auth="true"/>
+    <event type="service" invoke="lockPayrollRun"/>
+    <response name="success" type="view" value="PayrollGovernanceHome"/>
+    <response name="error" type="view" value="PayrollGovernanceHome"/>
+</request-map>
+
+<!-- Payroll Run Unlock -->
+<request-map uri="unlockPayrollRun">
+    <security https="true" auth="true"/>
+    <event type="service" invoke="unlockPayrollRun"/>
+    <response name="success" type="view" value="PayrollGovernanceHome"/>
+    <response name="error" type="view" value="PayrollGovernanceHome"/>
+</request-map>
+
+<!-- Payroll Period Lock -->
+<request-map uri="lockPayrollPeriod">
+    <security https="true" auth="true"/>
+    <event type="service" invoke="lockPayrollPeriod"/>
+    <response name="success" type="view" value="PayrollGovernanceHome"/>
+    <response name="error" type="view" value="PayrollGovernanceHome"/>
+</request-map>
+
+<!-- Payroll Period Close -->
+<request-map uri="closePayrollPeriod">
+    <security https="true" auth="true"/>
+    <event type="service" invoke="closePayrollPeriod"/>
+    <response name="success" type="view" value="PayrollGovernanceHome"/>
+    <response name="error" type="view" value="PayrollGovernanceHome"/>
+</request-map>
+
+<!-- Payroll Payslip -->
+<request-map uri="FindPayslips">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="FindPayslips"/>
+</request-map>
+
+<request-map uri="ViewPayslip">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="ViewPayslip"/>
+</request-map>
+
+<request-map uri="PayrollReconciliation">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollReconciliation"/>
+</request-map>
+
+<request-map uri="PayrollAuditViewer">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollAuditViewer"/>
+</request-map>
+
+<view-map name="FindPayslips" type="screen" page="component://payroll/widget/PayrollScreens.xml#FindPayslips"/>
+<view-map name="ViewPayslip" type="screen" page="component://payroll/widget/PayrollScreens.xml#ViewPayslip"/>
+<view-map name="PayrollReconciliation" type="screen" page="component://payroll/widget/PayrollScreens.xml#PayrollReconciliation"/>
+<view-map name="PayrollAuditViewer" type="screen" page="component://payroll/widget/PayrollScreens.xml#PayrollAuditViewer"/>
+
+    <!-- ===================================================== -->
+    <!-- VIEW MAPS (ALL AT BOTTOM) -->
+    <!-- ===================================================== -->
+    <view-map name="main" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#main"/>
+
+    <view-map name="PayrollMainScreenView" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollMainScreen"/>
+
+    <view-map name="PayrollRunListView" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollRunListScreen"/>
+
+    <view-map name="PayrollRunCreateView" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollRunCreateScreen"/>
+
+    <view-map name="PayrollRunView" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollRunViewScreen"/>
+
+    <view-map name="EmployeePayrollResultListView" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#EmployeePayrollResultListScreen"/>
+
+    <view-map name="EmployeePayrollResultViewView" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#EmployeePayrollResultViewScreen"/>
+
+    <view-map name="PayrollExportRequestListView" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollExportRequestListScreen"/>
+
+    <view-map name="PayrollGlMappingList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollGlMappingListScreen"/>
+
+    <view-map name="PayrollGlMappingEdit" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollGlMappingEditScreen"/>
+
+    <view-map name="PayrollInvoiceMappingList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollInvoiceMappingListScreen"/>
+
+    <view-map name="PayrollInvoiceMappingEdit" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollInvoiceMappingEditScreen"/>
+
+    <view-map name="PayrollOrganizationEdit" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollOrganizationEditScreen"/>
+
+    <view-map name="PayrollRunPostOption" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollRunPostOptionScreen"/>
+
+    <view-map name="PayrollPostingList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollPostingListScreen"/>
+
+    <view-map name="PayrollPostingView" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollPostingViewScreen"/>
+
+     
+    <view-map name="PayrollStructureList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollStructureListScreen"/>
+
+    <view-map name="PayrollStructureView" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollStructureViewScreen"/>
+
+    <view-map name="PayrollCurrencyRateList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollCurrencyRateListScreen"/>
+
+    <view-map name="OvertimePolicyList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#OvertimePolicyListScreen"/>
+
+    <view-map name="HrPolicySetList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#HrPolicySetListScreen"/>
+
+    <view-map name="HrPolicyList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#HrPolicyListScreen"/>
+
+    <view-map name="PayrollTaxConfigList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollTaxConfigListScreen"/>
+
+    <view-map name="SocialSecurityConfigList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#SocialSecurityConfigListScreen"/>
+
+    <view-map name="AllowanceTypeList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#AllowanceTypeListScreen"/>
+
+    <view-map name="DeductionTypeList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#DeductionTypeListScreen"/>
+
+    <!-- Added views required by unified menus -->
+    <view-map name="PayrollPeriodTypeList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollPeriodTypeListScreen"/>
+
+    <view-map name="PayrollPeriodList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollPeriodListScreen"/>
+
+    <view-map name="EmployeePayrollAssignmentList" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#EmployeePayrollAssignmentListScreen"/>
+
+    <view-map name="PayrollRetroBatchListScreen" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollRetroBatchListScreen"/>
+
+    <view-map name="PayrollRetroBatchCreateScreen" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollRetroBatchCreateScreen"/>
+
+    <view-map name="PayrollRetroEmployeeAddScreen" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollRetroEmployeeAddScreen"/>
+
+    <view-map name="PayrollRetroDeltaListScreen" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollRetroDeltaListScreen"/>
+
+    <view-map name="PayrollComplianceReportListScreen" type="screen"
+              page="component://payroll/widget/PayrollScreens.xml#PayrollComplianceReportListScreen"/>
+
+<!-- ===================================================== -->
+<!-- Payroll Organization Views -->
+<!-- ===================================================== -->
+
+<view-map name="PayrollOrganizationList"
+          type="screen"
+          page="component://payroll/widget/PayrollScreens.xml#PayrollOrganizationListScreen"/>
+
+<view-map name="PayrollOrganizationCreate"
+          type="screen"
+          page="component://payroll/widget/PayrollScreens.xml#PayrollOrganizationCreateScreen"/>
+
+<view-map name="PayrollOrganizationEdit"
+          type="screen"
+          page="component://payroll/widget/PayrollScreens.xml#PayrollOrganizationEditScreen"/>
+
+<!-- ========================= -->
+    <!-- Views / Screens           -->
+    <!-- ========================= -->
+    <view-map name="hrInputsHome" type="screen" page="component://payroll/widget/PayrollHrInputScreens.xml#HrInputsHome"/>
+    <view-map name="overtimeList" type="screen" page="component://payroll/widget/PayrollHrInputScreens.xml#OvertimeList"/>
+    <view-map name="overtimeEdit" type="screen" page="component://payroll/widget/PayrollHrInputScreens.xml#OvertimeEdit"/>
+    <view-map name="snapshotList" type="screen" page="component://payroll/widget/PayrollHrInputScreens.xml#SnapshotList"/>
+    <view-map name="snapshotView" type="screen" page="component://payroll/widget/PayrollHrInputScreens.xml#SnapshotView"/>
+<view-map name="PayrollPhase3Main" type="screen"
+          page="component://payroll/widget/PayrollPhase3Screens.xml#PayrollPhase3Main"/>
+
+
+
+<!-- Governance Views -->
+<view-map name="PayrollGovernanceHome" type="screen"
+    page="component://payroll/widget/PayrollGovernanceScreens.xml#PayrollGovernanceHome"/>
+
+<view-map name="PayrollRunLockList" type="screen"
+    page="component://payroll/widget/PayrollGovernanceScreens.xml#PayrollRunLockList"/>
+
+<view-map name="PayrollPeriodControlList" type="screen"
+    page="component://payroll/widget/PayrollGovernanceScreens.xml#PayrollPeriodControlList"/>
+
+<view-map name="PayrollActionAuditList" type="screen"
+    page="component://payroll/widget/PayrollGovernanceScreens.xml#PayrollActionAuditList"/>
+
+</site-conf>

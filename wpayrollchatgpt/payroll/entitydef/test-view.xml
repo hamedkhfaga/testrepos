@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+    <title>Test View</title>
+    <description>Test view entity</description>
+    <version>1.0</version>
+    
+    <!-- SIMPLE TEST VIEW - NO COMPLEX JOINS -->
+    <view-entity entity-name="TestSimpleView" package-name="org.ofbiz.payroll">
+        <member-entity entity-alias="P" entity-name="Person"/>
+        <alias entity-alias="P" name="partyId"/>
+        <alias entity-alias="P" name="firstName"/>
+        <alias entity-alias="P" name="lastName"/>
+    </view-entity>
+</entitymodel>

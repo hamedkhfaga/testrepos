@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================================================= -->
+    <!-- PAYROLL: Minimal GL Accounts for Payroll Accounting Demo -->
+    <!-- (IDs <= 20 chars) -->
+    <!-- Requires Accounting seed for GlAccountClass/Type -->
+    <!-- ========================================================= -->
+
+    <!-- Expense accounts -->
+    <GlAccount glAccountId="PAY_SAL_EXP"
+               accountName="Payroll - Basic Salary Expense"
+               glAccountClassId="EXPENSE"
+               glAccountTypeId="EXPENSE"
+               isPosted="Y"/>
+
+    <GlAccount glAccountId="PAY_OT_EXP"
+               accountName="Payroll - Overtime Expense"
+               glAccountClassId="EXPENSE"
+               glAccountTypeId="EXPENSE"
+               isPosted="Y"/>
+
+    <GlAccount glAccountId="PAY_ALLW_EXP"
+               accountName="Payroll - Allowances Expense"
+               glAccountClassId="EXPENSE"
+               glAccountTypeId="EXPENSE"
+               isPosted="Y"/>
+
+    <!-- Liability accounts (payables/withholdings) -->
+    <GlAccount glAccountId="PAY_TAX_PAY"
+               accountName="Payroll - Income Tax Payable"
+               glAccountClassId="LIABILITY"
+               glAccountTypeId="CURRENT_LIABILITY"
+               isPosted="Y"/>
+
+    <GlAccount glAccountId="PAY_SOC_PAY"
+               accountName="Payroll - Social Security Payable"
+               glAccountClassId="LIABILITY"
+               glAccountTypeId="CURRENT_LIABILITY"
+               isPosted="Y"/>
+
+    <GlAccount glAccountId="PAY_LOAN_PAY"
+               accountName="Payroll - Loan Deductions Payable"
+               glAccountClassId="LIABILITY"
+               glAccountTypeId="CURRENT_LIABILITY"
+               isPosted="Y"/>
+
+    <GlAccount glAccountId="PAY_NET_PAY"
+               accountName="Payroll - Net Pay Payable"
+               glAccountClassId="LIABILITY"
+               glAccountTypeId="CURRENT_LIABILITY"
+               isPosted="Y"/>
+
+</entity-engine-xml>

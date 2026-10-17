@@ -1,0 +1,852 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <!-- ========================================================= -->
+    <!-- Payroll Seed + Demo Data (OFBiz 24 / Derby safe)           -->
+    <!-- MUST load AFTER unified statusdata.xml                     -->
+    <!-- Parent -> Child order                                      -->
+    <!-- IDs <= 20 chars                                            -->
+    <!-- ========================================================= -->
+
+    <!-- ========================================================= -->
+    <!-- 0) CORE REFERENCE DATA                                     -->
+    <!-- ========================================================= -->
+    <Uom uomId="SAR" uomTypeId="CURRENCY_MEASURE" description="Saudi Riyal"/>
+    <Uom uomId="USD" uomTypeId="CURRENCY_MEASURE" description="US Dollar"/>
+
+    <MimeType mimeTypeId="application/pdf" description="PDF Document" fileExtension="pdf"/>
+    <MimeType mimeTypeId="text/csv" description="CSV File" fileExtension="csv"/>
+    <MimeType mimeTypeId="text/html" description="HTML Document" fileExtension="html"/>
+
+    <!-- ========================================================= -->
+    <!-- 1) PARTY/ROLE SETUP                                        -->
+    <!-- ========================================================= -->
+    <RoleType roleTypeId="ORGANIZATION" description="Organization"/>
+    <RoleType roleTypeId="EMPLOYEE" description="Employee"/>
+
+    <PartyType partyTypeId="PARTY_GROUP" description="Organization / Party Group"/>
+    <PartyType partyTypeId="PERSON" description="Person"/>
+
+    <Party partyId="WTORG" partyTypeId="PARTY_GROUP"/>
+    <PartyGroup partyId="WTORG" groupName="Demo Payroll Org"/>
+    <PartyRole partyId="WTORG" roleTypeId="ORGANIZATION"/>
+
+    <Party partyId="E001" partyTypeId="PERSON"/>
+    <Person partyId="E001" firstName="Ahmed" lastName="Ali"/>
+    <PartyRole partyId="E001" roleTypeId="EMPLOYEE"/>
+
+    <Party partyId="E002" partyTypeId="PERSON"/>
+    <Person partyId="E002" firstName="Sara" lastName="Hassan"/>
+    <PartyRole partyId="E002" roleTypeId="EMPLOYEE"/>
+
+    <Party partyId="E003" partyTypeId="PERSON"/>
+    <Person partyId="E003" firstName="Fahad" lastName="Saleh"/>
+    <PartyRole partyId="E003" roleTypeId="EMPLOYEE"/>
+
+    <!-- Optional: only keep if your DB does not already have it -->
+    <AcctgTransType acctgTransTypeId="MANUAL_ACCTG_TRANS"
+                    description="Manual Accounting Transaction"/>
+
+    <!-- ========================================================= -->
+    <!-- 2) PAYROLL ORG + FX                                        -->
+    <!-- ========================================================= -->
+    <PayrollOrganization organizationPartyId="WTORG"
+                         parentOrganizationPartyId=""
+                         orgName="Demo Payroll Org"
+                         defaultCurrencyUomId="SAR"
+                         isActive="Y"/>
+
+    <PayrollCurrencyRate payrollCurrencyRateId="FX1"
+                         organizationPartyId="WTORG"
+                         fromCurrencyUomId="SAR"
+                         toCurrencyUomId="USD"
+                         rateDate="2026-01-01"
+                         exchangeRate="0.2666667"
+                         isActive="Y"/>
+
+    <PayrollCurrencyRate payrollCurrencyRateId="FX2"
+                         organizationPartyId="WTORG"
+                         fromCurrencyUomId="USD"
+                         toCurrencyUomId="SAR"
+                         rateDate="2026-01-01"
+                         exchangeRate="3.7500000"
+                         isActive="Y"/>
+
+    <!-- ========================================================= -->
+    <!-- 3) POLICIES & RULES                                        -->
+    <!-- ========================================================= -->
+    <OvertimePolicy overtimePolicyId="OT1"
+                    organizationPartyId="WTORG"
+                    policyName="Default OT"
+                    normalMultiplier="1.5"
+                    holidayMultiplier="2.0"
+                    weekendMultiplier="2.0"
+                    maxOvertimeHours="40"
+                    effectiveDate="2026-01-01 00:00:00.000"
+                    statusId="P_ACT"/>
+
+    <HrPolicySet hrPolicySetId="HS1"
+                 organizationPartyId="WTORG"
+                 setName="Default HR Set"
+                 countryGeoId="SAU"
+                 effectiveDate="2026-01-01 00:00:00.000"
+                 statusId="P_ACT"/>
+
+    <HrPolicy hrPolicyId="HP1"
+              hrPolicySetId="HS1"
+              policyName="Payroll Approval Policy"
+              policyTypeId="APPROVAL"
+              policyContent="Monthly payroll requires approval before posting."
+              sequenceNum="1"
+              statusId="P_ACT"/>
+
+    <StatutoryRule statutoryRuleId="SR1"
+                   ruleTypeId="SS"
+                   organizationPartyId="WTORG"
+                   employeeRate="10"
+                   employerRate="12"
+                   minBaseAmount="0"
+                   maxBaseAmount="45000"
+                   effectiveFromDate="2026-01-01 00:00:00.000"
+                   effectiveThruDate="2030-12-31 00:00:00.000"
+                   statusId="P_ACT"/>
+
+    <!-- ========================================================= -->
+    <!-- 4) TAX & SOCIAL SECURITY CONFIG                            -->
+    <!-- ========================================================= -->
+    <PayrollTaxType taxTypeId="TAX_INC"
+                    organizationPartyId="WTORG"
+                    description="Income Tax"
+                    statusId="P_ACT"/>
+
+    <PayrollTaxConfig taxConfigId="TAX26"
+                      organizationPartyId="WTORG"
+                      countryGeoId="SAU"
+                      taxYear="2026"
+                      taxTypeId="TAX_INC"
+                      minIncome="0"
+                      maxIncome="0"
+                      taxRate="0"
+                      additionalAmount="0"
+                      currencyUomId="SAR"
+                      effectiveFromDate="2026-01-01"
+                      effectiveThruDate="2026-12-31"
+                      statusId="P_ACT"/>
+
+    <IncomeTaxBracket taxBracketId="TB1"
+                      organizationPartyId="WTORG"
+                      fromAmount="0"
+                      toAmount="999999999"
+                      taxRate="0"
+                      effectiveFromDate="2026-01-01 00:00:00.000"
+                      effectiveThruDate="2026-12-31 23:59:59.000"/>
+
+    <SocialSecurityConfig ssConfigId="SS1"
+                          organizationPartyId="WTORG"
+                          countryGeoId="SAU"
+                          effectiveDate="2026-01-01 00:00:00.000"
+                          employeeRate="0.10"
+                          employerRate="0.12"
+                          maxContributionBase="45000"
+                          minContributionBase="0"
+                          currencyUomId="SAR"
+                          statusId="P_ACT"/>
+
+    <!-- ========================================================= -->
+    <!-- 5) STRUCTURE + MASTER TYPES                                -->
+    <!-- ========================================================= -->
+    <PayrollStructure payrollStructureId="STR1"
+                      organizationPartyId="WTORG"
+                      structureName="Monthly Salaried"
+                      description="Demo monthly payroll structure"
+                      payFrequencyTypeId="P_PER_MONTH"
+                      currencyUomId="SAR"
+                      fromDate="2026-01-01 00:00:00.000"
+                      statusId="PAYSTR_ACT"
+                      overtimePolicyId="OT1"
+                      hrPolicySetId="HS1"/>
+
+    <AllowanceType allowanceTypeId="ALW1"
+                   organizationPartyId="WTORG"
+                   description="Housing Allowance"
+                   isTaxable="Y"
+                   calculationMethodId=""
+                   defaultAmount="2000"
+                   currencyUomId="SAR"
+                   statusId="P_ACT"/>
+
+    <AllowanceType allowanceTypeId="ALW2"
+                   organizationPartyId="WTORG"
+                   description="Transport Allowance"
+                   isTaxable="Y"
+                   calculationMethodId=""
+                   defaultAmount="800"
+                   currencyUomId="SAR"
+                   statusId="P_ACT"/>
+
+    <DeductionType deductionTypeId="DED1"
+                   organizationPartyId="WTORG"
+                   description="Social Security (Employee)"
+                   isPreTax="N"
+                   calculationMethodId=""
+                   defaultAmount="0"
+                   currencyUomId="SAR"
+                   statusId="P_ACT"/>
+
+    <DeductionType deductionTypeId="DED2"
+                   organizationPartyId="WTORG"
+                   description="Loan Deduction"
+                   isPreTax="N"
+                   calculationMethodId=""
+                   defaultAmount="0"
+                   currencyUomId="SAR"
+                   statusId="P_ACT"/>
+
+    <!-- ========================================================= -->
+    <!-- 6) EMPLOYEE PROFILES                                       -->
+    <!-- ========================================================= -->
+    <EmployeeTaxProfile taxProfileId="TP1"
+                        organizationPartyId="WTORG"
+                        partyId="E001"
+                        countryGeoId="SAU"
+                        taxIdNumber="TAXID-E001"
+                        taxFilingStatusId=""
+                        dependentsCount="2"
+                        taxExempt="Y"
+                        exemptReason="No income tax in KSA (demo)"
+                        effectiveDate="2026-01-01 00:00:00.000"/>
+
+    <EmployeeTaxProfile taxProfileId="TP2"
+                        organizationPartyId="WTORG"
+                        partyId="E002"
+                        countryGeoId="SAU"
+                        taxIdNumber="TAXID-E002"
+                        taxFilingStatusId=""
+                        dependentsCount="1"
+                        taxExempt="Y"
+                        exemptReason="No income tax in KSA (demo)"
+                        effectiveDate="2026-01-01 00:00:00.000"/>
+
+    <InternationalEmployeeInfo partyId="E003"
+                               nationalityCountryGeoId="EGY"
+                               residenceCountryGeoId="SAU"
+                               homeCountryGeoId="EGY"
+                               hostCountryGeoId="SAU"
+                               assignmentTypeId="EXPAT"
+                               taxEqualizationFlag="N"
+                               visaTypeId="WORK"
+                               visaNumber="V-E003-01"
+                               visaExpiryDate="2027-12-31"
+                               workPermitNumber="WP-E003-01"
+                               workPermitExpiryDate="2027-12-31"
+                               housingAllowance="1500"
+                               educationAllowance="0"
+                               transportationAllowance="500"
+                               repatriationAllowance="0"/>
+
+    <!-- ========================================================= -->
+    <!-- 7) ASSIGNMENTS / ALLOWANCES / DEDUCTIONS / LOANS           -->
+    <!-- ========================================================= -->
+    <EmployeePayrollAssignment assignmentId="AS1"
+                               organizationPartyId="WTORG"
+                               partyId="E001"
+                               payrollStructureId="STR1"
+                               baseSalary="8000"
+                               salaryCurrencyUomId="SAR"
+                               effectiveDate="2026-01-01 00:00:00.000"
+                               statusId="PAY_ASG_ACT"
+                               comments="Demo assignment"/>
+
+    <EmployeePayrollAssignment assignmentId="AS2"
+                               organizationPartyId="WTORG"
+                               partyId="E002"
+                               payrollStructureId="STR1"
+                               baseSalary="9000"
+                               salaryCurrencyUomId="SAR"
+                               effectiveDate="2026-01-01 00:00:00.000"
+                               statusId="PAY_ASG_ACT"
+                               comments="Demo assignment"/>
+
+    <EmployeePayrollAssignment assignmentId="AS3"
+                               organizationPartyId="WTORG"
+                               partyId="E003"
+                               payrollStructureId="STR1"
+                               baseSalary="12000"
+                               salaryCurrencyUomId="SAR"
+                               effectiveDate="2026-01-01 00:00:00.000"
+                               statusId="PAY_ASG_ACT"
+                               comments="Expat assignment"/>
+
+    <EmployeeAllowance employeeAllowanceId="EA1"
+                       organizationPartyId="WTORG"
+                       partyId="E001"
+                       allowanceTypeId="ALW1"
+                       amount="2000"
+                       currencyUomId="SAR"
+                       effectiveDate="2026-01-01 00:00:00.000"
+                       statusId="P_ACT"/>
+
+    <EmployeeAllowance employeeAllowanceId="EA2"
+                       organizationPartyId="WTORG"
+                       partyId="E001"
+                       allowanceTypeId="ALW2"
+                       amount="800"
+                       currencyUomId="SAR"
+                       effectiveDate="2026-01-01 00:00:00.000"
+                       statusId="P_ACT"/>
+
+    <EmployeeAllowance employeeAllowanceId="EA3"
+                       organizationPartyId="WTORG"
+                       partyId="E003"
+                       allowanceTypeId="ALW2"
+                       amount="500"
+                       currencyUomId="SAR"
+                       effectiveDate="2026-01-01 00:00:00.000"
+                       statusId="P_ACT"/>
+
+    <EmployeeDeduction employeeDeductionId="ED1"
+                       organizationPartyId="WTORG"
+                       partyId="E001"
+                       deductionTypeId="DED1"
+                       amount="0"
+                       currencyUomId="SAR"
+                       effectiveDate="2026-01-01 00:00:00.000"
+                       statusId="P_ACT"/>
+
+    <EmployeeLoan loanId="LN1"
+                  organizationPartyId="WTORG"
+                  partyId="E002"
+                  loanTypeId="PERSONAL"
+                  loanAmount="6000"
+                  currencyUomId="SAR"
+                  interestRate="0"
+                  totalInstallments="6"
+                  monthlyInstallment="1000"
+                  startDate="2026-01-01 00:00:00.000"
+                  statusId="P_ACT"
+                  approvedDate="2026-01-01 00:00:00.000"/>
+
+    <LoanInstallment installmentId="LI1"
+                     loanId="LN1"
+                     installmentNumber="1"
+                     dueDate="2026-01-31 00:00:00.000"
+                     installmentAmount="1000"
+                     principalAmount="1000"
+                     interestAmount="0"
+                     statusId="P_ACT"/>
+
+    <LoanInstallment installmentId="LI2"
+                     loanId="LN1"
+                     installmentNumber="2"
+                     dueDate="2026-02-28 00:00:00.000"
+                     installmentAmount="1000"
+                     principalAmount="1000"
+                     interestAmount="0"
+                     statusId="P_ACT"/>
+
+    <!-- ========================================================= -->
+    <!-- 8) PERIOD TYPES + PERIODS                                  -->
+    <!-- ========================================================= -->
+    <PayrollPeriodType payrollPeriodTypeId="PT_M" description="Monthly" isActive="Y"/>
+    <PayrollPeriodType payrollPeriodTypeId="PT_W" description="Weekly"  isActive="Y"/>
+
+    <PayrollPeriod payrollPeriodId="P2601"
+                   organizationPartyId="WTORG"
+                   periodName="2026-01"
+                   payrollPeriodTypeId="PT_M"
+                   startDate="2026-01-01"
+                   endDate="2026-01-31"
+                   payDate="2026-01-31"
+                   statusId="P_ACT"/>
+
+    <!-- ========================================================= -->
+    <!-- 9) PAYROLL RUN (use PR_* only)                              -->
+    <!-- ========================================================= -->
+    <PayrollRun payrollRunId="R2601"
+                organizationPartyId="WTORG"
+                payrollPeriodId="P2601"
+                runName="Jan 2026 Payroll"
+                runTypeId="P_PER_MONTH"
+                runDate="2026-01-31 01:00:00.000"
+                currencyUomId="SAR"
+                valuationCurrencyUomId="USD"
+                statusId="PR_DRAFT"
+                totalEmployees="3"
+                totalGrossPay="32300"
+                totalDeductions="1000"
+                totalNetPay="31300"
+                workflowInstanceId=""
+                createdDate="2026-01-15 10:00:00.000"
+                approvedDate=""
+                isGlPosted="N"
+                isCompliant="N"
+                accountingPostOptionId="PO_NONE"
+                isInvoicePosted="N"/>
+
+    <!-- ========================================================= -->
+    <!-- 10) RESULTS + LINES + TAX DETAIL                            -->
+    <!-- ========================================================= -->
+    <EmployeePayrollResult payrollResultId="RS1"
+                           payrollRunId="R2601"
+                           organizationPartyId="WTORG"
+                           partyId="E001"
+                           basicSalary="8000"
+                           overtimeAmount="0"
+                           allowancesTotal="2800"
+                           bonuses="0"
+                           grossSalary="10800"
+                           incomeTax="0"
+                           socialSecurity="0"
+                           loanDeductions="0"
+                           otherDeductions="0"
+                           totalDeductions="0"
+                           netSalary="10800"
+                           currencyUomId="SAR"
+                           valuationCurrencyUomId="USD"
+                           exchangeRate="0.2666667"
+                           bankAccountNumber="SA-IBAN-E001"
+                           bankName="Demo Bank"
+                           payslipRef="PS-RS1-202601"
+                           isPayslipGenerated="N"
+                           isPayslipSent="N"
+                           versionNumber="1"
+                           statusId="P_ACT"
+                           remarks="Demo payroll result"/>
+
+    <EmployeePayrollResult payrollResultId="RS2"
+                           payrollRunId="R2601"
+                           organizationPartyId="WTORG"
+                           partyId="E002"
+                           basicSalary="9000"
+                           overtimeAmount="0"
+                           allowancesTotal="0"
+                           bonuses="0"
+                           grossSalary="9000"
+                           incomeTax="0"
+                           socialSecurity="0"
+                           loanDeductions="1000"
+                           otherDeductions="0"
+                           totalDeductions="1000"
+                           netSalary="8000"
+                           currencyUomId="SAR"
+                           valuationCurrencyUomId="USD"
+                           exchangeRate="0.2666667"
+                           bankAccountNumber="SA-IBAN-E002"
+                           bankName="Demo Bank"
+                           payslipRef="PS-RS2-202601"
+                           isPayslipGenerated="N"
+                           isPayslipSent="N"
+                           versionNumber="1"
+                           statusId="P_ACT"
+                           remarks="Includes loan installment"/>
+
+    <EmployeePayrollResult payrollResultId="RS3"
+                           payrollRunId="R2601"
+                           organizationPartyId="WTORG"
+                           partyId="E003"
+                           basicSalary="12000"
+                           overtimeAmount="0"
+                           allowancesTotal="500"
+                           bonuses="0"
+                           grossSalary="12500"
+                           incomeTax="0"
+                           socialSecurity="0"
+                           loanDeductions="0"
+                           otherDeductions="0"
+                           totalDeductions="0"
+                           netSalary="12500"
+                           currencyUomId="SAR"
+                           valuationCurrencyUomId="USD"
+                           exchangeRate="0.2666667"
+                           bankAccountNumber="SA-IBAN-E003"
+                           bankName="Demo Bank"
+                           payslipRef="PS-RS3-202601"
+                           isPayslipGenerated="N"
+                           isPayslipSent="N"
+                           versionNumber="1"
+                           statusId="P_ACT"
+                           remarks="Expat demo"/>
+
+    <EmployeePayrollResultLine resultLineId="RL1"
+                               payrollResultId="RS1"
+                               lineTypeId="P_LN_BAS"
+                               referenceId=""
+                               description="Basic Salary"
+                               amount="8000"
+                               currencyUomId="SAR"
+                               sequenceNum="1"/>
+
+    <EmployeePayrollResultLine resultLineId="RL2"
+                               payrollResultId="RS1"
+                               lineTypeId="P_LN_ALW"
+                               referenceId="ALW1"
+                               description="Housing Allowance"
+                               amount="2000"
+                               currencyUomId="SAR"
+                               sequenceNum="2"/>
+
+    <EmployeePayrollResultLine resultLineId="RL3"
+                               payrollResultId="RS1"
+                               lineTypeId="P_LN_ALW"
+                               referenceId="ALW2"
+                               description="Transport Allowance"
+                               amount="800"
+                               currencyUomId="SAR"
+                               sequenceNum="3"/>
+
+    <EmployeePayrollResultLine resultLineId="RL4"
+                               payrollResultId="RS2"
+                               lineTypeId="P_LN_BAS"
+                               referenceId=""
+                               description="Basic Salary"
+                               amount="9000"
+                               currencyUomId="SAR"
+                               sequenceNum="1"/>
+
+    <EmployeePayrollResultLine resultLineId="RL5"
+                               payrollResultId="RS2"
+                               lineTypeId="P_LN_LOAN"
+                               referenceId="LN1"
+                               description="Loan Installment"
+                               amount="-1000"
+                               currencyUomId="SAR"
+                               sequenceNum="2"/>
+
+    <EmployeePayrollResultLine resultLineId="RL6"
+                               payrollResultId="RS3"
+                               lineTypeId="P_LN_BAS"
+                               referenceId=""
+                               description="Basic Salary"
+                               amount="12000"
+                               currencyUomId="SAR"
+                               sequenceNum="1"/>
+
+    <EmployeePayrollResultLine resultLineId="RL7"
+                               payrollResultId="RS3"
+                               lineTypeId="P_LN_ALW"
+                               referenceId="ALW2"
+                               description="Transport Allowance"
+                               amount="500"
+                               currencyUomId="SAR"
+                               sequenceNum="2"/>
+
+    <PayrollDeductionItem payrollDeductionItemId="PDI1"
+                          payrollResultId="RS2"
+                          deductionTypeId="DED2"
+                          amount="1000"
+                          partyId="E002"
+                          organizationPartyId="WTORG"/>
+
+    <EmployeeTaxDetail taxDetailId="TD1"
+                       payrollResultId="RS1"
+                       taxConfigId="TAX26"
+                       taxTypeId="TAX_INC"
+                       taxableAmount="10800"
+                       taxRate="0"
+                       calculatedTax="0"/>
+
+    <!-- ========================================================= -->
+    <!-- 11) YTD SUMMARY                                            -->
+    <!-- ========================================================= -->
+    <EmployeeYTDSummary employeeYtdSummaryId="YTD1"
+                        organizationPartyId="WTORG"
+                        partyId="E001"
+                        calendarYear="2026"
+                        currencyUomId="SAR"
+                        ytdGross="10800"
+                        ytdTax="0"
+                        ytdSocialSecurity="0"
+                        ytdAllowances="2800"
+                        ytdOvertime="0"
+                        ytdBonuses="0"
+                        ytdNet="10800"
+                        lastCalculatedDate="2026-01-31 02:00:00.000"/>
+
+    <EmployeeYTDSummary employeeYtdSummaryId="YTD2"
+                        organizationPartyId="WTORG"
+                        partyId="E002"
+                        calendarYear="2026"
+                        currencyUomId="SAR"
+                        ytdGross="9000"
+                        ytdTax="0"
+                        ytdSocialSecurity="0"
+                        ytdAllowances="0"
+                        ytdOvertime="0"
+                        ytdBonuses="0"
+                        ytdNet="8000"
+                        lastCalculatedDate="2026-01-31 02:00:00.000"/>
+
+    <!-- ========================================================= -->
+    <!-- 12) EXPORT REQUESTS + FILES                                -->
+    <!-- ========================================================= -->
+    <PayrollExportRequest exportRequestId="ER1"
+                          organizationPartyId="WTORG"
+                          payrollRunId="R2601"
+                          payrollResultId=""
+                          exportTypeId="PEX_RUN"
+                          formatTypeId="PF_PDF"
+                          localeString="en"
+                          timeZoneString="Asia/Riyadh"
+                          requestedDate="2026-01-31 02:05:00.000"
+                          statusId="P_ACT"
+                          errorMessage=""/>
+
+    <PayrollExportFile exportFileId="EF1"
+                       exportRequestId="ER1"
+                       fileName="PayrollRun-R2601.pdf"
+                       filePath="/runtime/payroll/R2601.pdf"
+                       mimeTypeId="application/pdf"
+                       fileSize="0"
+                       generatedDate="2026-01-31 02:06:00.000"
+                       downloadCount="0"
+                       checksum=""/>
+
+    <PayrollExportRequest exportRequestId="ER2"
+                          organizationPartyId="WTORG"
+                          payrollRunId="R2601"
+                          payrollResultId="RS1"
+                          exportTypeId="PEX_RES"
+                          formatTypeId="PF_PDF"
+                          localeString="en"
+                          timeZoneString="Asia/Riyadh"
+                          requestedDate="2026-01-31 02:10:00.000"
+                          statusId="P_ACT"
+                          errorMessage=""/>
+
+    <PayrollExportFile exportFileId="EF2"
+                       exportRequestId="ER2"
+                       fileName="Payslip-RS1.pdf"
+                       filePath="/runtime/payslip/RS1.pdf"
+                       mimeTypeId="application/pdf"
+                       fileSize="0"
+                       generatedDate="2026-01-31 02:11:00.000"
+                       downloadCount="0"
+                       checksum=""/>
+
+    <!-- ========================================================= -->
+    <!-- 13) BARCODE + DELIVERY + TOKENS + AUDIT                    -->
+    <!-- ========================================================= -->
+    <PayslipBarcode payslipBarcodeId="BC1"
+                    payrollResultId="RS1"
+                    barcodeValue="RS1-202601"
+                    barcodeTypeId=""
+                    generatedDate="2026-01-31 02:12:00.000"
+                    scanCount="0"/>
+
+    <PayslipDelivery payslipDeliveryId="PD1"
+                     organizationPartyId="WTORG"
+                     payrollResultId="RS1"
+                     deliveryMethodId="PDM_PORTAL"
+                     deliveryStatusId="PD_NEW"
+                     toEmailAddress="ahmed@example.com"
+                     portalAccessCode="PORTAL-RS1"
+                     errorMessage=""/>
+
+    <PayslipDeliveryLog payslipDeliveryLogId="PDL1"
+                        payrollResultId="RS1"
+                        partyId="E001"
+                        emailAddress="ahmed@example.com"
+                        sentDate="2026-01-31 02:13:00.000"
+                        statusId="PD_NEW"
+                        errorMessage=""/>
+
+    <PayslipAccessToken payslipAccessTokenId="PT1"
+                        token="TOKEN-RS1-01"
+                        payrollResultId="RS1"
+                        partyId="E001"
+                        expiresDate="2026-02-28 23:59:59.000"
+                        statusId="TOKEN_ACTIVE"
+                        downloadCount="0"
+                        maxDownloads="5"
+                        createdDate="2026-01-31 02:14:00.000"/>
+
+    <PayslipDownloadAudit payslipDownloadAuditId="PDA1"
+                          payslipAccessTokenId="PT1"
+                          partyId="E001"
+                          payrollResultId="RS1"
+                          downloadDate="2026-01-31 02:15:00.000"
+                          remoteIp="127.0.0.1"
+                          userAgent="DemoAgent"/>
+
+    <EmployeeDocumentAccess employeeDocumentAccessId="DA1"
+                            organizationPartyId="WTORG"
+                            partyId="E001"
+                            exportFileId="EF2"
+                            accessDate="2026-01-31 02:16:00.000"
+                            accessTypeId="AUD_EXP"
+                            ipAddress="127.0.0.1"/>
+
+    <!-- ========================================================= -->
+    <!-- 14) BANK TRANSFER                                          -->
+    <!-- ========================================================= -->
+    <BankTransferConfig bankTransferConfigId="BCFG1"
+                        organizationPartyId="WTORG"
+                        bankName="Demo Bank"
+                        bankCode="DB"
+                        fileFormatId="BF_CSV"
+                        headerTemplate="HDR"
+                        detailTemplate="DTL"
+                        footerTemplate="FTR"
+                        fieldSeparator=","
+                        statusId="P_ACT"
+                        isActive="Y"/>
+
+    <BankTransferBatch bankTransferBatchId="BT1"
+                       organizationPartyId="WTORG"
+                       payrollRunId="R2601"
+                       bankTransferConfigId="BCFG1"
+                       totalAmount="31300"
+                       currencyUomId="SAR"
+                       totalRecords="3"
+                       generatedExportFileId="EF1"
+                       generatedDate="2026-01-31 02:20:00.000"
+                       statusId="P_ACT"/>
+
+    <BankTransferBatchLine bankTransferBatchLineId="BTL1"
+                           bankTransferBatchId="BT1"
+                           payrollResultId="RS1"
+                           partyId="E001"
+                           amount="10800"
+                           currencyUomId="SAR"
+                           beneficiaryName="Ahmed Ali"
+                           iban="SA-IBAN-E001"
+                           bankAccountNumber="ACCT-E001"
+                           statusId="P_ACT"
+                           sequenceNum="1"/>
+
+    <BankTransferBatchLine bankTransferBatchLineId="BTL2"
+                           bankTransferBatchId="BT1"
+                           payrollResultId="RS2"
+                           partyId="E002"
+                           amount="8000"
+                           currencyUomId="SAR"
+                           beneficiaryName="Sara Hassan"
+                           iban="SA-IBAN-E002"
+                           bankAccountNumber="ACCT-E002"
+                           statusId="P_ACT"
+                           sequenceNum="2"/>
+
+    <BankTransferBatchLine bankTransferBatchLineId="BTL3"
+                           bankTransferBatchId="BT1"
+                           payrollResultId="RS3"
+                           partyId="E003"
+                           amount="12500"
+                           currencyUomId="SAR"
+                           beneficiaryName="Fahad Saleh"
+                           iban="SA-IBAN-E003"
+                           bankAccountNumber="ACCT-E003"
+                           statusId="P_ACT"
+                           sequenceNum="3"/>
+
+    <!-- ========================================================= -->
+    <!-- 15) COMMUNICATION QUEUES                                   -->
+    <!-- ========================================================= -->
+    <PayrollEmailQueue emailQueueId="EM1"
+                       organizationPartyId="WTORG"
+                       payrollRunId="R2601"
+                       payrollResultId="RS1"
+                       partyId="E001"
+                       toAddress="ahmed@example.com"
+                       subject="Your Payslip - Jan 2026"
+                       content="Dear Ahmed, your payslip is available."
+                       attachmentExportFileId="EF2"
+                       payslipAccessTokenId="PT1"
+                       statusId="Q_NEW"
+                       attemptCount="0"
+                       createdDate="2026-01-31 02:25:00.000"
+                       errorMessage=""/>
+
+    <PayrollSmsQueue smsQueueId="SM1"
+                     organizationPartyId="WTORG"
+                     payrollRunId="R2601"
+                     payrollResultId="RS1"
+                     partyId="E001"
+                     toNumber="+966500000000"
+                     messageText="Payslip Jan 2026 available in portal."
+                     statusId="Q_NEW"
+                     attemptCount="0"
+                     createdDate="2026-01-31 02:25:00.000"
+                     errorMessage=""/>
+
+    <!-- ========================================================= -->
+    <!-- 16) RETRO PAYROLL                                          -->
+    <!-- ========================================================= -->
+    <PayrollRetroBatch payrollRetroBatchId="RB1"
+                       organizationPartyId="WTORG"
+                       periodMonth="1"
+                       periodYear="2026"
+                       effectiveDate="2026-02-01 00:00:00.000"
+                       applyInPayrollRunId=""
+                       postMode="PO_NONE"
+                       reason="Retro adjustment demo"
+                       statusId="P_ACT"
+                       createdDate="2026-02-01 09:00:00.000"/>
+
+    <PayrollRetroEmployee payrollRetroEmployeeId="RE1"
+                          payrollRetroBatchId="RB1"
+                          partyId="E001"
+                          statusId="P_ACT"/>
+
+    <PayrollRetroDelta payrollRetroDeltaId="RD1"
+                       payrollRetroBatchId="RB1"
+                       partyId="E001"
+                       originalPayrollResultId="RS1"
+                       lineTypeId="P_LN_ALW"
+                       payComponentTypeId=""
+                       oldAmount="2000"
+                       newAmount="2200"
+                       deltaAmount="200"
+                       statusId="P_ACT"/>
+
+    <PayrollRetroPosting payrollRetroPostingId="RP1"
+                         payrollRetroBatchId="RB1"
+                         postMode="PO_NONE"
+                         statusId="P_ACT"/>
+
+    <!-- ========================================================= -->
+    <!-- 17) AUDIT & COMPLIANCE                                     -->
+    <!-- ========================================================= -->
+    <PayrollAuditLog payrollAuditLogId="AL1"
+                     organizationPartyId="WTORG"
+                     entityName="PayrollRun"
+                     recordId="R2601"
+                     actionTypeId="AUD_APR"
+                     oldValuesJson=""
+                     newValuesJson="{&quot;statusId&quot;:&quot;PR_DRAFT&quot;}"
+                     changedByUserLoginId=""
+                     changedDate="2026-01-31 00:30:00.000"
+                     ipAddress="127.0.0.1"/>
+
+    <PayrollAuditEvent payrollAuditEventId="AE1"
+                       organizationPartyId="WTORG"
+                       eventTypeId="AE_INFO"
+                       entityName="PayrollRun"
+                       recordId="R2601"
+                       oldValue=""
+                       newValue="PR_DRAFT"
+                       eventDate="2026-01-31 00:30:00.000"
+                       userLoginId=""
+                       sourceIp="127.0.0.1"/>
+
+    <PayrollComplianceReport payrollComplianceReportId="CR1"
+                             organizationPartyId="WTORG"
+                             reportTypeId="PCR_SUM"
+                             periodYear="2026"
+                             periodMonth="1"
+                             generatedDate="2026-02-01 08:00:00.000"
+                             generatedByUserLoginId=""
+                             statusId="P_ACT"
+                             filePath="/runtime/compliance/CR1.pdf"/>
+
+    <PayrollComplianceReportLine payrollComplianceReportLineId="CL1"
+                                 payrollComplianceReportId="CR1"
+                                 partyId="WTORG"
+                                 metricTypeId="M_GROSS"
+                                 amount="32300"/>
+
+    <PayrollComplianceReportLine payrollComplianceReportLineId="CL2"
+                             payrollComplianceReportId="CR1"
+                             partyId="WTORG"
+                             metricTypeId="M_NET"
+                             amount="31300"/>
+
+</entity-engine-xml>

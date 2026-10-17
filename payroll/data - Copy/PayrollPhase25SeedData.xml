@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================= -->
+    <!-- Leave Request Statuses    -->
+    <!-- ========================= -->
+    <StatusItem statusId="LR_NEW"  statusTypeId="PAY_LEAVE_STAT" description="Leave Request - New"/>
+    <StatusItem statusId="LR_APPR" statusTypeId="PAY_LEAVE_STAT" description="Leave Request - Approved"/>
+    <StatusItem statusId="LR_REJ"  statusTypeId="PAY_LEAVE_STAT" description="Leave Request - Rejected"/>
+
+    <!-- ========================= -->
+    <!-- Absence Request Statuses  -->
+    <!-- ========================= -->
+    <StatusItem statusId="ABS_NEW"  statusTypeId="PAY_ABS_STAT" description="Absence Request - New"/>
+    <StatusItem statusId="ABS_APPR" statusTypeId="PAY_ABS_STAT" description="Absence Request - Approved"/>
+    <StatusItem statusId="ABS_REJ"  statusTypeId="PAY_ABS_STAT" description="Absence Request - Rejected"/>
+
+    <!-- ========================= -->
+    <!-- Result Line Types         -->
+    <!-- lineTypeId maps to StatusItem.statusId -->
+    <!-- ========================= -->
+    <StatusItem statusId="PRL_STRUCT" statusTypeId="PAY_RES_LINE" description="Result Line - Structure"/>
+    <StatusItem statusId="PRL_OT"     statusTypeId="PAY_RES_LINE" description="Result Line - Overtime"/>
+    <StatusItem statusId="PRL_ADD"    statusTypeId="PAY_RES_LINE" description="Result Line - Addition Item"/>
+    <StatusItem statusId="PRL_DED"    statusTypeId="PAY_RES_LINE" description="Result Line - Deduction Item"/>
+    <StatusItem statusId="PRL_TAX"    statusTypeId="PAY_RES_LINE" description="Result Line - Tax"/>
+
+    <!-- ========================= -->
+    <!-- Deduction Types (add these) -->
+    <!-- ========================= -->
+    <DeductionType deductionTypeId="ABSENCE" organizationPartyId="WTORG"
+        description="Absence Deduction" isPreTax="N" calculationMethodId="MANUAL"
+        defaultAmount="0" currencyUomId="SAR" statusId="ACTIVE"/>
+
+    <DeductionType deductionTypeId="UNPAID_LEAVE" organizationPartyId="WTORG"
+        description="Unpaid Leave Deduction" isPreTax="N" calculationMethodId="MANUAL"
+        defaultAmount="0" currencyUomId="SAR" statusId="ACTIVE"/>
+
+    <!-- ========================= -->
+    <!-- Addition Types (new)      -->
+    <!-- ========================= -->
+    <AdditionType additionTypeId="BONUS" organizationPartyId="WTORG"
+        description="Bonus" isTaxable="Y" calculationMethodId="MANUAL"
+        defaultAmount="0" currencyUomId="SAR" statusId="ACTIVE"/>
+
+    <AdditionType additionTypeId="COMM" organizationPartyId="WTORG"
+        description="Commission" isTaxable="Y" calculationMethodId="MANUAL"
+        defaultAmount="0" currencyUomId="SAR" statusId="ACTIVE"/>
+
+    <AdditionType additionTypeId="ADJ_POS" organizationPartyId="WTORG"
+        description="Adjustment (Positive)" isTaxable="N" calculationMethodId="MANUAL"
+        defaultAmount="0" currencyUomId="SAR" statusId="ACTIVE"/>
+
+</entity-engine-xml>

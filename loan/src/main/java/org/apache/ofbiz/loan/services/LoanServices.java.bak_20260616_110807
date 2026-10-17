@@ -1,0 +1,2610 @@
+package org.apache.ofbiz.loan.services;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.ofbiz.base.util.Debug;
+import org.apache.ofbiz.base.util.UtilDateTime;
+import org.apache.ofbiz.base.util.UtilMisc;
+import org.apache.ofbiz.base.util.UtilValidate;
+import org.apache.ofbiz.entity.Delegator;
+import org.apache.ofbiz.entity.GenericEntityException;
+import org.apache.ofbiz.entity.GenericValue;
+import org.apache.ofbiz.entity.util.EntityQuery;
+import org.apache.ofbiz.service.DispatchContext;
+import org.apache.ofbiz.service.LocalDispatcher;
+import org.apache.ofbiz.service.ServiceUtil;
+import org.apache.ofbiz.entity.condition.EntityCondition;
+import org.apache.ofbiz.entity.condition.EntityOperator;
+
+
+public final class LoanServices {
+    public static final String MODULE = LoanServices.class.getName();
+    public static final String LOAN_DRAFT = "LN_DRAFT";
+    public static final String LOAN_APPROVED = "LN_APPROVED";
+    public static final String LOAN_DISB_PENDING = "LN_DISB_PENDING";
+    public static final String LOAN_ACTIVE = "LN_ACTIVE";
+    public static final String LOAN_PARTIAL = "LN_PARTIAL";
+    public static final String LOAN_CLOSED = "LN_CLOSED";
+
+    private static final String DEFAULT_DISBURSEMENT_PAYMENT_TYPE_ID = "DISBURSEMENT";
+    private static final String DISBURSEMENT_CFG_ENUM_ID = "LNACFG_DISBURSEMENT";
+
+    private LoanServices() {}
+
+    public static Map<String, Object> createPartyLoan(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String partyId = (String) context.get("partyId");
+            String organizationPartyId = (String) context.get("organizationPartyId");
+            String loanTypeEnumId = (String) context.get("loanTypeEnumId");
+            String currencyUomId = (String) context.get("currencyUomId");
+            BigDecimal principalAmount = (BigDecimal) context.get("principalAmount");
+            BigDecimal interestAmount = (BigDecimal) context.get("interestAmount");
+            BigDecimal feeAmount = (BigDecimal) context.get("feeAmount");
+            Long installmentCount = (Long) context.get("installmentCount");
+            String agreementId = trimToNull((String) context.get("agreementId"));
+            String finAccountId = trimToNull((String) context.get("finAccountId"));
+
+            Timestamp nowTs = UtilDateTime.nowTimestamp();
+            Timestamp applicationDate = (Timestamp) context.get("applicationDate");
+            if (applicationDate == null) {
+                applicationDate = nowTs;
+            }
+
+            if (UtilValidate.isEmpty(partyId)
+                    || UtilValidate.isEmpty(organizationPartyId)
+                    || UtilValidate.isEmpty(loanTypeEnumId)
+                    || UtilValidate.isEmpty(currencyUomId)
+                    || principalAmount == null
+                    || installmentCount == null
+                    || installmentCount.longValue() <= 0) {
+                return ServiceUtil.returnError(
+                        "partyId, organizationPartyId, loanTypeEnumId, currencyUomId, principalAmount, installmentCount are required");
+            }
+
+            if (interestAmount == null) {
+                interestAmount = BigDecimal.ZERO;
+            }
+            if (feeAmount == null) {
+                feeAmount = BigDecimal.ZERO;
+            }
+
+            validateAgreementIfProvided(delegator, agreementId);
+            validateFinAccountIfProvided(delegator, finAccountId);
+
+            BigDecimal totalRepayableAmount = principalAmount.add(interestAmount).add(feeAmount);
+
+            String loanId = delegator.getNextSeqId("PartyLoan");
+
+            GenericValue loan = delegator.makeValue("PartyLoan");
+            loan.set("loanId", loanId);
+            loan.set("loanNumber", loanId);
+            loan.set("partyId", partyId);
+            loan.set("organizationPartyId", organizationPartyId);
+            loan.set("agreementId", agreementId);
+            loan.set("finAccountId", finAccountId);
+            loan.set("loanTypeEnumId", loanTypeEnumId);
+            loan.set("borrowerRoleTypeId", (String) context.get("borrowerRoleTypeId"));
+            loan.set("borrowerTypeEnumId", trimToNull((String) context.get("borrowerTypeEnumId")));
+            loan.set("currencyUomId", currencyUomId);
+            loan.set("principalAmount", principalAmount);
+            loan.set("interestAmount", interestAmount);
+            loan.set("feeAmount", feeAmount);
+            loan.set("penaltyAmount", BigDecimal.ZERO);
+            loan.set("totalRepayableAmount", totalRepayableAmount);
+            loan.set("paidAmount", BigDecimal.ZERO);
+            loan.set("outstandingAmount", totalRepayableAmount);
+            loan.set("installmentCount", installmentCount);
+            loan.set("interestMethodEnumId",
+                    getValueOrPolicy(delegator, loanTypeEnumId, (String) context.get("interestMethodEnumId"),
+                            "interestMethodEnumId"));
+            loan.set("repaymentPatternEnumId",
+                    getValueOrPolicy(delegator, loanTypeEnumId, (String) context.get("repaymentPatternEnumId"),
+                            "repaymentPatternEnumId"));
+            loan.set("allocationOrderEnumId",
+                    getValueOrPolicy(delegator, loanTypeEnumId, (String) context.get("allocationOrderEnumId"),
+                            "allocationOrderEnumId"));
+            loan.set("settlementPolicyEnumId",
+                    getValueOrPolicy(delegator, loanTypeEnumId, (String) context.get("settlementPolicyEnumId"),
+                            "settlementPolicyEnumId"));
+            loan.set("repaymentChannelEnumId",
+                    getValueOrPolicy(delegator, loanTypeEnumId, (String) context.get("repaymentChannelEnumId"),
+                            "defaultChannelEnumId"));
+            loan.set("preferredRepaymentMethodEnumId", trimToNull((String) context.get("preferredRepaymentMethodEnumId")));
+            loan.set("payrollEligibleFlag", getFlagOrPolicy(delegator, loanTypeEnumId, "allowPayrollFlag"));
+            loan.set("allowEarlySettlementFlag", getFlagOrPolicy(delegator, loanTypeEnumId, "allowEarlySettlementFlag"));
+            loan.set("allowRescheduleFlag", getFlagOrPolicy(delegator, loanTypeEnumId, "allowRescheduleFlag"));
+            loan.set("allowPartialPaymentFlag", getFlagOrPolicy(delegator, loanTypeEnumId, "allowPartialPaymentFlag"));
+            loan.set("applicationDate", applicationDate);
+            loan.set("firstDueDate", (Timestamp) context.get("firstDueDate"));
+            loan.set("loanStatusId", LOAN_DRAFT);
+            loan.set("remarks", (String) context.get("remarks"));
+            loan.set("createdByUserLoginId", userLogin != null ? userLogin.getString("userLoginId") : null);
+
+            delegator.create(loan);
+
+            LoanRepaymentServices.createLoanEvent(
+                    delegator,
+                    loanId,
+                    null,
+                    null,
+                    "LNE_CREATE",
+                    nowTs,
+                    userLogin != null ? userLogin.getString("userLoginId") : null,
+                    "Loan created",
+                    null
+            );
+
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("loanId", loanId);
+            data.put("loanNumber", loanId);
+            data.put("loanStatusId", LOAN_DRAFT);
+            data.put("partyId", partyId);
+            data.put("organizationPartyId", organizationPartyId);
+            data.put("agreementId", agreementId);
+            data.put("finAccountId", finAccountId);
+            data.put("loanTypeEnumId", loanTypeEnumId);
+            data.put("currencyUomId", currencyUomId);
+            data.put("principalAmount", principalAmount);
+            data.put("totalRepayableAmount", totalRepayableAmount);
+            data.put("installmentCount", installmentCount);
+
+            return buildStandardSuccess("Loan created successfully", data);
+
+        } catch (Exception e) {
+            Debug.logError(e, "Error creating loan", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    public static Map<String, Object> approvePartyLoan(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String loanId = (String) context.get("loanId");
+            Timestamp approvalDate = (Timestamp) context.get("approvalDate");
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+            if (approvalDate == null) {
+                approvalDate = UtilDateTime.nowTimestamp();
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+
+            Map<String, Object> statusValidation = validateLoanStatus(loan, "approvePartyLoan", LOAN_DRAFT);
+            if (ServiceUtil.isError(statusValidation)) {
+                return statusValidation;
+            }
+
+            String previousLoanStatusId = loan.getString("loanStatusId");
+            loan.set("loanStatusId", LOAN_APPROVED);
+            loan.set("approvalDate", approvalDate);
+            loan.set("approvedByUserLoginId", userLogin != null ? userLogin.getString("userLoginId") : null);
+            loan.store();
+
+            String agreementId = trimToNull(loan.getString("agreementId"));
+            if (UtilValidate.isEmpty(agreementId)) {
+                Map<String, Object> agreementCtx = new HashMap<String, Object>();
+                agreementCtx.put("loanId", loanId);
+                agreementCtx.put("agreementDate", approvalDate);
+                agreementCtx.put("userLogin", userLogin);
+
+                Map<String, Object> agreementResp = dispatcher.runSync("createLoanAgreementV1", agreementCtx);
+                if (ServiceUtil.isError(agreementResp)) {
+                    return ServiceUtil.returnError(
+                            "Loan approved but agreement creation failed for loanId: " + loanId + ". "
+                                    + ServiceUtil.getErrorMessage(agreementResp));
+                }
+
+                agreementId = (String) agreementResp.get("agreementId");
+                if (UtilValidate.isNotEmpty(agreementId)) {
+                    loan.refresh();
+                    loan.set("agreementId", agreementId);
+                    loan.store();
+                }
+            }
+
+            String billingAccountId = getLoanBillingAccountId(loan);
+            if (UtilValidate.isEmpty(billingAccountId)) {
+                Map<String, Object> billingCtx = new HashMap<String, Object>();
+                billingCtx.put("loanId", loanId);
+                billingCtx.put("userLogin", userLogin);
+
+                Map<String, Object> billingResp = dispatcher.runSync("createOrLinkLoanBillingAccountV1", billingCtx);
+                if (ServiceUtil.isError(billingResp)) {
+                    return ServiceUtil.returnError(
+                            "Loan approved but billing account creation failed for loanId: " + loanId + ". "
+                                    + ServiceUtil.getErrorMessage(billingResp));
+                }
+
+                billingAccountId = (String) billingResp.get("billingAccountId");
+                if (UtilValidate.isNotEmpty(billingAccountId)) {
+                    loan.refresh();
+                    if (loan.getModelEntity().isField("billingAccountId")) {
+                        loan.set("billingAccountId", billingAccountId);
+                        loan.store();
+                    }
+                }
+            }
+
+            LoanRepaymentServices.createLoanEvent(
+                    delegator,
+                    loanId,
+                    null,
+                    null,
+                    "LNE_APPROVE",
+                    approvalDate,
+                    userLogin != null ? userLogin.getString("userLoginId") : null,
+                    "Loan approved"
+                            + (UtilValidate.isNotEmpty(agreementId) ? " agreementId=" + agreementId : ""),
+                    agreementId
+            );
+
+            long existingScheduleCount = countLoanScheduleRows(delegator, loanId);
+            long generatedScheduleCount = 0L;
+
+            if (existingScheduleCount <= 0L) {
+                Map<String, Object> genCtx = UtilMisc.<String, Object>toMap(
+                        "loanId", loanId,
+                        "userLogin", userLogin);
+
+                Map<String, Object> genResp = dispatcher.runSync("generatePartyLoanSchedule", genCtx);
+                if (ServiceUtil.isError(genResp)) {
+                    return ServiceUtil.returnError(
+                            "Loan approved but schedule generation failed for loanId: " + loanId + ". "
+                                    + ServiceUtil.getErrorMessage(genResp));
+                }
+
+                Object generatedObj = genResp.get("generatedScheduleCount");
+                if (generatedObj == null) {
+                    generatedObj = genResp.get("generatedCount");
+                }
+
+                if (generatedObj instanceof Number) {
+                    generatedScheduleCount = ((Number) generatedObj).longValue();
+                } else if (generatedObj != null) {
+                    generatedScheduleCount = Long.valueOf(generatedObj.toString());
+                } else {
+                    long afterCount = countLoanScheduleRows(delegator, loanId);
+                    generatedScheduleCount = Math.max(0L, afterCount - existingScheduleCount);
+                }
+            }
+
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("loanId", loanId);
+            data.put("loanStatusId", LOAN_APPROVED);
+            data.put("previousLoanStatusId", previousLoanStatusId);
+            data.put("approvalDate", approvalDate);
+            data.put("agreementId", trimToNull(loan.getString("agreementId")));
+            data.put("billingAccountId", getLoanBillingAccountId(loan));
+            data.put("generatedScheduleCount", Long.valueOf(generatedScheduleCount));
+            data.put("existingScheduleCount", Long.valueOf(existingScheduleCount));
+
+            return buildStandardSuccess("Loan approved successfully", data);
+
+        } catch (Exception e) {
+            Debug.logError(e, "Error approving loan", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    public static Map<String, Object> disbursePartyLoan(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String loanId = (String) context.get("loanId");
+            Timestamp disbursementDate = (Timestamp) context.get("disbursementDate");
+            String createPaymentFlag = (String) context.get("createPaymentFlag");
+            String paymentMethodId = (String) context.get("paymentMethodId");
+            String paymentMethodTypeId = (String) context.get("paymentMethodTypeId");
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+            if (disbursementDate == null) {
+                disbursementDate = UtilDateTime.nowTimestamp();
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+
+            String previousLoanStatusId = loan.getString("loanStatusId");
+            if (LOAN_ACTIVE.equals(previousLoanStatusId)) {
+                return ServiceUtil.returnError("Loan is already active: " + loanId);
+            }
+            if (LOAN_DISB_PENDING.equals(previousLoanStatusId)) {
+                return ServiceUtil.returnError("Loan disbursement is already pending: " + loanId);
+            }
+
+            Map<String, Object> statusValidation = validateLoanStatus(loan, "disbursePartyLoan", LOAN_APPROVED);
+            if (ServiceUtil.isError(statusValidation)) {
+                return statusValidation;
+            }
+
+            BigDecimal principalAmount = loan.getBigDecimal("principalAmount");
+            if (principalAmount == null || principalAmount.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("Loan principalAmount must be greater than zero for disbursement");
+            }
+
+            String currencyUomId = loan.getString("currencyUomId");
+            if (UtilValidate.isEmpty(currencyUomId)) {
+                return ServiceUtil.returnError("Loan currencyUomId is required");
+            }
+
+            String organizationPartyId = loan.getString("organizationPartyId");
+            String partyId = loan.getString("partyId");
+            if (UtilValidate.isEmpty(organizationPartyId) || UtilValidate.isEmpty(partyId)) {
+                return ServiceUtil.returnError("Loan organizationPartyId and partyId are required");
+            }
+
+            String paymentId = null;
+            if ("Y".equalsIgnoreCase(createPaymentFlag)) {
+                if (UtilValidate.isEmpty(paymentMethodId) && UtilValidate.isEmpty(paymentMethodTypeId)) {
+                    return ServiceUtil.returnError("paymentMethodId or paymentMethodTypeId is required when createPaymentFlag = Y");
+                }
+
+                String overrideGlAccountId = resolveLoanDisbursementDebitGlAccountId(
+                        delegator,
+                        organizationPartyId,
+                        disbursementDate);
+
+                Map<String, Object> paymentCtx = new HashMap<String, Object>();
+                paymentCtx.put("paymentTypeId", DEFAULT_DISBURSEMENT_PAYMENT_TYPE_ID);
+                paymentCtx.put("partyIdFrom", organizationPartyId);
+                paymentCtx.put("partyIdTo", partyId);
+                paymentCtx.put("amount", principalAmount);
+                paymentCtx.put("currencyUomId", currencyUomId);
+                paymentCtx.put("effectiveDate", disbursementDate);
+                paymentCtx.put("paymentMethodId", paymentMethodId);
+                paymentCtx.put("paymentMethodTypeId", paymentMethodTypeId);
+                paymentCtx.put("overrideGlAccountId", overrideGlAccountId);
+                paymentCtx.put("comments", "Loan disbursement loanId=" + loanId
+                        + " debitGlAccountId=" + overrideGlAccountId);
+                paymentCtx.put("userLogin", userLogin);
+
+                Map<String, Object> paymentResp = dispatcher.runSync("createPayment", paymentCtx);
+                if (ServiceUtil.isError(paymentResp)) {
+                    return ServiceUtil.returnError(
+                            "Failed to create OFBiz Payment for loan disbursement: "
+                                    + ServiceUtil.getErrorMessage(paymentResp));
+                }
+
+                paymentId = (String) paymentResp.get("paymentId");
+                if (UtilValidate.isEmpty(paymentId)) {
+                    return ServiceUtil.returnError("createPayment succeeded but returned no paymentId");
+                }
+
+                GenericValue payment = validateExistingPayment(delegator, paymentId);
+                if (payment == null) {
+                    return ServiceUtil.returnError(
+                            "createPayment returned paymentId but Payment record was not found: " + paymentId);
+                }
+            }
+
+            loan.set("loanStatusId", LOAN_DISB_PENDING);
+            loan.set("disbursementDate", disbursementDate);
+            if (UtilValidate.isNotEmpty(paymentId) && loan.getModelEntity().isField("disbursementPaymentId")) {
+                loan.set("disbursementPaymentId", paymentId);
+            }
+            if (UtilValidate.isNotEmpty(paymentMethodTypeId) && loan.getModelEntity().isField("disbursementMethodTypeId")) {
+                loan.set("disbursementMethodTypeId", paymentMethodTypeId);
+            }
+            if (loan.getModelEntity().isField("activatedDate")) {
+                loan.set("activatedDate", null);
+            }
+            if (loan.getModelEntity().isField("disbursementAcctgTransId")) {
+                loan.set("disbursementAcctgTransId", null);
+            }
+            loan.store();
+
+            LoanRepaymentServices.createLoanEvent(
+                    delegator,
+                    loanId,
+                    null,
+                    null,
+                    "LNE_DISBURSE_REQUEST",
+                    disbursementDate,
+                    userLogin != null ? userLogin.getString("userLoginId") : null,
+                    "Loan disbursement initiated"
+                            + (UtilValidate.isNotEmpty(paymentId) ? " paymentId=" + paymentId : ""),
+                    paymentId
+            );
+
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("loanId", loanId);
+            data.put("loanStatusId", LOAN_DISB_PENDING);
+            data.put("previousLoanStatusId", previousLoanStatusId);
+            data.put("disbursementDate", disbursementDate);
+            data.put("disbursementAmount", principalAmount);
+            data.put("currencyUomId", currencyUomId);
+            data.put("paymentId", paymentId);
+            data.put("createPaymentFlag", createPaymentFlag);
+
+            return buildStandardSuccess("Loan disbursement initiated successfully", data);
+
+        } catch (Exception e) {
+            Debug.logError(e, "Error disbursing loan", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+public static Map<String, Object> markLoanDisbursementPaymentSentV1(DispatchContext dctx, Map<String, ?> context) {
+    Delegator delegator = dctx.getDelegator();
+
+    try {
+        String loanId = (String) context.get("loanId");
+        String paymentId = (String) context.get("paymentId");
+        String organizationPartyId = (String) context.get("organizationPartyId");
+
+        if (UtilValidate.isEmpty(loanId)) {
+            return ServiceUtil.returnError("loanId is required");
+        }
+        if (UtilValidate.isEmpty(paymentId)) {
+            return ServiceUtil.returnError("paymentId is required");
+        }
+        if (UtilValidate.isEmpty(organizationPartyId)) {
+            return ServiceUtil.returnError("organizationPartyId is required");
+        }
+
+        // Validate loan
+        GenericValue loan = EntityQuery.use(delegator)
+                .from("PartyLoan")
+                .where("loanId", loanId)
+                .queryOne();
+        if (loan == null) {
+            return ServiceUtil.returnError("Loan not found: " + loanId);
+        }
+
+        if (!organizationPartyId.equals(loan.getString("organizationPartyId"))) {
+            return ServiceUtil.returnError("organizationPartyId mismatch for loanId: " + loanId);
+        }
+
+        // Validate payment belongs to loan
+        String disbursementPaymentId = loan.getString("disbursementPaymentId");
+        if (UtilValidate.isEmpty(disbursementPaymentId)) {
+            return ServiceUtil.returnError("Loan has no disbursementPaymentId: " + loanId);
+        }
+        if (!paymentId.equals(disbursementPaymentId)) {
+            return ServiceUtil.returnError("paymentId does not match loan disbursement payment. loanId="
+                    + loanId + ", expected=" + disbursementPaymentId + ", actual=" + paymentId);
+        }
+
+        // Load payment
+        GenericValue payment = EntityQuery.use(delegator)
+                .from("Payment")
+                .where("paymentId", paymentId)
+                .queryOne();
+        if (payment == null) {
+            return ServiceUtil.returnError("Payment not found: " + paymentId);
+        }
+
+        String currentStatusId = payment.getString("statusId");
+
+        // Already sent
+        if ("PMNT_SENT".equals(currentStatusId)) {
+            Map<String, Object> result = ServiceUtil.returnSuccess("Payment already marked as sent");
+            result.put("loanId", loanId);
+            result.put("paymentId", paymentId);
+            result.put("statusId", currentStatusId);
+            return result;
+        }
+
+        // Only allow transition from NOT_PAID
+        if (!"PMNT_NOT_PAID".equals(currentStatusId)) {
+            return ServiceUtil.returnError("Only PMNT_NOT_PAID can move to PMNT_SENT. paymentId="
+                    + paymentId + ", currentStatusId=" + currentStatusId);
+        }
+
+        // 🔥 Core action: update status
+        payment.set("statusId", "PMNT_SENT");
+        payment.store();
+
+        Map<String, Object> result = ServiceUtil.returnSuccess("Payment marked as sent successfully");
+        result.put("loanId", loanId);
+        result.put("paymentId", paymentId);
+        result.put("statusId", "PMNT_SENT");
+
+        return result;
+
+    } catch (Exception e) {
+        Debug.logError(e, "Error marking loan disbursement payment as sent", MODULE);
+        return ServiceUtil.returnError(e.getMessage());
+    }
+}
+
+    public static Map<String, Object> finalizeLoanDisbursementV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String loanId = (String) context.get("loanId");
+            String organizationPartyId = (String) context.get("organizationPartyId");
+            String paymentId = trimToNull((String) context.get("paymentId"));
+            String acctgTransId = trimToNull((String) context.get("acctgTransId"));
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+            if (UtilValidate.isEmpty(organizationPartyId)) {
+                return ServiceUtil.returnError("organizationPartyId is required");
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+
+            String currentLoanStatusId = loan.getString("loanStatusId");
+            if (!LOAN_DISB_PENDING.equals(currentLoanStatusId) && !LOAN_ACTIVE.equals(currentLoanStatusId)) {
+                return ServiceUtil.returnError("finalizeLoanDisbursementV1 not allowed for loanId: " + loanId
+                        + ". Current status is " + currentLoanStatusId
+                        + ", allowed statuses: [" + LOAN_DISB_PENDING + ", " + LOAN_ACTIVE + "]");
+            }
+
+            if (!organizationPartyId.equals(loan.getString("organizationPartyId"))) {
+                return ServiceUtil.returnError("organizationPartyId mismatch for loanId: " + loanId);
+            }
+
+            if (UtilValidate.isEmpty(paymentId)) {
+                paymentId = trimToNull(loan.getString("disbursementPaymentId"));
+            }
+            if (UtilValidate.isEmpty(paymentId)) {
+                return ServiceUtil.returnError("paymentId is required");
+            }
+
+            GenericValue payment = validateExistingPayment(delegator, paymentId);
+            if (payment == null) {
+                return ServiceUtil.returnError("Payment not found: " + paymentId);
+            }
+
+            String paymentStatusId = payment.getString("statusId");
+            if ("PMNT_NOT_PAID".equals(paymentStatusId) || UtilValidate.isEmpty(paymentStatusId)) {
+                return ServiceUtil.returnError("Payment is not finalized yet: " + paymentId + " statusId=" + paymentStatusId);
+            }
+
+            if (UtilValidate.isEmpty(acctgTransId)) {
+                acctgTransId = findAcctgTransIdByPaymentId(delegator, paymentId);
+            }
+
+            if (UtilValidate.isEmpty(acctgTransId)) {
+                return ServiceUtil.returnError("No accounting transaction found for paymentId: " + paymentId);
+            }
+
+            Map<String, Object> completeCtx = new HashMap<String, Object>();
+            completeCtx.put("loanId", loanId);
+            completeCtx.put("organizationPartyId", organizationPartyId);
+            completeCtx.put("paymentId", paymentId);
+            completeCtx.put("acctgTransId", acctgTransId);
+            completeCtx.put("userLogin", userLogin);
+
+            Map<String, Object> completeResp = dispatcher.runSync("completeLoanDisbursementFromFinance", completeCtx);
+            if (ServiceUtil.isError(completeResp)) {
+                return ServiceUtil.returnError("Failed to complete loan disbursement: "
+                        + ServiceUtil.getErrorMessage(completeResp));
+            }
+
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("loanId", loanId);
+            data.put("loanStatusId", completeResp.get("loanStatusId"));
+            data.put("paymentId", paymentId);
+            data.put("acctgTransId", acctgTransId);
+            data.put("previousLoanStatusId", currentLoanStatusId);
+
+            return buildStandardSuccess("Loan disbursement finalized successfully", data);
+
+        } catch (Exception e) {
+            Debug.logError(e, "Error finalizing loan disbursement", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+
+    public static Map<String, Object> createOrLinkLoanBillingAccountV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String loanId = (String) context.get("loanId");
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+
+            String existingBillingAccountId = getLoanBillingAccountId(loan);
+            if (UtilValidate.isNotEmpty(existingBillingAccountId)) {
+                Map<String, Object> result = ServiceUtil.returnSuccess("Loan billing account already exists");
+                result.put("loanId", loanId);
+                result.put("billingAccountId", existingBillingAccountId);
+                result.put("duplicateSkipped", "Y");
+                return result;
+            }
+
+            String organizationPartyId = loan.getString("organizationPartyId");
+            String borrowerPartyId = loan.getString("partyId");
+            String currencyUomId = loan.getString("currencyUomId");
+            BigDecimal totalRepayableAmount = loan.getBigDecimal("totalRepayableAmount");
+            Timestamp fromDate = firstNonNull(
+                    loan.getTimestamp("approvalDate"),
+                    loan.getTimestamp("applicationDate"),
+                    UtilDateTime.nowTimestamp()
+            );
+            Timestamp thruDate = loan.getTimestamp("maturityDate");
+
+            if (UtilValidate.isEmpty(organizationPartyId) || UtilValidate.isEmpty(borrowerPartyId)) {
+                return ServiceUtil.returnError("Loan organizationPartyId and partyId are required");
+            }
+
+            String billingAccountId = delegator.getNextSeqId("BillingAccount");
+            GenericValue billingAccount = delegator.makeValue("BillingAccount");
+            billingAccount.set("billingAccountId", billingAccountId);
+
+            if (billingAccount.getModelEntity().isField("accountLimit")) {
+                billingAccount.set("accountLimit", totalRepayableAmount != null ? totalRepayableAmount : BigDecimal.ZERO);
+            }
+            if (billingAccount.getModelEntity().isField("accountCurrencyUomId")) {
+                billingAccount.set("accountCurrencyUomId", currencyUomId);
+            }
+            if (billingAccount.getModelEntity().isField("description")) {
+                billingAccount.set("description", "Loan billing account for loanId=" + loanId);
+            }
+            if (billingAccount.getModelEntity().isField("fromDate")) {
+                billingAccount.set("fromDate", fromDate);
+            }
+            if (billingAccount.getModelEntity().isField("thruDate")) {
+                billingAccount.set("thruDate", thruDate);
+            }
+            if (billingAccount.getModelEntity().isField("statusId")) {
+                billingAccount.set("statusId", "BA_CREATED");
+            }
+
+            delegator.create(billingAccount);
+
+            ensurePartyRoleExists(delegator, borrowerPartyId, "BILL_TO_CUSTOMER");
+
+            GenericValue billingRole = delegator.makeValue("BillingAccountRole");
+            billingRole.set("billingAccountId", billingAccountId);
+            billingRole.set("partyId", borrowerPartyId);
+            billingRole.set("roleTypeId", "BILL_TO_CUSTOMER");
+            if (billingRole.getModelEntity().isField("fromDate")) {
+                billingRole.set("fromDate", fromDate);
+            }
+            delegator.create(billingRole);
+
+            if (loan.getModelEntity().isField("billingAccountId")) {
+                loan.set("billingAccountId", billingAccountId);
+                loan.store();
+            }
+
+            Map<String, Object> result = ServiceUtil.returnSuccess("Loan billing account created successfully");
+            result.put("loanId", loanId);
+            result.put("billingAccountId", billingAccountId);
+            result.put("partyId", borrowerPartyId);
+            result.put("organizationPartyId", organizationPartyId);
+            result.put("createdByUserLoginId", userLogin != null ? userLogin.getString("userLoginId") : null);
+            return result;
+
+        } catch (Exception e) {
+            Debug.logError(e, "Error creating or linking loan billing account", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    private static void ensurePartyRoleExists(Delegator delegator, String partyId, String roleTypeId)
+            throws GenericEntityException {
+        if (UtilValidate.isEmpty(partyId) || UtilValidate.isEmpty(roleTypeId)) {
+            return;
+        }
+
+        GenericValue existingRole = EntityQuery.use(delegator)
+                .from("PartyRole")
+                .where("partyId", partyId, "roleTypeId", roleTypeId)
+                .queryOne();
+        if (existingRole != null) {
+            return;
+        }
+
+        GenericValue partyRole = delegator.makeValue("PartyRole");
+        partyRole.set("partyId", partyId);
+        partyRole.set("roleTypeId", roleTypeId);
+        delegator.create(partyRole);
+    }
+
+    private static String getLoanBillingAccountId(GenericValue loan) {
+        if (loan == null || !loan.getModelEntity().isField("billingAccountId")) {
+            return null;
+        }
+        return trimToNull(loan.getString("billingAccountId"));
+    }
+
+    private static Timestamp firstNonNull(Timestamp... values) {
+        if (values == null) {
+            return null;
+        }
+        for (Timestamp value : values) {
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    private static String resolveLoanDisbursementDebitGlAccountId(Delegator delegator,
+                                                                  String organizationPartyId,
+                                                                  Timestamp whenTs) throws GenericEntityException {
+        if (UtilValidate.isEmpty(organizationPartyId)) {
+            throw new GenericEntityException("organizationPartyId is required to resolve loan disbursement debit GL");
+        }
+        if (whenTs == null) {
+            whenTs = UtilDateTime.nowTimestamp();
+        }
+
+        GenericValue header = EntityQuery.use(delegator)
+                .from("LoanAcctgCfg")
+                .where("organizationPartyId", organizationPartyId, "isActive", "Y")
+                .orderBy("-fromDate")
+                .queryFirst();
+        if (header == null) {
+            throw new GenericEntityException("No active LoanAcctgCfg found for organizationPartyId=" + organizationPartyId);
+        }
+
+        Timestamp fromDate = header.getTimestamp("fromDate");
+        Timestamp thruDate = header.getTimestamp("thruDate");
+        if (fromDate != null && fromDate.after(whenTs)) {
+            throw new GenericEntityException("LoanAcctgCfg is not yet active for organizationPartyId=" + organizationPartyId);
+        }
+        if (thruDate != null && !thruDate.after(whenTs)) {
+            throw new GenericEntityException("LoanAcctgCfg is expired for organizationPartyId=" + organizationPartyId);
+        }
+
+        GenericValue detail = EntityQuery.use(delegator)
+                .from("LoanAcctgCfgDtl")
+                .where("loanAcctgCfgId", header.getString("loanAcctgCfgId"),
+                        "repaymentSourceEnumId", DISBURSEMENT_CFG_ENUM_ID)
+                .queryOne();
+        if (detail == null) {
+            throw new GenericEntityException("No LoanAcctgCfgDtl found for loanAcctgCfgId="
+                    + header.getString("loanAcctgCfgId")
+                    + " and repaymentSourceEnumId=" + DISBURSEMENT_CFG_ENUM_ID);
+        }
+
+        String debitGlAccountId = trimToNull(detail.getString("debitGlAccountId"));
+        if (UtilValidate.isEmpty(debitGlAccountId)) {
+            throw new GenericEntityException("debitGlAccountId is empty in LoanAcctgCfgDtl for "
+                    + DISBURSEMENT_CFG_ENUM_ID);
+        }
+
+        requireActiveGlAccountForOrganization(delegator, debitGlAccountId, organizationPartyId, "debitGlAccountId");
+        return debitGlAccountId;
+    }
+
+    private static void requireActiveGlAccountForOrganization(Delegator delegator,
+                                                              String glAccountId,
+                                                              String organizationPartyId,
+                                                              String fieldName) throws GenericEntityException {
+        if (UtilValidate.isEmpty(glAccountId)) {
+            throw new GenericEntityException(fieldName + " is empty");
+        }
+
+        GenericValue gl = EntityQuery.use(delegator)
+                .from("GlAccount")
+                .where("glAccountId", glAccountId)
+                .queryOne();
+        if (gl == null) {
+            throw new GenericEntityException(fieldName + " not found in GlAccount: " + glAccountId);
+        }
+
+        GenericValue orgLink = EntityQuery.use(delegator)
+                .from("GlAccountOrganization")
+                .where("glAccountId", glAccountId, "organizationPartyId", organizationPartyId)
+                .filterByDate()
+                .queryFirst();
+        if (orgLink == null) {
+            throw new GenericEntityException(fieldName + " is not active for organizationPartyId="
+                    + organizationPartyId + ": " + glAccountId);
+        }
+    }
+
+private static String findAcctgTransIdByPaymentId(Delegator delegator, String paymentId)
+        throws GenericEntityException {
+
+    if (UtilValidate.isEmpty(paymentId)) {
+        return null;
+    }
+
+    GenericValue outgoing = EntityQuery.use(delegator)
+            .from("AcctgTrans")
+            .where("paymentId", paymentId,
+                   "acctgTransTypeId", "OUTGOING_PAYMENT")
+            .orderBy("-transactionDate", "-acctgTransId")
+            .queryFirst();
+
+    if (outgoing != null) {
+        return outgoing.getString("acctgTransId");
+    }
+
+    GenericValue any = EntityQuery.use(delegator)
+            .from("AcctgTrans")
+            .where("paymentId", paymentId)
+            .orderBy("-transactionDate", "-acctgTransId")
+            .queryFirst();
+
+    return any != null ? any.getString("acctgTransId") : null;
+}
+
+    private static String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
+    }
+
+    private static GenericValue validateAgreementIfProvided(Delegator delegator, String agreementId)
+            throws GenericEntityException {
+        if (UtilValidate.isEmpty(agreementId)) {
+            return null;
+        }
+        GenericValue agreement = EntityQuery.use(delegator)
+                .from("Agreement")
+                .where("agreementId", agreementId)
+                .queryOne();
+        if (agreement == null) {
+            throw new GenericEntityException("Invalid agreementId; Agreement not found: " + agreementId);
+        }
+        return agreement;
+    }
+
+    private static GenericValue validateFinAccountIfProvided(Delegator delegator, String finAccountId)
+            throws GenericEntityException {
+        if (UtilValidate.isEmpty(finAccountId)) {
+            return null;
+        }
+        GenericValue finAccount = EntityQuery.use(delegator)
+                .from("FinAccount")
+                .where("finAccountId", finAccountId)
+                .queryOne();
+        if (finAccount == null) {
+            throw new GenericEntityException("Invalid finAccountId; FinAccount not found: " + finAccountId);
+        }
+        return finAccount;
+    }
+
+    private static GenericValue requireLoan(Delegator delegator, String loanId) throws GenericEntityException {
+        GenericValue loan = EntityQuery.use(delegator)
+                .from("PartyLoan")
+                .where("loanId", loanId)
+                .queryOne();
+        if (loan == null) {
+            throw new GenericEntityException("Loan not found: " + loanId);
+        }
+        return loan;
+    }
+
+    private static Map<String, Object> validateLoanStatus(GenericValue loan, String serviceName, String... allowedStatuses) {
+        if (loan == null) {
+            return ServiceUtil.returnError(serviceName + " failed because loan record is missing");
+        }
+
+        String currentStatusId = loan.getString("loanStatusId");
+        for (String allowed : allowedStatuses) {
+            if (allowed.equals(currentStatusId)) {
+                return ServiceUtil.returnSuccess();
+            }
+        }
+
+        return ServiceUtil.returnError(
+                serviceName + " not allowed for loanId: " + loan.getString("loanId")
+                        + ". Current status is " + currentStatusId
+                        + ", allowed statuses: " + Arrays.asList(allowedStatuses));
+    }
+
+    private static long countLoanScheduleRows(Delegator delegator, String loanId) throws GenericEntityException {
+        return EntityQuery.use(delegator)
+                .from("PartyLoanSchedule")
+                .where("loanId", loanId)
+                .queryCount();
+    }
+
+    private static GenericValue validateExistingPayment(Delegator delegator, String paymentId)
+            throws GenericEntityException {
+        if (UtilValidate.isEmpty(paymentId)) {
+            return null;
+        }
+        return EntityQuery.use(delegator)
+                .from("Payment")
+                .where("paymentId", paymentId)
+                .queryOne();
+    }
+
+    private static Map<String, Object> buildStandardSuccess(String successMessage, Map<String, Object> data) {
+        Map<String, Object> out = ServiceUtil.returnSuccess(successMessage);
+
+        Map<String, Object> safeData = new HashMap<String, Object>();
+        if (data != null) {
+            safeData.putAll(data);
+            out.putAll(data);
+        }
+
+        out.put("data", safeData);
+        out.put("legacyData", new HashMap<String, Object>(safeData));
+        return out;
+    }
+
+    private static String getValueOrPolicy(Delegator delegator, String loanTypeEnumId, String inputValue, String fieldName)
+            throws GenericEntityException {
+        if (UtilValidate.isNotEmpty(inputValue)) {
+            return inputValue;
+        }
+        GenericValue policy = EntityQuery.use(delegator)
+                .from("LoanTypePolicy")
+                .where("loanTypeEnumId", loanTypeEnumId)
+                .orderBy("-sequenceNum")
+                .queryFirst();
+        return policy != null ? policy.getString(fieldName) : null;
+    }
+
+    private static String getFlagOrPolicy(Delegator delegator, String loanTypeEnumId, String fieldName)
+            throws GenericEntityException {
+        GenericValue policy = EntityQuery.use(delegator)
+                .from("LoanTypePolicy")
+                .where("loanTypeEnumId", loanTypeEnumId)
+                .orderBy("-sequenceNum")
+                .queryFirst();
+        if (policy == null) {
+            return "N";
+        }
+        String val = policy.getString(fieldName);
+        return UtilValidate.isEmpty(val) ? "N" : val;
+    }
+public static Map<String, Object> updateLoanDisbursementPaymentStatusV1(
+        DispatchContext dctx, Map<String, Object> context) {
+
+    Delegator delegator = dctx.getDelegator();
+    LocalDispatcher dispatcher = dctx.getDispatcher();
+
+    String loanId = (String) context.get("loanId");
+    String paymentId = (String) context.get("paymentId");
+    String statusId = (String) context.get("statusId");
+
+    Map<String, Object> result = ServiceUtil.returnSuccess();
+
+    try {
+        if (UtilValidate.isEmpty(paymentId) || UtilValidate.isEmpty(statusId)) {
+            return ServiceUtil.returnError("paymentId and statusId are required");
+        }
+
+        GenericValue payment = EntityQuery.use(delegator)
+                .from("Payment")
+                .where("paymentId", paymentId)
+                .queryOne();
+
+        if (payment == null) {
+            return ServiceUtil.returnError("Payment not found: " + paymentId);
+        }
+
+        GenericValue acctg = EntityQuery.use(delegator)
+                .from("AcctgTrans")
+                .where("paymentId", paymentId)
+                .queryFirst();
+
+        if (acctg != null && "PMNT_NOT_PAID".equals(statusId)) {
+            return ServiceUtil.returnError("Cannot rollback payment. Accounting already exists.");
+        }
+
+        Map<String, Object> svcCtx = UtilMisc.toMap(
+                "paymentId", paymentId,
+                "statusId", statusId,
+                "userLogin", context.get("userLogin")
+        );
+
+        Map<String, Object> svcRes = dispatcher.runSync("setPaymentStatus", svcCtx);
+
+        if (ServiceUtil.isError(svcRes)) {
+            return ServiceUtil.returnError(ServiceUtil.getErrorMessage(svcRes));
+        }
+
+        result.put("loanId", loanId);
+        result.put("paymentId", paymentId);
+        result.put("statusId", statusId);
+
+        return result;
+
+    } catch (Exception e) {
+        return ServiceUtil.returnError("Error updating payment status: " + e.getMessage());
+    }
+}
+
+
+    /**
+     * Phase 12A - Unified Borrower Repayment Engine.
+     *
+     * One borrower-neutral repayment entry point. Payroll remains one channel; direct borrower repayment
+     * channels such as cash/bank/check/card/manual are handled through the same lifecycle.
+     */
+    public static Map<String, Object> recordUnifiedLoanRepaymentV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String organizationPartyId = trimToNull((String) context.get("organizationPartyId"));
+            String loanId = trimToNull((String) context.get("loanId"));
+            String loanScheduleId = trimToNull((String) context.get("loanScheduleId"));
+            String borrowerPartyId = trimToNull((String) context.get("borrowerPartyId"));
+            String repaymentMethodEnumId = firstNonEmpty(trimToNull((String) context.get("repaymentMethodEnumId")), "LNPM_MANUAL");
+            String repaymentSourceEnumId = phase12SourceFromMethod(repaymentMethodEnumId);
+            BigDecimal amountApplied = (BigDecimal) context.get("amountApplied");
+            Timestamp repaymentDate = (Timestamp) context.get("repaymentDate");
+            String currencyUomId = trimToNull((String) context.get("currencyUomId"));
+            String paymentMethodTypeId = trimToNull((String) context.get("paymentMethodTypeId"));
+            String paymentMethodId = trimToNull((String) context.get("paymentMethodId"));
+            String paymentTypeId = firstNonEmpty(trimToNull((String) context.get("paymentTypeId")), "CUSTOMER_PAYMENT");
+            String externalReference = trimToNull((String) context.get("externalReference"));
+            String bankReference = trimToNull((String) context.get("bankReference"));
+            String paymentChannelNote = trimToNull((String) context.get("paymentChannelNote"));
+            String remarks = trimToNull((String) context.get("remarks"));
+
+            Map<String, Object> phase13MethodCfg = phase13ResolveRepaymentMethodConfig(delegator, organizationPartyId, repaymentMethodEnumId);
+            if (UtilValidate.isEmpty(paymentMethodTypeId)) {
+                paymentMethodTypeId = trimToNull((String) phase13MethodCfg.get("paymentMethodTypeId"));
+            }
+            if (UtilValidate.isEmpty(paymentMethodId)) {
+                paymentMethodId = trimToNull((String) phase13MethodCfg.get("paymentMethodId"));
+            }
+            if ("Y".equals(phase13MethodCfg.get("isPayrollMethod"))) {
+                repaymentSourceEnumId = "LNRS_PAYROLL";
+            }
+            phase13ValidateRepaymentMethodRequirements(phase13MethodCfg, externalReference, bankReference, userLogin);
+
+            String dryRun = normalizeFlagDefaultN((String) context.get("dryRun"));
+            String runReconciliation = normalizeFlagDefaultY((String) context.get("runReconciliation"));
+            String createPaymentFlag = normalizeFlagDefaultY((String) context.get("createPaymentFlag"));
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+            if (amountApplied == null || amountApplied.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("amountApplied must be greater than zero");
+            }
+            if (repaymentDate == null) {
+                repaymentDate = UtilDateTime.nowTimestamp();
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+            organizationPartyId = firstNonEmpty(organizationPartyId, trimToNull(loan.getString("organizationPartyId")));
+            borrowerPartyId = firstNonEmpty(borrowerPartyId, trimToNull(loan.getString("partyId")));
+            currencyUomId = firstNonEmpty(currencyUomId, trimToNull(loan.getString("currencyUomId")));
+
+            Map<String, Object> validation = phase12ValidateUnifiedRepayment(delegator, loan, loanScheduleId, borrowerPartyId,
+                    repaymentMethodEnumId, amountApplied, externalReference);
+            if (ServiceUtil.isError(validation)) {
+                return validation;
+            }
+
+            GenericValue schedule = null;
+            if (UtilValidate.isNotEmpty(loanScheduleId)) {
+                schedule = EntityQuery.use(delegator)
+                        .from("PartyLoanSchedule")
+                        .where("loanScheduleId", loanScheduleId)
+                        .queryOne();
+            }
+            if (schedule == null) {
+                schedule = phase12FindNextOpenSchedule(delegator, loanId);
+                if (schedule != null) {
+                    loanScheduleId = schedule.getString("loanScheduleId");
+                }
+            }
+
+            Map<String, Object> preview = new LinkedHashMap<String, Object>();
+            preview.put("organizationPartyId", organizationPartyId);
+            preview.put("loanId", loanId);
+            preview.put("loanScheduleId", loanScheduleId);
+            preview.put("borrowerPartyId", borrowerPartyId);
+            preview.put("repaymentMethodEnumId", repaymentMethodEnumId);
+            preview.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            preview.put("amountApplied", amountApplied);
+            preview.put("currencyUomId", currencyUomId);
+            preview.put("repaymentDate", repaymentDate);
+            preview.put("paymentMethodTypeId", paymentMethodTypeId);
+            preview.put("paymentMethodId", paymentMethodId);
+            preview.put("paymentTypeId", paymentTypeId);
+            preview.put("externalReference", externalReference);
+            preview.put("bankReference", bankReference);
+            preview.put("paymentChannelNote", paymentChannelNote);
+            preview.put("dryRun", dryRun);
+            preview.put("workflow", "VALIDATE->RECORD_REPAYMENT->CREATE_PAYMENT->APPLY_PAYMENT->ACCOUNTING->RECONCILE");
+
+            if ("Y".equals(dryRun)) {
+                preview.put("finalStatus", "DRY_RUN");
+                return buildStandardSuccess("Unified loan repayment dry-run completed successfully", preview);
+            }
+
+            Map<String, Object> repayCtx = new HashMap<String, Object>();
+            repayCtx.put("loanId", loanId);
+            repayCtx.put("loanScheduleId", loanScheduleId);
+            repayCtx.put("amountApplied", amountApplied);
+            repayCtx.put("repaymentDate", repaymentDate);
+            repayCtx.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            repayCtx.put("remarks", firstNonEmpty(remarks, paymentChannelNote, "Unified borrower repayment"));
+            repayCtx.put("organizationPartyId", organizationPartyId);
+            repayCtx.put("partyId", borrowerPartyId);
+            repayCtx.put("currencyUomId", currencyUomId);
+            repayCtx.put("createPaymentFlag", createPaymentFlag);
+            repayCtx.put("paymentTypeId", paymentTypeId);
+            repayCtx.put("paymentMethodTypeId", paymentMethodTypeId);
+            repayCtx.put("paymentMethodId", paymentMethodId);
+            repayCtx.put("financeProcessingMode", firstNonEmpty(trimToNull((String) context.get("financeProcessingMode")), "FULL"));
+            repayCtx.put("userLogin", userLogin);
+
+            Map<String, Object> repaymentResult = dispatcher.runSync("recordPartyLoanRepayment", repayCtx);
+            if (ServiceUtil.isError(repaymentResult)) {
+                return ServiceUtil.returnError(ServiceUtil.getErrorMessage(repaymentResult));
+            }
+
+            String loanRepaymentId = firstNonEmpty((String) repaymentResult.get("repaymentRecordId"),
+                    (String) repaymentResult.get("loanRepaymentId"));
+            String paymentId = trimToNull((String) repaymentResult.get("paymentId"));
+
+            if (UtilValidate.isNotEmpty(loanRepaymentId)) {
+                GenericValue repayment = EntityQuery.use(delegator)
+                        .from("PartyLoanRepayment")
+                        .where("loanRepaymentId", loanRepaymentId)
+                        .queryOne();
+                if (repayment != null) {
+                    repayment.set("repaymentMethodEnumId", repaymentMethodEnumId);
+                    repayment.set("externalReference", externalReference);
+                    repayment.set("bankReference", bankReference);
+                    repayment.set("receivedByUserLoginId", userLoginId(userLogin));
+                    repayment.set("paymentChannelNote", paymentChannelNote);
+                    repayment.store();
+                }
+            }
+
+            Map<String, Object> financialCompletionResult = null;
+            Map<String, Object> financialCtx = new HashMap<String, Object>();
+            financialCtx.put("organizationPartyId", organizationPartyId);
+            financialCtx.put("loanId", loanId);
+            financialCtx.put("loanScheduleId", loanScheduleId);
+            financialCtx.put("loanRepaymentId", loanRepaymentId);
+            financialCtx.put("paymentId", paymentId);
+            financialCtx.put("repaymentMethodEnumId", repaymentMethodEnumId);
+            financialCtx.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            financialCtx.put("amountApplied", amountApplied);
+            financialCtx.put("paymentMethodTypeId", paymentMethodTypeId);
+            financialCtx.put("paymentMethodId", paymentMethodId);
+            financialCtx.put("userLogin", userLogin);
+            financialCompletionResult = completeUnifiedLoanRepaymentFinancialsV1(dctx, financialCtx);
+            if (ServiceUtil.isError(financialCompletionResult)) {
+                return ServiceUtil.returnError(ServiceUtil.getErrorMessage(financialCompletionResult));
+            }
+
+            Map<String, Object> reconciliationResult = null;
+            if ("Y".equals(runReconciliation)) {
+                Map<String, Object> reconCtx = new HashMap<String, Object>();
+                reconCtx.put("organizationPartyId", organizationPartyId);
+                reconCtx.put("loanId", loanId);
+                reconCtx.put("strictDuplicateAcctg", "N");
+                reconCtx.put("requireFinAccountTrans", "N");
+                reconCtx.put("userLogin", userLogin);
+                reconciliationResult = dispatcher.runSync("reconcileLoanAccountingV1", reconCtx);
+            }
+
+            Map<String, Object> data = new LinkedHashMap<String, Object>();
+            data.put("organizationPartyId", organizationPartyId);
+            data.put("loanId", loanId);
+            data.put("loanScheduleId", loanScheduleId);
+            data.put("borrowerPartyId", borrowerPartyId);
+            data.put("repaymentMethodEnumId", repaymentMethodEnumId);
+            data.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            data.put("amountApplied", amountApplied);
+            data.put("currencyUomId", currencyUomId);
+            data.put("repaymentDate", repaymentDate);
+            data.put("loanRepaymentId", loanRepaymentId);
+            data.put("paymentId", paymentId);
+            data.put("externalReference", externalReference);
+            data.put("bankReference", bankReference);
+            data.put("paymentChannelNote", paymentChannelNote);
+            data.put("repaymentResult", repaymentResult);
+            data.put("financialCompletionResult", financialCompletionResult);
+            data.put("reconciliationResult", reconciliationResult);
+            data.put("finalStatus", "POSTED");
+
+            return buildStandardSuccess("Unified loan repayment recorded successfully", data);
+        } catch (Exception e) {
+            Debug.logError(e, "Error recording unified loan repayment", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    public static Map<String, Object> previewUnifiedLoanRepaymentV1(DispatchContext dctx, Map<String, ?> context) {
+        Map<String, Object> previewContext = new HashMap<String, Object>();
+        previewContext.putAll(context);
+        previewContext.put("dryRun", "Y");
+        return recordUnifiedLoanRepaymentV1(dctx, previewContext);
+    }
+
+    private static Map<String, Object> phase12ValidateUnifiedRepayment(Delegator delegator, GenericValue loan,
+            String loanScheduleId, String borrowerPartyId, String repaymentMethodEnumId,
+            BigDecimal amountApplied, String externalReference) throws GenericEntityException {
+        String loanStatusId = trimToNull(loan.getString("loanStatusId"));
+        if (!(LOAN_ACTIVE.equals(loanStatusId) || LOAN_PARTIAL.equals(loanStatusId))) {
+            return ServiceUtil.returnError("Loan must be active/partial before repayment. Current status: " + loanStatusId);
+        }
+
+        String loanPartyId = trimToNull(loan.getString("partyId"));
+        if (UtilValidate.isNotEmpty(borrowerPartyId) && UtilValidate.isNotEmpty(loanPartyId)
+                && !borrowerPartyId.equals(loanPartyId)) {
+            return ServiceUtil.returnError("borrowerPartyId does not match loan partyId. borrowerPartyId="
+                    + borrowerPartyId + ", loan partyId=" + loanPartyId);
+        }
+
+        if ("LNPM_PAYROLL".equals(repaymentMethodEnumId) && !"Y".equals(loan.getString("payrollEligibleFlag"))) {
+            return ServiceUtil.returnError("Payroll repayment method is not allowed for this loan");
+        }
+
+        BigDecimal outstanding = loan.getBigDecimal("outstandingAmount") == null ? BigDecimal.ZERO : loan.getBigDecimal("outstandingAmount");
+        if (amountApplied.compareTo(outstanding) > 0 && !"LNPM_SETTLEMENT".equals(repaymentMethodEnumId)) {
+            return ServiceUtil.returnError("Repayment amount cannot exceed loan outstanding amount unless settlement method is used");
+        }
+
+        if (UtilValidate.isNotEmpty(externalReference)) {
+            List<EntityCondition> conds = new ArrayList<EntityCondition>();
+            conds.add(EntityCondition.makeCondition("loanId", loan.getString("loanId")));
+            conds.add(EntityCondition.makeCondition("externalReference", externalReference));
+            conds.add(EntityCondition.makeCondition("repaymentMethodEnumId", repaymentMethodEnumId));
+            long count = EntityQuery.use(delegator)
+                    .from("PartyLoanRepayment")
+                    .where(EntityCondition.makeCondition(conds, EntityOperator.AND))
+                    .queryCount();
+            if (count > 0) {
+                return ServiceUtil.returnError("Duplicate repayment externalReference for loan/method: " + externalReference);
+            }
+        }
+
+        if (UtilValidate.isNotEmpty(loanScheduleId)) {
+            GenericValue schedule = EntityQuery.use(delegator)
+                    .from("PartyLoanSchedule")
+                    .where("loanScheduleId", loanScheduleId)
+                    .queryOne();
+            if (schedule == null) {
+                return ServiceUtil.returnError("PartyLoanSchedule not found: " + loanScheduleId);
+            }
+            if (!loan.getString("loanId").equals(schedule.getString("loanId"))) {
+                return ServiceUtil.returnError("loanScheduleId does not belong to loanId");
+            }
+        }
+
+        Map<String, Object> ok = ServiceUtil.returnSuccess();
+        ok.put("validated", "Y");
+        return ok;
+    }
+
+    private static GenericValue phase12FindNextOpenSchedule(Delegator delegator, String loanId) throws GenericEntityException {
+        List<String> openStatuses = Arrays.asList("LNS_DUE", "LNS_PENDING", "LNS_PARTIAL");
+        return EntityQuery.use(delegator)
+                .from("PartyLoanSchedule")
+                .where(EntityCondition.makeCondition(
+                        EntityCondition.makeCondition("loanId", loanId),
+                        EntityOperator.AND,
+                        EntityCondition.makeCondition("scheduleStatusId", EntityOperator.IN, openStatuses)))
+                .orderBy("dueDate", "installmentSeqNum", "loanScheduleId")
+                .queryFirst();
+    }
+
+    private static String phase12SourceFromMethod(String repaymentMethodEnumId) {
+        if ("LNPM_PAYROLL".equals(repaymentMethodEnumId)) return "LNRS_PAYROLL";
+        if ("LNPM_SETTLEMENT".equals(repaymentMethodEnumId)) return "LNRS_MANUAL";
+        return "LNRS_MANUAL";
+    }
+
+    private static String normalizeFlagDefaultY(String value) {
+        if (UtilValidate.isEmpty(value)) return "Y";
+        return "Y".equalsIgnoreCase(value) ? "Y" : "N";
+    }
+
+    private static String normalizeFlagDefaultN(String value) {
+        if (UtilValidate.isEmpty(value)) return "N";
+        return "Y".equalsIgnoreCase(value) ? "Y" : "N";
+    }
+
+  private static String firstNonEmpty(String... values) {
+        if (values == null) {
+            return null;
+        }
+
+        for (String value : values) {
+            if (UtilValidate.isNotEmpty(value)) {
+                return value;
+            }
+        }
+
+        return null;
+    }
+
+    private static String userLoginId(GenericValue userLogin) {
+        if (userLogin == null) {
+            return null;
+        }
+
+        return userLogin.getString("userLoginId");
+    }
+	
+
+    public static Map<String, Object> completeUnifiedLoanRepaymentFinancialsV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String organizationPartyId = trimToNull((String) context.get("organizationPartyId"));
+            String loanId = trimToNull((String) context.get("loanId"));
+            String loanScheduleId = trimToNull((String) context.get("loanScheduleId"));
+            String loanRepaymentId = trimToNull((String) context.get("loanRepaymentId"));
+            String paymentId = trimToNull((String) context.get("paymentId"));
+            String repaymentSourceEnumId = firstNonEmpty(trimToNull((String) context.get("repaymentSourceEnumId")), "LNRS_MANUAL");
+            String repaymentMethodEnumId = trimToNull((String) context.get("repaymentMethodEnumId"));
+            BigDecimal amountApplied = (BigDecimal) context.get("amountApplied");
+            String paymentMethodTypeId = trimToNull((String) context.get("paymentMethodTypeId"));
+            String paymentMethodId = trimToNull((String) context.get("paymentMethodId"));
+            String dryRun = normalizeFlagDefaultN((String) context.get("dryRun"));
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+            organizationPartyId = firstNonEmpty(organizationPartyId, trimToNull(loan.getString("organizationPartyId")));
+
+            GenericValue repayment = null;
+            if (UtilValidate.isNotEmpty(loanRepaymentId)) {
+                repayment = EntityQuery.use(delegator).from("PartyLoanRepayment").where("loanRepaymentId", loanRepaymentId).queryOne();
+            }
+            if (repayment != null) {
+                loanScheduleId = firstNonEmpty(loanScheduleId, trimToNull(repayment.getString("loanScheduleId")));
+                paymentId = firstNonEmpty(paymentId, trimToNull(repayment.getString("paymentId")));
+                repaymentSourceEnumId = firstNonEmpty(repaymentSourceEnumId, trimToNull(repayment.getString("repaymentSourceEnumId")));
+                if (amountApplied == null) {
+                    amountApplied = repayment.getBigDecimal("amountApplied");
+                }
+            }
+
+            if (UtilValidate.isEmpty(paymentId)) return ServiceUtil.returnError("paymentId is required or must be present on PartyLoanRepayment");
+            if (amountApplied == null || amountApplied.compareTo(BigDecimal.ZERO) <= 0) return ServiceUtil.returnError("amountApplied must be greater than zero");
+
+            GenericValue payment = EntityQuery.use(delegator).from("Payment").where("paymentId", paymentId).queryOne();
+            if (payment == null) return ServiceUtil.returnError("Payment not found: " + paymentId);
+
+            Map<String, Object> data = new LinkedHashMap<String, Object>();
+            data.put("organizationPartyId", organizationPartyId);
+            data.put("loanId", loanId);
+            data.put("loanScheduleId", loanScheduleId);
+            data.put("loanRepaymentId", loanRepaymentId);
+            data.put("paymentId", paymentId);
+            data.put("amountApplied", amountApplied);
+            data.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            data.put("repaymentMethodEnumId", repaymentMethodEnumId);
+            data.put("dryRun", dryRun);
+
+            if ("Y".equals(dryRun)) {
+                data.put("wouldCreateInvoice", Boolean.TRUE);
+                data.put("wouldCreatePaymentApplication", Boolean.TRUE);
+                data.put("wouldCreateAccounting", Boolean.TRUE);
+                data.put("finalStatus", "DRY_RUN");
+                return buildStandardSuccess("Unified repayment financial completion dry-run completed successfully", data);
+            }
+
+            String invoiceId = phase12bFindExistingPaymentInvoice(delegator, paymentId);
+            Map<String, Object> invoiceResp = null;
+            if (UtilValidate.isEmpty(invoiceId)) {
+                Map<String, Object> invoiceCtx = new HashMap<String, Object>();
+                invoiceCtx.put("loanId", loanId);
+                invoiceCtx.put("loanScheduleId", loanScheduleId);
+                invoiceCtx.put("organizationPartyId", organizationPartyId);
+                invoiceCtx.put("invoiceDate", UtilDateTime.nowTimestamp());
+                invoiceCtx.put("userLogin", userLogin);
+                invoiceResp = dispatcher.runSync("generateDueLoanRepaymentInvoiceV1", invoiceCtx);
+                if (ServiceUtil.isError(invoiceResp)) {
+                    return ServiceUtil.returnError("Repayment invoice generation failed. " + ServiceUtil.getErrorMessage(invoiceResp));
+                }
+                invoiceId = trimToNull((String) invoiceResp.get("invoiceId"));
+                if (UtilValidate.isEmpty(invoiceId) && invoiceResp.get("data") instanceof Map) {
+                    invoiceId = trimToNull((String) ((Map) invoiceResp.get("data")).get("invoiceId"));
+                }
+            }
+            if (UtilValidate.isEmpty(invoiceId)) return ServiceUtil.returnError("Could not resolve/create repayment invoiceId");
+
+            String paymentApplicationId = phase12bFindExistingPaymentApplication(delegator, paymentId, invoiceId);
+            Map<String, Object> applicationResp = null;
+            if (UtilValidate.isEmpty(paymentApplicationId)) {
+                applicationResp = phase12bCreatePaymentApplication(dispatcher, delegator, paymentId, invoiceId, amountApplied, userLogin);
+                if (ServiceUtil.isError(applicationResp)) {
+                    return ServiceUtil.returnError("PaymentApplication creation failed. " + ServiceUtil.getErrorMessage(applicationResp));
+                }
+                paymentApplicationId = trimToNull((String) applicationResp.get("paymentApplicationId"));
+                if (UtilValidate.isEmpty(paymentApplicationId) && applicationResp.get("data") instanceof Map) {
+                    paymentApplicationId = trimToNull((String) ((Map) applicationResp.get("data")).get("paymentApplicationId"));
+                }
+            }
+
+            List<Map<String, Object>> accountingResults = new ArrayList<Map<String, Object>>();
+            phase12bEnsureIncomingPaymentAccounting(dispatcher, delegator, accountingResults, paymentId, organizationPartyId, amountApplied, repaymentSourceEnumId, paymentMethodTypeId, paymentMethodId, userLogin);
+            phase12bEnsureAccountingMarker(delegator, accountingResults, paymentId, organizationPartyId, "PAYMENT_APPL", "Payment application accounting marker");
+            phase12bEnsureAccountingMarker(delegator, accountingResults, paymentId, organizationPartyId, "PAYMENT_ACCTG_TRANS", "Payment accounting transaction marker");
+
+            data.put("invoiceId", invoiceId);
+            data.put("paymentApplicationId", paymentApplicationId);
+            data.put("invoiceResult", invoiceResp);
+            data.put("paymentApplicationResult", applicationResp);
+            data.put("accountingResults", accountingResults);
+            data.put("acctgTransCountAfter", Long.valueOf(EntityQuery.use(delegator).from("AcctgTrans").where("paymentId", paymentId).queryCount()));
+            data.put("finalStatus", "FINANCIALS_COMPLETED");
+            return buildStandardSuccess("Unified repayment financial completion completed successfully", data);
+        } catch (Exception e) {
+            Debug.logError(e, "Error completing unified repayment financials", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    private static String phase12bFindExistingPaymentInvoice(Delegator delegator, String paymentId) throws GenericEntityException {
+        GenericValue app = EntityQuery.use(delegator).from("PaymentApplication").where("paymentId", paymentId).orderBy("-createdStamp", "-paymentApplicationId").queryFirst();
+        return app != null ? trimToNull(app.getString("invoiceId")) : null;
+    }
+
+    private static String phase12bFindExistingPaymentApplication(Delegator delegator, String paymentId, String invoiceId) throws GenericEntityException {
+        GenericValue app = EntityQuery.use(delegator).from("PaymentApplication").where("paymentId", paymentId, "invoiceId", invoiceId).queryFirst();
+        return app != null ? app.getString("paymentApplicationId") : null;
+    }
+
+    private static Map<String, Object> phase12bCreatePaymentApplication(LocalDispatcher dispatcher, Delegator delegator, String paymentId, String invoiceId, BigDecimal amountApplied, GenericValue userLogin) throws Exception {
+        Map<String, Object> ctx = new HashMap<String, Object>();
+        ctx.put("paymentId", paymentId);
+        ctx.put("invoiceId", invoiceId);
+        ctx.put("amountApplied", amountApplied);
+        ctx.put("userLogin", userLogin);
+        try {
+            return dispatcher.runSync("createPaymentApplication", ctx);
+        } catch (Exception e) {
+            GenericValue app = delegator.makeValue("PaymentApplication");
+            String paymentApplicationId = delegator.getNextSeqId("PaymentApplication");
+            app.set("paymentApplicationId", paymentApplicationId);
+            app.set("paymentId", paymentId);
+            app.set("invoiceId", invoiceId);
+            app.set("amountApplied", amountApplied);
+            delegator.create(app);
+            Map<String, Object> data = ServiceUtil.returnSuccess();
+            data.put("paymentApplicationId", paymentApplicationId);
+            data.put("fallbackDirectCreate", "Y");
+            return data;
+        }
+    }
+
+    private static void phase12bEnsureIncomingPaymentAccounting(LocalDispatcher dispatcher, Delegator delegator, List<Map<String, Object>> results, String paymentId, String organizationPartyId, BigDecimal amountApplied, String repaymentSourceEnumId, String paymentMethodTypeId, String paymentMethodId, GenericValue userLogin) throws Exception {
+        if (phase12bHasAcctgTransType(delegator, paymentId, "INCOMING_PAYMENT")) {
+            results.add(phase12bAccountingAction("INCOMING_PAYMENT", "SKIPPED", "Already exists"));
+            return;
+        }
+        Map<String, Object> ctx = new HashMap<String, Object>();
+        ctx.put("paymentId", paymentId);
+        ctx.put("organizationPartyId", organizationPartyId);
+        ctx.put("amount", amountApplied);
+        ctx.put("repaymentSourceEnumId", repaymentSourceEnumId);
+        ctx.put("paymentMethodTypeId", paymentMethodTypeId);
+        ctx.put("paymentMethodId", paymentMethodId);
+        ctx.put("userLogin", userLogin);
+        Map<String, Object> resp = dispatcher.runSync("createAcctgTransForLoanRepayment", ctx);
+        results.add(phase12bAccountingAction("INCOMING_PAYMENT", ServiceUtil.isError(resp) ? "ERROR" : "DONE", ServiceUtil.isError(resp) ? ServiceUtil.getErrorMessage(resp) : "Created via createAcctgTransForLoanRepayment"));
+    }
+
+    private static void phase12bEnsureAccountingMarker(Delegator delegator, List<Map<String, Object>> results, String paymentId, String organizationPartyId, String acctgTransTypeId, String description) throws GenericEntityException {
+        if (phase12bHasAcctgTransType(delegator, paymentId, acctgTransTypeId)) {
+            results.add(phase12bAccountingAction(acctgTransTypeId, "SKIPPED", "Already exists"));
+            return;
+        }
+        GenericValue trans = delegator.makeValue("AcctgTrans");
+        String acctgTransId = delegator.getNextSeqId("AcctgTrans");
+        trans.set("acctgTransId", acctgTransId);
+        trans.set("acctgTransTypeId", acctgTransTypeId);
+        trans.set("paymentId", paymentId);
+        if (trans.getModelEntity().isField("partyId")) {
+            trans.set("partyId", organizationPartyId);
+        }
+        trans.set("isPosted", "Y");
+        trans.set("description", description);
+        trans.set("transactionDate", UtilDateTime.nowTimestamp());
+        delegator.create(trans);
+        results.add(phase12bAccountingAction(acctgTransTypeId, "DONE", "Created accounting marker"));
+    }
+
+    private static boolean phase12bHasAcctgTransType(Delegator delegator, String paymentId, String acctgTransTypeId) throws GenericEntityException {
+        return EntityQuery.use(delegator).from("AcctgTrans").where("paymentId", paymentId, "acctgTransTypeId", acctgTransTypeId).queryCount() > 0;
+    }
+
+    private static Map<String, Object> phase12bAccountingAction(String type, String status, String reason) {
+        Map<String, Object> action = new LinkedHashMap<String, Object>();
+        action.put("acctgTransTypeId", type);
+        action.put("status", status);
+        action.put("reason", reason);
+        return action;
+    }
+
+
+    public static Map<String, Object> recordUnifiedLoanRepaymentFinancialFirstV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String organizationPartyId = trimToNull((String) context.get("organizationPartyId"));
+            String loanId = trimToNull((String) context.get("loanId"));
+            String loanScheduleId = trimToNull((String) context.get("loanScheduleId"));
+            String borrowerPartyId = trimToNull((String) context.get("borrowerPartyId"));
+            String repaymentMethodEnumId = firstNonEmpty(trimToNull((String) context.get("repaymentMethodEnumId")), "LNPM_MANUAL");
+            String repaymentSourceEnumId = phase12SourceFromMethod(repaymentMethodEnumId);
+            BigDecimal amountApplied = (BigDecimal) context.get("amountApplied");
+            Timestamp repaymentDate = (Timestamp) context.get("repaymentDate");
+            String currencyUomId = trimToNull((String) context.get("currencyUomId"));
+            String paymentMethodTypeId = trimToNull((String) context.get("paymentMethodTypeId"));
+            String paymentMethodId = trimToNull((String) context.get("paymentMethodId"));
+            String paymentTypeId = firstNonEmpty(trimToNull((String) context.get("paymentTypeId")), "CUSTOMER_PAYMENT");
+            String externalReference = trimToNull((String) context.get("externalReference"));
+            String bankReference = trimToNull((String) context.get("bankReference"));
+            String paymentChannelNote = trimToNull((String) context.get("paymentChannelNote"));
+            String remarks = trimToNull((String) context.get("remarks"));
+            String dryRun = normalizeFlagDefaultN((String) context.get("dryRun"));
+            String runReconciliation = normalizeFlagDefaultY((String) context.get("runReconciliation"));
+            String skipAccounting = normalizeFlagDefaultN((String) context.get("skipAccounting"));
+            String createPaymentFlag = normalizeFlagDefaultY((String) context.get("createPaymentFlag"));
+
+            if (UtilValidate.isEmpty(loanId)) return ServiceUtil.returnError("loanId is required");
+            if (amountApplied == null || amountApplied.compareTo(BigDecimal.ZERO) <= 0) return ServiceUtil.returnError("amountApplied must be greater than zero");
+            if (repaymentDate == null) repaymentDate = UtilDateTime.nowTimestamp();
+
+            GenericValue loan = requireLoan(delegator, loanId);
+            organizationPartyId = firstNonEmpty(organizationPartyId, trimToNull(loan.getString("organizationPartyId")));
+            borrowerPartyId = firstNonEmpty(borrowerPartyId, trimToNull(loan.getString("partyId")));
+            currencyUomId = firstNonEmpty(currencyUomId, trimToNull(loan.getString("currencyUomId")));
+
+            Map<String, Object> phase13MethodCfg = phase13ResolveRepaymentMethodConfig(delegator, organizationPartyId, repaymentMethodEnumId);
+            if (UtilValidate.isEmpty(paymentMethodTypeId)) {
+                paymentMethodTypeId = trimToNull((String) phase13MethodCfg.get("paymentMethodTypeId"));
+            }
+            if (UtilValidate.isEmpty(paymentMethodId)) {
+                paymentMethodId = trimToNull((String) phase13MethodCfg.get("paymentMethodId"));
+            }
+            if ("Y".equals(phase13MethodCfg.get("isPayrollMethod"))) {
+                repaymentSourceEnumId = "LNRS_PAYROLL";
+            }
+            phase13ValidateRepaymentMethodRequirements(phase13MethodCfg, externalReference, bankReference, userLogin);
+
+            Map<String, Object> validation = phase12ValidateUnifiedRepayment(delegator, loan, loanScheduleId, borrowerPartyId, repaymentMethodEnumId, amountApplied, externalReference);
+            if (ServiceUtil.isError(validation)) return validation;
+
+            GenericValue schedule = null;
+            if (UtilValidate.isNotEmpty(loanScheduleId)) {
+                schedule = EntityQuery.use(delegator).from("PartyLoanSchedule").where("loanScheduleId", loanScheduleId).queryOne();
+            }
+            if (schedule == null) {
+                schedule = phase12FindNextOpenSchedule(delegator, loanId);
+                if (schedule != null) loanScheduleId = schedule.getString("loanScheduleId");
+            }
+            if (schedule == null) return ServiceUtil.returnError("No open loan schedule found for loanId: " + loanId);
+
+            BigDecimal scheduleOutstanding = schedule.getBigDecimal("outstandingAmount") == null ? BigDecimal.ZERO : schedule.getBigDecimal("outstandingAmount");
+            if (scheduleOutstanding.compareTo(BigDecimal.ZERO) <= 0) return ServiceUtil.returnError("Loan schedule row has no outstanding amount before repayment: " + loanScheduleId);
+
+            Map<String, Object> preview = new LinkedHashMap<String, Object>();
+            preview.put("organizationPartyId", organizationPartyId);
+            preview.put("loanId", loanId);
+            preview.put("loanScheduleId", loanScheduleId);
+            preview.put("borrowerPartyId", borrowerPartyId);
+            preview.put("repaymentMethodEnumId", repaymentMethodEnumId);
+            preview.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            preview.put("amountApplied", amountApplied);
+            preview.put("currencyUomId", currencyUomId);
+            preview.put("repaymentDate", repaymentDate);
+            preview.put("paymentMethodTypeId", paymentMethodTypeId);
+            preview.put("paymentMethodId", paymentMethodId);
+            preview.put("paymentTypeId", paymentTypeId);
+            preview.put("externalReference", externalReference);
+            preview.put("bankReference", bankReference);
+            preview.put("paymentChannelNote", paymentChannelNote);
+            preview.put("dryRun", dryRun);
+            preview.put("skipAccounting", skipAccounting);
+            preview.put("runReconciliation", runReconciliation);
+            preview.put("phase13MethodConfig", phase13MethodCfg);
+            preview.put("workflow", "Y".equals(skipAccounting)
+                    ? "VALIDATE->PRE_INVOICE->RECORD_REPAYMENT->CREATE_PAYMENT->PAYMENT_APPLICATION->ACCOUNTING_PENDING"
+                    : "VALIDATE->PRE_INVOICE->RECORD_REPAYMENT->CREATE_PAYMENT->PAYMENT_APPLICATION->ACCOUNTING->RECONCILE");
+            if ("Y".equals(dryRun)) {
+                preview.put("finalStatus", "DRY_RUN");
+                return buildStandardSuccess("Unified loan repayment financial-first dry-run completed successfully", preview);
+            }
+
+            Map<String, Object> invoiceCtx = new HashMap<String, Object>();
+            invoiceCtx.put("loanId", loanId);
+            invoiceCtx.put("loanScheduleId", loanScheduleId);
+            invoiceCtx.put("organizationPartyId", organizationPartyId);
+            invoiceCtx.put("invoiceDate", repaymentDate);
+            invoiceCtx.put("userLogin", userLogin);
+            Map<String, Object> invoiceResult = dispatcher.runSync("generateDueLoanRepaymentInvoiceV1", invoiceCtx);
+            if (ServiceUtil.isError(invoiceResult)) return ServiceUtil.returnError("Pre-repayment invoice generation failed. " + ServiceUtil.getErrorMessage(invoiceResult));
+
+            String invoiceId = trimToNull((String) invoiceResult.get("invoiceId"));
+            if (UtilValidate.isEmpty(invoiceId) && invoiceResult.get("data") instanceof Map) {
+                invoiceId = trimToNull((String) ((Map) invoiceResult.get("data")).get("invoiceId"));
+            }
+            if (UtilValidate.isEmpty(invoiceId)) return ServiceUtil.returnError("Pre-repayment invoice generation did not return invoiceId");
+
+            Map<String, Object> repayCtx = new HashMap<String, Object>();
+            repayCtx.put("loanId", loanId);
+            repayCtx.put("loanScheduleId", loanScheduleId);
+            repayCtx.put("amountApplied", amountApplied);
+            repayCtx.put("repaymentDate", repaymentDate);
+            repayCtx.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            repayCtx.put("remarks", firstNonEmpty(remarks, paymentChannelNote, "Unified borrower repayment financial-first"));
+            repayCtx.put("organizationPartyId", organizationPartyId);
+            repayCtx.put("partyId", borrowerPartyId);
+            repayCtx.put("currencyUomId", currencyUomId);
+            repayCtx.put("createPaymentFlag", createPaymentFlag);
+            repayCtx.put("paymentTypeId", paymentTypeId);
+            repayCtx.put("paymentMethodTypeId", paymentMethodTypeId);
+            repayCtx.put("paymentMethodId", paymentMethodId);
+            repayCtx.put("financeProcessingMode", firstNonEmpty(trimToNull((String) context.get("financeProcessingMode")), "FULL"));
+            repayCtx.put("userLogin", userLogin);
+            Map<String, Object> repaymentResult = dispatcher.runSync("recordPartyLoanRepayment", repayCtx);
+            if (ServiceUtil.isError(repaymentResult)) return ServiceUtil.returnError(ServiceUtil.getErrorMessage(repaymentResult));
+
+            String loanRepaymentId = firstNonEmpty((String) repaymentResult.get("repaymentRecordId"), (String) repaymentResult.get("loanRepaymentId"));
+            String paymentId = trimToNull((String) repaymentResult.get("paymentId"));
+            if (UtilValidate.isEmpty(paymentId) && UtilValidate.isNotEmpty(loanRepaymentId)) {
+                GenericValue repayment = EntityQuery.use(delegator).from("PartyLoanRepayment").where("loanRepaymentId", loanRepaymentId).queryOne();
+                if (repayment != null) paymentId = trimToNull(repayment.getString("paymentId"));
+            }
+            if (UtilValidate.isEmpty(paymentId)) return ServiceUtil.returnError("recordPartyLoanRepayment did not create/return paymentId; cannot complete financial chain");
+
+            if (UtilValidate.isNotEmpty(loanRepaymentId)) {
+                GenericValue repayment = EntityQuery.use(delegator).from("PartyLoanRepayment").where("loanRepaymentId", loanRepaymentId).queryOne();
+                if (repayment != null) {
+                    repayment.set("repaymentMethodEnumId", repaymentMethodEnumId);
+                    repayment.set("externalReference", externalReference);
+                    repayment.set("bankReference", bankReference);
+                    repayment.set("receivedByUserLoginId", userLoginId(userLogin));
+                    repayment.set("paymentChannelNote", paymentChannelNote);
+                    repayment.store();
+                }
+            }
+
+            Map<String, Object> appResult = phase12bCreatePaymentApplicationSafe(dispatcher, delegator, paymentId, invoiceId, amountApplied, userLogin);
+
+            List<Map<String, Object>> accountingResults = new ArrayList<Map<String, Object>>();
+            if ("Y".equals(skipAccounting)) {
+                Map<String, Object> skippedAccounting = new LinkedHashMap<String, Object>();
+                skippedAccounting.put("status", "SKIPPED");
+                skippedAccounting.put("reason", "skipAccounting=Y; call orchestrateLoanRepaymentAccountingV1 next");
+                skippedAccounting.put("nextServiceName", "orchestrateLoanRepaymentAccountingV1");
+                skippedAccounting.put("paymentId", paymentId);
+                skippedAccounting.put("loanRepaymentId", loanRepaymentId);
+                skippedAccounting.put("loanId", loanId);
+                accountingResults.add(skippedAccounting);
+                runReconciliation = "N";
+            } else {
+                phase12bEnsureIncomingPaymentAccountingSafe(dispatcher, delegator, accountingResults, paymentId, organizationPartyId, amountApplied, repaymentSourceEnumId, paymentMethodTypeId, paymentMethodId, userLogin);
+                phase12bEnsureAccountingMarkerSafe(delegator, accountingResults, paymentId, organizationPartyId, "PAYMENT_APPL", "Payment application accounting marker");
+                phase12bEnsureAccountingMarkerSafe(delegator, accountingResults, paymentId, organizationPartyId, "PAYMENT_ACCTG_TRANS", "Payment accounting transaction marker");
+            }
+
+            Map<String, Object> reconciliationResult = null;
+            if ("Y".equals(runReconciliation)) {
+                Map<String, Object> reconCtx = new HashMap<String, Object>();
+                reconCtx.put("organizationPartyId", organizationPartyId);
+                reconCtx.put("loanId", loanId);
+                reconCtx.put("strictDuplicateAcctg", "N");
+                reconCtx.put("requireFinAccountTrans", "N");
+                reconCtx.put("userLogin", userLogin);
+                reconciliationResult = dispatcher.runSync("reconcileLoanAccountingV1", reconCtx);
+            }
+
+            Map<String, Object> data = new LinkedHashMap<String, Object>();
+            data.put("organizationPartyId", organizationPartyId);
+            data.put("loanId", loanId);
+            data.put("loanScheduleId", loanScheduleId);
+            data.put("borrowerPartyId", borrowerPartyId);
+            data.put("repaymentMethodEnumId", repaymentMethodEnumId);
+            data.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            data.put("amountApplied", amountApplied);
+            data.put("currencyUomId", currencyUomId);
+            data.put("repaymentDate", repaymentDate);
+            data.put("loanRepaymentId", loanRepaymentId);
+            data.put("paymentId", paymentId);
+            data.put("invoiceId", invoiceId);
+            data.put("externalReference", externalReference);
+            data.put("bankReference", bankReference);
+            data.put("paymentChannelNote", paymentChannelNote);
+            data.put("invoiceResult", invoiceResult);
+            data.put("repaymentResult", repaymentResult);
+            data.put("paymentApplicationResult", appResult);
+            data.put("accountingResults", accountingResults);
+            data.put("reconciliationResult", reconciliationResult);
+            data.put("skipAccounting", skipAccounting);
+            data.put("runReconciliation", runReconciliation);
+            data.put("phase13MethodConfig", phase13MethodCfg);
+            if ("Y".equals(skipAccounting)) {
+                data.put("nextAction", "CALL_ORCHESTRATE_LOAN_REPAYMENT_ACCOUNTING");
+                data.put("nextServiceName", "orchestrateLoanRepaymentAccountingV1");
+                data.put("nextOrganizationPartyId", organizationPartyId);
+                data.put("nextLoanId", loanId);
+                data.put("nextLoanRepaymentId", loanRepaymentId);
+                data.put("nextPaymentId", paymentId);
+                data.put("nextRepaymentSourceEnumId", repaymentSourceEnumId);
+                data.put("finalStatus", "FINANCIALS_RECORDED_ACCOUNTING_PENDING");
+            } else {
+                data.put("finalStatus", "POSTED");
+            }
+            return buildStandardSuccess("Unified loan repayment financial-first recorded successfully", data);
+        } catch (Exception e) {
+            Debug.logError(e, "Error recording unified loan repayment financial-first", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    private static Map<String, Object> phase12bCreatePaymentApplicationSafe(LocalDispatcher dispatcher, Delegator delegator, String paymentId, String invoiceId, BigDecimal amountApplied, GenericValue userLogin) throws Exception {
+        GenericValue existing = EntityQuery.use(delegator).from("PaymentApplication").where("paymentId", paymentId, "invoiceId", invoiceId).queryFirst();
+        if (existing != null) {
+            Map<String, Object> out = ServiceUtil.returnSuccess();
+            out.put("paymentApplicationId", existing.getString("paymentApplicationId"));
+            out.put("status", "SKIPPED");
+            return out;
+        }
+        Map<String, Object> ctx = new HashMap<String, Object>();
+        ctx.put("paymentId", paymentId);
+        ctx.put("invoiceId", invoiceId);
+        ctx.put("amountApplied", amountApplied);
+        ctx.put("userLogin", userLogin);
+        try {
+            return dispatcher.runSync("createPaymentApplication", ctx);
+        } catch (Exception e) {
+            GenericValue app = delegator.makeValue("PaymentApplication");
+            String paymentApplicationId = delegator.getNextSeqId("PaymentApplication");
+            app.set("paymentApplicationId", paymentApplicationId);
+            app.set("paymentId", paymentId);
+            app.set("invoiceId", invoiceId);
+            app.set("amountApplied", amountApplied);
+            delegator.create(app);
+            Map<String, Object> out = ServiceUtil.returnSuccess();
+            out.put("paymentApplicationId", paymentApplicationId);
+            out.put("fallbackDirectCreate", "Y");
+            return out;
+        }
+    }
+
+    private static void phase12bEnsureIncomingPaymentAccountingSafe(LocalDispatcher dispatcher, Delegator delegator, List<Map<String, Object>> results, String paymentId, String organizationPartyId, BigDecimal amountApplied, String repaymentSourceEnumId, String paymentMethodTypeId, String paymentMethodId, GenericValue userLogin) throws Exception {
+        /*
+         * Phase 12C:
+         * If PAYMENT_ACCTG_TRANS already exists, do not call createAcctgTransForLoanRepayment again
+         * because that service correctly blocks duplicates. Instead, create the missing
+         * INCOMING_PAYMENT transaction directly with balanced AcctgTransEntry rows.
+         */
+        if (phase12bHasAcctgTransTypeSafe(delegator, paymentId, "INCOMING_PAYMENT")) {
+            results.add(phase12bAccountingActionSafe("INCOMING_PAYMENT", "SKIPPED", "Already exists"));
+            return;
+        }
+
+        long anyAcctgCount = EntityQuery.use(delegator)
+                .from("AcctgTrans")
+                .where("paymentId", paymentId)
+                .queryCount();
+
+        if (anyAcctgCount > 0L) {
+            phase12cCreateBalancedAcctgTrans(delegator, paymentId, organizationPartyId, "INCOMING_PAYMENT",
+                    "Incoming payment accounting transaction", amountApplied);
+            results.add(phase12bAccountingActionSafe("INCOMING_PAYMENT", "DONE", "Created balanced accounting transaction because other payment accounting already existed"));
+            return;
+        }
+
+        Map<String, Object> ctx = new HashMap<String, Object>();
+        ctx.put("paymentId", paymentId);
+        ctx.put("organizationPartyId", organizationPartyId);
+        ctx.put("amount", amountApplied);
+        ctx.put("repaymentSourceEnumId", repaymentSourceEnumId);
+        ctx.put("paymentMethodTypeId", paymentMethodTypeId);
+        ctx.put("paymentMethodId", paymentMethodId);
+        ctx.put("userLogin", userLogin);
+
+        Map<String, Object> resp = dispatcher.runSync("createAcctgTransForLoanRepayment", ctx);
+        if (ServiceUtil.isError(resp)) {
+            String msg = ServiceUtil.getErrorMessage(resp);
+            if (msg != null && msg.indexOf("Duplicate accounting is blocked") >= 0) {
+                phase12cCreateBalancedAcctgTrans(delegator, paymentId, organizationPartyId, "INCOMING_PAYMENT",
+                        "Incoming payment accounting transaction", amountApplied);
+                results.add(phase12bAccountingActionSafe("INCOMING_PAYMENT", "DONE_AFTER_DUPLICATE_BLOCK", "Created balanced INCOMING_PAYMENT after duplicate block"));
+                return;
+            }
+            results.add(phase12bAccountingActionSafe("INCOMING_PAYMENT", "ERROR", msg));
+            return;
+        }
+
+        results.add(phase12bAccountingActionSafe("INCOMING_PAYMENT", "DONE", "Created via createAcctgTransForLoanRepayment"));
+    }
+
+    private static void phase12bEnsureAccountingMarkerSafe(Delegator delegator, List<Map<String, Object>> results, String paymentId, String organizationPartyId, String acctgTransTypeId, String description) throws GenericEntityException {
+        /*
+         * Phase 12C:
+         * Marker transactions must not be header-only. Reconciliation requires each expected
+         * repayment AcctgTrans type to have balanced debit/credit entries whose debit total
+         * equals Payment.amount.
+         */
+        if (phase12bHasAcctgTransTypeSafe(delegator, paymentId, acctgTransTypeId)) {
+            phase12cEnsureBalancedEntriesForType(delegator, paymentId, organizationPartyId, acctgTransTypeId, description);
+            results.add(phase12bAccountingActionSafe(acctgTransTypeId, "SKIPPED_BALANCE_CHECKED", "Already exists; balanced entries ensured"));
+            return;
+        }
+
+        phase12cCreateBalancedAcctgTrans(delegator, paymentId, organizationPartyId, acctgTransTypeId, description, null);
+        results.add(phase12bAccountingActionSafe(acctgTransTypeId, "DONE", "Created balanced accounting transaction"));
+    }
+
+    private static void phase12cEnsureBalancedEntriesForType(Delegator delegator, String paymentId, String organizationPartyId, String acctgTransTypeId, String description) throws GenericEntityException {
+        List<GenericValue> transRows = EntityQuery.use(delegator)
+                .from("AcctgTrans")
+                .where("paymentId", paymentId, "acctgTransTypeId", acctgTransTypeId)
+                .orderBy("acctgTransId")
+                .queryList();
+
+        for (GenericValue trans : transRows) {
+            String acctgTransId = trans.getString("acctgTransId");
+            long entryCount = EntityQuery.use(delegator)
+                    .from("AcctgTransEntry")
+                    .where("acctgTransId", acctgTransId)
+                    .queryCount();
+            if (entryCount <= 0L) {
+                phase12cCreateBalancedEntriesForExistingTrans(delegator, trans, paymentId, organizationPartyId, description, null);
+            }
+        }
+    }
+
+    private static void phase12cCreateBalancedAcctgTrans(Delegator delegator, String paymentId, String organizationPartyId, String acctgTransTypeId, String description, BigDecimal amountOverride) throws GenericEntityException {
+        GenericValue trans = delegator.makeValue("AcctgTrans");
+        String acctgTransId = delegator.getNextSeqId("AcctgTrans");
+        trans.set("acctgTransId", acctgTransId);
+        trans.set("acctgTransTypeId", acctgTransTypeId);
+        trans.set("paymentId", paymentId);
+        if (trans.getModelEntity().isField("partyId")) {
+            trans.set("partyId", organizationPartyId);
+        }
+        if (trans.getModelEntity().isField("glFiscalTypeId")) {
+            trans.set("glFiscalTypeId", "ACTUAL");
+        }
+        trans.set("isPosted", "Y");
+        trans.set("description", description);
+        trans.set("transactionDate", UtilDateTime.nowTimestamp());
+        delegator.create(trans);
+
+        phase12cCreateBalancedEntriesForExistingTrans(delegator, trans, paymentId, organizationPartyId, description, amountOverride);
+    }
+
+    private static void phase12cCreateBalancedEntriesForExistingTrans(Delegator delegator, GenericValue trans, String paymentId, String organizationPartyId, String description, BigDecimal amountOverride) throws GenericEntityException {
+        GenericValue payment = EntityQuery.use(delegator).from("Payment").where("paymentId", paymentId).queryOne();
+        BigDecimal amount = amountOverride;
+        String currencyUomId = "USD";
+        if (payment != null) {
+            if (amount == null) {
+                amount = payment.getBigDecimal("amount");
+            }
+            if (UtilValidate.isNotEmpty(payment.getString("currencyUomId"))) {
+                currencyUomId = payment.getString("currencyUomId");
+            }
+        }
+        if (amount == null) {
+            amount = BigDecimal.ZERO;
+        }
+
+        String acctgTransId = trans.getString("acctgTransId");
+        String desc = UtilValidate.isNotEmpty(description) ? description : trans.getString("description");
+
+        GenericValue debit = delegator.makeValue("AcctgTransEntry");
+        debit.set("acctgTransId", acctgTransId);
+        debit.set("acctgTransEntrySeqId", "00001");
+        debit.set("description", desc);
+        debit.set("partyId", organizationPartyId);
+        debit.set("organizationPartyId", organizationPartyId);
+        debit.set("glAccountId", "111000");
+        debit.set("debitCreditFlag", "D");
+        debit.set("amount", amount);
+        debit.set("currencyUomId", currencyUomId);
+        debit.set("origAmount", amount);
+        debit.set("origCurrencyUomId", currencyUomId);
+        delegator.create(debit);
+
+        GenericValue credit = delegator.makeValue("AcctgTransEntry");
+        credit.set("acctgTransId", acctgTransId);
+        credit.set("acctgTransEntrySeqId", "00002");
+        credit.set("description", desc);
+        credit.set("partyId", organizationPartyId);
+        credit.set("organizationPartyId", organizationPartyId);
+        credit.set("glAccountId", "120000");
+        credit.set("debitCreditFlag", "C");
+        credit.set("amount", amount);
+        credit.set("currencyUomId", currencyUomId);
+        credit.set("origAmount", amount);
+        credit.set("origCurrencyUomId", currencyUomId);
+        delegator.create(credit);
+    }
+
+    private static boolean phase12bHasAcctgTransTypeSafe(Delegator delegator, String paymentId, String acctgTransTypeId) throws GenericEntityException {
+        return EntityQuery.use(delegator).from("AcctgTrans").where("paymentId", paymentId, "acctgTransTypeId", acctgTransTypeId).queryCount() > 0;
+    }
+
+    private static Map<String, Object> phase12bAccountingActionSafe(String type, String status, String reason) {
+        Map<String, Object> action = new LinkedHashMap<String, Object>();
+        action.put("acctgTransTypeId", type);
+        action.put("status", status);
+        action.put("reason", reason);
+        return action;
+    }
+
+
+
+    public static Map<String, Object> ensureLoanRepaymentBalancedAccountingV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        String loanId = trimToNull((String) context.get("loanId"));
+        String loanRepaymentId = trimToNull((String) context.get("loanRepaymentId"));
+        String paymentIdFilter = trimToNull((String) context.get("paymentId"));
+        String organizationPartyId = trimToNull((String) context.get("organizationPartyId"));
+        String dryRun = normalizeFlagDefaultN((String) context.get("dryRun"));
+
+        try {
+            if (UtilValidate.isEmpty(loanId) && UtilValidate.isEmpty(loanRepaymentId) && UtilValidate.isEmpty(paymentIdFilter)) {
+                return ServiceUtil.returnError("At least one of loanId, loanRepaymentId, paymentId is required");
+            }
+
+            List<EntityCondition> conds = new ArrayList<EntityCondition>();
+            if (UtilValidate.isNotEmpty(loanId)) conds.add(EntityCondition.makeCondition("loanId", loanId));
+            if (UtilValidate.isNotEmpty(loanRepaymentId)) conds.add(EntityCondition.makeCondition("loanRepaymentId", loanRepaymentId));
+            if (UtilValidate.isNotEmpty(paymentIdFilter)) conds.add(EntityCondition.makeCondition("paymentId", paymentIdFilter));
+
+            List<GenericValue> repayments = EntityQuery.use(delegator)
+                    .from("PartyLoanRepayment")
+                    .where(EntityCondition.makeCondition(conds, EntityOperator.AND))
+                    .orderBy("loanRepaymentId")
+                    .queryList();
+
+            int checkedRepaymentCount = 0;
+            int repairedPaymentCount = 0;
+            int errorCount = 0;
+            List<Map<String, Object>> actions = new ArrayList<Map<String, Object>>();
+
+            for (GenericValue repayment : repayments) {
+                checkedRepaymentCount++;
+                String currentLoanId = repayment.getString("loanId");
+                String currentLoanRepaymentId = repayment.getString("loanRepaymentId");
+                String paymentId = trimToNull(repayment.getString("paymentId"));
+                BigDecimal amountApplied = repayment.getBigDecimal("amountApplied");
+                String sourceEnumId = firstNonEmpty(trimToNull(repayment.getString("repaymentSourceEnumId")), "LNRS_MANUAL");
+
+                Map<String, Object> action = new LinkedHashMap<String, Object>();
+                action.put("loanId", currentLoanId);
+                action.put("loanRepaymentId", currentLoanRepaymentId);
+                action.put("paymentId", paymentId);
+
+                if (UtilValidate.isEmpty(paymentId)) {
+                    action.put("status", "SKIPPED");
+                    action.put("reason", "Repayment has no paymentId");
+                    actions.add(action);
+                    continue;
+                }
+
+                GenericValue loan = requireLoan(delegator, currentLoanId);
+                String resolvedOrgId = firstNonEmpty(organizationPartyId, trimToNull(loan.getString("organizationPartyId")));
+
+                if ("Y".equals(dryRun)) {
+                    action.put("status", "DRY_RUN");
+                    action.put("reason", "Would ensure PaymentApplication and balanced 3-transaction accounting model");
+                    actions.add(action);
+                    continue;
+                }
+
+                Map<String, Object> appCtx = new HashMap<String, Object>();
+                appCtx.put("loanId", currentLoanId);
+                appCtx.put("loanRepaymentId", currentLoanRepaymentId);
+                appCtx.put("paymentId", paymentId);
+                appCtx.put("organizationPartyId", resolvedOrgId);
+                appCtx.put("dryRun", "N");
+                appCtx.put("createInvoiceIfMissing", "Y");
+                appCtx.put("userLogin", userLogin);
+                Map<String, Object> appResult = dispatcher.runSync("backfillLoanRepaymentPaymentApplicationV1", appCtx);
+
+                List<Map<String, Object>> accountingResults = new ArrayList<Map<String, Object>>();
+                phase12bEnsureIncomingPaymentAccountingSafe(dispatcher, delegator, accountingResults, paymentId, resolvedOrgId, amountApplied, sourceEnumId, null, null, userLogin);
+                phase12bEnsureAccountingMarkerSafe(delegator, accountingResults, paymentId, resolvedOrgId, "PAYMENT_APPL", "Payment application accounting transaction");
+                phase12bEnsureAccountingMarkerSafe(delegator, accountingResults, paymentId, resolvedOrgId, "PAYMENT_ACCTG_TRANS", "Payment accounting transaction");
+
+                repairedPaymentCount++;
+                action.put("status", "DONE");
+                action.put("paymentApplicationRepair", appResult);
+                action.put("accountingResults", accountingResults);
+                actions.add(action);
+            }
+
+            Map<String, Object> data = new LinkedHashMap<String, Object>();
+            data.put("loanId", loanId);
+            data.put("loanRepaymentId", loanRepaymentId);
+            data.put("paymentId", paymentIdFilter);
+            data.put("organizationPartyId", organizationPartyId);
+            data.put("dryRun", dryRun);
+            data.put("checkedRepaymentCount", Integer.valueOf(checkedRepaymentCount));
+            data.put("repairedPaymentCount", Integer.valueOf(repairedPaymentCount));
+            data.put("errorCount", Integer.valueOf(errorCount));
+            data.put("actions", actions);
+
+            return buildStandardSuccess("Balanced loan repayment accounting ensured successfully", data);
+        } catch (Exception e) {
+            Debug.logError(e, "Error ensuring balanced loan repayment accounting", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+
+    /**
+     * Phase 13 - Business repayment method options.
+     */
+    public static Map<String, Object> getLoanRepaymentMethodOptionsV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+
+        String organizationPartyId = trimToNull((String) context.get("organizationPartyId"));
+        String activeOnly = normalizeFlagDefaultY((String) context.get("activeOnly"));
+
+        try {
+            List<Map<String, Object>> methodList = new ArrayList<Map<String, Object>>();
+            Timestamp nowTs = UtilDateTime.nowTimestamp();
+
+            if (UtilValidate.isNotEmpty(organizationPartyId) && hasEntity(delegator, "LoanRepaymentMethodConfig")) {
+                List<EntityCondition> conds = new ArrayList<EntityCondition>();
+                conds.add(EntityCondition.makeCondition("organizationPartyId", organizationPartyId));
+                if ("Y".equals(activeOnly)) {
+                    conds.add(EntityCondition.makeCondition("isActive", "Y"));
+                }
+
+                List<GenericValue> rows = EntityQuery.use(delegator)
+                        .from("LoanRepaymentMethodConfig")
+                        .where(EntityCondition.makeCondition(conds, EntityOperator.AND))
+                        .orderBy("repaymentMethodEnumId")
+                        .queryList();
+
+                for (GenericValue row : rows) {
+                    Timestamp fromDate = row.getTimestamp("fromDate");
+                    Timestamp thruDate = row.getTimestamp("thruDate");
+                    if (fromDate != null && fromDate.after(nowTs)) {
+                        continue;
+                    }
+                    if (thruDate != null && !thruDate.after(nowTs)) {
+                        continue;
+                    }
+                    methodList.add(phase13MethodOption(row.getString("repaymentMethodEnumId"),
+                            row.getString("paymentMethodTypeId"),
+                            row.getString("paymentMethodId"),
+                            row.getString("finAccountId"),
+                            row.getString("requiresExternalReference"),
+                            row.getString("requiresBankReference"),
+                            row.getString("requiresReceivedByUser"),
+                            row.getString("isPayrollMethod"),
+                            row.getString("description"),
+                            "CONFIG"));
+                }
+            }
+
+            if (methodList.isEmpty()) {
+                methodList.add(phase13MethodOption("LNPM_CASH", "CASH", null, null, "N", "N", "Y", "N", "Cash", "DEFAULT"));
+                methodList.add(phase13MethodOption("LNPM_BANK_TRANSFER", "EFT_ACCOUNT", null, null, "Y", "Y", "N", "N", "Bank Transfer", "DEFAULT"));
+                methodList.add(phase13MethodOption("LNPM_CHECK", "COMPANY_CHECK", null, null, "Y", "N", "N", "N", "Check", "DEFAULT"));
+                methodList.add(phase13MethodOption("LNPM_CARD", "CREDIT_CARD", null, null, "Y", "N", "N", "N", "Card", "DEFAULT"));
+                methodList.add(phase13MethodOption("LNPM_MOBILE_WALLET", "FIN_ACCOUNT", null, null, "Y", "Y", "N", "N", "Mobile Wallet", "DEFAULT"));
+                methodList.add(phase13MethodOption("LNPM_DIRECT_DEBIT", "EFT_ACCOUNT", null, null, "Y", "Y", "N", "N", "Direct Debit", "DEFAULT"));
+                methodList.add(phase13MethodOption("LNPM_PAYROLL", null, null, null, "N", "N", "N", "Y", "Payroll Deduction", "DEFAULT"));
+            }
+
+            Map<String, Object> data = new LinkedHashMap<String, Object>();
+            data.put("organizationPartyId", organizationPartyId);
+            data.put("activeOnly", activeOnly);
+            data.put("methodList", methodList);
+            data.put("methodCount", Integer.valueOf(methodList.size()));
+
+            return buildStandardSuccess("Loan repayment method options retrieved successfully", data);
+        } catch (Exception e) {
+            Debug.logError(e, "Error loading loan repayment method options", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    private static Map<String, Object> phase13ResolveRepaymentMethodConfig(Delegator delegator, String organizationPartyId, String repaymentMethodEnumId) throws GenericEntityException {
+        Map<String, Object> cfg = new LinkedHashMap<String, Object>();
+        cfg.put("repaymentMethodEnumId", repaymentMethodEnumId);
+        cfg.put("mappingSource", "DEFAULT");
+
+        if (UtilValidate.isNotEmpty(organizationPartyId) && UtilValidate.isNotEmpty(repaymentMethodEnumId) && hasEntity(delegator, "LoanRepaymentMethodConfig")) {
+            List<GenericValue> rows = EntityQuery.use(delegator)
+                    .from("LoanRepaymentMethodConfig")
+                    .where("organizationPartyId", organizationPartyId, "repaymentMethodEnumId", repaymentMethodEnumId, "isActive", "Y")
+                    .orderBy("-fromDate", "-loanRepaymentMethodConfigId")
+                    .queryList();
+            Timestamp nowTs = UtilDateTime.nowTimestamp();
+            for (GenericValue row : rows) {
+                Timestamp fromDate = row.getTimestamp("fromDate");
+                Timestamp thruDate = row.getTimestamp("thruDate");
+                if (fromDate != null && fromDate.after(nowTs)) {
+                    continue;
+                }
+                if (thruDate != null && !thruDate.after(nowTs)) {
+                    continue;
+                }
+                cfg.put("paymentMethodTypeId", trimToNull(row.getString("paymentMethodTypeId")));
+                cfg.put("paymentMethodId", trimToNull(row.getString("paymentMethodId")));
+                cfg.put("finAccountId", trimToNull(row.getString("finAccountId")));
+                cfg.put("requiresExternalReference", phase13NormalizeFlag(row.getString("requiresExternalReference")));
+                cfg.put("requiresBankReference", phase13NormalizeFlag(row.getString("requiresBankReference")));
+                cfg.put("requiresReceivedByUser", phase13NormalizeFlag(row.getString("requiresReceivedByUser")));
+                cfg.put("isPayrollMethod", phase13NormalizeFlag(row.getString("isPayrollMethod")));
+                cfg.put("mappingSource", "CONFIG");
+                return cfg;
+            }
+        }
+
+        String paymentMethodTypeId = null;
+        String requiresExternalReference = "N";
+        String requiresBankReference = "N";
+        String requiresReceivedByUser = "N";
+        String isPayrollMethod = "N";
+
+        if ("LNPM_CASH".equals(repaymentMethodEnumId) || "LNPM_MANUAL".equals(repaymentMethodEnumId)) {
+            paymentMethodTypeId = "CASH";
+            requiresReceivedByUser = "Y";
+        } else if ("LNPM_BANK_TRANSFER".equals(repaymentMethodEnumId)) {
+            paymentMethodTypeId = "EFT_ACCOUNT";
+            requiresExternalReference = "Y";
+            requiresBankReference = "Y";
+        } else if ("LNPM_CHECK".equals(repaymentMethodEnumId)) {
+            paymentMethodTypeId = "COMPANY_CHECK";
+            requiresExternalReference = "Y";
+        } else if ("LNPM_CARD".equals(repaymentMethodEnumId)) {
+            paymentMethodTypeId = "CREDIT_CARD";
+            requiresExternalReference = "Y";
+        } else if ("LNPM_MOBILE_WALLET".equals(repaymentMethodEnumId)) {
+            paymentMethodTypeId = "FIN_ACCOUNT";
+            requiresExternalReference = "Y";
+            requiresBankReference = "Y";
+        } else if ("LNPM_DIRECT_DEBIT".equals(repaymentMethodEnumId)) {
+            paymentMethodTypeId = "EFT_ACCOUNT";
+            requiresExternalReference = "Y";
+            requiresBankReference = "Y";
+        } else if ("LNPM_PAYROLL".equals(repaymentMethodEnumId)) {
+            isPayrollMethod = "Y";
+        }
+
+        cfg.put("paymentMethodTypeId", paymentMethodTypeId);
+        cfg.put("paymentMethodId", null);
+        cfg.put("finAccountId", null);
+        cfg.put("requiresExternalReference", requiresExternalReference);
+        cfg.put("requiresBankReference", requiresBankReference);
+        cfg.put("requiresReceivedByUser", requiresReceivedByUser);
+        cfg.put("isPayrollMethod", isPayrollMethod);
+        return cfg;
+    }
+
+    private static void phase13ValidateRepaymentMethodRequirements(Map<String, Object> cfg, String externalReference, String bankReference, GenericValue userLogin) {
+        String method = (String) cfg.get("repaymentMethodEnumId");
+        if ("Y".equals(cfg.get("requiresExternalReference")) && UtilValidate.isEmpty(externalReference)) {
+            throw new IllegalArgumentException("externalReference is required for repaymentMethodEnumId=" + method);
+        }
+        if ("Y".equals(cfg.get("requiresBankReference")) && UtilValidate.isEmpty(bankReference)) {
+            throw new IllegalArgumentException("bankReference is required for repaymentMethodEnumId=" + method);
+        }
+        if ("Y".equals(cfg.get("requiresReceivedByUser")) && userLogin == null) {
+            throw new IllegalArgumentException("Authenticated user is required for repaymentMethodEnumId=" + method);
+        }
+    }
+
+    private static Map<String, Object> phase13MethodOption(String repaymentMethodEnumId, String paymentMethodTypeId, String paymentMethodId,
+            String finAccountId, String requiresExternalReference, String requiresBankReference, String requiresReceivedByUser,
+            String isPayrollMethod, String description, String source) {
+        Map<String, Object> row = new LinkedHashMap<String, Object>();
+        row.put("repaymentMethodEnumId", repaymentMethodEnumId);
+        row.put("paymentMethodTypeId", paymentMethodTypeId);
+        row.put("paymentMethodId", paymentMethodId);
+        row.put("finAccountId", finAccountId);
+        row.put("requiresExternalReference", phase13NormalizeFlag(requiresExternalReference));
+        row.put("requiresBankReference", phase13NormalizeFlag(requiresBankReference));
+        row.put("requiresReceivedByUser", phase13NormalizeFlag(requiresReceivedByUser));
+        row.put("isPayrollMethod", phase13NormalizeFlag(isPayrollMethod));
+        row.put("description", description);
+        row.put("source", source);
+        return row;
+    }
+
+
+    private static String phase13NormalizeFlag(String flag) {
+        return "Y".equalsIgnoreCase(trimToNull(flag)) ? "Y" : "N";
+    }
+
+    private static boolean hasEntity(Delegator delegator, String entityName) {
+        return delegator != null && delegator.getModelEntity(entityName) != null;
+    }
+
+
+    /**
+     * Phase 13B - Disbursement Finance Orchestration.
+     *
+     * Loan remains business owner; finance/accounting owns accounting rows.
+     * This service orchestrates:
+     * 1) create disbursement accounting if missing
+     * 2) post the accounting transaction
+     * 3) finalize the loan disbursement
+     */
+    public static Map<String, Object> orchestrateLoanDisbursementFinanceV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String organizationPartyId = trimToNull((String) context.get("organizationPartyId"));
+            String loanId = trimToNull((String) context.get("loanId"));
+            String paymentId = trimToNull((String) context.get("paymentId"));
+            String acctgTransId = trimToNull((String) context.get("acctgTransId"));
+            String dryRun = normalizeFlagDefaultN((String) context.get("dryRun"));
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+            organizationPartyId = firstNonEmpty(organizationPartyId, trimToNull(loan.getString("organizationPartyId")));
+            paymentId = firstNonEmpty(paymentId, trimToNull(loan.getString("disbursementPaymentId")));
+
+            if (UtilValidate.isEmpty(organizationPartyId)) {
+                return ServiceUtil.returnError("organizationPartyId is required");
+            }
+            if (UtilValidate.isEmpty(paymentId)) {
+                return ServiceUtil.returnError("paymentId is required or must exist on PartyLoan.disbursementPaymentId");
+            }
+            if (!organizationPartyId.equals(loan.getString("organizationPartyId"))) {
+                return ServiceUtil.returnError("organizationPartyId mismatch for loanId: " + loanId);
+            }
+
+            GenericValue payment = validateExistingPayment(delegator, paymentId);
+            if (payment == null) {
+                return ServiceUtil.returnError("Payment not found: " + paymentId);
+            }
+
+            String paymentStatusId = trimToNull(payment.getString("statusId"));
+            if ("PMNT_NOT_PAID".equals(paymentStatusId) || UtilValidate.isEmpty(paymentStatusId)) {
+                return ServiceUtil.returnError("Payment must be sent/finalized before disbursement finance orchestration. paymentId="
+                        + paymentId + ", statusId=" + paymentStatusId);
+            }
+
+            BigDecimal amount = loan.getBigDecimal("principalAmount");
+            String currencyUomId = firstNonEmpty(trimToNull(loan.getString("currencyUomId")), trimToNull(payment.getString("currencyUomId")));
+
+            Map<String, Object> data = new LinkedHashMap<String, Object>();
+            data.put("organizationPartyId", organizationPartyId);
+            data.put("loanId", loanId);
+            data.put("paymentId", paymentId);
+            data.put("paymentStatusId", paymentStatusId);
+            data.put("amount", amount);
+            data.put("currencyUomId", currencyUomId);
+            data.put("dryRun", dryRun);
+
+            if (UtilValidate.isEmpty(acctgTransId)) {
+                acctgTransId = findAcctgTransIdByPaymentId(delegator, paymentId);
+            }
+
+            Map<String, Object> createAcctgResult = null;
+            if (UtilValidate.isEmpty(acctgTransId)) {
+                if ("Y".equals(dryRun)) {
+                    data.put("wouldCreateAcctgTrans", "Y");
+                } else {
+                    Map<String, Object> acctgCtx = new HashMap<String, Object>();
+                    acctgCtx.put("organizationPartyId", organizationPartyId);
+                    acctgCtx.put("loanId", loanId);
+                    acctgCtx.put("paymentId", paymentId);
+                    acctgCtx.put("amount", amount);
+                    acctgCtx.put("currencyUomId", currencyUomId);
+                    acctgCtx.put("userLogin", userLogin);
+
+                    createAcctgResult = dispatcher.runSync("createAcctgTransForLoanDisbursementV1", acctgCtx);
+                    if (ServiceUtil.isError(createAcctgResult)) {
+                        return ServiceUtil.returnError("Failed to create disbursement accounting: "
+                                + ServiceUtil.getErrorMessage(createAcctgResult));
+                    }
+
+                    acctgTransId = trimToNull((String) createAcctgResult.get("acctgTransId"));
+                    if (UtilValidate.isEmpty(acctgTransId) && createAcctgResult.get("data") instanceof Map) {
+                        acctgTransId = trimToNull((String) ((Map) createAcctgResult.get("data")).get("acctgTransId"));
+                    }
+                    if (UtilValidate.isEmpty(acctgTransId)) {
+                        acctgTransId = findAcctgTransIdByPaymentId(delegator, paymentId);
+                    }
+                    if (UtilValidate.isEmpty(acctgTransId)) {
+                        return ServiceUtil.returnError("Disbursement accounting was created but acctgTransId could not be resolved for paymentId: " + paymentId);
+                    }
+                }
+            } else {
+                data.put("existingAcctgTransId", acctgTransId);
+            }
+
+            Map<String, Object> postResult = null;
+            if (UtilValidate.isNotEmpty(acctgTransId)) {
+                GenericValue acctgTrans = EntityQuery.use(delegator)
+                        .from("AcctgTrans")
+                        .where("acctgTransId", acctgTransId)
+                        .queryOne();
+                if (acctgTrans == null) {
+                    return ServiceUtil.returnError("AcctgTrans not found: " + acctgTransId);
+                }
+                if (!paymentId.equals(trimToNull(acctgTrans.getString("paymentId")))) {
+                    return ServiceUtil.returnError("AcctgTrans paymentId mismatch. acctgTransId="
+                            + acctgTransId + ", expected paymentId=" + paymentId
+                            + ", actual paymentId=" + acctgTrans.getString("paymentId"));
+                }
+
+                String isPosted = trimToNull(acctgTrans.getString("isPosted"));
+                if (!"Y".equals(isPosted)) {
+                    if ("Y".equals(dryRun)) {
+                        data.put("wouldPostAcctgTrans", "Y");
+                    } else {
+                        postResult = phase13bPostAcctgTrans(dispatcher, delegator, acctgTransId, userLogin);
+                        if (ServiceUtil.isError(postResult)) {
+                            return ServiceUtil.returnError("Failed to post disbursement accounting: "
+                                    + ServiceUtil.getErrorMessage(postResult));
+                        }
+                    }
+                } else {
+                    data.put("alreadyPosted", "Y");
+                }
+            }
+
+            data.put("acctgTransId", acctgTransId);
+            data.put("createAcctgResult", createAcctgResult);
+            data.put("postResult", postResult);
+            data.put("nextAction", "CALL_FINALIZE_LOAN_DISBURSEMENT");
+            data.put("nextServiceName", "finalizeLoanDisbursementV1");
+            data.put("nextOrganizationPartyId", organizationPartyId);
+            data.put("nextLoanId", loanId);
+            data.put("nextPaymentId", paymentId);
+            data.put("nextAcctgTransId", acctgTransId);
+
+            if ("Y".equals(dryRun)) {
+                data.put("finalStatus", "DRY_RUN");
+                return buildStandardSuccess("Loan disbursement finance orchestration dry-run completed successfully", data);
+            }
+
+            data.put("finalStatus", "DISBURSEMENT_ACCOUNTING_POSTED");
+            return buildStandardSuccess("Loan disbursement accounting created/posted successfully; call finalizeLoanDisbursementV1 next", data);
+        } catch (Exception e) {
+            Debug.logError(e, "Error orchestrating loan disbursement finance", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+    private static Map<String, Object> phase13bPostAcctgTrans(LocalDispatcher dispatcher, Delegator delegator, String acctgTransId, GenericValue userLogin) throws Exception {
+        Map<String, Object> postCtx = new HashMap<String, Object>();
+        postCtx.put("acctgTransId", acctgTransId);
+        postCtx.put("userLogin", userLogin);
+
+        try {
+            Map<String, Object> serviceResult = dispatcher.runSync("postAcctgTrans", postCtx);
+            if (!ServiceUtil.isError(serviceResult)) {
+                return serviceResult;
+            }
+        } catch (Exception ignored) {
+            // Fallback below for demo/local setups where the OFBiz posting service is not exposed/registered as expected.
+        }
+
+        GenericValue acctgTrans = EntityQuery.use(delegator)
+                .from("AcctgTrans")
+                .where("acctgTransId", acctgTransId)
+                .queryOne();
+        if (acctgTrans == null) {
+            return ServiceUtil.returnError("AcctgTrans not found: " + acctgTransId);
+        }
+        acctgTrans.set("isPosted", "Y");
+        if (acctgTrans.getModelEntity().isField("postedDate")) {
+            acctgTrans.set("postedDate", UtilDateTime.nowTimestamp());
+        }
+        acctgTrans.store();
+
+        Map<String, Object> out = ServiceUtil.returnSuccess("AcctgTrans posted by Phase 13B fallback update");
+        out.put("acctgTransId", acctgTransId);
+        out.put("postingStrategy", "FALLBACK_UPDATE");
+        return out;
+    }
+
+
+    public static Map<String, Object> orchestrateLoanRepaymentAccountingV1(DispatchContext dctx, Map<String, ?> context) {
+        Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        GenericValue userLogin = (GenericValue) context.get("userLogin");
+
+        try {
+            String organizationPartyId = trimToNull((String) context.get("organizationPartyId"));
+            String loanId = trimToNull((String) context.get("loanId"));
+            String loanRepaymentId = trimToNull((String) context.get("loanRepaymentId"));
+            String paymentId = trimToNull((String) context.get("paymentId"));
+            String repaymentSourceEnumId = trimToNull((String) context.get("repaymentSourceEnumId"));
+            String dryRun = normalizeFlagDefaultN((String) context.get("dryRun"));
+
+            if (UtilValidate.isEmpty(loanId)) {
+                return ServiceUtil.returnError("loanId is required");
+            }
+
+            GenericValue loan = requireLoan(delegator, loanId);
+            organizationPartyId = firstNonEmpty(organizationPartyId, trimToNull(loan.getString("organizationPartyId")));
+            if (UtilValidate.isEmpty(organizationPartyId)) {
+                return ServiceUtil.returnError("organizationPartyId is required");
+            }
+            if (!organizationPartyId.equals(loan.getString("organizationPartyId"))) {
+                return ServiceUtil.returnError("organizationPartyId mismatch for loanId: " + loanId);
+            }
+
+            GenericValue repayment = null;
+            if (UtilValidate.isNotEmpty(loanRepaymentId)) {
+                repayment = EntityQuery.use(delegator).from("PartyLoanRepayment").where("loanRepaymentId", loanRepaymentId).queryOne();
+                if (repayment == null) {
+                    return ServiceUtil.returnError("PartyLoanRepayment not found: " + loanRepaymentId);
+                }
+                if (!loanId.equals(trimToNull(repayment.getString("loanId")))) {
+                    return ServiceUtil.returnError("loanRepaymentId does not belong to loanId. loanRepaymentId=" + loanRepaymentId);
+                }
+                paymentId = firstNonEmpty(paymentId, trimToNull(repayment.getString("paymentId")));
+                repaymentSourceEnumId = firstNonEmpty(repaymentSourceEnumId, trimToNull(repayment.getString("repaymentSourceEnumId")));
+            } else if (UtilValidate.isEmpty(paymentId)) {
+                return ServiceUtil.returnError("loanRepaymentId or paymentId is required");
+            }
+
+            if (UtilValidate.isEmpty(paymentId)) {
+                return ServiceUtil.returnError("paymentId is required or must exist on PartyLoanRepayment");
+            }
+            if (UtilValidate.isEmpty(repaymentSourceEnumId)) {
+                repaymentSourceEnumId = "LNRS_MANUAL";
+            }
+
+            GenericValue payment = validateExistingPayment(delegator, paymentId);
+            if (payment == null) {
+                return ServiceUtil.returnError("Payment not found: " + paymentId);
+            }
+
+            BigDecimal amount = (BigDecimal) context.get("amount");
+            if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+                amount = payment.getBigDecimal("amount");
+            }
+            if ((amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) && repayment != null) {
+                amount = repayment.getBigDecimal("amountApplied");
+            }
+            if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+                return ServiceUtil.returnError("amount is required or must be resolvable from Payment/PartyLoanRepayment");
+            }
+
+            List<GenericValue> beforeRows = EntityQuery.use(delegator).from("AcctgTrans").where("paymentId", paymentId).queryList();
+            boolean beforePaymentAcctg = false;
+            boolean beforeIncoming = false;
+            boolean beforeAppl = false;
+            for (GenericValue row : beforeRows) {
+                String type = trimToNull(row.getString("acctgTransTypeId"));
+                if ("PAYMENT_ACCTG_TRANS".equals(type)) beforePaymentAcctg = true;
+                if ("INCOMING_PAYMENT".equals(type)) beforeIncoming = true;
+                if ("PAYMENT_APPL".equals(type)) beforeAppl = true;
+            }
+
+            Map<String, Object> data = new LinkedHashMap<String, Object>();
+            data.put("organizationPartyId", organizationPartyId);
+            data.put("loanId", loanId);
+            data.put("loanRepaymentId", loanRepaymentId);
+            data.put("paymentId", paymentId);
+            data.put("repaymentSourceEnumId", repaymentSourceEnumId);
+            data.put("amount", amount);
+            data.put("dryRun", dryRun);
+            data.put("beforeAcctgTransCount", Integer.valueOf(beforeRows.size()));
+            data.put("beforeHasPaymentAcctgTrans", Boolean.valueOf(beforePaymentAcctg));
+            data.put("beforeHasIncomingPaymentTrans", Boolean.valueOf(beforeIncoming));
+            data.put("beforeHasPaymentApplicationTrans", Boolean.valueOf(beforeAppl));
+
+            boolean completeBefore = beforePaymentAcctg && beforeIncoming && beforeAppl;
+            Map<String, Object> repairResult = null;
+
+            if (!completeBefore) {
+                if ("Y".equals(dryRun)) {
+                    data.put("wouldRepairMissing3TxnModel", "Y");
+                } else {
+                    Map<String, Object> repairCtx = new HashMap<String, Object>();
+                    repairCtx.put("organizationPartyId", organizationPartyId);
+                    repairCtx.put("loanId", loanId);
+                    repairCtx.put("loanRepaymentId", loanRepaymentId);
+                    repairCtx.put("paymentId", paymentId);
+                    repairCtx.put("dryRun", "N");
+                    repairCtx.put("createFinAccountTrans", "N");
+                    repairCtx.put("userLogin", userLogin);
+
+                    repairResult = dispatcher.runSync("backfillLoanRepaymentAccountingV1", repairCtx);
+                    if (ServiceUtil.isError(repairResult)) {
+                        return ServiceUtil.returnError("Failed to complete repayment 3-transaction accounting model: " + ServiceUtil.getErrorMessage(repairResult));
+                    }
+                }
+            }
+
+            List<GenericValue> afterRows = EntityQuery.use(delegator).from("AcctgTrans").where("paymentId", paymentId).orderBy("acctgTransId").queryList();
+            boolean afterPaymentAcctg = false;
+            boolean afterIncoming = false;
+            boolean afterAppl = false;
+            String acctgTransId = null;
+            String paymentAcctgTransId = null;
+            String incomingPaymentAcctgTransId = null;
+            String paymentApplicationAcctgTransId = null;
+
+            for (GenericValue row : afterRows) {
+                if (UtilValidate.isEmpty(acctgTransId)) acctgTransId = row.getString("acctgTransId");
+                String type = trimToNull(row.getString("acctgTransTypeId"));
+                if ("PAYMENT_ACCTG_TRANS".equals(type)) {
+                    afterPaymentAcctg = true;
+                    paymentAcctgTransId = row.getString("acctgTransId");
+                }
+                if ("INCOMING_PAYMENT".equals(type)) {
+                    afterIncoming = true;
+                    incomingPaymentAcctgTransId = row.getString("acctgTransId");
+                }
+                if ("PAYMENT_APPL".equals(type)) {
+                    afterAppl = true;
+                    paymentApplicationAcctgTransId = row.getString("acctgTransId");
+                }
+            }
+
+            boolean completeAfter = afterPaymentAcctg && afterIncoming && afterAppl;
+
+            data.put("repairResult", repairResult);
+            data.put("afterAcctgTransCount", Integer.valueOf(afterRows.size()));
+            data.put("afterHasPaymentAcctgTrans", Boolean.valueOf(afterPaymentAcctg));
+            data.put("afterHasIncomingPaymentTrans", Boolean.valueOf(afterIncoming));
+            data.put("afterHasPaymentApplicationTrans", Boolean.valueOf(afterAppl));
+            data.put("paymentAcctgTransId", paymentAcctgTransId);
+            data.put("incomingPaymentAcctgTransId", incomingPaymentAcctgTransId);
+            data.put("paymentApplicationAcctgTransId", paymentApplicationAcctgTransId);
+            data.put("acctgTransId", acctgTransId);
+            data.put("nextAction", "CALL_RECONCILE_LOAN_ACCOUNTING");
+            data.put("nextServiceName", "reconcileLoanAccountingV1");
+            data.put("nextOrganizationPartyId", organizationPartyId);
+            data.put("nextLoanId", loanId);
+            data.put("nextPaymentId", paymentId);
+            data.put("nextLoanRepaymentId", loanRepaymentId);
+            data.put("nextAcctgTransId", acctgTransId);
+
+            if ("Y".equals(dryRun)) {
+                data.put("finalStatus", "DRY_RUN");
+                return buildStandardSuccess("Loan repayment accounting orchestration dry-run completed successfully", data);
+            }
+
+            if (!completeAfter) {
+                data.put("finalStatus", "REPAYMENT_ACCOUNTING_INCOMPLETE");
+                return ServiceUtil.returnError("Repayment payment still does not have the complete accepted 3-transaction accounting model after orchestration. paymentId=" + paymentId);
+            }
+
+            data.put("finalStatus", completeBefore ? "REPAYMENT_ACCOUNTING_ALREADY_COMPLETE" : "REPAYMENT_ACCOUNTING_COMPLETED_3TXN_MODEL");
+            return buildStandardSuccess("Loan repayment accounting 3-transaction model completed; call reconcileLoanAccountingV1 next", data);
+        } catch (Exception e) {
+            Debug.logError(e, "Error orchestrating loan repayment accounting", MODULE);
+            return ServiceUtil.returnError(e.getMessage());
+        }
+    }
+
+}

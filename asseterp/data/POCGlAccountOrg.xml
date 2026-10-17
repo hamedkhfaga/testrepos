@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- GlAccountOrganization — links all 18 ASSETERP GL accounts to Company -->
+<entity-engine-xml>
+    <!-- Cost / Asset accounts (141xxx) -->
+    <GlAccountOrganization glAccountId="ASSETERP-141000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141100" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141200" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141300" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141400" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <!-- Accumulated Depreciation accounts (142xxx) -->
+    <GlAccountOrganization glAccountId="ASSETERP-142000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142100" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142200" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142300" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142400" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <!-- CIP account (145xxx) -->
+    <GlAccountOrganization glAccountId="ASSETERP-145000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <!-- Depreciation Expense accounts (741xxx) -->
+    <GlAccountOrganization glAccountId="ASSETERP-741000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741100" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741200" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741300" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741400" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <!-- Disposal accounts (881xxx, 882xxx) -->
+    <GlAccountOrganization glAccountId="ASSETERP-881000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-882000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+</entity-engine-xml>

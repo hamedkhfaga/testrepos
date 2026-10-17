@@ -1,0 +1,15 @@
+{
+  "phase": "Phase 15 Fix1",
+  "title": "Invoice parent-first load order fix",
+  "rootCause": "LoanTypeData.xml inserted child InvoiceType rows before parent LOAN_FINANCE, causing FK INVOICE_TYPE_PAR rollback.",
+  "changedFiles": [
+    "LoanTypeData.xml"
+  ],
+  "checks": {
+    "LOAN_FINANCE_before_LOAN_DISBURSEMENT": true,
+    "LOAN_ITEM_before_LOAN_FEE": true,
+    "LOAN_ITEM_before_LOAN_INTEREST": true,
+    "LOAN_ITEM_before_LOAN_PRINCIPAL": true
+  },
+  "replacement": "Replace LoanTypeData.xml from this package and rerun cleanAll/loadAll."
+}

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================================================= -->
+    <!-- PAYROLL ACCTG CONFIG (Demo) - Parent before Map -->
+    <!-- ========================================================= -->
+
+    <!-- Pattern A (GL Posting) default for org -->
+    <PayrollAcctgConfig payrollAcctgConfigId="PACFG_001"
+                        organizationPartyId="Company"
+                        patternStatusId="PAT_GL"
+                        postingLevelStatusId="LVL_SUM"
+                        fromDate="2026-01-01 00:00:00.000"/>
+
+</entity-engine-xml>

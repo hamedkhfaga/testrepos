@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource>
+    <!-- ===================================================== -->
+    <!-- Payroll / HR Inputs (Stage#1 UI) - EN                  -->
+    <!-- ===================================================== -->
+
+    <property key="PayrollHrInputsTitle" value="HR Inputs"/>
+    <property key="PayrollHrInputsHome" value="HR Inputs Home"/>
+    <property key="PayrollHrInputsIntro" value="Manage HR inputs (manual, fingerprint, policy, imports) used to build Payroll Input Snapshots."/>
+
+    <property key="PayrollOvertimeRequests" value="Overtime Requests"/>
+    <property key="PayrollOvertimeRequestId" value="Overtime Request ID"/>
+    <property key="PayrollOvertimeMinutes" value="Minutes"/>
+    <property key="PayrollWorkDate" value="Work Date"/>
+    <property key="PayrollStatus" value="Status"/>
+
+    <property key="PayrollInputSnapshots" value="Payroll Input Snapshots"/>
+    <property key="PayrollInputSnapshotId" value="Snapshot ID"/>
+    <property key="PayrollPeriodId" value="Payroll Period"/>
+    <property key="PayrollSourceType" value="Source Type"/>
+
+    <property key="PayrollApprove" value="Approve"/>
+    <property key="PayrollLock" value="Lock"/>
+</resource>

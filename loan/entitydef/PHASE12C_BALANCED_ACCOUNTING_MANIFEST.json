@@ -1,0 +1,19 @@
+{
+  "phase": "Phase 12C",
+  "title": "True Balanced Accounting Engine",
+  "changedFiles": [
+    "LoanServices.java",
+    "services.xml"
+  ],
+  "features": [
+    "Creates balanced AcctgTransEntry rows for PAYMENT_APPL and INCOMING_PAYMENT",
+    "Ensures existing expected accounting headers have debit/credit entries",
+    "Adds ensureLoanRepaymentBalancedAccountingV1 for historical repayment repair",
+    "Keeps Phase 12B financial-first repayment flow"
+  ],
+  "testServices": [
+    "recordUnifiedLoanRepaymentFinancialFirstV1",
+    "ensureLoanRepaymentBalancedAccountingV1",
+    "reconcileLoanAccountingV1"
+  ]
+}

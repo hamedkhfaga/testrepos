@@ -1,0 +1,1065 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    POCasseterp2.xml - Extended Asset ERP POC Dataset (Additive Layer 2)
+    IMPORT AFTER POCasseterp.xml — all IDs here are new; zero conflicts.
+    Load: EntityDataLoadContainer or OFBiz import (Admin > Entity Engine XML Import)
+    Assets referenced: ASSET-IT-001..010, ASSET-SW-001..004, ASSET-VH-001..004,
+                       ASSET-MC-001..004, ASSET-FN-001..003 (all in POCasseterp.xml)
+    Parties used: Company, DemoEmployee, DemoCustomer1 (standard OFBiz demo data)
+    Dates: 2022-2025; today assumed 2026-06-29
+-->
+<entity-engine-xml>
+
+    <!-- ================================================================
+         SECTION A: ADDITIONAL ENUMERATIONS needed by new records
+         (additive — IDs not in AsseterpTypeData.xml)
+         ================================================================ -->
+
+    <!-- Alert types -->
+    <EnumerationType description="Asset ERP Alert Type" enumTypeId="AE_ALERT_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Maintenance Due"        enumId="AE_ALERT_MAINT"     enumTypeId="AE_ALERT_TYPE" sequenceId="01"/>
+    <Enumeration description="Warranty Expiring"      enumId="AE_ALERT_WARRANTY"  enumTypeId="AE_ALERT_TYPE" sequenceId="02"/>
+    <Enumeration description="Insurance Renewal Due"  enumId="AE_ALERT_INSURANCE" enumTypeId="AE_ALERT_TYPE" sequenceId="03"/>
+    <Enumeration description="Compliance Expiring"    enumId="AE_ALERT_COMPLY"    enumTypeId="AE_ALERT_TYPE" sequenceId="04"/>
+    <Enumeration description="Lease Payment Due"      enumId="AE_ALERT_LEASE"     enumTypeId="AE_ALERT_TYPE" sequenceId="05"/>
+
+    <!-- Tag types -->
+    <EnumerationType description="Asset Tag Type" enumTypeId="AE_TAG_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Barcode"     enumId="AE_TAG_BARCODE" enumTypeId="AE_TAG_TYPE" sequenceId="01"/>
+    <Enumeration description="QR Code"    enumId="AE_TAG_QR"      enumTypeId="AE_TAG_TYPE" sequenceId="02"/>
+    <Enumeration description="RFID"       enumId="AE_TAG_RFID"    enumTypeId="AE_TAG_TYPE" sequenceId="03"/>
+
+    <!-- Meter types -->
+    <EnumerationType description="Asset Meter Type" enumTypeId="AE_METER_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Odometer (km)"     enumId="AE_METER_ODOMETER"  enumTypeId="AE_METER_TYPE" sequenceId="01"/>
+    <Enumeration description="Engine Hours"      enumId="AE_METER_ENG_HOURS" enumTypeId="AE_METER_TYPE" sequenceId="02"/>
+    <Enumeration description="Units Produced"    enumId="AE_METER_UNITS"     enumTypeId="AE_METER_TYPE" sequenceId="03"/>
+
+    <!-- Valuation methods -->
+    <EnumerationType description="Asset Valuation Method" enumTypeId="AE_VALUATION_METHOD" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Market Comparison"        enumId="AE_VAL_MARKET"   enumTypeId="AE_VALUATION_METHOD" sequenceId="01"/>
+    <Enumeration description="Depreciated Replacement Cost" enumId="AE_VAL_DRC" enumTypeId="AE_VALUATION_METHOD" sequenceId="02"/>
+    <Enumeration description="Income Approach"          enumId="AE_VAL_INCOME"   enumTypeId="AE_VALUATION_METHOD" sequenceId="03"/>
+
+    <!-- Grant types -->
+    <EnumerationType description="Government Grant Type" enumTypeId="AE_GRANT_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Capital Grant (Asset)"    enumId="AE_GRANT_CAPITAL" enumTypeId="AE_GRANT_TYPE" sequenceId="01"/>
+    <Enumeration description="Income Grant"             enumId="AE_GRANT_INCOME"  enumTypeId="AE_GRANT_TYPE" sequenceId="02"/>
+
+    <!-- Lease types -->
+    <EnumerationType description="Lease Type" enumTypeId="AE_LEASE_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Finance Lease (IFRS 16)"  enumId="AE_LEASE_FINANCE" enumTypeId="AE_LEASE_TYPE" sequenceId="01"/>
+    <Enumeration description="Operating Lease"          enumId="AE_LEASE_OPERAT"  enumTypeId="AE_LEASE_TYPE" sequenceId="02"/>
+
+    <!-- Warranty types -->
+    <EnumerationType description="Warranty Type" enumTypeId="AE_WARRANTY_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Manufacturer Warranty"   enumId="AE_WARR_MFR"      enumTypeId="AE_WARRANTY_TYPE" sequenceId="01"/>
+    <Enumeration description="Extended Service Plan"   enumId="AE_WARR_EXTENDED" enumTypeId="AE_WARRANTY_TYPE" sequenceId="02"/>
+
+    <!-- Compliance document types -->
+    <EnumerationType description="Compliance Document Type" enumTypeId="AE_COMPLY_DOC_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Fire Safety Certificate"   enumId="AE_CD_FIRE"    enumTypeId="AE_COMPLY_DOC_TYPE" sequenceId="01"/>
+    <Enumeration description="Pressure Vessel Certificate" enumId="AE_CD_PRESSURE" enumTypeId="AE_COMPLY_DOC_TYPE" sequenceId="02"/>
+    <Enumeration description="Electrical Safety Cert"   enumId="AE_CD_ELEC"    enumTypeId="AE_COMPLY_DOC_TYPE" sequenceId="03"/>
+    <Enumeration description="Road Worthiness Cert"     enumId="AE_CD_ROADWTHY" enumTypeId="AE_COMPLY_DOC_TYPE" sequenceId="04"/>
+
+    <!-- Software license types -->
+    <EnumerationType description="Software License Type" enumTypeId="AE_SW_LIC_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Perpetual (Per-Seat)"     enumId="AE_LIC_PERP"     enumTypeId="AE_SW_LIC_TYPE" sequenceId="01"/>
+    <Enumeration description="Subscription (SaaS)"      enumId="AE_LIC_SAAS"     enumTypeId="AE_SW_LIC_TYPE" sequenceId="02"/>
+    <Enumeration description="Enterprise Agreement"     enumId="AE_LIC_EA"       enumTypeId="AE_SW_LIC_TYPE" sequenceId="03"/>
+
+    <!-- Budget types -->
+    <EnumerationType description="Budget Type" enumTypeId="AE_BUDGET_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Capital Expenditure (CAPEX)"  enumId="AE_BDG_CAPEX" enumTypeId="AE_BUDGET_TYPE" sequenceId="01"/>
+    <Enumeration description="Operating Expenditure (OPEX)" enumId="AE_BDG_OPEX"  enumTypeId="AE_BUDGET_TYPE" sequenceId="02"/>
+    <Enumeration description="Maintenance Budget"           enumId="AE_BDG_MAINT" enumTypeId="AE_BUDGET_TYPE" sequenceId="03"/>
+
+    <!-- Estimate change types -->
+    <EnumerationType description="Estimate Change Type" enumTypeId="AE_EST_CHANGE_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Useful Life Change"        enumId="AE_ECT_LIFE"    enumTypeId="AE_EST_CHANGE_TYPE" sequenceId="01"/>
+    <Enumeration description="Salvage Value Change"      enumId="AE_ECT_SALVAGE" enumTypeId="AE_EST_CHANGE_TYPE" sequenceId="02"/>
+    <Enumeration description="Depreciation Method Change" enumId="AE_ECT_METHOD" enumTypeId="AE_EST_CHANGE_TYPE" sequenceId="03"/>
+
+    <!-- GL Mapping types -->
+    <EnumerationType description="GL Mapping Type" enumTypeId="AE_GL_MAPPING_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Asset Cost Account"           enumId="AE_GLM_COST"    enumTypeId="AE_GL_MAPPING_TYPE" sequenceId="01"/>
+    <Enumeration description="Accumulated Depreciation"     enumId="AE_GLM_ACCUM"   enumTypeId="AE_GL_MAPPING_TYPE" sequenceId="02"/>
+    <Enumeration description="Depreciation Expense"         enumId="AE_GLM_DEP_EXP" enumTypeId="AE_GL_MAPPING_TYPE" sequenceId="03"/>
+
+    <!-- Policy types -->
+    <EnumerationType description="Asset Policy Type" enumTypeId="AE_POLICY_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Capitalization Threshold"  enumId="AE_POL_CAP_THRESH" enumTypeId="AE_POLICY_TYPE" sequenceId="01"/>
+    <Enumeration description="Default Useful Life (yrs)" enumId="AE_POL_DEF_LIFE"   enumTypeId="AE_POLICY_TYPE" sequenceId="02"/>
+
+    <!-- Spare part treatment types -->
+    <EnumerationType description="Spare Part Treatment Type" enumTypeId="AE_SPARE_TREATMENT" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Expensed"   enumId="AE_SPT_EXPENSED"    enumTypeId="AE_SPARE_TREATMENT" sequenceId="01"/>
+    <Enumeration description="Capitalised" enumId="AE_SPT_CAPITALISED" enumTypeId="AE_SPARE_TREATMENT" sequenceId="02"/>
+
+    <!-- Disposal types (Enumeration) -->
+    <Enumeration description="Sale"       enumId="AE_DISP_SALE"    enumTypeId="FIXED_ASSET_CHANGE" sequenceId="50"/>
+    <Enumeration description="Scrap"      enumId="AE_DISP_SCRAP"   enumTypeId="FIXED_ASSET_CHANGE" sequenceId="51"/>
+    <Enumeration description="Donation"   enumId="AE_DISP_DONATION" enumTypeId="FIXED_ASSET_CHANGE" sequenceId="52"/>
+
+    <!-- Lifecycle event types -->
+    <EnumerationType description="Asset Lifecycle Event Type" enumTypeId="AE_EVENT_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Asset Acquired"          enumId="AE_EVT_ACQUIRED"   enumTypeId="AE_EVENT_TYPE" sequenceId="01"/>
+    <Enumeration description="Asset Disposed"          enumId="AE_EVT_DISPOSED"   enumTypeId="AE_EVENT_TYPE" sequenceId="02"/>
+    <Enumeration description="Revaluation Posted"      enumId="AE_EVT_REVALUED"   enumTypeId="AE_EVENT_TYPE" sequenceId="03"/>
+    <Enumeration description="Impairment Recognised"   enumId="AE_EVT_IMPAIRED"   enumTypeId="AE_EVENT_TYPE" sequenceId="04"/>
+    <Enumeration description="Custody Transfer"        enumId="AE_EVT_CUSTODY"    enumTypeId="AE_EVENT_TYPE" sequenceId="05"/>
+    <Enumeration description="Depreciation Run"        enumId="AE_EVT_DEP_RUN"    enumTypeId="AE_EVENT_TYPE" sequenceId="06"/>
+
+    <!-- Lease modification types -->
+    <EnumerationType description="Lease Modification Type" enumTypeId="AE_LEASE_MOD_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Extension"     enumId="AE_LM_EXTENSION"  enumTypeId="AE_LEASE_MOD_TYPE" sequenceId="01"/>
+    <Enumeration description="Scope Change"  enumId="AE_LM_SCOPE"      enumTypeId="AE_LEASE_MOD_TYPE" sequenceId="02"/>
+
+    <!-- CIP Status -->
+    <StatusType description="Construction in Progress Status" statusTypeId="AE_CIP_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="In Progress"    statusId="AE_CIP_IN_PROG"  statusTypeId="AE_CIP_STATUS" sequenceId="01"/>
+    <StatusItem description="Capitalised"    statusId="AE_CIP_CAPIT"    statusTypeId="AE_CIP_STATUS" sequenceId="02"/>
+    <StatusItem description="Cancelled"      statusId="AE_CIP_CANCEL"   statusTypeId="AE_CIP_STATUS" sequenceId="03"/>
+
+    <!-- Budget Status -->
+    <StatusType description="Budget Status" statusTypeId="AE_BUDGET_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Draft"     statusId="AE_BDG_DRAFT"    statusTypeId="AE_BUDGET_STATUS" sequenceId="01"/>
+    <StatusItem description="Approved"  statusId="AE_BDG_APPROVED" statusTypeId="AE_BUDGET_STATUS" sequenceId="02"/>
+    <StatusItem description="Closed"    statusId="AE_BDG_CLOSED"   statusTypeId="AE_BUDGET_STATUS" sequenceId="03"/>
+
+    <!-- Asset Request Status -->
+    <StatusType description="Asset Request Status" statusTypeId="AE_REQUEST_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Submitted"  statusId="AE_REQ_SUBMITTED" statusTypeId="AE_REQUEST_STATUS" sequenceId="01"/>
+    <StatusItem description="In Review"  statusId="AE_REQ_REVIEW"    statusTypeId="AE_REQUEST_STATUS" sequenceId="02"/>
+    <StatusItem description="Approved"   statusId="AE_REQ_APPROVED"  statusTypeId="AE_REQUEST_STATUS" sequenceId="03"/>
+    <StatusItem description="Rejected"   statusId="AE_REQ_REJECTED"  statusTypeId="AE_REQUEST_STATUS" sequenceId="04"/>
+
+    <!-- Verification Plan Status -->
+    <StatusType description="Verification Plan Status" statusTypeId="AE_VERIF_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Planned"    statusId="AE_VP_PLANNED"   statusTypeId="AE_VERIF_STATUS" sequenceId="01"/>
+    <StatusItem description="In Progress" statusId="AE_VP_IN_PROG"  statusTypeId="AE_VERIF_STATUS" sequenceId="02"/>
+    <StatusItem description="Completed"  statusId="AE_VP_COMPLETED" statusTypeId="AE_VERIF_STATUS" sequenceId="03"/>
+
+    <!-- Impairment Status -->
+    <StatusType description="Impairment Status" statusTypeId="AE_IMPAIR_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Assessed"   statusId="AE_IMP_ASSESSED"  statusTypeId="AE_IMPAIR_STATUS" sequenceId="01"/>
+    <StatusItem description="Reversed"   statusId="AE_IMP_REVERSED"  statusTypeId="AE_IMPAIR_STATUS" sequenceId="02"/>
+
+    <!-- ARO Status -->
+    <StatusType description="ARO Status" statusTypeId="AE_ARO_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"     statusId="AE_ARO_ACTIVE"   statusTypeId="AE_ARO_STATUS" sequenceId="01"/>
+    <StatusItem description="Settled"    statusId="AE_ARO_SETTLED"  statusTypeId="AE_ARO_STATUS" sequenceId="02"/>
+
+    <!-- HFS Status -->
+    <StatusType description="Held-for-Sale Status" statusTypeId="AE_HFS_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active HFS"     statusId="AE_HFS_ACTIVE"  statusTypeId="AE_HFS_STATUS" sequenceId="01"/>
+    <StatusItem description="Sold"           statusId="AE_HFS_SOLD"    statusTypeId="AE_HFS_STATUS" sequenceId="02"/>
+
+    <!-- Lease Status -->
+    <StatusType description="Lease Status" statusTypeId="AE_LEASE_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"      statusId="AE_LEASE_ACTIVE"  statusTypeId="AE_LEASE_STATUS" sequenceId="01"/>
+    <StatusItem description="Terminated"  statusId="AE_LEASE_TERM"    statusTypeId="AE_LEASE_STATUS" sequenceId="02"/>
+    <StatusItem description="Expired"     statusId="AE_LEASE_EXPIRED" statusTypeId="AE_LEASE_STATUS" sequenceId="03"/>
+
+    <!-- Gov Grant Status -->
+    <StatusType description="Government Grant Status" statusTypeId="AE_GRANT_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"    statusId="AE_GG_ACTIVE"   statusTypeId="AE_GRANT_STATUS" sequenceId="01"/>
+    <StatusItem description="Completed" statusId="AE_GG_COMPLETE" statusTypeId="AE_GRANT_STATUS" sequenceId="02"/>
+
+    <!-- Insurance Status -->
+    <StatusType description="Insurance Policy Status" statusTypeId="AE_INS_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"   statusId="AE_INS_ACTIVE"  statusTypeId="AE_INS_STATUS" sequenceId="01"/>
+    <StatusItem description="Expired"  statusId="AE_INS_EXPIRED" statusTypeId="AE_INS_STATUS" sequenceId="02"/>
+    <StatusItem description="Lapsed"   statusId="AE_INS_LAPSED"  statusTypeId="AE_INS_STATUS" sequenceId="03"/>
+
+    <!-- Insurance Claim Status -->
+    <StatusType description="Insurance Claim Status" statusTypeId="AE_INS_CLAIM_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Filed"    statusId="AE_IC_FILED"    statusTypeId="AE_INS_CLAIM_STATUS" sequenceId="01"/>
+    <StatusItem description="Settled"  statusId="AE_IC_SETTLED"  statusTypeId="AE_INS_CLAIM_STATUS" sequenceId="02"/>
+    <StatusItem description="Rejected" statusId="AE_IC_REJECTED" statusTypeId="AE_INS_CLAIM_STATUS" sequenceId="03"/>
+
+    <!-- Warranty Status -->
+    <StatusType description="Warranty Status" statusTypeId="AE_WARR_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"   statusId="AE_WARR_ACTIVE"   statusTypeId="AE_WARR_STATUS" sequenceId="01"/>
+    <StatusItem description="Expired"  statusId="AE_WARR_EXPIRED"  statusTypeId="AE_WARR_STATUS" sequenceId="02"/>
+
+    <!-- Compliance Doc Status -->
+    <StatusType description="Compliance Document Status" statusTypeId="AE_COMPLY_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Current"   statusId="AE_CD_CURRENT"  statusTypeId="AE_COMPLY_STATUS" sequenceId="01"/>
+    <StatusItem description="Expiring"  statusId="AE_CD_EXPIRING" statusTypeId="AE_COMPLY_STATUS" sequenceId="02"/>
+    <StatusItem description="Expired"   statusId="AE_CD_EXPIRED"  statusTypeId="AE_COMPLY_STATUS" sequenceId="03"/>
+
+    <!-- Pledge Status -->
+    <StatusType description="Pledge Status" statusTypeId="AE_PLEDGE_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"   statusId="AE_PG_ACTIVE"   statusTypeId="AE_PLEDGE_STATUS" sequenceId="01"/>
+    <StatusItem description="Released" statusId="AE_PG_RELEASED" statusTypeId="AE_PLEDGE_STATUS" sequenceId="02"/>
+
+    <!-- Rental Contract Status -->
+    <StatusType description="Rental Contract Status" statusTypeId="AE_RENTAL_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"    statusId="AE_RC_ACTIVE"    statusTypeId="AE_RENTAL_STATUS" sequenceId="01"/>
+    <StatusItem description="Completed" statusId="AE_RC_COMPLETED" statusTypeId="AE_RENTAL_STATUS" sequenceId="02"/>
+    <StatusItem description="Cancelled" statusId="AE_RC_CANCELLED" statusTypeId="AE_RENTAL_STATUS" sequenceId="03"/>
+
+    <!-- Hire Purchase Status -->
+    <StatusType description="Hire Purchase Status" statusTypeId="AE_HP_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"  statusId="AE_HP_ACTIVE"  statusTypeId="AE_HP_STATUS" sequenceId="01"/>
+    <StatusItem description="Settled" statusId="AE_HP_SETTLED" statusTypeId="AE_HP_STATUS" sequenceId="02"/>
+
+    <!-- Software License Status -->
+    <StatusType description="Software License Status" statusTypeId="AE_SW_LIC_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"   statusId="AE_SL_ACTIVE"  statusTypeId="AE_SW_LIC_STATUS" sequenceId="01"/>
+    <StatusItem description="Expired"  statusId="AE_SL_EXPIRED" statusTypeId="AE_SW_LIC_STATUS" sequenceId="02"/>
+
+    <!-- Spare Part Status -->
+    <StatusType description="Spare Part Issue Status" statusTypeId="AE_SPARE_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Issued"    statusId="AE_SP_ISSUED"   statusTypeId="AE_SPARE_STATUS" sequenceId="01"/>
+    <StatusItem description="Returned"  statusId="AE_SP_RETURNED" statusTypeId="AE_SPARE_STATUS" sequenceId="02"/>
+
+    <!-- Asset Tag Status -->
+    <StatusType description="Asset Tag Status" statusTypeId="AE_TAG_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Active"   statusId="AE_TAG_ACTIVE"  statusTypeId="AE_TAG_STATUS" sequenceId="01"/>
+    <StatusItem description="Replaced" statusId="AE_TAG_REPLACED" statusTypeId="AE_TAG_STATUS" sequenceId="02"/>
+
+    <!-- Alert Status -->
+    <StatusType description="Alert Status" statusTypeId="AE_ALERT_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Open"         statusId="AE_ALT_OPEN"  statusTypeId="AE_ALERT_STATUS" sequenceId="01"/>
+    <StatusItem description="Acknowledged" statusId="AE_ALT_ACKD"  statusTypeId="AE_ALERT_STATUS" sequenceId="02"/>
+    <StatusItem description="Dismissed"    statusId="AE_ALT_DISM"  statusTypeId="AE_ALERT_STATUS" sequenceId="03"/>
+
+    <!-- Booking Status -->
+    <StatusType description="Asset Booking Status" statusTypeId="AE_BOOKING_STATUS" hasTable="N" parentTypeId=""/>
+    <StatusItem description="Confirmed"  statusId="AE_BK_CONFIRMED"  statusTypeId="AE_BOOKING_STATUS" sequenceId="01"/>
+    <StatusItem description="Returned"   statusId="AE_BK_RETURNED"   statusTypeId="AE_BOOKING_STATUS" sequenceId="02"/>
+    <StatusItem description="Cancelled"  statusId="AE_BK_CANCELLED"  statusTypeId="AE_BOOKING_STATUS" sequenceId="03"/>
+
+    <!-- ================================================================
+         SECTION B: ORG CONFIG EXTRAS — GL Mapping + Policy
+         ================================================================ -->
+
+    <AsseterpGlMapping asseterpGlMappingId="GLM-CO-COST-IT" partyId="Company"
+        glMappingTypeId="AE_GLM_COST" fixedAssetTypeId="ASSET_IT_HW"
+        glAccountId="ASSETERP-141000" fromDate="2022-01-01 00:00:00.0"/>
+    <AsseterpGlMapping asseterpGlMappingId="GLM-CO-COST-VH" partyId="Company"
+        glMappingTypeId="AE_GLM_COST" fixedAssetTypeId="ASSET_VEHICLE"
+        glAccountId="ASSETERP-141200" fromDate="2022-01-01 00:00:00.0"/>
+    <AsseterpGlMapping asseterpGlMappingId="GLM-CO-COST-MC" partyId="Company"
+        glMappingTypeId="AE_GLM_COST" fixedAssetTypeId="ASSET_MACHINERY"
+        glAccountId="ASSETERP-141300" fromDate="2022-01-01 00:00:00.0"/>
+
+    <AsseterpPolicy asseterpPolicyId="POL-CO-CAP-IT" partyId="Company"
+        fixedAssetTypeId="ASSET_IT_HW" policyTypeId="AE_POL_CAP_THRESH"
+        policyValue="1000.00" fromDate="2022-01-01 00:00:00.0"
+        description="Capitalise IT items above USD 1,000"/>
+    <AsseterpPolicy asseterpPolicyId="POL-CO-LIFE-IT" partyId="Company"
+        fixedAssetTypeId="ASSET_IT_HW" policyTypeId="AE_POL_DEF_LIFE"
+        policyValue="5" fromDate="2022-01-01 00:00:00.0"
+        description="Default useful life 5 years for IT hardware"/>
+    <AsseterpPolicy asseterpPolicyId="POL-CO-LIFE-VH" partyId="Company"
+        fixedAssetTypeId="ASSET_VEHICLE" policyTypeId="AE_POL_DEF_LIFE"
+        policyValue="5" fromDate="2022-01-01 00:00:00.0"
+        description="Default useful life 5 years for vehicles"/>
+    <AsseterpPolicy asseterpPolicyId="POL-CO-LIFE-MC" partyId="Company"
+        fixedAssetTypeId="ASSET_MACHINERY" policyTypeId="AE_POL_DEF_LIFE"
+        policyValue="10" fromDate="2022-01-01 00:00:00.0"
+        description="Default useful life 10 years for machinery"/>
+
+    <!-- Alert config -->
+    <AsseterpAlertConfig asseterpAlertConfigId="AC-MAINT-30" partyId="Company"
+        alertTypeId="AE_ALERT_MAINT" alertDaysBefore="30"
+        recipientRoleTypeId="ACCOUNT_MANAGER" isActive="Y"/>
+    <AsseterpAlertConfig asseterpAlertConfigId="AC-WARR-60" partyId="Company"
+        alertTypeId="AE_ALERT_WARRANTY" alertDaysBefore="60"
+        recipientRoleTypeId="ACCOUNT_MANAGER" isActive="Y"/>
+    <AsseterpAlertConfig asseterpAlertConfigId="AC-INS-30" partyId="Company"
+        alertTypeId="AE_ALERT_INSURANCE" alertDaysBefore="30"
+        recipientRoleTypeId="ACCOUNT_MANAGER" isActive="Y"/>
+    <AsseterpAlertConfig asseterpAlertConfigId="AC-COMPLY-60" partyId="Company"
+        alertTypeId="AE_ALERT_COMPLY" alertDaysBefore="60"
+        recipientRoleTypeId="ACCOUNT_MANAGER" isActive="Y"/>
+
+    <!-- ================================================================
+         SECTION C: ALERT INSTANCES
+         ================================================================ -->
+    <AsseterpAlert asseterpAlertId="ALT-001" asseterpAlertConfigId="AC-MAINT-30"
+        fixedAssetId="ASSET-MC-003" alertTypeId="AE_ALERT_MAINT"
+        alertDate="2026-05-30 00:00:00.0" dueDate="2026-06-30 00:00:00.0"
+        message="Crown Reach Forklift — scheduled service overdue. Unit in ASSET_IN_MAINT."
+        statusId="AE_ALT_OPEN"/>
+    <AsseterpAlert asseterpAlertId="ALT-002" asseterpAlertConfigId="AC-WARR-60"
+        fixedAssetId="ASSET-IT-001" alertTypeId="AE_ALERT_WARRANTY"
+        alertDate="2026-06-01 00:00:00.0" dueDate="2026-08-01 00:00:00.0"
+        message="Dell PowerEdge R750 — extended warranty expiring in 60 days."
+        statusId="AE_ALT_ACKD" acknowledgedByPartyId="DemoEmployee"
+        acknowledgedDate="2026-06-05 00:00:00.0"/>
+    <AsseterpAlert asseterpAlertId="ALT-003" asseterpAlertConfigId="AC-INS-30"
+        fixedAssetId="ASSET-VH-002" alertTypeId="AE_ALERT_INSURANCE"
+        alertDate="2026-06-28 00:00:00.0" dueDate="2026-07-28 00:00:00.0"
+        message="Ford Transit 350 — fleet insurance renewal due in 30 days."
+        statusId="AE_ALT_OPEN"/>
+
+    <!-- ================================================================
+         SECTION D: LIFECYCLE EVENTS (audit log)
+         ================================================================ -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="ALE-001"
+        fixedAssetId="ASSET-VH-004" partyId="DemoEmployee"
+        enumId="AE_EVT_DISPOSED" statusId="ASSET_SOLD"
+        eventDate="2024-06-30 00:00:00.0" currencyUomId="USD" amount="21000.00"
+        description="Honda Civic sold to DemoCustomer1 — gain on disposal USD 2,640"
+        serviceName="asseterpDisposeFixedAsset" createdDate="2024-06-30 00:00:00.0"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="ALE-002"
+        fixedAssetId="ASSET-MC-003" partyId="DemoEmployee"
+        enumId="AE_EVT_ACQUIRED" statusId="ASSET_ACTIVE"
+        eventDate="2022-03-01 00:00:00.0" currencyUomId="USD" amount="32000.00"
+        description="Crown SC 5500 Reach Forklift acquired and capitalised"
+        serviceName="asseterpCreateFixedAsset" createdDate="2022-03-01 00:00:00.0"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="ALE-003"
+        fixedAssetId="ASSET-IT-006" partyId="DemoEmployee"
+        enumId="AE_EVT_REVALUED"
+        eventDate="2024-12-31 00:00:00.0" currencyUomId="USD" amount="31000.00"
+        description="NetApp SAN revalued — fair value exceeds NBV by USD 3,120"
+        serviceName="asseterpCreateRevaluation" createdDate="2024-12-31 00:00:00.0"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="ALE-004"
+        fixedAssetId="ASSET-MC-003" partyId="DemoEmployee"
+        enumId="AE_EVT_CUSTODY"
+        eventDate="2025-01-15 00:00:00.0"
+        description="Custody transferred to Workshop Supervisor DemoEmployee"
+        facilityId="WebStoreWarehouse" createdDate="2025-01-15 00:00:00.0"/>
+
+    <!-- ================================================================
+         SECTION E: BUDGET + APPROVAL
+         ================================================================ -->
+
+    <!-- CAPEX Budget FY 2025 -->
+    <AsseterpBudget asseterpBudgetId="BDG-CAPEX-2025" partyId="Company"
+        budgetTypeId="AE_BDG_CAPEX" fiscalYear="2025"
+        description="Capital Expenditure Budget FY 2025"
+        totalBudget="250000.00" currencyUomId="USD"
+        statusId="AE_BDG_APPROVED" approvedByPartyId="DemoEmployee"
+        approvedDate="2024-11-30 00:00:00.0"/>
+
+    <AsseterpBudgetItem asseterpBudgetItemId="BDG-CAPEX-2025-IT" asseterpBudgetId="BDG-CAPEX-2025"
+        fixedAssetTypeId="ASSET_IT_HW" description="IT Hardware refresh — 2025"
+        budgetedAmount="100000.00" committedAmount="65000.00" actualAmount="58000.00"/>
+    <AsseterpBudgetItem asseterpBudgetItemId="BDG-CAPEX-2025-VH" asseterpBudgetId="BDG-CAPEX-2025"
+        fixedAssetTypeId="ASSET_VEHICLE" description="Fleet replacement — 2025"
+        budgetedAmount="80000.00" committedAmount="75000.00" actualAmount="42000.00"/>
+    <AsseterpBudgetItem asseterpBudgetItemId="BDG-CAPEX-2025-MC" asseterpBudgetId="BDG-CAPEX-2025"
+        fixedAssetTypeId="ASSET_MACHINERY" description="Production line upgrade — 2025"
+        budgetedAmount="70000.00" committedAmount="30000.00" actualAmount="0.00"/>
+
+    <!-- Maintenance Budget FY 2025 -->
+    <AsseterpBudget asseterpBudgetId="BDG-MAINT-2025" partyId="Company"
+        budgetTypeId="AE_BDG_MAINT" fiscalYear="2025"
+        description="Maintenance Budget FY 2025"
+        totalBudget="45000.00" currencyUomId="USD"
+        statusId="AE_BDG_APPROVED" approvedByPartyId="DemoEmployee"
+        approvedDate="2024-11-30 00:00:00.0"/>
+    <AsseterpBudgetItem asseterpBudgetItemId="BDG-MAINT-2025-MC" asseterpBudgetId="BDG-MAINT-2025"
+        fixedAssetTypeId="ASSET_MACHINERY" description="Preventive maintenance — machinery"
+        budgetedAmount="30000.00" committedAmount="28000.00" actualAmount="22500.00"/>
+    <AsseterpBudgetItem asseterpBudgetItemId="BDG-MAINT-2025-VH" asseterpBudgetId="BDG-MAINT-2025"
+        fixedAssetTypeId="ASSET_VEHICLE" description="Fleet servicing and tyres"
+        budgetedAmount="15000.00" committedAmount="12000.00" actualAmount="9800.00"/>
+
+    <!-- Approval matrix: Company / IT assets / any value => DemoEmployee approves -->
+    <AsseterpApprovalMatrix asseterpApprovalMatrixId="AM-CO-IT-L1" partyId="Company"
+        fixedAssetTypeId="ASSET_IT_HW" approvalLevel="1"
+        minAmount="1000.00" maxAmount="50000.00" currencyUomId="USD"
+        approverRoleTypeId="ACCOUNT_MANAGER" approverPartyId="DemoEmployee" isActive="Y"/>
+    <AsseterpApprovalMatrix asseterpApprovalMatrixId="AM-CO-VH-L1" partyId="Company"
+        fixedAssetTypeId="ASSET_VEHICLE" approvalLevel="1"
+        minAmount="1000.00" maxAmount="100000.00" currencyUomId="USD"
+        approverRoleTypeId="ACCOUNT_MANAGER" approverPartyId="DemoEmployee" isActive="Y"/>
+
+    <!-- Asset Request: new server for 2026 -->
+    <AsseterpAssetRequest asseterpAssetRequestId="AR-001" partyId="DemoEmployee"
+        requestForPartyId="Company" facilityId="WebStoreWarehouse"
+        fixedAssetTypeId="ASSET_IT_HW" quantity="1" estimatedCost="18000.00"
+        currencyUomId="USD" statusId="AE_REQ_APPROVED"
+        asseterpBudgetId="BDG-CAPEX-2025"
+        requestDate="2025-11-01 00:00:00.0" requiredDate="2026-02-01 00:00:00.0"
+        justification="Replacement server for ASSET-IT-001 reaching end of depreciation life. Current unit 4 years old; performance degradation observed."/>
+    <AsseterpApprovalRecord asseterpApprovalRecordId="APREC-001"
+        asseterpAssetRequestId="AR-001" approvalLevel="1"
+        decision="APPROVED" decidedByPartyId="DemoEmployee"
+        decisionDate="2025-11-05 00:00:00.0"
+        comments="Justified — server approaching end of life and budget available."/>
+
+    <AsseterpAssetRequest asseterpAssetRequestId="AR-002" partyId="DemoEmployee"
+        requestForPartyId="Company" facilityId="WebStoreWarehouse"
+        fixedAssetTypeId="ASSET_VEHICLE" quantity="1" estimatedCost="45000.00"
+        currencyUomId="USD" statusId="AE_REQ_REVIEW"
+        asseterpBudgetId="BDG-CAPEX-2025"
+        requestDate="2026-05-15 00:00:00.0" requiredDate="2026-09-01 00:00:00.0"
+        justification="ASSET-VH-004 was sold 2024-06-30. Operations require an additional delivery vehicle for the southern region."/>
+
+    <!-- ================================================================
+         SECTION F: PHYSICAL VERIFICATION
+         ================================================================ -->
+    <AsseterpVerificationPlan asseterpVerificationPlanId="VP-2025-Q2"
+        partyId="Company" facilityId="WebStoreWarehouse"
+        planName="Q2 2025 Physical Asset Verification"
+        planDate="2025-04-01 00:00:00.0" completedDate="2025-04-15 00:00:00.0"
+        statusId="AE_VP_COMPLETED" conductedByPartyId="DemoEmployee"/>
+
+    <AsseterpVerificationLine asseterpVerificationLineId="VL-001"
+        asseterpVerificationPlanId="VP-2025-Q2" fixedAssetId="ASSET-IT-001"
+        scanDate="2025-04-02 00:00:00.0" result="FOUND"
+        scannedTagValue="BC-IT001" notes="Asset confirmed in server room rack 3"/>
+    <AsseterpVerificationLine asseterpVerificationLineId="VL-002"
+        asseterpVerificationPlanId="VP-2025-Q2" fixedAssetId="ASSET-IT-004"
+        scanDate="2025-04-02 00:00:00.0" result="FOUND"
+        scannedTagValue="BC-IT004" notes="Assigned to CEO — confirmed at executive floor"/>
+    <AsseterpVerificationLine asseterpVerificationLineId="VL-003"
+        asseterpVerificationPlanId="VP-2025-Q2" fixedAssetId="ASSET-VH-001"
+        scanDate="2025-04-03 00:00:00.0" result="FOUND"
+        scannedTagValue="BC-VH001" notes="Vehicle in yard — VIN checked, matches records"/>
+    <AsseterpVerificationLine asseterpVerificationLineId="VL-004"
+        asseterpVerificationPlanId="VP-2025-Q2" fixedAssetId="ASSET-MC-001"
+        scanDate="2025-04-04 00:00:00.0" result="FOUND"
+        scannedTagValue="BC-MC001" notes="CNC mill in production bay 1 — operational"/>
+    <AsseterpVerificationLine asseterpVerificationLineId="VL-005"
+        asseterpVerificationPlanId="VP-2025-Q2" fixedAssetId="ASSET-MC-003"
+        scanDate="2025-04-04 00:00:00.0" result="FOUND"
+        scannedTagValue="BC-MC003" notes="Forklift in workshop — under scheduled maintenance"/>
+    <AsseterpVerificationLine asseterpVerificationLineId="VL-006"
+        asseterpVerificationPlanId="VP-2025-Q2" fixedAssetId="ASSET-FN-001"
+        scanDate="2025-04-07 00:00:00.0" result="FOUND"
+        scannedTagValue="BC-FN001" notes="Executive suite furniture — good condition"/>
+
+    <!-- Upcoming Q3 2026 plan (in progress) -->
+    <AsseterpVerificationPlan asseterpVerificationPlanId="VP-2026-Q3"
+        partyId="Company" facilityId="WebStoreWarehouse"
+        planName="Q3 2026 Full Physical Inventory Count"
+        planDate="2026-07-01 00:00:00.0"
+        statusId="AE_VP_PLANNED" conductedByPartyId="DemoEmployee"/>
+
+    <!-- ================================================================
+         SECTION G: ASSET TAGS
+         ================================================================ -->
+    <AsseterpAssetTag asseterpAssetTagId="TAG-IT001" fixedAssetId="ASSET-IT-001"
+        tagTypeId="AE_TAG_BARCODE" tagValue="BC-IT001"
+        issuedDate="2022-01-15 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-IT002" fixedAssetId="ASSET-IT-002"
+        tagTypeId="AE_TAG_BARCODE" tagValue="BC-IT002"
+        issuedDate="2022-02-01 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-IT003" fixedAssetId="ASSET-IT-003"
+        tagTypeId="AE_TAG_QR" tagValue="QR-IT003"
+        issuedDate="2022-03-01 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-IT004" fixedAssetId="ASSET-IT-004"
+        tagTypeId="AE_TAG_RFID" tagValue="RFID-IT004-A3F2"
+        issuedDate="2022-04-01 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-IT005" fixedAssetId="ASSET-IT-005"
+        tagTypeId="AE_TAG_BARCODE" tagValue="BC-IT005"
+        issuedDate="2022-05-15 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-IT006" fixedAssetId="ASSET-IT-006"
+        tagTypeId="AE_TAG_RFID" tagValue="RFID-IT006-B8C1"
+        issuedDate="2022-06-01 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-VH001" fixedAssetId="ASSET-VH-001"
+        tagTypeId="AE_TAG_QR" tagValue="QR-VH001"
+        issuedDate="2022-01-20 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-VH002" fixedAssetId="ASSET-VH-002"
+        tagTypeId="AE_TAG_QR" tagValue="QR-VH002"
+        issuedDate="2022-02-15 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-MC001" fixedAssetId="ASSET-MC-001"
+        tagTypeId="AE_TAG_RFID" tagValue="RFID-MC001-C4D7"
+        issuedDate="2022-01-10 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-MC002" fixedAssetId="ASSET-MC-002"
+        tagTypeId="AE_TAG_RFID" tagValue="RFID-MC002-E9F3"
+        issuedDate="2022-02-01 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+    <AsseterpAssetTag asseterpAssetTagId="TAG-MC003" fixedAssetId="ASSET-MC-003"
+        tagTypeId="AE_TAG_BARCODE" tagValue="BC-MC003"
+        issuedDate="2022-03-01 00:00:00.0" statusId="AE_TAG_ACTIVE"/>
+
+    <!-- ================================================================
+         SECTION H: CUSTODY RECORDS
+         ================================================================ -->
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-IT004-001"
+        fixedAssetId="ASSET-IT-004" custodianPartyId="DemoEmployee"
+        facilityId="WebStoreWarehouse" assignedDate="2022-04-01 00:00:00.0"
+        assignedByPartyId="Company" acknowledgementDate="2022-04-01 00:00:00.0"
+        notes="ThinkPad assigned to CEO — primary workstation."/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-VH001-001"
+        fixedAssetId="ASSET-VH-001" custodianPartyId="DemoEmployee"
+        facilityId="WebStoreWarehouse" assignedDate="2022-01-20 00:00:00.0"
+        assignedByPartyId="Company" acknowledgementDate="2022-01-20 00:00:00.0"
+        notes="Hilux assigned to field operations team leader."/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-VH002-001"
+        fixedAssetId="ASSET-VH-002" custodianPartyId="DemoEmployee"
+        facilityId="WebStoreWarehouse" assignedDate="2022-02-15 00:00:00.0"
+        assignedByPartyId="Company" acknowledgementDate="2022-02-15 00:00:00.0"
+        notes="Ford Transit assigned to logistics. Driver handover done."/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-VH003-001"
+        fixedAssetId="ASSET-VH-003" custodianPartyId="DemoEmployee"
+        facilityId="WebStoreWarehouse" assignedDate="2022-03-01 00:00:00.0"
+        assignedByPartyId="Company" acknowledgementDate="2022-03-01 00:00:00.0"
+        notes="Land Cruiser assigned to executive pool — CEO primary."/>
+    <!-- VH-004 custody returned on disposal -->
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-VH004-001"
+        fixedAssetId="ASSET-VH-004" custodianPartyId="DemoEmployee"
+        facilityId="WebStoreWarehouse" assignedDate="2022-04-01 00:00:00.0"
+        returnDate="2024-06-30 00:00:00.0"
+        assignedByPartyId="Company" acknowledgementDate="2022-04-01 00:00:00.0"
+        notes="Honda Civic — returned on disposal date 2024-06-30."/>
+
+    <!-- ================================================================
+         SECTION I: METER READINGS (vehicles + machinery for UOP)
+         ================================================================ -->
+    <!-- VH-001 Toyota Hilux — monthly odometer readings -->
+    <AsseterpMeterReading asseterpMeterReadingId="MR-VH001-001"
+        fixedAssetId="ASSET-VH-001" meterTypeId="AE_METER_ODOMETER"
+        readingDate="2024-12-31 00:00:00.0" readingValue="87500"
+        readingUomId="KM" recordedByPartyId="DemoEmployee"/>
+    <AsseterpMeterReading asseterpMeterReadingId="MR-VH001-002"
+        fixedAssetId="ASSET-VH-001" meterTypeId="AE_METER_ODOMETER"
+        readingDate="2025-06-30 00:00:00.0" readingValue="102000"
+        readingUomId="KM" recordedByPartyId="DemoEmployee"/>
+    <AsseterpMeterReading asseterpMeterReadingId="MR-VH001-003"
+        fixedAssetId="ASSET-VH-001" meterTypeId="AE_METER_ODOMETER"
+        readingDate="2025-12-31 00:00:00.0" readingValue="118500"
+        readingUomId="KM" recordedByPartyId="DemoEmployee"/>
+
+    <!-- VH-002 Ford Transit -->
+    <AsseterpMeterReading asseterpMeterReadingId="MR-VH002-001"
+        fixedAssetId="ASSET-VH-002" meterTypeId="AE_METER_ODOMETER"
+        readingDate="2024-12-31 00:00:00.0" readingValue="95200"
+        readingUomId="KM" recordedByPartyId="DemoEmployee"/>
+    <AsseterpMeterReading asseterpMeterReadingId="MR-VH002-002"
+        fixedAssetId="ASSET-VH-002" meterTypeId="AE_METER_ODOMETER"
+        readingDate="2025-12-31 00:00:00.0" readingValue="131800"
+        readingUomId="KM" recordedByPartyId="DemoEmployee"/>
+
+    <!-- MC-001 CNC Mill — engine/spindle hours -->
+    <AsseterpMeterReading asseterpMeterReadingId="MR-MC001-001"
+        fixedAssetId="ASSET-MC-001" meterTypeId="AE_METER_ENG_HOURS"
+        readingDate="2024-12-31 00:00:00.0" readingValue="6240"
+        readingUomId="HRS" recordedByPartyId="DemoEmployee"/>
+    <AsseterpMeterReading asseterpMeterReadingId="MR-MC001-002"
+        fixedAssetId="ASSET-MC-001" meterTypeId="AE_METER_UNITS"
+        readingDate="2025-12-31 00:00:00.0" readingValue="8900"
+        readingUomId="HRS" recordedByPartyId="DemoEmployee"/>
+
+    <!-- MC-004 Air Compressor — engine hours -->
+    <AsseterpMeterReading asseterpMeterReadingId="MR-MC004-001"
+        fixedAssetId="ASSET-MC-004" meterTypeId="AE_METER_ENG_HOURS"
+        readingDate="2025-12-31 00:00:00.0" readingValue="3120"
+        readingUomId="HRS" recordedByPartyId="DemoEmployee"/>
+
+    <!-- ================================================================
+         SECTION J: MAINTENANCE — OFBiz WorkEffort + AsseterpSparePart
+         ================================================================ -->
+    <!-- OFBiz FixedAssetMaint requires WorkEffort; use existing service approach.
+         WorkEffort is seeded here for POC purposes only. -->
+    <WorkEffort workEffortId="WE-MAINT-001" workEffortTypeId="TASK"
+        workEffortName="Crown Forklift 6-Month Service" statusId="TASK_COMPLETED"
+        estimatedStartDate="2025-09-01 00:00:00.0"
+        estimatedCompletionDate="2025-09-02 00:00:00.0"
+        actualStartDate="2025-09-01 00:00:00.0"
+        actualCompletionDate="2025-09-02 00:00:00.0"
+        description="6-month preventive maintenance — Crown SC 5500. Oil, filters, battery, fork tines inspected."/>
+    <WorkEffort workEffortId="WE-MAINT-002" workEffortTypeId="TASK"
+        workEffortName="Haas VF-4 CNC Annual Service" statusId="TASK_COMPLETED"
+        estimatedStartDate="2025-01-15 00:00:00.0"
+        estimatedCompletionDate="2025-01-17 00:00:00.0"
+        actualStartDate="2025-01-15 00:00:00.0"
+        actualCompletionDate="2025-01-17 00:00:00.0"
+        description="Annual CNC service — spindle alignment, coolant flush, lubrication system."/>
+    <WorkEffort workEffortId="WE-MAINT-003" workEffortTypeId="TASK"
+        workEffortName="Toyota Hilux 90,000km Service" statusId="TASK_COMPLETED"
+        estimatedStartDate="2025-04-10 00:00:00.0"
+        estimatedCompletionDate="2025-04-10 00:00:00.0"
+        actualStartDate="2025-04-10 00:00:00.0"
+        actualCompletionDate="2025-04-10 00:00:00.0"
+        description="90,000km service — timing belt, brake pads, tyres x4."/>
+
+    <!-- Spare parts issued against maintenance -->
+    <AsseterpSparePart asseterpSparePartId="SP-001" fixedAssetId="ASSET-MC-003"
+        workEffortId="WE-MAINT-001"
+        facilityId="WebStoreWarehouse" quantity="4" uomId="EA"
+        issuedDate="2025-09-01 00:00:00.0" costAmount="280.00" currencyUomId="USD"
+        treatmentTypeId="AE_SPT_EXPENSED" statusId="AE_SP_ISSUED"/>
+    <AsseterpSparePart asseterpSparePartId="SP-002" fixedAssetId="ASSET-MC-001"
+        workEffortId="WE-MAINT-002"
+        facilityId="WebStoreWarehouse" quantity="1" uomId="EA"
+        issuedDate="2025-01-15 00:00:00.0" costAmount="1850.00" currencyUomId="USD"
+        treatmentTypeId="AE_SPT_CAPITALISED" statusId="AE_SP_ISSUED"/>
+    <AsseterpSparePart asseterpSparePartId="SP-003" fixedAssetId="ASSET-VH-001"
+        workEffortId="WE-MAINT-003"
+        facilityId="WebStoreWarehouse" quantity="4" uomId="EA"
+        issuedDate="2025-04-10 00:00:00.0" costAmount="960.00" currencyUomId="USD"
+        treatmentTypeId="AE_SPT_EXPENSED" statusId="AE_SP_ISSUED"/>
+
+    <!-- ================================================================
+         SECTION K: CONSTRUCTION IN PROGRESS (CIP)
+         ================================================================ -->
+    <AsseterpCipProject asseterpCipProjectId="CIP-001" partyId="Company"
+        projectName="Data Centre Extension — Building B"
+        description="Expand on-premise data centre capacity by 50% with new power and cooling infrastructure."
+        statusId="AE_CIP_IN_PROG"
+        startDate="2025-06-01 00:00:00.0"
+        totalCost="125000.00" currencyUomId="USD"/>
+
+    <AsseterpCipCost asseterpCipCostId="CIPC-001" asseterpCipProjectId="CIP-001"
+        costDate="2025-07-15 00:00:00.0" amount="42000.00" currencyUomId="USD"
+        glAccountId="ASSETERP-145000"
+        description="Electrical works — sub-panel, UPS feeds, cable trays"/>
+    <AsseterpCipCost asseterpCipCostId="CIPC-002" asseterpCipProjectId="CIP-001"
+        costDate="2025-09-30 00:00:00.0" amount="38500.00" currencyUomId="USD"
+        glAccountId="ASSETERP-145000"
+        description="Precision cooling units — 2 x 20kW CRAC units installed"/>
+    <AsseterpCipCost asseterpCipCostId="CIPC-003" asseterpCipProjectId="CIP-001"
+        costDate="2025-12-15 00:00:00.0" amount="22000.00" currencyUomId="USD"
+        glAccountId="ASSETERP-145000"
+        description="Structural — raised floor, racking, cable management"/>
+
+    <!-- CIP-002: completed and capitalised as ASSET-IT-001 replacement -->
+    <AsseterpCipProject asseterpCipProjectId="CIP-002" partyId="Company"
+        projectName="Server Refresh Phase 1 — 2024"
+        description="Procurement and commissioning of replacement application servers."
+        statusId="AE_CIP_CAPIT"
+        startDate="2024-08-01 00:00:00.0" completionDate="2024-10-31 00:00:00.0"
+        totalCost="54000.00" currencyUomId="USD"
+        fixedAssetId="ASSET-IT-001" capitalizedDate="2024-10-31 00:00:00.0"/>
+
+    <!-- ================================================================
+         SECTION L: GOVERNMENT GRANT (IAS 20) — machinery grant
+         ================================================================ -->
+    <AsseterpGovGrant asseterpGovGrantId="GG-001" fixedAssetId="ASSET-MC-001"
+        grantorPartyId="Company" grantTypeId="AE_GRANT_CAPITAL"
+        grantAmount="25000.00" currencyUomId="USD"
+        receivedDate="2022-03-01 00:00:00.0"
+        amortizationPeriodMonths="120" deferredBalance="12500.00"
+        statusId="AE_GG_ACTIVE"/>
+    <AsseterpGovGrantAmort asseterpGovGrantAmortId="GGA-001-2022"
+        asseterpGovGrantId="GG-001"
+        periodDate="2022-12-31 00:00:00.0" amortAmount="2500.00"
+        postedDate="2022-12-31 00:00:00.0"/>
+    <AsseterpGovGrantAmort asseterpGovGrantAmortId="GGA-001-2023"
+        asseterpGovGrantId="GG-001"
+        periodDate="2023-12-31 00:00:00.0" amortAmount="2500.00"
+        postedDate="2023-12-31 00:00:00.0"/>
+    <AsseterpGovGrantAmort asseterpGovGrantAmortId="GGA-001-2024"
+        asseterpGovGrantId="GG-001"
+        periodDate="2024-12-31 00:00:00.0" amortAmount="2500.00"
+        postedDate="2024-12-31 00:00:00.0"/>
+    <AsseterpGovGrantAmort asseterpGovGrantAmortId="GGA-001-2025"
+        asseterpGovGrantId="GG-001"
+        periodDate="2025-12-31 00:00:00.0" amortAmount="2500.00"
+        postedDate="2025-12-31 00:00:00.0"/>
+
+    <!-- ================================================================
+         SECTION M: VALUATION + REVALUATION (IAS 16)
+         ================================================================ -->
+    <!-- Third-party valuation of NetApp SAN -->
+    <AsseterpValuation asseterpValuationId="VAL-IT006-2024"
+        fixedAssetId="ASSET-IT-006"
+        valuationDate="2024-12-31 00:00:00.0" valuedByPartyId="Company"
+        valuationMethodId="AE_VAL_MARKET" marketValue="31000.00"
+        depreciatedReplacementCost="29500.00" currencyUomId="USD"
+        reportReference="RPT-VAL-2024-006"
+        nextValuationDate="2026-12-31 00:00:00.0"
+        notes="Market survey of comparable NetApp AFF systems. NBV at date = 12,880."/>
+
+    <!-- Revaluation upwards — surplus to OCI -->
+    <AsseterpRevaluation asseterpRevaluationId="RV-IT006-2024"
+        fixedAssetId="ASSET-IT-006" revaluationDate="2024-12-31 00:00:00.0"
+        preRevalCost="28000.00" preRevalAccumDep="15120.00"
+        fairValue="31000.00" surplusAmount="18120.00" deficitAmount="0.00"
+        currencyUomId="USD" performedByPartyId="DemoEmployee"
+        notes="Revaluation based on independent market appraisal RPT-VAL-2024-006. Surplus credited to revaluation reserve."/>
+
+    <!-- Estimate change: Mazak Lathe — useful life extended from 10 to 12 years -->
+    <AsseterpEstimateChange asseterpEstimateChangeId="EC-MC002-2025"
+        fixedAssetId="ASSET-MC-002"
+        changeDate="2025-06-30 00:00:00.0"
+        changeTypeId="AE_ECT_LIFE" oldValue="10" newValue="12"
+        reason="CNC lathe refurbished with new spindle; independent assessment supports 2-year extension."
+        approvedByPartyId="DemoEmployee"
+        notes="IAS 8 prospective application. Revised annual charge effective 2025-07-01."/>
+
+    <!-- ================================================================
+         SECTION N: IMPAIRMENT (IAS 36)
+         ================================================================ -->
+    <!-- CGU: Production Line A -->
+    <AsseterpCgu asseterpCguId="CGU-PROD-A" partyId="Company"
+        cguName="Production Line A"
+        description="CNC mill, CNC lathe, and air compressor as one cash-generating unit."/>
+    <AsseterpCguMember asseterpCguMemberId="CGM-001"
+        asseterpCguId="CGU-PROD-A" fixedAssetId="ASSET-MC-001"
+        fromDate="2022-01-10 00:00:00.0" allocationPct="50.0"/>
+    <AsseterpCguMember asseterpCguMemberId="CGM-002"
+        asseterpCguId="CGU-PROD-A" fixedAssetId="ASSET-MC-002"
+        fromDate="2022-02-01 00:00:00.0" allocationPct="35.0"/>
+    <AsseterpCguMember asseterpCguMemberId="CGM-003"
+        asseterpCguId="CGU-PROD-A" fixedAssetId="ASSET-MC-004"
+        fromDate="2022-04-01 00:00:00.0" allocationPct="15.0"/>
+
+    <!-- Impairment test 2023 — market downturn -->
+    <AsseterpImpairment asseterpImpairmentId="IMP-PROD-A-2023"
+        fixedAssetId="ASSET-MC-001" asseterpCguId="CGU-PROD-A"
+        assessmentDate="2023-12-31 00:00:00.0"
+        carryingAmount="73500.00" recoverableAmount="58000.00"
+        impairmentLoss="15500.00" reversalAmount="0.00"
+        currencyUomId="USD" statusId="AE_IMP_ASSESSED"/>
+
+    <!-- Impairment reversal 2025 — market recovered -->
+    <AsseterpImpairment asseterpImpairmentId="IMP-PROD-A-2025-REV"
+        fixedAssetId="ASSET-MC-001" asseterpCguId="CGU-PROD-A"
+        assessmentDate="2025-12-31 00:00:00.0"
+        carryingAmount="55000.00" recoverableAmount="63000.00"
+        impairmentLoss="0.00" reversalAmount="8000.00"
+        currencyUomId="USD" statusId="AE_IMP_REVERSED"/>
+
+    <!-- ================================================================
+         SECTION O: ASSET RETIREMENT OBLIGATION (IAS 37)
+         ================================================================ -->
+    <!-- ARO on CNC mill — decommissioning cost estimate -->
+    <AsseterpAro asseterpAroId="ARO-MC001" fixedAssetId="ASSET-MC-001"
+        recognitionDate="2022-01-10 00:00:00.0" estimatedCost="12000.00"
+        discountRate="5.5" presentValue="7800.00" currencyUomId="USD"
+        expectedSettleDate="2032-01-10 00:00:00.0" statusId="AE_ARO_ACTIVE"/>
+    <AsseterpAroSchedule asseterpAroScheduleId="AROS-001-2022"
+        asseterpAroId="ARO-MC001" periodDate="2022-12-31 00:00:00.0"
+        openingBalance="7800.00" interestUnwound="429.00"
+        closingBalance="8229.00"/>
+    <AsseterpAroSchedule asseterpAroScheduleId="AROS-001-2023"
+        asseterpAroId="ARO-MC001" periodDate="2023-12-31 00:00:00.0"
+        openingBalance="8229.00" interestUnwound="452.60"
+        closingBalance="8681.60"/>
+    <AsseterpAroSchedule asseterpAroScheduleId="AROS-001-2024"
+        asseterpAroId="ARO-MC001" periodDate="2024-12-31 00:00:00.0"
+        openingBalance="8681.60" interestUnwound="477.49"
+        closingBalance="9159.09"/>
+
+    <!-- ================================================================
+         SECTION P: HELD-FOR-SALE (IFRS 5) — VH-004 prior to disposal
+         ================================================================ -->
+    <AsseterpHeldForSale asseterpHeldForSaleId="HFS-VH004"
+        fixedAssetId="ASSET-VH-004"
+        reclassificationDate="2024-03-31 00:00:00.0"
+        carryingAmountAtReclassification="18360.00"
+        fairValueLessCostsToSell="21000.00"
+        writtenDownAmount="0.00" currencyUomId="USD"
+        expectedSaleDate="2024-06-30 00:00:00.0"
+        actualSaleDate="2024-06-30 00:00:00.0"
+        statusId="AE_HFS_SOLD"
+        notes="Honda Civic reclassified HFS Q1 2024. Sold June 2024 at USD 21,000 — gain on disposal USD 2,640."/>
+
+    <!-- ================================================================
+         SECTION Q: LEASE (IFRS 16)
+         ================================================================ -->
+    <!-- Finance lease on additional fleet vehicle (not in FixedAsset register yet —
+         the vehicle being leased is tracked via the lease itself for POC) -->
+    <AsseterpLease asseterpLeaseId="LEASE-VH-002-EXT" fixedAssetId="ASSET-VH-002"
+        lessorPartyId="Company" leaseTypeId="AE_LEASE_FINANCE"
+        leaseStartDate="2022-02-15 00:00:00.0" leaseEndDate="2027-02-14 00:00:00.0"
+        discountRate="6.0" presentValueLiability="38000.00"
+        rouAssetValue="38000.00" currencyUomId="USD"
+        statusId="AE_LEASE_ACTIVE"/>
+    <AsseterpLeaseSchedule asseterpLeaseScheduleId="LSS-VH002-2022"
+        asseterpLeaseId="LEASE-VH-002-EXT"
+        paymentDate="2022-12-31 00:00:00.0"
+        openingLiability="38000.00" payment="9200.00" interestCharge="2280.00"
+        principalRepayment="6920.00" closingLiability="31080.00"/>
+    <AsseterpLeaseSchedule asseterpLeaseScheduleId="LSS-VH002-2023"
+        asseterpLeaseId="LEASE-VH-002-EXT"
+        paymentDate="2023-12-31 00:00:00.0"
+        openingLiability="31080.00" payment="9200.00" interestCharge="1864.80"
+        principalRepayment="7335.20" closingLiability="23744.80"/>
+    <AsseterpLeaseSchedule asseterpLeaseScheduleId="LSS-VH002-2024"
+        asseterpLeaseId="LEASE-VH-002-EXT"
+        paymentDate="2024-12-31 00:00:00.0"
+        openingLiability="23744.80" payment="9200.00" interestCharge="1424.69"
+        principalRepayment="7775.31" closingLiability="15969.49"/>
+    <AsseterpLeaseSchedule asseterpLeaseScheduleId="LSS-VH002-2025"
+        asseterpLeaseId="LEASE-VH-002-EXT"
+        paymentDate="2025-12-31 00:00:00.0"
+        openingLiability="15969.49" payment="9200.00" interestCharge="958.17"
+        principalRepayment="8241.83" closingLiability="7727.66"/>
+
+    <!-- Lease modification: extended by 1 year in 2025 -->
+    <AsseterpLeaseModification asseterpLeaseModificationId="LM-VH002-001"
+        asseterpLeaseId="LEASE-VH-002-EXT"
+        modificationDate="2025-06-30 00:00:00.0"
+        modTypeId="AE_LM_EXTENSION"
+        newEndDate="2028-02-14 00:00:00.0"
+        newDiscountRate="5.5" revisedLiability="18000.00"/>
+
+    <!-- Operating lease on office copier -->
+    <AsseterpLease asseterpLeaseId="LEASE-IT009-COPY" fixedAssetId="ASSET-IT-009"
+        lessorPartyId="Company" leaseTypeId="AE_LEASE_OPERAT"
+        leaseStartDate="2022-09-01 00:00:00.0" leaseEndDate="2025-08-31 00:00:00.0"
+        discountRate="5.0" presentValueLiability="5800.00"
+        rouAssetValue="5800.00" currencyUomId="USD"
+        statusId="AE_LEASE_EXPIRED"/>
+
+    <!-- ================================================================
+         SECTION R: HIRE PURCHASE
+         ================================================================ -->
+    <AsseterpHirePurchase asseterpHirePurchaseId="HP-MC002"
+        fixedAssetId="ASSET-MC-002"
+        financierPartyId="Company"
+        principalAmount="45000.00" interestRate="7.5"
+        termMonths="48" startDate="2022-02-01 00:00:00.0"
+        currencyUomId="USD" statusId="AE_HP_SETTLED"/>
+    <AsseterpHirePurchaseSchedule asseterpHirePurchaseScheduleId="HPS-MC002-001"
+        asseterpHirePurchaseId="HP-MC002"
+        dueDate="2022-12-31 00:00:00.0"
+        openingBalance="45000.00" installment="13125.00"
+        principal="9750.00" financeCharge="3375.00"
+        closingBalance="35250.00" paidDate="2022-12-31 00:00:00.0"/>
+    <AsseterpHirePurchaseSchedule asseterpHirePurchaseScheduleId="HPS-MC002-002"
+        asseterpHirePurchaseId="HP-MC002"
+        dueDate="2023-12-31 00:00:00.0"
+        openingBalance="35250.00" installment="13125.00"
+        principal="10481.25" financeCharge="2643.75"
+        closingBalance="24768.75" paidDate="2023-12-31 00:00:00.0"/>
+    <AsseterpHirePurchaseSchedule asseterpHirePurchaseScheduleId="HPS-MC002-003"
+        asseterpHirePurchaseId="HP-MC002"
+        dueDate="2024-12-31 00:00:00.0"
+        openingBalance="24768.75" installment="13125.00"
+        principal="11266.88" financeCharge="1858.12"
+        closingBalance="13501.87" paidDate="2024-12-31 00:00:00.0"/>
+    <AsseterpHirePurchaseSchedule asseterpHirePurchaseScheduleId="HPS-MC002-004"
+        asseterpHirePurchaseId="HP-MC002"
+        dueDate="2025-12-31 00:00:00.0"
+        openingBalance="13501.87" installment="13125.00"
+        principal="12109.55" financeCharge="1015.45"
+        closingBalance="1392.32" paidDate="2025-12-31 00:00:00.0"/>
+
+    <!-- ================================================================
+         SECTION S: RENTAL CONTRACT (company as lessor)
+         ================================================================ -->
+    <!-- VH-003 Land Cruiser rented to DemoCustomer1 for a project period -->
+    <AsseterpRentalContract asseterpRentalContractId="RC-VH003-001"
+        fixedAssetId="ASSET-VH-003" lesseePartyId="DemoCustomer1"
+        startDate="2024-01-01 00:00:00.0" endDate="2024-06-30 00:00:00.0"
+        monthlyRate="1800.00" depositAmount="3600.00" currencyUomId="USD"
+        deliveryDate="2024-01-01 00:00:00.0" returnDate="2024-06-30 00:00:00.0"
+        statusId="AE_RC_COMPLETED"/>
+
+    <!-- IT-007 Poly Video Conf rented to DemoCustomer1 for events -->
+    <AsseterpRentalContract asseterpRentalContractId="RC-IT007-001"
+        fixedAssetId="ASSET-IT-007" lesseePartyId="DemoCustomer1"
+        startDate="2026-07-01 00:00:00.0" endDate="2026-07-31 00:00:00.0"
+        monthlyRate="350.00" depositAmount="700.00" currencyUomId="USD"
+        deliveryDate="2026-07-01 00:00:00.0"
+        statusId="AE_RC_ACTIVE"/>
+
+    <!-- ================================================================
+         SECTION T: BOOKING (shared asset reservation)
+         ================================================================ -->
+    <AsseterpBooking asseterpBookingId="BK-IT007-001"
+        fixedAssetId="ASSET-IT-007" bookedByPartyId="DemoEmployee"
+        bookingFromDate="2026-07-15 00:00:00.0" bookingThruDate="2026-07-15 23:59:59.0"
+        statusId="AE_BK_CONFIRMED"
+        purpose="Board strategy session — Q3 2026 planning day"/>
+    <AsseterpBooking asseterpBookingId="BK-VH003-001"
+        fixedAssetId="ASSET-VH-003" bookedByPartyId="DemoEmployee"
+        bookingFromDate="2026-07-01 00:00:00.0" bookingThruDate="2026-07-03 00:00:00.0"
+        statusId="AE_BK_CONFIRMED"
+        purpose="Executive client site visit — 3-day trip"/>
+    <AsseterpBooking asseterpBookingId="BK-VH001-001"
+        fixedAssetId="ASSET-VH-001" bookedByPartyId="DemoEmployee"
+        bookingFromDate="2026-06-01 00:00:00.0" bookingThruDate="2026-06-05 00:00:00.0"
+        statusId="AE_BK_RETURNED"
+        purpose="Field survey — northern region assessment"/>
+
+    <!-- ================================================================
+         SECTION U: INSURANCE
+         ================================================================ -->
+    <!-- Fleet insurance VH-001 -->
+    <AsseterpInsurance asseterpInsuranceId="INS-VH001" fixedAssetId="ASSET-VH-001"
+        insurerPartyId="Company" policyNumber="POL-FLEET-2024-001"
+        coverageType="Comprehensive fleet — third party, theft, collision, fire"
+        startDate="2024-07-01 00:00:00.0" endDate="2026-07-28 00:00:00.0"
+        premiumAmount="2800.00" coverageAmount="50000.00" currencyUomId="USD"
+        statusId="AE_INS_ACTIVE"/>
+    <!-- Fleet insurance VH-002 -->
+    <AsseterpInsurance asseterpInsuranceId="INS-VH002" fixedAssetId="ASSET-VH-002"
+        insurerPartyId="Company" policyNumber="POL-FLEET-2024-002"
+        coverageType="Comprehensive fleet — third party, theft, collision, fire"
+        startDate="2024-07-01 00:00:00.0" endDate="2026-07-28 00:00:00.0"
+        premiumAmount="3100.00" coverageAmount="55000.00" currencyUomId="USD"
+        statusId="AE_INS_ACTIVE"/>
+    <!-- Machinery insurance MC-001 -->
+    <AsseterpInsurance asseterpInsuranceId="INS-MC001" fixedAssetId="ASSET-MC-001"
+        insurerPartyId="Company" policyNumber="POL-MACH-2023-001"
+        coverageType="Plant and machinery — breakdown, fire, natural perils"
+        startDate="2023-01-01 00:00:00.0" endDate="2025-12-31 00:00:00.0"
+        premiumAmount="4200.00" coverageAmount="100000.00" currencyUomId="USD"
+        statusId="AE_INS_EXPIRED"/>
+    <!-- Insurance claim on VH-001 — minor collision 2025 -->
+    <AsseterpInsuranceClaim asseterpInsuranceClaimId="IC-VH001-2025"
+        asseterpInsuranceId="INS-VH001"
+        claimDate="2025-03-15 00:00:00.0" claimAmount="4500.00"
+        settledAmount="3800.00" settlementDate="2025-04-20 00:00:00.0"
+        description="Rear-end collision in car park — bumper and tow-bar replacement."
+        statusId="AE_IC_SETTLED"/>
+
+    <!-- ================================================================
+         SECTION V: WARRANTY
+         ================================================================ -->
+    <AsseterpWarranty asseterpWarrantyId="WARR-IT001" fixedAssetId="ASSET-IT-001"
+        vendorPartyId="Company" warrantyTypeId="AE_WARR_EXTENDED"
+        startDate="2022-01-15 00:00:00.0" endDate="2026-08-01 00:00:00.0"
+        coverageDescription="Dell ProSupport Plus — next-business-day on-site. Parts and labour included."
+        statusId="AE_WARR_ACTIVE"/>
+    <AsseterpWarranty asseterpWarrantyId="WARR-IT006" fixedAssetId="ASSET-IT-006"
+        vendorPartyId="Company" warrantyTypeId="AE_WARR_EXTENDED"
+        startDate="2022-06-01 00:00:00.0" endDate="2027-06-01 00:00:00.0"
+        coverageDescription="NetApp SupportEdge Premium — 24x7 phone, on-site within 4 hours."
+        statusId="AE_WARR_ACTIVE"/>
+    <AsseterpWarranty asseterpWarrantyId="WARR-MC001" fixedAssetId="ASSET-MC-001"
+        vendorPartyId="Company" warrantyTypeId="AE_WARR_MFR"
+        startDate="2022-01-10 00:00:00.0" endDate="2024-01-10 00:00:00.0"
+        coverageDescription="Haas 2-year factory warranty — spindle, axis drives, control."
+        statusId="AE_WARR_EXPIRED"/>
+    <AsseterpWarranty asseterpWarrantyId="WARR-VH001" fixedAssetId="ASSET-VH-001"
+        vendorPartyId="Company" warrantyTypeId="AE_WARR_MFR"
+        startDate="2022-01-20 00:00:00.0" endDate="2025-01-20 00:00:00.0"
+        coverageDescription="Toyota 3-year / 100,000km factory warranty."
+        statusId="AE_WARR_EXPIRED"/>
+
+    <!-- ================================================================
+         SECTION W: COMPLIANCE DOCUMENTS
+         ================================================================ -->
+    <!-- Forklift operator certification / safety compliance -->
+    <AsseterpComplianceDoc asseterpComplianceDocId="CD-MC003-SAFE"
+        fixedAssetId="ASSET-MC-003"
+        docTypeId="AE_CD_PRESSURE"
+        docNumber="SAFE-2025-FLK-001"
+        issuerPartyId="Company"
+        issueDate="2025-06-01 00:00:00.0" expiryDate="2026-06-01 00:00:00.0"
+        nextRenewalDate="2026-05-01 00:00:00.0"
+        statusId="AE_CD_EXPIRING"/>
+    <!-- Pressure vessel cert for air compressor -->
+    <AsseterpComplianceDoc asseterpComplianceDocId="CD-MC004-PRES"
+        fixedAssetId="ASSET-MC-004"
+        docTypeId="AE_CD_PRESSURE"
+        docNumber="PV-2024-AC-002"
+        issuerPartyId="Company"
+        issueDate="2024-05-01 00:00:00.0" expiryDate="2027-05-01 00:00:00.0"
+        nextRenewalDate="2027-04-01 00:00:00.0"
+        statusId="AE_CD_CURRENT"/>
+    <!-- Road worthiness — VH-001 -->
+    <AsseterpComplianceDoc asseterpComplianceDocId="CD-VH001-RW"
+        fixedAssetId="ASSET-VH-001"
+        docTypeId="AE_CD_ROADWTHY"
+        docNumber="RWC-2025-VH001"
+        issuerPartyId="Company"
+        issueDate="2025-01-15 00:00:00.0" expiryDate="2026-01-15 00:00:00.0"
+        nextRenewalDate="2025-12-15 00:00:00.0"
+        statusId="AE_CD_EXPIRED"/>
+    <!-- Electrical safety cert — server room -->
+    <AsseterpComplianceDoc asseterpComplianceDocId="CD-IT001-ELEC"
+        fixedAssetId="ASSET-IT-001"
+        docTypeId="AE_CD_ELEC"
+        docNumber="ELEC-2025-SRV-001"
+        issuerPartyId="Company"
+        issueDate="2025-03-01 00:00:00.0" expiryDate="2028-03-01 00:00:00.0"
+        nextRenewalDate="2028-02-01 00:00:00.0"
+        statusId="AE_CD_CURRENT"/>
+
+    <!-- ================================================================
+         SECTION X: PLEDGE (asset as collateral)
+         ================================================================ -->
+    <!-- CNC mill pledged as collateral for machinery HP financing -->
+    <AsseterpPledge asseterpPledgeId="PG-MC001" fixedAssetId="ASSET-MC-001"
+        lenderPartyId="Company" pledgeDate="2022-01-10 00:00:00.0"
+        loanAmount="85000.00" currencyUomId="USD"
+        statusId="AE_PG_ACTIVE"
+        notes="Asset pledged as collateral for equipment finance facility. Pledge released on full repayment."/>
+    <!-- VH-002 pledged for HP financing — now released -->
+    <AsseterpPledge asseterpPledgeId="PG-MC002" fixedAssetId="ASSET-MC-002"
+        lenderPartyId="Company" pledgeDate="2022-02-01 00:00:00.0"
+        releaseDate="2026-01-31 00:00:00.0"
+        loanAmount="45000.00" currencyUomId="USD"
+        statusId="AE_PG_RELEASED"
+        notes="HP finance fully settled 2025-12-31. Pledge released January 2026."/>
+
+    <!-- ================================================================
+         SECTION Y: SOFTWARE LICENSES
+         ================================================================ -->
+    <!-- Microsoft 365 E3 — links back to ASSET-SW-002 -->
+    <AsseterpSoftwareLicense asseterpSoftwareLicenseId="SL-SW002-M365"
+        fixedAssetId="ASSET-SW-002" vendorPartyId="Company"
+        licenseKey="M365-E3-PROD-XXXX-YYYY" licenseTypeId="AE_LIC_PERP"
+        totalSeats="50" startDate="2022-02-01 00:00:00.0"
+        endDate="2025-01-31 00:00:00.0"
+        annualCost="4000.00" currencyUomId="USD"
+        statusId="AE_SL_EXPIRED"/>
+    <!-- AutoCAD LT -->
+    <AsseterpSoftwareLicense asseterpSoftwareLicenseId="SL-SW003-ACAD"
+        fixedAssetId="ASSET-SW-003" vendorPartyId="Company"
+        licenseKey="ACAD-LT-2022-ABCD-EFGH" licenseTypeId="AE_LIC_PERP"
+        totalSeats="5" startDate="2022-03-01 00:00:00.0"
+        endDate="2025-02-28 00:00:00.0"
+        annualCost="2833.00" currencyUomId="USD"
+        statusId="AE_SL_EXPIRED"/>
+    <!-- Adobe Creative Cloud — subscription renewal for 2025 -->
+    <AsseterpSoftwareLicense asseterpSoftwareLicenseId="SL-SW004-ADO-2025"
+        fixedAssetId="ASSET-SW-004" vendorPartyId="Company"
+        licenseKey="ADO-CC-TEAMS-2025-XXXX" licenseTypeId="AE_LIC_SAAS"
+        totalSeats="10" startDate="2025-04-01 00:00:00.0"
+        endDate="2026-03-31 00:00:00.0"
+        annualCost="6000.00" currencyUomId="USD"
+        statusId="AE_SL_ACTIVE"/>
+    <!-- OFBiz support subscription -->
+    <AsseterpSoftwareLicense asseterpSoftwareLicenseId="SL-SW001-OFB"
+        fixedAssetId="ASSET-SW-001" vendorPartyId="Company"
+        licenseKey="OFB-ENT-2022-2025-SUPPORT" licenseTypeId="AE_LIC_EA"
+        totalSeats="999" startDate="2022-01-15 00:00:00.0"
+        endDate="2025-01-14 00:00:00.0"
+        annualCost="11667.00" currencyUomId="USD"
+        statusId="AE_SL_EXPIRED"/>
+
+    <!-- ================================================================
+         SECTION Z: FLEET — Fuel Logs
+         ================================================================ -->
+    <AsseterpFuelLog asseterpFuelLogId="FL-VH001-001" fixedAssetId="ASSET-VH-001"
+        logDate="2025-10-15 00:00:00.0" odometerReading="108500"
+        fuelQuantity="70" fuelUomId="LT" fuelCost="98.00" currencyUomId="USD"
+        filledByPartyId="DemoEmployee" fuelStationPartyId="Company"/>
+    <AsseterpFuelLog asseterpFuelLogId="FL-VH001-002" fixedAssetId="ASSET-VH-001"
+        logDate="2025-11-18 00:00:00.0" odometerReading="113200"
+        fuelQuantity="65" fuelUomId="LT" fuelCost="91.00" currencyUomId="USD"
+        filledByPartyId="DemoEmployee" fuelStationPartyId="Company"/>
+    <AsseterpFuelLog asseterpFuelLogId="FL-VH001-003" fixedAssetId="ASSET-VH-001"
+        logDate="2025-12-20 00:00:00.0" odometerReading="118500"
+        fuelQuantity="72" fuelUomId="LT" fuelCost="101.00" currencyUomId="USD"
+        filledByPartyId="DemoEmployee" fuelStationPartyId="Company"/>
+
+    <AsseterpFuelLog asseterpFuelLogId="FL-VH002-001" fixedAssetId="ASSET-VH-002"
+        logDate="2025-10-10 00:00:00.0" odometerReading="119500"
+        fuelQuantity="85" fuelUomId="LT" fuelCost="119.00" currencyUomId="USD"
+        filledByPartyId="DemoEmployee" fuelStationPartyId="Company"/>
+    <AsseterpFuelLog asseterpFuelLogId="FL-VH002-002" fixedAssetId="ASSET-VH-002"
+        logDate="2025-12-05 00:00:00.0" odometerReading="131800"
+        fuelQuantity="90" fuelUomId="LT" fuelCost="126.00" currencyUomId="USD"
+        filledByPartyId="DemoEmployee" fuelStationPartyId="Company"/>
+
+    <!-- ================================================================
+         SECTION AA: BATCH JOB RESULTS (background processing history)
+         ================================================================ -->
+    <AsseterpBatchJobResult asseterpBatchJobResultId="BJP-DEP-2024-12"
+        jobTypeId="AE_JOB_DEP_RUN" sourceReferenceId="DR-2024-12"
+        startDateTime="2024-12-31 01:00:00.0" endDateTime="2024-12-31 01:04:22.0"
+        statusId="SERVICE_FINISHED"
+        totalRecords="25" processedRecords="25" failedRecords="0"
+        runByPartyId="DemoEmployee"/>
+    <AsseterpBatchJobResult asseterpBatchJobResultId="BJP-DEP-2025-12"
+        jobTypeId="AE_JOB_DEP_RUN" sourceReferenceId="DR-2025-12"
+        startDateTime="2025-12-31 01:00:00.0" endDateTime="2025-12-31 01:05:11.0"
+        statusId="SERVICE_FINISHED"
+        totalRecords="24" processedRecords="24" failedRecords="0"
+        runByPartyId="DemoEmployee"/>
+
+    <!-- Batch job type enumeration -->
+    <EnumerationType description="Asset Batch Job Type" enumTypeId="AE_JOB_TYPE" hasTable="N" parentTypeId=""/>
+    <Enumeration description="Depreciation Run"      enumId="AE_JOB_DEP_RUN"    enumTypeId="AE_JOB_TYPE" sequenceId="01"/>
+    <Enumeration description="Alert Generation"      enumId="AE_JOB_ALERT_GEN"  enumTypeId="AE_JOB_TYPE" sequenceId="02"/>
+    <Enumeration description="Grant Amortization"    enumId="AE_JOB_GRANT_AMORT" enumTypeId="AE_JOB_TYPE" sequenceId="03"/>
+
+</entity-engine-xml>

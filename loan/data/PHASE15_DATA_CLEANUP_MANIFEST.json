@@ -1,0 +1,42 @@
+{
+  "phase": "Phase 15",
+  "title": "Seed/demo data parent-first cleanup",
+  "files": {
+    "LoanTypeData.xml": {
+      "size": 8795,
+      "longIdViolationsExcludingIssueType": []
+    },
+    "LoanStatusData.xml": {
+      "size": 6439,
+      "longIdViolationsExcludingIssueType": []
+    },
+    "LoanDemoData.xml": {
+      "size": 1351,
+      "longIdViolationsExcludingIssueType": []
+    },
+    "LoanRepaymentMethodConfigData.xml": {
+      "size": 2764,
+      "longIdViolationsExcludingIssueType": []
+    },
+    "LoanSecurityPermissionSeedData.xml": {
+      "size": 723,
+      "longIdViolationsExcludingIssueType": []
+    },
+    "LoanSecurityGroupDemoData.xml": {
+      "size": 856,
+      "longIdViolationsExcludingIssueType": []
+    },
+    "entitymodel.xml": {
+      "size": 38862,
+      "longIdViolationsExcludingIssueType": []
+    }
+  },
+  "notes": [
+    "Parent-first order applied inside each XML file.",
+    "Duplicate rows removed by natural keys.",
+    "LoanTypePolicy rows normalized to fields defined in entitymodel.xml.",
+    "LoanReconciliationIssuePolicy rows now include policyId and entitymodel-compatible isActive/fromDate fields.",
+    "Repayment method config removed from LoanDemoData.xml to avoid duplicate PK with LoanRepaymentMethodConfigData.xml.",
+    "issueTypeEnumId values are intentionally preserved because entitymodel defines issueTypeEnumId as id-long and reconciliation code emits these exact values."
+  ]
+}

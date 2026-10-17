@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ===================================================== -->
+    <!-- Payroll Scheduler Workers (self-rescheduling) -->
+    <!-- Pattern A: Full cycle one-shot monthly (attendance + approve + process + optional post) -->
+    <!-- ===================================================== -->
+
+    <service name="runMonthlyPayroll"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServices"
+             invoke="runMonthlyPayroll"
+             auth="true"
+             use-transaction="false">
+        <description>Monthly payroll automation per org (optional attendance, autoApprove, autoPost)</description>
+        <attribute name="autoApprove" type="Boolean" mode="IN" optional="true"/>
+        <attribute name="autoPost" type="Boolean" mode="IN" optional="true"/>
+        <attribute name="accountingPostOptionId" type="String" mode="IN" optional="true"/>
+        <attribute name="vendorPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="invoiceTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="bankTransferConfigId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollEmailQueueWorker"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServices"
+             invoke="processPayrollEmailQueueWorker"
+             auth="true"
+             use-transaction="false">
+        <description>Worker: polls PayrollEmailQueue and sends emails</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollSmsQueueWorker"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServices"
+             invoke="processPayrollSmsQueueWorker"
+             auth="true"
+             use-transaction="false">
+        <description>Worker: polls PayrollSmsQueue and sends SMS</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollExportQueueWorker"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServices"
+             invoke="processPayrollExportQueueWorker"
+             auth="true"
+             use-transaction="false">
+        <description>Worker: polls PayrollExportRequest queue and generates files</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollComplianceDailyWorker"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServices"
+             invoke="processPayrollComplianceDailyWorker"
+             auth="true"
+             use-transaction="false">
+        <description>Worker: daily compliance generation</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+</services>
+

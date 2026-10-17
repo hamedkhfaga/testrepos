@@ -1,0 +1,13 @@
+<entity-engine-xml>
+    <RoleType roleTypeId="EMPLOYEE" description="Employee"/>
+    <RoleType roleTypeId="INTERNAL_ORGANIZATIO" description="Internal Organization"/>
+    <BenefitType benefitTypeId="DED_ADV" description="Loan Recovery Deduction"/>
+
+    <PartyBenefit roleTypeIdFrom="INTERNAL_ORGANIZATIO" 
+                  roleTypeIdTo="EMPLOYEE" 
+                  partyIdFrom="Company" 
+                  partyIdTo="EMP101" 
+                  benefitTypeId="DED_ADV" 
+                  fromDate="2026-01-01 00:00:00.0" 
+                  cost="500.00"/>
+</entity-engine-xml>

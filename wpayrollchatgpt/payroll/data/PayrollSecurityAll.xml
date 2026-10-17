@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <!-- ========================================== -->
+    <!-- SECURITY PERMISSIONS -->
+    <!-- ========================================== -->
+    <SecurityPermission permissionId="PAYROLL_DASH_VIEW" description="View Payroll Dashboard"/>
+    <SecurityPermission permissionId="EMP_LIST_VIEW" description="View Employee List"/>
+    <SecurityPermission permissionId="EMP_ASSIGN_CREATE" description="Create Employee Assignment"/>
+    <SecurityPermission permissionId="INTL_EMP_VIEW" description="View International Employees"/>
+    <SecurityPermission permissionId="INTL_EMP_CREATE" description="Create International Employee"/>
+    <SecurityPermission permissionId="PAYROLL_RUN" description="Run Payroll"/>
+    <SecurityPermission permissionId="PAYROLL_ITER_VIEW" description="View Payroll Iterations"/>
+    <SecurityPermission permissionId="PAYROLL_CALC" description="Calculate Payroll"/>
+    <SecurityPermission permissionId="PAYROLL_FINALIZE" description="Finalize Payroll"/>
+    <SecurityPermission permissionId="EMP_LOAN_VIEW" description="View Employee Loans"/>
+    <SecurityPermission permissionId="EMP_LOAN_CREATE" description="Create Employee Loan"/>
+    <SecurityPermission permissionId="LOAN_REPORT_VIEW" description="View Loan Reports"/>
+    <SecurityPermission permissionId="TAX_CONFIG_VIEW" description="View Tax Configuration"/>
+    <SecurityPermission permissionId="TAX_CONFIG_CREATE" description="Create Tax Configuration"/>
+    <SecurityPermission permissionId="TAX_REPORT_VIEW" description="View Tax Reports"/>
+    <SecurityPermission permissionId="PAYSLIP_GENERATE" description="Generate Payslips"/>
+    <SecurityPermission permissionId="BANK_TRANSFER_GEN" description="Generate Bank Transfer"/>
+    <SecurityPermission permissionId="PAYROLL_EXPORT" description="Export Payroll Data"/>
+    <SecurityPermission permissionId="QUICK_REPORT_VIEW" description="View Quick Reports"/>
+    <SecurityPermission permissionId="PAYROLL_HIST_VIEW" description="View Payroll History"/>
+    <SecurityPermission permissionId="SYS_SETTINGS_VIEW" description="View System Settings"/>
+    <SecurityPermission permissionId="PAYROLL_STRUCT_MNG" description="Manage Structures"/>
+    <SecurityPermission permissionId="ALLOWANCE_TYPE_MNG" description="Manage Allowances"/>
+    <SecurityPermission permissionId="BANK_CONFIG_MNG" description="Manage Bank Config"/>
+    <SecurityPermission permissionId="HR_POLICY_MNG" description="Manage HR Policies"/>
+    
+    <!-- ========================================== -->
+    <!-- SECURITY GROUPS -->
+    <!-- ========================================== -->
+    <SecurityGroup groupId="PAYROLL_ADMIN" description="Payroll Administrator"/>
+    <SecurityGroup groupId="PAYROLL_MANAGER" description="Payroll Manager"/>
+    <SecurityGroup groupId="PAYROLL_CLERK" description="Payroll Clerk"/>
+    <SecurityGroup groupId="PAYROLL_VIEWER" description="Payroll Viewer"/>
+    
+    <!-- ========================================== -->
+    <!-- SECURITY GROUP PERMISSIONS (with fromDate) -->
+    <!-- ========================================== -->
+    <!-- Payroll Admin - Full Access -->
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="PAYROLL_DASH_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="EMP_LIST_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="EMP_ASSIGN_CREATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="INTL_EMP_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="INTL_EMP_CREATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="PAYROLL_RUN"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="PAYROLL_ITER_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="PAYROLL_CALC"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="PAYROLL_FINALIZE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="EMP_LOAN_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="EMP_LOAN_CREATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="LOAN_REPORT_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="TAX_CONFIG_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="TAX_CONFIG_CREATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="TAX_REPORT_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="PAYSLIP_GENERATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="BANK_TRANSFER_GEN"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="PAYROLL_EXPORT"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="QUICK_REPORT_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="PAYROLL_HIST_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="SYS_SETTINGS_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="PAYROLL_STRUCT_MNG"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="ALLOWANCE_TYPE_MNG"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="BANK_CONFIG_MNG"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_ADMIN" permissionId="HR_POLICY_MNG"/>
+    
+    <!-- Payroll Manager - Most Access -->
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="PAYROLL_DASH_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="EMP_LIST_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="EMP_ASSIGN_CREATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="INTL_EMP_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="INTL_EMP_CREATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="PAYROLL_RUN"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="PAYROLL_ITER_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="PAYROLL_CALC"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="PAYROLL_FINALIZE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="EMP_LOAN_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="EMP_LOAN_CREATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="LOAN_REPORT_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="TAX_CONFIG_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="TAX_REPORT_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="PAYSLIP_GENERATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="BANK_TRANSFER_GEN"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="PAYROLL_EXPORT"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="QUICK_REPORT_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_MANAGER" permissionId="PAYROLL_HIST_VIEW"/>
+    
+    <!-- Payroll Clerk -->
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_CLERK" permissionId="PAYROLL_DASH_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_CLERK" permissionId="EMP_LIST_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_CLERK" permissionId="PAYROLL_ITER_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_CLERK" permissionId="PAYROLL_CALC"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_CLERK" permissionId="EMP_LOAN_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_CLERK" permissionId="TAX_CONFIG_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_CLERK" permissionId="PAYSLIP_GENERATE"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_CLERK" permissionId="QUICK_REPORT_VIEW"/>
+    
+    <!-- Payroll Viewer -->
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_VIEWER" permissionId="PAYROLL_DASH_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_VIEWER" permissionId="EMP_LIST_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_VIEWER" permissionId="PAYROLL_ITER_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_VIEWER" permissionId="EMP_LOAN_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_VIEWER" permissionId="TAX_CONFIG_VIEW"/>
+    <SecurityGroupPermission fromDate="2001-05-13 12:00:00.0" groupId="PAYROLL_VIEWER" permissionId="QUICK_REPORT_VIEW"/>
+    
+</entity-engine-xml>
