@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/site-conf.xsd">
+
+  <!-- ===================================================== -->
+  <!-- Payroll UI Requests -->
+  <!-- ===================================================== -->
+
+  <request-map uri="PayrollHome">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollHomeView"/>
+  </request-map>
+
+  <request-map uri="PayrollIterationList">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollIterationListView"/>
+  </request-map>
+
+  <request-map uri="PayrollIterationCreate">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollIterationCreateView"/>
+  </request-map>
+
+  <request-map uri="PayrollIterationApprove">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollIterationApproveView"/>
+  </request-map>
+
+  <request-map uri="PayrollAssignmentCreate">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollAssignmentCreateView"/>
+  </request-map>
+
+  <request-map uri="PayrollAcctgConfigList">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollAcctgConfigListView"/>
+  </request-map>
+
+  <request-map uri="PayrollGlMapList">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollGlMapListView"/>
+  </request-map>
+
+  <request-map uri="PayrollAcctgPostingList">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollAcctgPostingListView"/>
+  </request-map>
+
+  <request-map uri="PayrollPayRunList">
+    <security https="true" auth="true"/>
+    <response name="success" type="view" value="PayrollPayRunListView"/>
+  </request-map>
+
+  <!-- ===================================================== -->
+  <!-- View Maps -->
+  <!-- ===================================================== -->
+
+  <view-map name="PayrollHomeView" type="screen"
+            page="component://payroll/widget/PayrollScreens.xml#PayrollHomeScreen"/>
+
+  <view-map name="PayrollIterationListView" type="screen"
+            page="component://payroll/widget/PayrollScreens.xml#PayrollIterationListScreen"/>
+
+  <view-map name="PayrollIterationCreateView" type="screen"
+            page="component://payroll/widget/PayrollScreens.xml#PayrollIterationCreateScreen"/>
+
+  <view-map name="PayrollIterationApproveView" type="screen"
+            page="component://payroll/widget/PayrollScreens.xml#PayrollIterationApproveScreen"/>
+
+  <view-map name="PayrollAssignmentCreateView" type="screen"
+            page="component://payroll/widget/PayrollScreens.xml#PayrollAssignmentCreateScreen"/>
+
+  <view-map name="PayrollAcctgConfigListView" type="screen"
+            page="component://payroll/widget/PayrollScreens.xml#PayrollAcctgConfigListScreen"/>
+
+  <view-map name="PayrollGlMapListView" type="screen"
+            page="component://payroll/widget/PayrollScreens.xml#PayrollGlMapListScreen"/>
+
+  <view-map name="PayrollAcctgPostingListView" type="screen"
+            page="component://payroll/widget/PayrollScreens.xml#PayrollAcctgPostingListScreen"/>
+
+  <view-map name="PayrollPayRunListView" type="screen"
+            page="component://payroll/widget/PayrollScreens.xml#PayrollPayRunListScreen"/>
+
+</site-conf>

@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ===================================================== -->
+    <!-- POC: WT Period Setup (2025-01 .. 2026-03)              -->
+    <!-- Depends on:                                            -->
+    <!--  - Party/PartyGroup/PartyRole core is present          -->
+    <!--  - PayrollOrganization entity exists (payroll plugin)  -->
+    <!--  - WT statuses exist (pocdata_01_status.xml)           -->
+    <!-- ===================================================== -->
+
+    <!-- 1) Organization Party -->
+    <Party partyId="WTORG" partyTypeId="PARTY_GROUP"/>
+    <PartyGroup partyId="WTORG" groupName="World Telecom (WT)"/>
+    <PartyRole partyId="WTORG" roleTypeId="INTERNAL_ORGANIZATIO"/>
+
+    <!-- 2) PayrollOrganization -->
+    <PayrollOrganization organizationPartyId="WTORG"
+                         orgName="World Telecom (WT)"
+                         defaultCurrencyUomId="SAR"
+                         countryGeoId="SAU"
+                         isActive="Y"/>
+
+    <!-- 3) PayrollPeriodType -->
+    <PayrollPeriodType payrollPeriodTypeId="WTPERMON"
+                       description="WT Monthly Payroll Period"
+                       isActive="Y"/>
+
+    <!-- 4) PayrollPeriod (15 months) -->
+    <!-- NOTE: PayrollPeriod.startDate/endDate/payDate are type="date" => YYYY-MM-DD -->
+    <!-- 2025 -->
+    <PayrollPeriod payrollPeriodId="WTP2501" organizationPartyId="WTORG" periodName="2025-01"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-01-01" endDate="2025-01-31" payDate="2025-01-31"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2502" organizationPartyId="WTORG" periodName="2025-02"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-02-01" endDate="2025-02-28" payDate="2025-02-28"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2503" organizationPartyId="WTORG" periodName="2025-03"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-03-01" endDate="2025-03-31" payDate="2025-03-31"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2504" organizationPartyId="WTORG" periodName="2025-04"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-04-01" endDate="2025-04-30" payDate="2025-04-30"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2505" organizationPartyId="WTORG" periodName="2025-05"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-05-01" endDate="2025-05-31" payDate="2025-05-31"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2506" organizationPartyId="WTORG" periodName="2025-06"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-06-01" endDate="2025-06-30" payDate="2025-06-30"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2507" organizationPartyId="WTORG" periodName="2025-07"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-07-01" endDate="2025-07-31" payDate="2025-07-31"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2508" organizationPartyId="WTORG" periodName="2025-08"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-08-01" endDate="2025-08-31" payDate="2025-08-31"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2509" organizationPartyId="WTORG" periodName="2025-09"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-09-01" endDate="2025-09-30" payDate="2025-09-30"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2510" organizationPartyId="WTORG" periodName="2025-10"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-10-01" endDate="2025-10-31" payDate="2025-10-31"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2511" organizationPartyId="WTORG" periodName="2025-11"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-11-01" endDate="2025-11-30" payDate="2025-11-30"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2512" organizationPartyId="WTORG" periodName="2025-12"
+                  payrollPeriodTypeId="WTPERMON" startDate="2025-12-01" endDate="2025-12-31" payDate="2025-12-31"
+                  statusId="WT_PER_OPEN"/>
+
+    <!-- 2026 -->
+    <PayrollPeriod payrollPeriodId="WTP2601" organizationPartyId="WTORG" periodName="2026-01"
+                  payrollPeriodTypeId="WTPERMON" startDate="2026-01-01" endDate="2026-01-31" payDate="2026-01-31"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2602" organizationPartyId="WTORG" periodName="2026-02"
+                  payrollPeriodTypeId="WTPERMON" startDate="2026-02-01" endDate="2026-02-28" payDate="2026-02-28"
+                  statusId="WT_PER_OPEN"/>
+    <PayrollPeriod payrollPeriodId="WTP2603" organizationPartyId="WTORG" periodName="2026-03"
+                  payrollPeriodTypeId="WTPERMON" startDate="2026-03-01" endDate="2026-03-31" payDate="2026-03-31"
+                  statusId="WT_PER_OPEN"/>
+
+</entity-engine-xml>
+

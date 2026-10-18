@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ofbiz-webapp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/ofbiz-webapp.xsd">
+
+    <description>Payroll API</description>
+
+    <entity-delegator-name>default</entity-delegator-name>
+    <local-dispatcher-name>dispatcher</local-dispatcher-name>
+
+</ofbiz-webapp>

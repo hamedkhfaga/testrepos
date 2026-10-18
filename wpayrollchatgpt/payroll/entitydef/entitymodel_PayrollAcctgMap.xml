@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+
+    <entity entity-name="PayrollAcctgConfig"
+            package-name="org.ofbiz.payroll.acctg"
+            title="Payroll Accounting Configuration">
+
+        <field name="payrollAcctgConfigId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollStructureId" type="id" optional="true"/>
+
+        <!-- Pattern + posting behavior -->
+        <field name="patternStatusId" type="id"/>        <!-- PAT_GL / PAT_PAY -->
+        <field name="postingLevelStatusId" type="id"/>   <!-- LVL_SUM / LVL_EMP -->
+
+        <!-- Validity -->
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time" optional="true"/>
+
+        <prim-key field="payrollAcctgConfigId"/>
+
+        <!-- ================= RELATIONS ================= -->
+
+        <relation type="one" rel-entity-name="Party">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="PayrollStructure">
+            <key-map field-name="payrollStructureId" rel-field-name="payrollStructureId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="StatusItem" title="AccountingPattern">
+            <key-map field-name="patternStatusId" rel-field-name="statusId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="StatusItem" title="PostingLevel">
+            <key-map field-name="postingLevelStatusId" rel-field-name="statusId"/>
+        </relation>
+
+    </entity>
+
+</entitymodel>

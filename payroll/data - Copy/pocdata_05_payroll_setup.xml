@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+  <!-- =============================================== -->
+  <!-- POC WT Payroll Setup: Status + PayrollStructure   -->
+  <!-- Org: WT_ORG                                       -->
+  <!-- IDs <= 20, parent first                           -->
+  <!-- =============================================== -->
+  <!-- Status Types -->
+  <!-- Payroll Structure -->
+  <PayrollStructure payrollStructureId="WT_STR_2025" organizationpartyId="WTORG"
+                   structureName="WT Monthly 2025" description="WT payroll structure for 2025"
+                   payFrequencyTypeId="WT_MONTHLY" currencyUomId="SAR"
+                   fromDate="2025-01-01 00:00:00.000" statusId="PAYSTR_ACT"/>
+</entity-engine-xml>
+
+

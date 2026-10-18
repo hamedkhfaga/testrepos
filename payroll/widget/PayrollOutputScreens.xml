@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <screen name="FindPayslips">
+        <section>
+            <actions/>
+            <widgets>
+                <label style="h2" text="${uiLabelMap.PayrollFindPayslips}"/>
+                <label text="Stage 4.2A placeholder screen"/>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="ViewPayslip">
+        <section>
+            <actions/>
+            <widgets>
+                <label style="h2" text="${uiLabelMap.PayrollViewPayslip}"/>
+                <label text="Stage 4.2A placeholder screen"/>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="PayrollReconciliation">
+        <section>
+            <actions/>
+            <widgets>
+                <label style="h2" text="${uiLabelMap.PayrollReconciliation}"/>
+                <label text="Stage 4.2A placeholder screen"/>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="PayrollAuditViewer">
+        <section>
+            <actions/>
+            <widgets>
+                <label style="h2" text="${uiLabelMap.PayrollAuditViewer}"/>
+                <label text="Stage 4.2A placeholder screen"/>
+            </widgets>
+        </section>
+    </screen>
+
+</screens>

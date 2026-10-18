@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+
+    <!-- ========================= -->
+    <!-- Payroll Payment Instruction -->
+    <!-- ========================= -->
+    <entity entity-name="PayrollPaymentInstruction"
+            package-name="org.apache.ofbiz.payroll.payment"
+            table-name="PAYROLL_PAYMENT_INSTRUCTION"
+            title="Payroll Payment Instruction (per employee per run)">
+
+        <field name="paymentInstructionId" type="id"/>
+        <field name="payrollRunId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+
+        <field name="amount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+
+        <!-- BANK / CASH / CHEQUE / WALLET (your enum table can hold these) -->
+        <field name="disbursementChannelId" type="id"/>
+
+        <!-- BANK details (optional by channel) -->
+        <field name="bankName" type="name"/>
+        <field name="bankAccountNumber" type="value"/>
+        <field name="finAccountId" type="id"/>
+
+        <!-- Payment preference (optional) -->
+        <field name="paymentMethodId" type="id"/>
+        <field name="paymentReference" type="value"/>
+
+        <!-- Status: PPI_NEW / PPI_ROUTED / PPI_PAID / PPI_FAIL -->
+        <field name="statusId" type="id"/>
+
+        <field name="notes" type="comment"/>
+        <field name="createdDateTime" type="date-time"/>
+        <field name="createdByUserLoginId" type="id"/>
+
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+
+        <prim-key field="paymentInstructionId"/>
+
+        <relation type="one" rel-entity-name="PayrollRun" fk-name="PPI_RUN">
+            <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="PPI_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="PPI_EMP">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PPI_STS">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="FinAccount" fk-name="PPI_FIN">
+            <key-map field-name="finAccountId" rel-field-name="finAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="PPI_CBY">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================= -->
+    <!-- Bank Transfer Batch -->
+    <!-- ========================= -->
+    <entity entity-name="BankTransferBatch"
+            package-name="org.apache.ofbiz.payroll.bank"
+            table-name="BANK_TRANSFER_BATCH"
+            title="Bank Transfer Batch (per run)">
+
+        <field name="bankTransferBatchId" type="id"/>
+        <field name="payrollRunId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+
+        <field name="bankTransferConfigId" type="id"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="itemCount" type="numeric"/>
+        <field name="totalAmount" type="currency-amount"/>
+
+        <!-- Status: BATCH_NEW / BATCH_GEN / BATCH_APPR / BATCH_SENT / BATCH_FAIL -->
+        <field name="statusId" type="id"/>
+
+        <field name="fileReference" type="value"/>
+        <field name="generatedDateTime" type="date-time"/>
+        <field name="generatedByUserLoginId" type="id"/>
+
+        <field name="approvedDateTime" type="date-time"/>
+        <field name="approvedByUserLoginId" type="id"/>
+
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+
+        <prim-key field="bankTransferBatchId"/>
+
+        <relation type="one" rel-entity-name="PayrollRun" fk-name="BTB_RUN">
+            <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="BTB_ORG">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="BTB_STS">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BTB_GBY">
+            <key-map field-name="generatedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="BTB_ABY">
+            <key-map field-name="approvedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================= -->
+    <!-- Bank Transfer Batch Item -->
+    <!-- ========================= -->
+    <entity entity-name="BankTransferBatchItem"
+            package-name="org.apache.ofbiz.payroll.bank"
+            table-name="BANK_TRANSFER_BATCH_ITEM"
+            title="Bank Transfer Batch Item">
+
+        <field name="bankTransferBatchItemId" type="id"/>
+        <field name="bankTransferBatchId" type="id"/>
+
+        <field name="paymentInstructionId" type="id"/>
+        <field name="partyId" type="id"/>
+
+        <field name="amount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+
+        <field name="bankName" type="name"/>
+        <field name="bankAccountNumber" type="value"/>
+        <field name="reference" type="value"/>
+        <field name="sequenceNum" type="numeric"/>
+
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+
+        <prim-key field="bankTransferBatchItemId"/>
+
+        <relation type="one" rel-entity-name="BankTransferBatch" fk-name="BTBI_BAT">
+            <key-map field-name="bankTransferBatchId" rel-field-name="bankTransferBatchId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollPaymentInstruction" fk-name="BTBI_PPI">
+            <key-map field-name="paymentInstructionId" rel-field-name="paymentInstructionId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="BTBI_EMP">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+    </entity>
+
+</entitymodel>

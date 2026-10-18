@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ========================================================= -->
+    <!-- 1) ENUMS: Allocation Type                                 -->
+    <!-- ========================================================= -->
+    <Enumeration enumId="PAY_ALLOC_PCT" enumTypeId="PAY_ALLOC_TYPE" description="Payroll Allocation: Percent"/>
+    <Enumeration enumId="PAY_ALLOC_AMT" enumTypeId="PAY_ALLOC_TYPE" description="Payroll Allocation: Fixed Amount"/>
+
+    <!-- ========================================================= -->
+    <!-- 2) STATUS: Allocation Status                              -->
+    <!-- ========================================================= -->
+    <StatusType statusTypeId="PAY_ALLOC_STAT" description="Payroll Payment Allocation Status"/>
+    <StatusItem statusId="PAY_ALLOC_ACT" statusTypeId="PAY_ALLOC_STAT" description="Active"/>
+    <StatusItem statusId="PAY_ALLOC_INA" statusTypeId="PAY_ALLOC_STAT" description="Inactive"/>
+
+    <!-- ========================================================= -->
+    <!-- 3) DISBURSEMENT CHANNELS (parent)                          -->
+    <!-- ========================================================= -->
+    <PayrollDisbursementChannel disbursementChannelId="BANK_FILE"   description="Bank File"   statusId="ACTIVE"/>
+    <PayrollDisbursementChannel disbursementChannelId="CASH"        description="Cash"        statusId="ACTIVE"/>
+    <PayrollDisbursementChannel disbursementChannelId="CHEQUE"      description="Cheque"      statusId="ACTIVE"/>
+    <PayrollDisbursementChannel disbursementChannelId="WALLET_FILE" description="Wallet File" statusId="ACTIVE"/>
+
+
+<!-- ========================================================= -->
+<!-- 3) DISBURSEMENT CHANNELS (parent master)                   -->
+<!-- PayrollDisbursementChannel PK is channelId                 -->
+<!-- ========================================================= -->
+<PayrollDisbursementChannel channelId="BANK_FILE"
+                            channelName="Bank File"
+                            description="Salary paid via bank transfer file (EFT/WPS export)"
+                            isActive="Y"
+                            channelTypeId="FILE"/>
+
+<PayrollDisbursementChannel channelId="CASH"
+                            channelName="Cash"
+                            description="Salary paid in cash"
+                            isActive="Y"
+                            channelTypeId="MANUAL"/>
+
+<PayrollDisbursementChannel channelId="CHEQUE"
+                            channelName="Cheque"
+                            description="Salary paid by company cheque"
+                            isActive="Y"
+                            channelTypeId="MANUAL"/>
+
+<PayrollDisbursementChannel channelId="WALLET_FILE"
+                            channelName="Wallet File"
+                            description="Salary paid via external wallet export file"
+                            isActive="Y"
+                            channelTypeId="FILE"/>
+    <!-- ========================================================= -->
+    <!-- 4) PAYMENT METHODS (parent of allocations)                 -->
+    <!--    NOTE: IDs kept <= 20 chars                              -->
+    <!-- ========================================================= -->
+
+    <!-- PAY_EMP0001 EFT A / B -->
+	<!-- ========================================================= -->
+<!-- 3B) PAYMENT METHOD TYPES (for WALLET)                      -->
+<!-- ========================================================= -->
+<PaymentMethodType paymentMethodTypeId="EXT_WALLET"
+                   description="External Wallet"/>
+    <PaymentMethod paymentMethodId="PM0001EFTA" paymentMethodTypeId="EFT_ACCOUNT" partyId="PAY_EMP0001"
+                   description="PAY_EMP0001 - Bank A EFT"/>
+    <EftAccount paymentMethodId="PM0001EFTA" bankName="Al Rajhi Bank" accountNumber="000111222333"
+                accountType="CHECKING" nameOnAccount="PAY_EMP0001"/>
+
+    <PaymentMethod paymentMethodId="PM0001EFTB" paymentMethodTypeId="EFT_ACCOUNT" partyId="PAY_EMP0001"
+                   description="PAY_EMP0001 - Bank B EFT"/>
+    <EftAccount paymentMethodId="PM0001EFTB" bankName="SNB" accountNumber="000444555666"
+                accountType="CHECKING" nameOnAccount="PAY_EMP0001"/>
+
+    <!-- PAY_EMP0002 EFT A / B -->
+    <PaymentMethod paymentMethodId="PM0002EFTA" paymentMethodTypeId="EFT_ACCOUNT" partyId="PAY_EMP0002"
+                   description="PAY_EMP0002 - Bank A EFT"/>
+    <EftAccount paymentMethodId="PM0002EFTA" bankName="Riyad Bank" accountNumber="777888999000"
+                accountType="CHECKING" nameOnAccount="PAY_EMP0002"/>
+
+    <PaymentMethod paymentMethodId="PM0002EFTB" paymentMethodTypeId="EFT_ACCOUNT" partyId="PAY_EMP0002"
+                   description="PAY_EMP0002 - Bank B EFT"/>
+    <EftAccount paymentMethodId="PM0002EFTB" bankName="SABB" accountNumber="123123123123"
+                accountType="CHECKING" nameOnAccount="PAY_EMP0002"/>
+
+    <!-- PAY_EMP0002 CASH -->
+    <PaymentMethod paymentMethodId="PM0002CASH" paymentMethodTypeId="CASH" partyId="PAY_EMP0002"
+                   description="PAY_EMP0002 - Cash"/>
+
+    <!-- PAY_EMP0003 CHEQUE (Company Check) -->
+    <PaymentMethod paymentMethodId="PM0003CHQ" paymentMethodTypeId="COMPANY_CHECK" partyId="PAY_EMP0003"
+                   description="PAY_EMP0003 - Cheque"/>
+
+    <!-- PAY_EMP0004 WALLET (use existing type GIFT_CARD) -->
+    <PaymentMethod paymentMethodId="PM0004WLT" paymentMethodTypeId="GIFT_CARD" partyId="PAY_EMP0004"
+                   description="PAY_EMP0004 - Wallet"/>
+
+    <!-- ========================================================= -->
+    <!-- 5) EMPLOYEE PAYMENT ALLOCATION (child)                     -->
+    <!-- ========================================================= -->
+
+    <!-- PAY_EMP0001: 70% to Bank A, remainder to Bank B -->
+    <EmployeePaymentAllocation paymentAllocationId="EPA0001A"
+                               partyId="PAY_EMP0001"
+                               disbursementChannelId="BANK_FILE"
+                               paymentMethodId="PM0001EFTA"
+                               allocationTypeEnumId="PAY_ALLOC_PCT"
+                               allocationValue="70"
+                               currencyUomId="SAR"
+                               prioritySeq="10"
+                               fromDate="2026-02-01 00:00:00.000"
+                               statusId="PAY_ALLOC_ACT"
+                               isDefaultRemainder="N"/>
+
+    <EmployeePaymentAllocation paymentAllocationId="EPA0001B"
+                               partyId="PAY_EMP0001"
+                               disbursementChannelId="BANK_FILE"
+                               paymentMethodId="PM0001EFTB"
+                               allocationTypeEnumId="PAY_ALLOC_PCT"
+                               allocationValue="0"
+                               currencyUomId="SAR"
+                               prioritySeq="99"
+                               fromDate="2026-02-01 00:00:00.000"
+                               statusId="PAY_ALLOC_ACT"
+                               isDefaultRemainder="Y"/>
+
+    <!-- PAY_EMP0002: 1000 SAR to Bank A, remainder to Bank B -->
+    <EmployeePaymentAllocation paymentAllocationId="EPA0002A"
+                               partyId="PAY_EMP0002"
+                               disbursementChannelId="BANK_FILE"
+                               paymentMethodId="PM0002EFTA"
+                               allocationTypeEnumId="PAY_ALLOC_AMT"
+                               allocationValue="1000"
+                               currencyUomId="SAR"
+                               prioritySeq="10"
+                               fromDate="2026-02-01 00:00:00.000"
+                               statusId="PAY_ALLOC_ACT"
+                               isDefaultRemainder="N"/>
+
+    <EmployeePaymentAllocation paymentAllocationId="EPA0002B"
+                               partyId="PAY_EMP0002"
+                               disbursementChannelId="BANK_FILE"
+                               paymentMethodId="PM0002EFTB"
+                               allocationTypeEnumId="PAY_ALLOC_PCT"
+                               allocationValue="0"
+                               currencyUomId="SAR"
+                               prioritySeq="99"
+                               fromDate="2026-02-01 00:00:00.000"
+                               statusId="PAY_ALLOC_ACT"
+                               isDefaultRemainder="Y"/>
+
+    <!-- PAY_EMP0002: Cash remainder allocation -->
+    <!-- NOTE: if you want BOTH bank remainder and cash remainder, that conflicts logically.
+         Keep ONLY ONE remainder per employee. Use this only if cash is the remainder. -->
+    <EmployeePaymentAllocation paymentAllocationId="EPA0002C"
+                               partyId="PAY_EMP0002"
+                               disbursementChannelId="CASH"
+                               paymentMethodId="PM0002CASH"
+                               allocationTypeEnumId="PAY_ALLOC_PCT"
+                               allocationValue="0"
+                               currencyUomId="SAR"
+                               prioritySeq="98"
+                               fromDate="2026-02-01 00:00:00.000"
+                               statusId="PAY_ALLOC_ACT"
+                               isDefaultRemainder="N"/>
+
+    <!-- PAY_EMP0004: Wallet remainder allocation (optional) -->
+    <EmployeePaymentAllocation paymentAllocationId="EPA0004W"
+                               partyId="PAY_EMP0004"
+                               disbursementChannelId="WALLET_FILE"
+                               paymentMethodId="PM0004WLT"
+                               allocationTypeEnumId="PAY_ALLOC_PCT"
+                               allocationValue="0"
+                               currencyUomId="SAR"
+                               prioritySeq="99"
+                               fromDate="2026-02-01 00:00:00.000"
+                               statusId="PAY_ALLOC_ACT"
+                               isDefaultRemainder="Y"/>
+
+</entity-engine-xml>

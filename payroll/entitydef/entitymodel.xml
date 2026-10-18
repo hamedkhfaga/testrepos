@@ -1,0 +1,2579 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+    <title>Unified Payroll Entity Model - World Class</title>
+    <description>
+        Unified payroll domain model for Apache OFBiz.
+        - Multi-org (organizationPartyId)
+        - Multi-currency (currencyUomId + FX rates)
+        - HR references (Party/UserLogin)
+        - Accounting integration (GL/Invoice)
+        - Export (PDF/CSV/HTML) + delivery (Email/SMS/Portal)
+        - Compliance and audit tracking
+        NOTE: No &lt;index&gt; tags included (as requested).
+    </description>
+    <version>4.0</version>
+
+    <!-- ========================================================= -->
+    <!-- FIXES APPLIED (AS AGREED)
+         1) Create new entity PayrollPeriodType + relation from PayrollPeriod
+         2) Standardize ALL identifier columns to type="id"
+         3) Replace any "encrypted" type with encrypt="true" on normal fields
+         4) Remove duplicated entities (InternationalEmployeeInfo kept only once)
+         5) Standardize large text to long-varchar
+         6) Add missing relations where FK fields exist
+         7) Ensure every entity has a primary key
+    ========================================================== -->
+	
+	<entity entity-name="PayrollAllowedEntity" package-name="org.apache.ofbiz.payroll" title="Payroll Allowed Entity">
+    <field name="organizationPartyId" type="id"/>
+    <field name="entityName" type="id"/>
+    <field name="allowCreate" type="indicator"/>
+    <field name="allowUpdate" type="indicator"/>
+    <field name="allowDelete" type="indicator"/>
+    <field name="allowFind" type="indicator"/>
+    <field name="allowList" type="indicator"/>
+    <field name="isActive" type="indicator"/>
+
+    <prim-key field="organizationPartyId"/>
+    <prim-key field="entityName"/>
+
+    <!-- optional relation to Party if you want FK -->
+    <relation type="one" fk-name="PAYALLENT_PARTY" rel-entity-name="Party">
+        <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+    </relation>
+</entity>
+	
+<entity entity-name="PayrollTaxType"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payroll Tax Type Master">
+    <!-- Primary Key -->
+    <field name="taxTypeId" type="id"/>
+    <field name="taxTypeCode" type="id"/>
+
+    <!-- Multi-org scope (optional: allow global tax types if empty) -->
+    <field name="organizationPartyId" type="id"/>
+
+    <!-- Business fields -->
+    <field name="taxTypeName" type="name"/>
+    <field name="description" type="description"/>
+    <field name="isWithholding" type="indicator"/>
+    <field name="isActive" type="indicator"/>
+
+    <!-- Status -->
+    <field name="statusId" type="id"/>
+
+    <!-- Audit -->
+    <field name="createdByUserLoginId" type="id"/>
+    <field name="createdDate" type="date-time"/>
+    <field name="lastModifiedByUserLoginId" type="id"/>
+    <field name="lastModifiedDate" type="date-time"/>
+
+    <prim-key field="taxTypeId"/>
+
+    <!-- Relations -->
+    <relation type="one" fk-name="PTT_ORG" rel-entity-name="Party">
+        <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+    </relation>
+
+    <relation type="one" fk-name="PTT_STATUS" rel-entity-name="StatusItem">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+
+    <relation type="one" fk-name="PTT_CRT_UL" rel-entity-name="UserLogin">
+        <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <relation type="one" fk-name="PTT_UPD_UL" rel-entity-name="UserLogin">
+        <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+</entity>
+
+    <!-- ========================================================= -->
+    <!-- 1) CORE ORGANIZATION & CONFIGURATION -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="PayrollOrganization" package-name="org.apache.ofbiz.payroll" title="Payroll Organization">
+        <field name="organizationPartyId" type="id"/>
+        <field name="parentOrganizationPartyId" type="id"/>
+        <field name="orgName" type="name"/>
+        <field name="defaultCurrencyUomId" type="id"/>
+        <field name="countryGeoId" type="id"/>
+        <field name="isActive" type="indicator"/>
+
+        <prim-key field="organizationPartyId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="PAYORG_PARTY" title="OrgParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="PAYORG_PARENT" title="ParentOrg">
+            <key-map field-name="parentOrganizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="PAYORG_CURR" title="DefaultCurrency">
+            <key-map field-name="defaultCurrencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Geo" fk-name="PAYORG_GEO" title="CountryGeo">
+            <key-map field-name="countryGeoId" rel-field-name="geoId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollCurrencyRate" package-name="org.apache.ofbiz.payroll" title="Payroll Currency Rate">
+        <field name="payrollCurrencyRateId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="fromCurrencyUomId" type="id"/>
+        <field name="toCurrencyUomId" type="id"/>
+        <field name="rateDate" type="date"/>
+        <field name="exchangeRate" type="floating-point"/>
+        <field name="rateTypeId" type="id"/>
+        <field name="isActive" type="indicator"/>
+
+        <prim-key field="payrollCurrencyRateId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="PAYFX_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="PAYFX_FROM" title="FromCurrency">
+            <key-map field-name="fromCurrencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="PAYFX_TO" title="ToCurrency">
+            <key-map field-name="toCurrencyUomId" rel-field-name="uomId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 2) EMPLOYEE MASTER DATA -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="PayrollStructure" package-name="org.apache.ofbiz.payroll" title="Payroll Structure">
+        <field name="payrollStructureId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="structureName" type="name"/>
+        <field name="description" type="description"/>
+        <field name="payFrequencyTypeId" type="id"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="statusId" type="id"/>
+        <field name="overtimePolicyId" type="id"/>
+        <field name="hrPolicySetId" type="id"/>
+
+        <prim-key field="payrollStructureId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="PAYSTR_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="PAYSTR_CURR" title="CurrencyUom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PAYSTR_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="OvertimePolicy" fk-name="PAYSTR_OTP" title="OvertimePolicy">
+            <key-map field-name="overtimePolicyId" rel-field-name="overtimePolicyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="HrPolicySet" fk-name="PAYSTR_HRSET" title="HrPolicySet">
+            <key-map field-name="hrPolicySetId" rel-field-name="hrPolicySetId"/>
+        </relation>
+    </entity>
+
+<entity entity-name="PayrollStructureItem"
+        package-name="org.apache.ofbiz.payroll"
+        table-name="PAYROLL_STRUCTURE_ITEM"
+        title="Payroll Structure Item">
+
+    <field name="payrollStructureItemId" type="id"/>
+    <field name="payrollStructureId" type="id"/>
+
+    <!-- Use your StatusItem PAY_RES_LINE as the component id (P_LN_BAS, P_LN_HOU, ...) -->
+    <field name="componentLineId" type="id"/>   <!-- FK -> StatusItem.statusId (PAY_RES_LINE) -->
+
+    <!-- EARNING / DEDUCTION (can be Enumeration or StatusItem; simplest is Enumeration) -->
+    <field name="componentTypeEnumId" type="id"/> <!-- e.g. EARN / DED -->
+
+    <!-- calculation model -->
+    <field name="calcMethodEnumId" type="id"/>  <!-- FIXED / PERCENT -->
+    <field name="amount" type="currency-amount"/>
+    <field name="percent" type="floating-point"/>
+    <field name="baseComponentLineId" type="id"/> <!-- optional: percent of another component -->
+    <field name="sequenceNum" type="numeric"/>
+    <field name="statusId" type="id"/>
+
+    <field name="fromDate" type="date-time"/>
+    <field name="thruDate" type="date-time"/>
+
+    <prim-key field="payrollStructureItemId"/>
+
+    <relation type="one" rel-entity-name="PayrollStructure" fk-name="PSI_STR">
+        <key-map field-name="payrollStructureId" rel-field-name="payrollStructureId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="PSI_LINE">
+        <key-map field-name="componentLineId" rel-field-name="statusId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Enumeration" fk-name="PSI_TYPE">
+        <key-map field-name="componentTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Enumeration" fk-name="PSI_CALC">
+        <key-map field-name="calcMethodEnumId" rel-field-name="enumId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="PSI_STAT">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+</entity>
+
+<entity entity-name="PayrollStructureMember"
+        package-name="org.apache.ofbiz.payroll"
+        table-name="PAYROLL_STRUCTURE_MEMBER"
+        title="Payroll Structure Member">
+
+    <field name="payrollStructureId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="partyId" type="id"/>
+
+    <field name="fromDate" type="date-time"/>
+    <field name="thruDate" type="date-time"/>
+    <field name="statusId" type="id"/>
+
+    <prim-key field="payrollStructureId"/>
+    <prim-key field="partyId"/>
+    <prim-key field="fromDate"/>
+
+    <relation type="one" rel-entity-name="PayrollStructure" fk-name="PSM_STR">
+        <key-map field-name="payrollStructureId" rel-field-name="payrollStructureId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Party" fk-name="PSM_PTY">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PayrollOrganization" fk-name="PSM_ORG">
+        <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="PSM_STAT">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+</entity>
+
+
+    <entity entity-name="EmployeePayrollAssignment" package-name="org.apache.ofbiz.payroll" title="Employee Payroll Assignment">
+        <field name="assignmentId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="payrollStructureId" type="id"/>
+        <field name="employmentTypeId" type="id"/>
+        <field name="contractTypeId" type="id"/>
+        <field name="baseSalary" type="currency-amount"/>
+        <field name="salaryCurrencyUomId" type="id"/>
+        <field name="paymentMethodId" type="id"/>
+        <field name="finAccountId" type="id"/>
+        <field name="effectiveDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="statusId" type="id"/>
+        <field name="comments" type="comment"/>
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="lastModifiedByUserLoginId" type="id"/>
+
+        <prim-key field="assignmentId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="ASSGN_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="ASSGN_PARTY" title="EmployeeParty">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollStructure" fk-name="ASSGN_STR" title="PayrollStructure">
+            <key-map field-name="payrollStructureId" rel-field-name="payrollStructureId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="ASSGN_SALCURR" title="SalaryCurrency">
+            <key-map field-name="salaryCurrencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PaymentMethod" fk-name="ASSGN_PAYMETH" title="PaymentMethod">
+            <key-map field-name="paymentMethodId" rel-field-name="paymentMethodId"/>
+        </relation>
+        <relation type="one" rel-entity-name="FinAccount" fk-name="ASSGN_FINACCT" title="FinAccount">
+            <key-map field-name="finAccountId" rel-field-name="finAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="ASSGN_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="ASSGN_CRBY" title="CreatedBy">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="ASSGN_MDBY" title="LastModifiedBy">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- Single definition only (duplicate removed) -->
+    <entity entity-name="InternationalEmployeeInfo" package-name="org.apache.ofbiz.payroll" title="International Employee Info">
+        <field name="partyId" type="id"/>
+        <field name="nationalityCountryGeoId" type="id"/>
+        <field name="residenceCountryGeoId" type="id"/>
+        <field name="homeCountryGeoId" type="id"/>
+        <field name="hostCountryGeoId" type="id"/>
+
+        <field name="assignmentTypeId" type="id"/>
+        <field name="taxEqualizationFlag" type="indicator"/>
+
+        <field name="visaTypeId" type="id"/>
+        <field name="visaNumber" type="description" encrypt="true"/>
+        <field name="visaExpiryDate" type="date"/>
+
+        <field name="workPermitNumber" type="description" encrypt="true"/>
+        <field name="workPermitExpiryDate" type="date"/>
+
+        <field name="housingAllowance" type="currency-amount"/>
+        <field name="educationAllowance" type="currency-amount"/>
+        <field name="transportationAllowance" type="currency-amount"/>
+        <field name="repatriationAllowance" type="currency-amount"/>
+
+        <prim-key field="partyId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="INTL_PARTY" title="EmployeeParty">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Geo" fk-name="INTL_NAT" title="Nationality">
+            <key-map field-name="nationalityCountryGeoId" rel-field-name="geoId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Geo" fk-name="INTL_RES" title="Residence">
+            <key-map field-name="residenceCountryGeoId" rel-field-name="geoId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Geo" fk-name="INTL_HOME" title="HomeCountry">
+            <key-map field-name="homeCountryGeoId" rel-field-name="geoId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Geo" fk-name="INTL_HOST" title="HostCountry">
+            <key-map field-name="hostCountryGeoId" rel-field-name="geoId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 3) POLICIES & RULES -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="OvertimePolicy" package-name="org.apache.ofbiz.payroll" title="Overtime Policy">
+        <field name="overtimePolicyId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="policyName" type="name"/>
+        <field name="normalMultiplier" type="floating-point"/>
+        <field name="holidayMultiplier" type="floating-point"/>
+        <field name="weekendMultiplier" type="floating-point"/>
+        <field name="maxOvertimeHours" type="numeric"/>
+        <field name="effectiveDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="overtimePolicyId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="OTP_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="OTP_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="HrPolicySet" package-name="org.apache.ofbiz.payroll" title="HR Policy Set">
+        <field name="hrPolicySetId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="setName" type="name"/>
+        <field name="countryGeoId" type="id"/>
+        <field name="effectiveDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="hrPolicySetId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="HRPSET_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Geo" fk-name="HRPSET_GEO" title="Country">
+            <key-map field-name="countryGeoId" rel-field-name="geoId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="HRPSET_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="HrPolicy" package-name="org.apache.ofbiz.payroll" title="HR Policy">
+        <field name="hrPolicyId" type="id"/>
+        <field name="hrPolicySetId" type="id"/>
+        <field name="policyName" type="name"/>
+        <field name="policyTypeId" type="id"/>
+        <field name="policyContent" type="long-varchar"/>
+        <field name="sequenceNum" type="numeric"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="hrPolicyId"/>
+
+        <relation type="one" rel-entity-name="HrPolicySet" fk-name="HRPOL_SET" title="PolicySet">
+            <key-map field-name="hrPolicySetId" rel-field-name="hrPolicySetId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="HRPOL_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="StatutoryRule" package-name="org.apache.ofbiz.payroll" title="Statutory Rule">
+        <field name="statutoryRuleId" type="id"/>
+        <field name="ruleTypeId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="employeeRate" type="numeric"/>
+        <field name="employerRate" type="numeric"/>
+        <field name="minBaseAmount" type="currency-amount"/>
+        <field name="maxBaseAmount" type="currency-amount"/>
+        <field name="effectiveFromDate" type="date-time"/>
+        <field name="effectiveThruDate" type="date-time"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="statutoryRuleId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="STATRUL_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 4) TAX & DEDUCTION CONFIGURATION -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="PayrollTaxConfig" package-name="org.apache.ofbiz.payroll" title="Payroll Tax Configuration">
+        <field name="taxConfigId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="countryGeoId" type="id"/>
+        <field name="taxYear" type="numeric"/>
+        <field name="taxTypeId" type="id"/>
+        <field name="minIncome" type="currency-amount"/>
+        <field name="maxIncome" type="currency-amount"/>
+        <field name="taxRate" type="floating-point"/>
+        <field name="additionalAmount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="effectiveFromDate" type="date"/>
+        <field name="effectiveThruDate" type="date"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="taxConfigId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="TAX_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Geo" fk-name="TAX_GEO" title="Country">
+            <key-map field-name="countryGeoId" rel-field-name="geoId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="TAX_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="TAX_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="IncomeTaxBracket" package-name="org.apache.ofbiz.payroll" title="Income Tax Bracket">
+        <field name="taxBracketId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="fromAmount" type="currency-amount"/>
+        <field name="toAmount" type="currency-amount"/>
+        <field name="taxRate" type="numeric"/>
+        <field name="effectiveFromDate" type="date-time"/>
+        <field name="effectiveThruDate" type="date-time"/>
+
+        <prim-key field="taxBracketId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="TAXBR_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="SocialSecurityConfig" package-name="org.apache.ofbiz.payroll" title="Social Security Configuration">
+        <field name="ssConfigId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="countryGeoId" type="id"/>
+        <field name="effectiveDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="employeeRate" type="floating-point"/>
+        <field name="employerRate" type="floating-point"/>
+        <field name="maxContributionBase" type="currency-amount"/>
+        <field name="minContributionBase" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="ssConfigId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="SS_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Geo" fk-name="SS_GEO" title="Country">
+            <key-map field-name="countryGeoId" rel-field-name="geoId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="SS_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="SS_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 5) EMPLOYEE PROFILES -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="EmployeeTaxProfile" package-name="org.apache.ofbiz.payroll" title="Employee Tax Profile">
+        <field name="taxProfileId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="countryGeoId" type="id"/>
+        <field name="taxIdNumber" type="description" encrypt="true"/>
+        <field name="taxFilingStatusId" type="id"/>
+        <field name="dependentsCount" type="numeric"/>
+        <field name="taxExempt" type="indicator"/>
+        <field name="exemptReason" type="long-varchar"/>
+        <field name="effectiveDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+
+        <prim-key field="taxProfileId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="EMPTAX_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="EMPTAX_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Geo" fk-name="EMPTAX_GEO" title="Country">
+            <key-map field-name="countryGeoId" rel-field-name="geoId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="EMPTAX_FILESTAT" title="TaxFilingStatus">
+            <key-map field-name="taxFilingStatusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="AllowanceType" package-name="org.apache.ofbiz.payroll" title="Allowance Type">
+        <field name="allowanceTypeId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="description" type="description"/>
+        <field name="isTaxable" type="indicator"/>
+        <field name="calculationMethodId" type="id"/>
+        <field name="defaultAmount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="allowanceTypeId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="ALLT_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="ALLT_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="ALLT_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="EmployeeAllowance" package-name="org.apache.ofbiz.payroll" title="Employee Allowance">
+        <field name="employeeAllowanceId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="allowanceTypeId" type="id"/>
+        <field name="amount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="effectiveDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="employeeAllowanceId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="EMPALL_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="EMPALL_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AllowanceType" fk-name="EMPALL_TYPE" title="Type">
+            <key-map field-name="allowanceTypeId" rel-field-name="allowanceTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="EMPALL_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="EMPALL_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="DeductionType" package-name="org.apache.ofbiz.payroll" title="Deduction Type">
+        <field name="deductionTypeId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="description" type="description"/>
+        <field name="isPreTax" type="indicator"/>
+        <field name="calculationMethodId" type="id"/>
+        <field name="defaultAmount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="deductionTypeId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="DEDT_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="DEDT_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="DEDT_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="EmployeeDeduction" package-name="org.apache.ofbiz.payroll" title="Employee Deduction">
+        <field name="employeeDeductionId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="deductionTypeId" type="id"/>
+        <field name="amount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="effectiveDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="employeeDeductionId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="EMPD_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="EMPD_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="DeductionType" fk-name="EMPD_TYPE" title="Type">
+            <key-map field-name="deductionTypeId" rel-field-name="deductionTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="EMPD_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="EMPD_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 7) LOANS & ADVANCES -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="EmployeeLoan" package-name="org.apache.ofbiz.payroll" title="Employee Loan">
+        <field name="loanId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="loanTypeId" type="id"/>
+        <field name="loanAmount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="interestRate" type="floating-point"/>
+        <field name="totalInstallments" type="numeric"/>
+        <field name="monthlyInstallment" type="currency-amount"/>
+        <field name="startDate" type="date-time"/>
+        <field name="endDate" type="date-time"/>
+        <field name="statusId" type="id"/>
+        <field name="approvedByUserLoginId" type="id"/>
+        <field name="approvedDate" type="date-time"/>
+
+        <prim-key field="loanId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="LOAN_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="LOAN_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="LOAN_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="LOAN_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="LOAN_APPRBY" title="ApprovedBy">
+            <key-map field-name="approvedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="LoanInstallment" package-name="org.apache.ofbiz.payroll" title="Loan Installment">
+        <field name="installmentId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="installmentNumber" type="numeric"/>
+        <field name="dueDate" type="date-time"/>
+        <field name="installmentAmount" type="currency-amount"/>
+        <field name="principalAmount" type="currency-amount"/>
+        <field name="interestAmount" type="currency-amount"/>
+        <field name="statusId" type="id"/>
+        <field name="paidDate" type="date-time"/>
+
+        <prim-key field="installmentId"/>
+
+        <relation type="one" rel-entity-name="EmployeeLoan" fk-name="INST_LOAN" title="Loan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="INST_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 8) PAYROLL PROCESSING -->
+    <!-- ========================================================= -->
+	<entity entity-name="PayrollRunAssignmentSnap" package-name="org.apache.ofbiz.payroll" title="Payroll Run Assignment Snapshot">
+  <field name="payrollRunId" type="id"/>
+  <field name="employeePartyId" type="id"/>
+  <field name="assignmentId" type="id"/>             <!-- or employmentId; match your model -->
+
+  <field name="included" type="indicator"/>
+  <field name="reasonCode" type="id"/>
+
+  <field name="fromDate" type="date-time"/>
+  <field name="thruDate" type="date-time"/>
+
+  <field name="createdStamp" type="date-time"/>
+  <field name="lastUpdatedStamp" type="date-time"/>
+
+  <prim-key field="payrollRunId"/>
+  <prim-key field="employeePartyId"/>
+  <prim-key field="assignmentId"/>
+
+  <relation type="one" fk-name="PRAS_RUN" rel-entity-name="PayrollRun">
+    <key-map field-name="payrollRunId"/>
+  </relation>
+</entity>
+
+	<entity entity-name="PayrollRunDefaultsSnapshot" package-name="org.apache.ofbiz.payroll" title="Payroll Run Defaults Snapshot">
+  <field name="payrollRunId" type="id"/>
+
+  <field name="defaultsAccepted" type="indicator"/>   <!-- Y/N -->
+  <field name="scopeLocked" type="indicator"/>        <!-- Y/N -->
+  <field name="scopeSnapshotStamp" type="date-time"/>
+  <field name="cutoffDateTime" type="date-time"/>
+
+  <field name="defaultsJson" type="very-long"/>       <!-- store the run default params snapshot -->
+
+  <field name="createdStamp" type="date-time"/>
+  <field name="lastUpdatedStamp" type="date-time"/>
+
+  <prim-key field="payrollRunId"/>
+
+  <relation type="one" fk-name="PRDS_RUN" rel-entity-name="PayrollRun">
+    <key-map field-name="payrollRunId"/>
+  </relation>
+</entity>
+
+	<entity entity-name="PayrollDisbursementLine" package-name="org.apache.ofbiz.payroll" title="Payroll Disbursement Line">
+  <field name="disbursementLineId" type="id"/>
+
+  <field name="payrollRunId" type="id"/>
+  <field name="channelId" type="id"/>
+
+  <field name="employeePartyId" type="id"/>
+  <field name="amount" type="currency-amount"/>
+  <field name="currencyUomId" type="id"/>
+
+  <!-- destination snapshot -->
+  <field name="destBankAccountId" type="id"/>
+  <field name="destIban" type="very-long"/>
+  <field name="destAccountNumber" type="very-long"/>
+  <field name="destWalletId" type="very-long"/>
+  <field name="destCardAccountId" type="id"/>
+  <field name="destPayToName" type="name"/>
+
+  <!-- lifecycle -->
+  <field name="statusId" type="id"/>              <!-- LINE_NEW/LINE_SENT/LINE_CONF/LINE_FAIL -->
+  <field name="failureReason" type="very-long"/>
+  <field name="externalLineRef" type="id"/>
+
+  <field name="createdStamp" type="date-time"/>
+  <field name="lastUpdatedStamp" type="date-time"/>
+
+  <prim-key field="disbursementLineId"/>
+
+  <relation type="one" fk-name="PDL_RUN" rel-entity-name="PayrollRun">
+    <key-map field-name="payrollRunId"/>
+  </relation>
+  <relation type="one" fk-name="PDL_CH" rel-entity-name="PayrollDisbursementChannel">
+    <key-map field-name="channelId"/>
+  </relation>
+</entity>
+
+	<entity entity-name="EmployeePaymentPreference" package-name="org.apache.ofbiz.payroll" title="Employee Payment Preference">
+  <field name="employeePartyId" type="id"/>
+  <field name="sequenceNum" type="numeric"/>      <!-- allow multiple, pick default -->
+  <field name="isDefault" type="indicator"/>
+
+  <field name="channelId" type="id"/>             <!-- BANK_FILE/CASH/CHEQUE/CARD_FILE/WALLET_FILE -->
+  <field name="currencyUomId" type="id"/>
+
+  <!-- destination (fill per channel) -->
+  <field name="bankAccountId" type="id"/>         <!-- recommended: reference your bank-account entity -->
+  <field name="iban" type="very-long"/>           <!-- if you don't have bankAccount entity -->
+  <field name="accountNumber" type="very-long"/>
+  <field name="bankCode" type="id"/>              <!-- optional -->
+  <field name="walletId" type="very-long"/>
+  <field name="cardAccountId" type="id"/>
+  <field name="payToName" type="name"/>
+
+  <field name="fromDate" type="date-time"/>
+  <field name="thruDate" type="date-time"/>
+
+  <field name="createdStamp" type="date-time"/>
+  <field name="lastUpdatedStamp" type="date-time"/>
+
+  <prim-key field="employeePartyId"/>
+  <prim-key field="sequenceNum"/>
+
+  <relation type="one" fk-name="EPP_CH" rel-entity-name="PayrollDisbursementChannel">
+    <key-map field-name="channelId"/>
+  </relation>
+</entity>
+
+	<entity entity-name="PayrollRunChannel" package-name="org.apache.ofbiz.payroll" title="Payroll Run Channel">
+  <field name="payrollRunId" type="id"/>
+  <field name="channelId" type="id"/>
+
+  <!-- lifecycle -->
+  <field name="statusId" type="id"/>         <!-- CH_NEW/CH_READY/CH_GEN/CH_SENT/CH_CONF/CH_FAIL/CH_VOID -->
+  <field name="sequenceNum" type="numeric"/> <!-- for multiple exports/versions -->
+
+  <!-- config (keep minimal + extensible) -->
+  <field name="companyBankAccountId" type="id"/>  <!-- debtor account (if applicable) -->
+  <field name="exportFormatId" type="id"/>        <!-- CSV/ISO20022/WPS/etc -->
+  <field name="apiProfileId" type="id"/>          <!-- if BANK_API -->
+  <field name="configJson" type="very-long"/>     <!-- optional flexible config -->
+
+  <!-- output artifacts -->
+  <field name="filePath" type="very-long"/>
+  <field name="fileName" type="name"/>
+  <field name="fileHash" type="very-long"/>       <!-- SHA-256 -->
+  <field name="externalReferenceId" type="id"/>   <!-- bank portal reference or API batch id -->
+
+  <!-- stamps -->
+  <field name="generatedStamp" type="date-time"/>
+  <field name="sentStamp" type="date-time"/>
+  <field name="confirmedStamp" type="date-time"/>
+
+  <field name="createdStamp" type="date-time"/>
+  <field name="lastUpdatedStamp" type="date-time"/>
+
+  <prim-key field="payrollRunId"/>
+  <prim-key field="channelId"/>
+
+  <relation type="one" fk-name="PRC_RUN" rel-entity-name="PayrollRun">
+    <key-map field-name="payrollRunId"/>
+  </relation>
+  <relation type="one" fk-name="PRC_CH" rel-entity-name="PayrollDisbursementChannel">
+    <key-map field-name="channelId"/>
+  </relation>
+</entity>
+
+
+    <!-- NEW (AGREED): Payroll Period Type -->
+    <entity entity-name="PayrollPeriodType" package-name="org.apache.ofbiz.payroll" title="Payroll Period Type">
+        <field name="payrollPeriodTypeId" type="id"/>
+        <field name="description" type="description"/>
+        <field name="isActive" type="indicator"/>
+
+        <prim-key field="payrollPeriodTypeId"/>
+    </entity>
+
+    <entity entity-name="PayrollPeriod" package-name="org.apache.ofbiz.payroll" title="Payroll Period">
+        <field name="payrollPeriodId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+
+        <field name="periodName" type="name"/>
+        <field name="payrollPeriodTypeId" type="id"/>
+
+        <field name="startDate" type="date"/>
+        <field name="endDate" type="date"/>
+        <field name="payDate" type="date"/>
+
+        <field name="statusId" type="id"/>
+
+        <prim-key field="payrollPeriodId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="PER_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollPeriodType" fk-name="PER_TYPE" title="PeriodType">
+            <key-map field-name="payrollPeriodTypeId" rel-field-name="payrollPeriodTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PER_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+<entity entity-name="PayrollRun"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payroll Run">
+
+    <!-- PK -->
+    <field name="payrollRunId" type="id"/>
+
+    <!-- Identity / Scope -->
+    <field name="organizationPartyId" type="id"/>
+    <field name="payrollPeriodId" type="id"/>
+
+    <field name="runName" type="name"/>
+    <field name="runTypeId" type="id"/>
+    <field name="runDate" type="date-time"/>
+
+    <!-- Currency -->
+    <field name="currencyUomId" type="id"/>
+    <field name="valuationCurrencyUomId" type="id"/>
+
+    <!-- Workflow / Status -->
+    <field name="statusId" type="id"/>
+    <field name="workflowInstanceId" type="id"/>
+
+    <!-- Totals -->
+    <field name="totalEmployees" type="numeric"/>
+    <field name="totalGrossPay" type="currency-amount"/>
+    <field name="totalDeductions" type="currency-amount"/>
+    <field name="totalNetPay" type="currency-amount"/>
+
+    <!-- Audit -->
+    <field name="createdByUserLoginId" type="id"/>
+    <field name="createdDate" type="date-time"/>
+
+    <field name="approvedByUserLoginId" type="id"/>
+    <field name="approvedDate" type="date-time"/>
+
+    <field name="doneByUserLoginId" type="id"/>
+    <field name="doneDate" type="date-time"/>
+
+    <field name="rejectedByUserLoginId" type="id"/>
+    <field name="rejectedDate" type="date-time"/>
+    <field name="rejectReason" type="long-varchar"/>
+
+    <!-- Posting -->
+    <field name="accountingPostOptionId" type="id"/>
+
+    <field name="glJournalId" type="id"/>
+    <field name="glPostedDate" type="date-time"/>
+    <field name="isGlPosted" type="indicator"/>
+
+    <field name="invoiceId" type="id"/>
+    <field name="isInvoicePosted" type="indicator"/>
+    <field name="invoicePostedDate" type="date-time"/>
+
+    <!-- Compliance -->
+    <field name="isCompliant" type="indicator"/>
+    <field name="complianceCheckedByUserLoginId" type="id"/>
+    <field name="complianceCheckDate" type="date-time"/>
+
+    <!-- Disbursement control (multi-option salary payment) -->
+    <field name="disbursementModeId" type="id"/>               <!-- SINGLE / MIXED -->
+    <field name="defaultDisbursementChannelId" type="id"/>     <!-- BANK_FILE / CASH / CHEQUE / WALLET / ... -->
+    <field name="paymentPolicyId" type="id"/>                  <!-- POL_A / POL_B -->
+
+    <!-- Run defaults acceptance + scope lock -->
+    <field name="defaultsAccepted" type="indicator"/>          <!-- Y/N -->
+    <field name="scopeLocked" type="indicator"/>               <!-- Y/N -->
+    <field name="scopeSnapshotStamp" type="date-time"/>
+
+    <!-- Optional payer account/config for bank payouts -->
+    <field name="disbursementFinAccountId" type="id"/>
+    <field name="bankTransferConfigId" type="id"/>
+
+    <!-- Bank batch lifecycle -->
+    <field name="requiresBankBatch" type="indicator"/>         <!-- Y/N -->
+    <field name="generatedBankTransferBatchId" type="id"/>
+    <field name="bankBatchGeneratedDate" type="date-time"/>
+    <field name="bankBatchGeneratedByUserLoginId" type="id"/>
+
+    <field name="approvedBankTransferBatchId" type="id"/>
+
+    <!-- Bank file upload lifecycle -->
+    <field name="bankFileUploadedByUserLoginId" type="id"/>
+    <field name="bankFileUploadedDate" type="date-time"/>
+    <field name="bankFileReference" type="long-varchar"/>
+
+    <!-- Keys -->
+    <prim-key field="payrollRunId"/>
+
+    <!-- Recommended uniques/indexes (helps resolver + prevents duplicates) -->
+   
+
+    <!-- Relations -->
+    <relation type="one" rel-entity-name="PayrollOrganization" fk-name="RUN_ORG" title="Org">
+        <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PayrollPeriod" fk-name="RUN_PER" title="Period">
+        <key-map field-name="payrollPeriodId" rel-field-name="payrollPeriodId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Uom" fk-name="RUN_CURR" title="Currency">
+        <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Uom" fk-name="RUN_VALCURR" title="ValuationCurrency">
+        <key-map field-name="valuationCurrencyUomId" rel-field-name="uomId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="RUN_STAT" title="Status">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Invoice" fk-name="RUN_INV" title="Invoice">
+        <key-map field-name="invoiceId" rel-field-name="invoiceId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Enumeration" fk-name="RUN_TYPE_ENUM" title="RunType">
+        <key-map field-name="runTypeId" rel-field-name="enumId"/>
+    </relation>
+
+    <!-- UserLogin relations -->
+    <relation type="one" rel-entity-name="UserLogin" fk-name="RUN_CRBY" title="CreatedBy">
+        <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="RUN_APBY" title="ApprovedBy">
+        <key-map field-name="approvedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="RUN_DNBY" title="DoneBy">
+        <key-map field-name="doneByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="RUN_RJBY" title="RejectedBy">
+        <key-map field-name="rejectedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="RUN_CKBY" title="ComplianceCheckedBy">
+        <key-map field-name="complianceCheckedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="RUN_BGEN_BY" title="BankBatchGeneratedBy">
+        <key-map field-name="bankBatchGeneratedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="RUN_BUP_BY" title="BankFileUploadedBy">
+        <key-map field-name="bankFileUploadedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <!-- Optional financial/bank config relations -->
+    <relation type="one" rel-entity-name="FinAccount" fk-name="RUN_DISB_ACCT" title="DisbursementAccount">
+        <key-map field-name="disbursementFinAccountId" rel-field-name="finAccountId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="BankTransferConfig" fk-name="RUN_BTCFG" title="DefaultBankTransferConfig">
+        <key-map field-name="bankTransferConfigId" rel-field-name="bankTransferConfigId"/>
+    </relation>
+
+</entity>
+
+  <entity entity-name="PayrollDeductionItem" package-name="org.apache.ofbiz.payroll" title="Payroll Deduction Item">
+    <field name="payrollDeductionItemId" type="id"/>
+    <field name="payrollResultId" type="id"/>
+    <field name="deductionTypeId" type="id"/>
+    <field name="amount" type="currency-amount"/>
+    <field name="partyId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="payrollRunId" type="id"/>
+
+    <prim-key field="payrollDeductionItemId"/>
+
+    <relation type="one" rel-entity-name="PayrollRun" fk-name="PDED_RUN" title="Run">
+        <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="EmployeePayrollResult" fk-name="PDED_RES" title="Result">
+        <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="DeductionType" fk-name="PDED_TYPE" title="DeductionType">
+        <key-map field-name="deductionTypeId" rel-field-name="deductionTypeId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Party" fk-name="PDED_PARTY" title="Employee">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PayrollOrganization" fk-name="PDED_ORG" title="Org">
+        <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+    </relation>
+</entity>
+
+<entity entity-name="EmployeePayrollResult" package-name="org.apache.ofbiz.payroll" title="Employee Payroll Result">
+    <field name="payrollResultId" type="id"/>
+    <field name="payrollRunId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="partyId" type="id"/>
+
+    <field name="basicSalary" type="currency-amount"/>
+    <field name="overtimeAmount" type="currency-amount"/>
+    <field name="allowancesTotal" type="currency-amount"/>
+    <field name="bonuses" type="currency-amount"/>
+    <field name="grossSalary" type="currency-amount"/>
+
+    <field name="incomeTax" type="currency-amount"/>
+    <field name="socialSecurity" type="currency-amount"/>
+    <field name="loanDeductions" type="currency-amount"/>
+    <field name="otherDeductions" type="currency-amount"/>
+    <field name="totalDeductions" type="currency-amount"/>
+
+    <field name="netSalary" type="currency-amount"/>
+
+    <field name="currencyUomId" type="id"/>
+    <field name="valuationCurrencyUomId" type="id"/>
+    <field name="exchangeRate" type="floating-point"/>
+
+    <!-- Existing disbursement fields (keep) -->
+    <field name="paymentMethodId" type="id"/>
+    <field name="finAccountId" type="id"/>
+
+    <field name="bankAccountNumber" type="very-long" encrypt="true"/>
+    <field name="bankName" type="name"/>
+
+    <!-- NEW: channel routing (for all salary payment options) -->
+    <field name="disbursementChannelId" type="id"/>        <!-- BANK_FILE / CASH / CHEQUE / WPS_FILE / ... -->
+    <field name="paymentPreferenceSeqNum" type="numeric"/> <!-- which EmployeePaymentPreference was used -->
+
+    <field name="payslipRef" type="long-varchar"/>
+
+    <field name="isPayslipGenerated" type="indicator"/>
+    <field name="isPayslipSent" type="indicator"/>
+    <field name="versionNumber" type="numeric"/>
+
+    <field name="statusId" type="id"/>
+    <field name="remarks" type="comment"/>
+    <field name="payslipExportFileId" type="id"/>
+
+    <prim-key field="payrollResultId"/>
+
+    <relation type="one" rel-entity-name="PayrollRun" fk-name="RES_RUN" title="Run">
+        <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+    </relation>
+    <relation type="one" rel-entity-name="PayrollOrganization" fk-name="RES_ORG" title="Org">
+        <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+    </relation>
+    <relation type="one" rel-entity-name="Party" fk-name="RES_PARTY" title="Employee">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Uom" fk-name="RES_CURR" title="Currency">
+        <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+    </relation>
+    <relation type="one" rel-entity-name="Uom" fk-name="RES_VALCURR" title="ValuationCurrency">
+        <key-map field-name="valuationCurrencyUomId" rel-field-name="uomId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PaymentMethod" fk-name="RES_PAYMETH" title="PaymentMethod">
+        <key-map field-name="paymentMethodId" rel-field-name="paymentMethodId"/>
+    </relation>
+    <relation type="one" rel-entity-name="FinAccount" fk-name="RES_FINACCT" title="FinAccount">
+        <key-map field-name="finAccountId" rel-field-name="finAccountId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="RES_STAT" title="Status">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PayrollExportFile" fk-name="RES_PSLIPFILE" title="PayslipExportFile">
+        <key-map field-name="payslipExportFileId" rel-field-name="exportFileId"/>
+    </relation>
+
+    <!-- Optional: link to channel master when you add it -->
+    <!--
+    <relation type="one" rel-entity-name="PayrollDisbursementChannel" fk-name="RES_CH" title="DisbursementChannel">
+        <key-map field-name="disbursementChannelId" rel-field-name="channelId"/>
+    </relation>
+    -->
+</entity>
+
+
+    <entity entity-name="EmployeePayrollResultLine" package-name="org.apache.ofbiz.payroll" title="Employee Payroll Result Line">
+        <field name="resultLineId" type="id"/>
+        <field name="payrollResultId" type="id"/>
+        <field name="lineTypeId" type="id"/>
+        <field name="referenceId" type="id"/>
+        <field name="description" type="description"/>
+        <field name="amount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="sequenceNum" type="numeric"/>
+
+        <prim-key field="resultLineId"/>
+
+        <relation type="one" rel-entity-name="EmployeePayrollResult" fk-name="RESLINE_RES" title="Result">
+            <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="RESLINE_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="RESLINE_TYPE" title="LineType">
+            <key-map field-name="lineTypeId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+ 
+ <entity entity-name="EmployeeTaxDetail" package-name="org.apache.ofbiz.payroll" title="Employee Tax Detail">
+        <field name="taxDetailId" type="id"/>
+        <field name="payrollResultId" type="id"/>
+        <field name="taxConfigId" type="id"/>
+        <field name="taxTypeId" type="id"/>
+        <field name="taxableAmount" type="currency-amount"/>
+        <field name="taxRate" type="floating-point"/>
+        <field name="calculatedTax" type="currency-amount"/>
+
+        <prim-key field="taxDetailId"/>
+
+        <relation type="one" rel-entity-name="EmployeePayrollResult" fk-name="TAXDET_RES" title="Result">
+            <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollTaxConfig" fk-name="TAXDET_CFG" title="TaxConfig">
+            <key-map field-name="taxConfigId" rel-field-name="taxConfigId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="TAXDET_TYPE" title="TaxType">
+            <key-map field-name="taxTypeId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="EmployeeYTDSummary" package-name="org.apache.ofbiz.payroll" title="Employee YTD Summary">
+        <field name="employeeYtdSummaryId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="calendarYear" type="numeric"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="ytdGross" type="currency-amount"/>
+        <field name="ytdTax" type="currency-amount"/>
+        <field name="ytdSocialSecurity" type="currency-amount"/>
+        <field name="ytdAllowances" type="currency-amount"/>
+        <field name="ytdOvertime" type="currency-amount"/>
+        <field name="ytdBonuses" type="currency-amount"/>
+        <field name="ytdNet" type="currency-amount"/>
+        <field name="lastCalculatedDate" type="date-time"/>
+
+        <prim-key field="employeeYtdSummaryId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="YTD_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="YTD_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="YTD_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 9) RETRO PAYROLL -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="PayrollRetroBatch" package-name="org.apache.ofbiz.payroll" title="Payroll Retro Batch">
+        <field name="payrollRetroBatchId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="periodMonth" type="numeric"/>
+        <field name="periodYear" type="numeric"/>
+        <field name="effectiveDate" type="date-time"/>
+        <field name="applyInPayrollRunId" type="id"/>
+        <field name="postMode" type="id"/>
+        <field name="reason" type="long-varchar"/>
+        <field name="statusId" type="id"/>
+        <field name="createdDate" type="date-time"/>
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="approvedDate" type="date-time"/>
+        <field name="approvedByUserLoginId" type="id"/>
+
+        <prim-key field="payrollRetroBatchId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="RET_BAT_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollRun" fk-name="RET_BAT_RUN" title="ApplyInRun">
+            <key-map field-name="applyInPayrollRunId" rel-field-name="payrollRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="RET_BAT_STATUS" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="RET_BAT_CRBY" title="CreatedBy">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="RET_BAT_APBY" title="ApprovedBy">
+            <key-map field-name="approvedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="RET_POSTMODE" title="PostMode">
+            <key-map field-name="postMode" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollRetroEmployee" package-name="org.apache.ofbiz.payroll" title="Payroll Retro Employee">
+        <field name="payrollRetroEmployeeId" type="id"/>
+        <field name="payrollRetroBatchId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="payrollRetroEmployeeId"/>
+
+        <relation type="one" rel-entity-name="PayrollRetroBatch" fk-name="RET_EMP_BAT" title="Batch">
+            <key-map field-name="payrollRetroBatchId" rel-field-name="payrollRetroBatchId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="RET_EMP_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="RET_EMP_STATUS" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollRetroDelta" package-name="org.apache.ofbiz.payroll" title="Payroll Retro Delta">
+        <field name="payrollRetroDeltaId" type="id"/>
+        <field name="payrollRetroBatchId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="originalPayrollResultId" type="id"/>
+        <field name="lineTypeId" type="id"/>
+        <field name="payComponentTypeId" type="id"/>
+        <field name="oldAmount" type="currency-amount"/>
+        <field name="newAmount" type="currency-amount"/>
+        <field name="deltaAmount" type="currency-amount"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="payrollRetroDeltaId"/>
+
+        <relation type="one" rel-entity-name="PayrollRetroBatch" fk-name="RET_DEL_BAT" title="Batch">
+            <key-map field-name="payrollRetroBatchId" rel-field-name="payrollRetroBatchId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="RET_DEL_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="EmployeePayrollResult" fk-name="RET_DEL_RES" title="OriginalResult">
+            <key-map field-name="originalPayrollResultId" rel-field-name="payrollResultId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="RET_DEL_LINETYPE" title="LineType">
+            <key-map field-name="lineTypeId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="RET_DEL_STATUS" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="RET_DEL_COMP" title="PayComponentType">
+            <key-map field-name="payComponentTypeId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollRetroPosting" package-name="org.apache.ofbiz.payroll" title="Payroll Retro Posting">
+        <field name="payrollRetroPostingId" type="id"/>
+        <field name="payrollRetroBatchId" type="id"/>
+        <field name="postMode" type="id"/>
+        <field name="postedDate" type="date-time"/>
+        <field name="postedByUserLoginId" type="id"/>
+        <field name="referenceId" type="id"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="payrollRetroPostingId"/>
+
+        <relation type="one" rel-entity-name="PayrollRetroBatch" fk-name="RET_POST_BAT" title="Batch">
+            <key-map field-name="payrollRetroBatchId" rel-field-name="payrollRetroBatchId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="RET_POST_BY" title="PostedBy">
+            <key-map field-name="postedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="RET_POSTMODE2" title="PostMode">
+            <key-map field-name="postMode" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="RET_POST_STATUS" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 10) ACCOUNTING INTEGRATION -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="PayrollPosting" package-name="org.apache.ofbiz.payroll" title="Payroll Posting Header">
+        <field name="payrollPostingId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollRunId" type="id"/>
+        <field name="postingTypeId" type="id"/>
+        <field name="postingStatusId" type="id"/>
+        <field name="postingVersion" type="numeric"/>
+        <field name="postedDate" type="date-time"/>
+        <field name="postedByUserLoginId" type="id"/>
+        <field name="glJournalId" type="id"/>
+        <field name="invoiceId" type="id"/>
+        <field name="errorMessage" type="long-varchar"/>
+
+        <prim-key field="payrollPostingId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="POST_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollRun" fk-name="POST_RUN" title="Run">
+            <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="POST_BY" title="PostedBy">
+            <key-map field-name="postedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AcctgTrans" fk-name="POST_GL" title="AcctgTrans">
+            <key-map field-name="glJournalId" rel-field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Invoice" fk-name="POST_INV" title="Invoice">
+            <key-map field-name="invoiceId" rel-field-name="invoiceId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="POST_TYPE" title="PostingType">
+            <key-map field-name="postingTypeId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="POST_STAT" title="PostingStatus">
+            <key-map field-name="postingStatusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollPostingLine" package-name="org.apache.ofbiz.payroll" title="Payroll Posting Line">
+        <field name="payrollPostingLineId" type="id"/>
+        <field name="payrollPostingId" type="id"/>
+        <field name="lineTypeId" type="id"/>
+        <field name="referenceId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="amount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="glAccountId" type="id"/>
+        <field name="drCrFlag" type="id"/>
+        <field name="invoiceItemTypeId" type="id"/>
+
+        <prim-key field="payrollPostingLineId"/>
+
+        <relation type="one" rel-entity-name="PayrollPosting" fk-name="POSTL_HDR" title="Posting">
+            <key-map field-name="payrollPostingId" rel-field-name="payrollPostingId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="POSTL_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="GlAccount" fk-name="POSTL_GLACCT" title="GlAccount">
+            <key-map field-name="glAccountId" rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="InvoiceItemType" fk-name="POSTL_IIT" title="InvoiceItemType">
+            <key-map field-name="invoiceItemTypeId" rel-field-name="invoiceItemTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="POSTL_LINETYPE" title="LineType">
+            <key-map field-name="lineTypeId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="POSTL_DRCR" title="DrCrFlag">
+            <key-map field-name="drCrFlag" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="POSTL_PARTY" title="Party">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollGlMapping" package-name="org.apache.ofbiz.payroll" title="Payroll LineType to GL Mapping">
+        <field name="payrollGlMappingId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="lineTypeId" type="id"/>
+        <field name="glAccountId" type="id"/>
+        <field name="drCrFlag" type="id"/>
+        <field name="isActive" type="indicator"/>
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+
+        <prim-key field="payrollGlMappingId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="GLMAP_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="GlAccount" fk-name="GLMAP_GL" title="GlAccount">
+            <key-map field-name="glAccountId" rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="GLMAP_LINETYPE" title="LineType">
+            <key-map field-name="lineTypeId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="GLMAP_DRCR" title="DrCrFlag">
+            <key-map field-name="drCrFlag" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollInvoiceMapping" package-name="org.apache.ofbiz.payroll" title="Payroll LineType to InvoiceItemType Mapping">
+        <field name="payrollInvoiceMappingId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="lineTypeId" type="id"/>
+        <field name="invoiceItemTypeId" type="id"/>
+        <field name="isActive" type="indicator"/>
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+
+        <prim-key field="payrollInvoiceMappingId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="INVMAP_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="InvoiceItemType" fk-name="INVMAP_IIT" title="InvoiceItemType">
+            <key-map field-name="invoiceItemTypeId" rel-field-name="invoiceItemTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="INVMAP_LINETYPE" title="LineType">
+            <key-map field-name="lineTypeId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 11) PAYSLIP & DOCUMENT MANAGEMENT -->
+    <!-- ========================================================= -->
+<!-- ========================================================= -->
+<!-- 11) PAYSLIP & DOCUMENT MANAGEMENT (FINAL SHARED MODEL) -->
+<!-- ========================================================= -->
+
+<entity entity-name="PayrollPayslip"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payroll Payslip">
+
+    <field name="payslipId" type="id"/>
+    <field name="payrollRunId" type="id"/>
+    <field name="payrollResultId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="partyId" type="id"/>
+
+    <!-- Type / format -->
+    <field name="payslipTypeEnumId" type="id"/>
+    <field name="payslipFormatEnumId" type="id"/>
+
+    <!-- Lifecycle -->
+    <field name="statusId" type="id"/>
+
+    <!-- Document linkage -->
+    <field name="contentId" type="id"/>
+    <field name="dataResourceId" type="id"/>
+    <field name="mimeTypeId" type="id"/>
+    <field name="fileName" type="name"/>
+    <field name="fileSize" type="numeric"/>
+    <field name="checksum" type="short-varchar"/>
+
+    <!-- Versioning -->
+    <field name="versionNumber" type="numeric"/>
+    <field name="isLatestVersion" type="indicator"/>
+
+    <!-- Generation metadata -->
+    <field name="generatedDate" type="date-time"/>
+    <field name="generatedByUserLoginId" type="id"/>
+    <field name="issuedDate" type="date-time"/>
+    <field name="notes" type="very-long"/>
+
+    <!-- Standard stamps -->
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="payslipId"/>
+
+    <relation type="one" fk-name="PPSLP_RUN" rel-entity-name="PayrollRun">
+        <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+    </relation>
+    <relation type="one" fk-name="PPSLP_RES" rel-entity-name="EmployeePayrollResult">
+        <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+    </relation>
+    <relation type="one" fk-name="PPSLP_ORG" rel-entity-name="Party">
+        <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" fk-name="PPSLP_PARTY" rel-entity-name="Party">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+
+    <relation type="one" fk-name="PPSLP_TYPE" rel-entity-name="Enumeration">
+        <key-map field-name="payslipTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" fk-name="PPSLP_FMT" rel-entity-name="Enumeration">
+        <key-map field-name="payslipFormatEnumId" rel-field-name="enumId"/>
+    </relation>
+
+    <relation type="one" fk-name="PPSLP_STS" rel-entity-name="StatusItem">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+
+    <relation type="one" fk-name="PPSLP_CONT" rel-entity-name="Content">
+        <key-map field-name="contentId" rel-field-name="contentId"/>
+    </relation>
+    <relation type="one" fk-name="PPSLP_DR" rel-entity-name="DataResource">
+        <key-map field-name="dataResourceId" rel-field-name="dataResourceId"/>
+    </relation>
+    
+<!-- Generation metadata 
+    <index name="IDX_PPSLP_RUN_PARTY">
+        <index-field name="payrollRunId"/>
+        <index-field name="partyId"/>
+    </index>
+
+    <index name="IDX_PPSLP_RES">
+        <index-field name="payrollResultId"/>
+    </index>
+
+    <index name="IDX_PPSLP_ORG_RUN">
+        <index-field name="organizationPartyId"/>
+        <index-field name="payrollRunId"/>
+    </index>
+
+    <index name="IDX_PPSLP_PARTY_GEN">
+        <index-field name="partyId"/>
+        <index-field name="generatedDate"/>
+    </index>
+
+    <index name="IDX_PPSLP_STATUS">
+        <index-field name="statusId"/>
+    </index>
+
+    <index name="UX_PPSLP_RES_VER" unique="true">
+        <index-field name="payrollResultId"/>
+        <index-field name="versionNumber"/>
+    </index>
+	-->
+</entity>
+
+
+<entity entity-name="PayrollExportRequest"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payroll Export Request">
+
+    <field name="exportRequestId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="payrollRunId" type="id"/>
+    <field name="payrollResultId" type="id"/>
+    <field name="payslipId" type="id"/>
+
+    <!-- Type / format -->
+    <field name="exportTypeEnumId" type="id"/>
+    <field name="formatEnumId" type="id"/>
+
+    <!-- Context -->
+    <field name="localeString" type="short-varchar"/>
+    <field name="timeZoneString" type="short-varchar"/>
+
+    <!-- Request audit -->
+    <field name="requestedByUserLoginId" type="id"/>
+    <field name="requestedDate" type="date-time"/>
+
+    <!-- Lifecycle -->
+    <field name="statusId" type="id"/>
+    <field name="errorMessage" type="long-varchar"/>
+    <field name="notes" type="very-long"/>
+
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="exportRequestId"/>
+
+    <relation type="one" fk-name="PEXPR_ORG" rel-entity-name="Party">
+        <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPR_RUN" rel-entity-name="PayrollRun">
+        <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPR_RES" rel-entity-name="EmployeePayrollResult">
+        <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPR_PSLP" rel-entity-name="PayrollPayslip">
+        <key-map field-name="payslipId" rel-field-name="payslipId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPR_REQBY" rel-entity-name="UserLogin">
+        <key-map field-name="requestedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPR_STAT" rel-entity-name="StatusItem">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPR_TYPE" rel-entity-name="Enumeration">
+        <key-map field-name="exportTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPR_FMT" rel-entity-name="Enumeration">
+        <key-map field-name="formatEnumId" rel-field-name="enumId"/>
+    </relation>
+ <!-- Lifecycle 
+    <index name="IDX_PEXPR_RUN">
+        <index-field name="payrollRunId"/>
+    </index>
+    <index name="IDX_PEXPR_RES">
+        <index-field name="payrollResultId"/>
+    </index>
+    <index name="IDX_PEXPR_PSLP">
+        <index-field name="payslipId"/>
+    </index>
+    <index name="IDX_PEXPR_ORG_STAT">
+        <index-field name="organizationPartyId"/>
+        <index-field name="statusId"/>
+    </index>
+	-->
+</entity>
+
+
+<entity entity-name="PayrollExportFile"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payroll Export File">
+
+    <field name="exportFileId" type="id"/>
+    <field name="exportRequestId" type="id"/>
+
+    <!-- Optional direct document linkage -->
+    <field name="contentId" type="id"/>
+    <field name="dataResourceId" type="id"/>
+
+    <field name="fileName" type="name"/>
+    <field name="filePath" type="value"/>
+    <field name="mimeTypeId" type="id"/>
+    <field name="fileSize" type="numeric"/>
+    <field name="checksum" type="short-varchar"/>
+    <field name="generatedDate" type="date-time"/>
+    <field name="downloadCount" type="numeric"/>
+
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="exportFileId"/>
+
+    <relation type="one" fk-name="PEXPF_REQ" rel-entity-name="PayrollExportRequest">
+        <key-map field-name="exportRequestId" rel-field-name="exportRequestId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPF_CONT" rel-entity-name="Content">
+        <key-map field-name="contentId" rel-field-name="contentId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPF_DR" rel-entity-name="DataResource">
+        <key-map field-name="dataResourceId" rel-field-name="dataResourceId"/>
+    </relation>
+    <relation type="one" fk-name="PEXPF_MIME" rel-entity-name="MimeType">
+        <key-map field-name="mimeTypeId" rel-field-name="mimeTypeId"/>
+    </relation>
+ <!-- Optional  
+    <index name="IDX_PEXPF_REQ">
+        <index-field name="exportRequestId"/>
+    </index>
+	-->
+</entity>
+
+
+<entity entity-name="PayslipBarcode"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payslip Barcode">
+
+    <field name="payslipBarcodeId" type="id"/>
+    <field name="payslipId" type="id"/>
+    <field name="payrollResultId" type="id"/>
+
+    <field name="barcodeTypeEnumId" type="id"/>
+    <field name="barcodeValue" type="long-varchar"/>
+
+    <field name="generatedDate" type="date-time"/>
+    <field name="lastScannedDate" type="date-time"/>
+    <field name="scanCount" type="numeric"/>
+    <field name="statusId" type="id"/>
+
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="payslipBarcodeId"/>
+
+    <relation type="one" fk-name="PBC_PSLP" rel-entity-name="PayrollPayslip">
+        <key-map field-name="payslipId" rel-field-name="payslipId"/>
+    </relation>
+    <relation type="one" fk-name="PBC_RES" rel-entity-name="EmployeePayrollResult">
+        <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+    </relation>
+    <relation type="one" fk-name="PBC_TYPE" rel-entity-name="Enumeration">
+        <key-map field-name="barcodeTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" fk-name="PBC_STAT" rel-entity-name="StatusItem">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+ <!-- 
+    <index name="IDX_PBC_PSLP">
+        <index-field name="payslipId"/>
+    </index>
+
+    <index name="UX_PBC_PSLP_TYPE" unique="true">
+        <index-field name="payslipId"/>
+        <index-field name="barcodeTypeEnumId"/>
+    </index>
+	  -->
+</entity>
+
+
+<entity entity-name="PayslipDelivery"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payslip Delivery">
+
+    <field name="payslipDeliveryId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="payslipId" type="id"/>
+    <field name="payrollResultId" type="id"/>
+    <field name="partyId" type="id"/>
+
+    <!-- Method / channel -->
+    <field name="deliveryMethodEnumId" type="id"/>
+
+    <!-- Lifecycle -->
+    <field name="deliveryStatusId" type="id"/>
+
+    <!-- Targets -->
+    <field name="toEmailAddress" type="value"/>
+    <field name="toSmsNumber" type="value"/>
+    <field name="portalAccessCode" type="description" encrypt="true"/>
+
+    <!-- Timing -->
+    <field name="requestedDate" type="date-time"/>
+    <field name="sentDate" type="date-time"/>
+    <field name="deliveredDate" type="date-time"/>
+    <field name="viewedDate" type="date-time"/>
+
+    <field name="attemptCount" type="numeric"/>
+    <field name="lastErrorMessage" type="long-varchar"/>
+    <field name="notes" type="very-long"/>
+
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="payslipDeliveryId"/>
+
+    <relation type="one" fk-name="PDEL_ORG" rel-entity-name="Party">
+        <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" fk-name="PDEL_PSLP" rel-entity-name="PayrollPayslip">
+        <key-map field-name="payslipId" rel-field-name="payslipId"/>
+    </relation>
+    <relation type="one" fk-name="PDEL_RES" rel-entity-name="EmployeePayrollResult">
+        <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+    </relation>
+    <relation type="one" fk-name="PDEL_PARTY" rel-entity-name="Party">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" fk-name="PDEL_MTHD" rel-entity-name="Enumeration">
+        <key-map field-name="deliveryMethodEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" fk-name="PDEL_STAT" rel-entity-name="StatusItem">
+        <key-map field-name="deliveryStatusId" rel-field-name="statusId"/>
+    </relation>
+  <!-- 
+    <index name="IDX_PDEL_PSLP">
+        <index-field name="payslipId"/>
+    </index>
+    <index name="IDX_PDEL_PARTY">
+        <index-field name="partyId"/>
+    </index>
+    <index name="IDX_PDEL_STATUS">
+        <index-field name="deliveryStatusId"/>
+    </index>
+	  -->
+</entity>
+
+
+<entity entity-name="PayslipDeliveryEvent"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payslip Delivery Event">
+
+    <field name="payslipDeliveryEventId" type="id"/>
+    <field name="payslipDeliveryId" type="id"/>
+    <field name="payslipId" type="id"/>
+    <field name="partyId" type="id"/>
+
+    <field name="eventTypeEnumId" type="id"/>
+    <field name="eventDate" type="date-time"/>
+    <field name="statusId" type="id"/>
+    <field name="message" type="long-varchar"/>
+    <field name="providerMessageId" type="value"/>
+
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="payslipDeliveryEventId"/>
+
+    <relation type="one" fk-name="PDEVT_DEL" rel-entity-name="PayslipDelivery">
+        <key-map field-name="payslipDeliveryId" rel-field-name="payslipDeliveryId"/>
+    </relation>
+    <relation type="one" fk-name="PDEVT_PSLP" rel-entity-name="PayrollPayslip">
+        <key-map field-name="payslipId" rel-field-name="payslipId"/>
+    </relation>
+    <relation type="one" fk-name="PDEVT_PARTY" rel-entity-name="Party">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" fk-name="PDEVT_TYPE" rel-entity-name="Enumeration">
+        <key-map field-name="eventTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" fk-name="PDEVT_STAT" rel-entity-name="StatusItem">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+ <!-- 
+    <index name="IDX_PDEVT_DEL">
+        <index-field name="payslipDeliveryId"/>
+    </index>
+    <index name="IDX_PDEVT_PSLP">
+        <index-field name="payslipId"/>
+    </index>
+	  -->
+</entity>
+
+
+<entity entity-name="PayslipAccessToken"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payslip Access Token">
+
+    <field name="payslipAccessTokenId" type="id"/>
+    <field name="payslipId" type="id"/>
+    <field name="payrollResultId" type="id"/>
+    <field name="partyId" type="id"/>
+
+    <field name="token" type="very-long" encrypt="true"/>
+    <field name="tokenTypeEnumId" type="id"/>
+
+    <field name="issuedDate" type="date-time"/>
+    <field name="expiresDate" type="date-time"/>
+
+    <field name="statusId" type="id"/>
+    <field name="downloadCount" type="numeric"/>
+    <field name="maxDownloads" type="numeric"/>
+    <field name="lastAccessDate" type="date-time"/>
+    <field name="revokedDate" type="date-time"/>
+
+    <field name="createdByUserLoginId" type="id"/>
+    <field name="revokedByUserLoginId" type="id"/>
+
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="payslipAccessTokenId"/>
+
+    <relation type="one" fk-name="PATOK_PSLP" rel-entity-name="PayrollPayslip">
+        <key-map field-name="payslipId" rel-field-name="payslipId"/>
+    </relation>
+    <relation type="one" fk-name="PATOK_RES" rel-entity-name="EmployeePayrollResult">
+        <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+    </relation>
+    <relation type="one" fk-name="PATOK_PARTY" rel-entity-name="Party">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" fk-name="PATOK_TYPE" rel-entity-name="Enumeration">
+        <key-map field-name="tokenTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" fk-name="PATOK_STAT" rel-entity-name="StatusItem">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+    <relation type="one" fk-name="PATOK_CBY" rel-entity-name="UserLogin">
+        <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+    <relation type="one" fk-name="PATOK_RBY" rel-entity-name="UserLogin">
+        <key-map field-name="revokedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+ <!-- 
+    <index name="IDX_PATOK_PSLP">
+        <index-field name="payslipId"/>
+    </index>
+    <index name="IDX_PATOK_PARTY">
+        <index-field name="partyId"/>
+    </index>
+    <index name="IDX_PATOK_STATUS">
+        <index-field name="statusId"/>
+    </index>
+	  -->
+</entity>
+
+
+<entity entity-name="PayslipAccessAudit"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payslip Access Audit">
+
+    <field name="payslipAccessAuditId" type="id"/>
+    <field name="payslipAccessTokenId" type="id"/>
+    <field name="payslipId" type="id"/>
+    <field name="partyId" type="id"/>
+    <field name="payrollResultId" type="id"/>
+
+    <field name="accessTypeEnumId" type="id"/>
+    <field name="accessDate" type="date-time"/>
+    <field name="remoteIp" type="long-varchar"/>
+    <field name="userAgent" type="long-varchar"/>
+    <field name="statusId" type="id"/>
+    <field name="notes" type="long-varchar"/>
+
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="payslipAccessAuditId"/>
+
+    <relation type="one" fk-name="PAAUD_TOK" rel-entity-name="PayslipAccessToken">
+        <key-map field-name="payslipAccessTokenId" rel-field-name="payslipAccessTokenId"/>
+    </relation>
+    <relation type="one" fk-name="PAAUD_PSLP" rel-entity-name="PayrollPayslip">
+        <key-map field-name="payslipId" rel-field-name="payslipId"/>
+    </relation>
+    <relation type="one" fk-name="PAAUD_PARTY" rel-entity-name="Party">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" fk-name="PAAUD_RES" rel-entity-name="EmployeePayrollResult">
+        <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+    </relation>
+    <relation type="one" fk-name="PAAUD_TYPE" rel-entity-name="Enumeration">
+        <key-map field-name="accessTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" fk-name="PAAUD_STAT" rel-entity-name="StatusItem">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+ <!-- 
+    <index name="IDX_PAAUD_PSLP">
+        <index-field name="payslipId"/>
+    </index>
+    <index name="IDX_PAAUD_TOKEN">
+        <index-field name="payslipAccessTokenId"/>
+    </index>
+    <index name="IDX_PAAUD_PARTY_DATE">
+        <index-field name="partyId"/>
+        <index-field name="accessDate"/>
+    </index>
+	  -->
+</entity>
+
+
+<entity entity-name="EmployeeDocumentAccess"
+        package-name="org.apache.ofbiz.payroll"
+        title="Employee Document Access">
+
+    <field name="employeeDocumentAccessId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="partyId" type="id"/>
+
+    <field name="payslipId" type="id"/>
+    <field name="exportFileId" type="id"/>
+
+    <field name="accessTypeEnumId" type="id"/>
+    <field name="accessDate" type="date-time"/>
+    <field name="ipAddress" type="value"/>
+    <field name="userAgent" type="long-varchar"/>
+    <field name="statusId" type="id"/>
+    <field name="notes" type="long-varchar"/>
+
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+
+    <prim-key field="employeeDocumentAccessId"/>
+
+    <relation type="one" fk-name="EDACC_ORG" rel-entity-name="Party">
+        <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" fk-name="EDACC_PARTY" rel-entity-name="Party">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+    <relation type="one" fk-name="EDACC_PSLP" rel-entity-name="PayrollPayslip">
+        <key-map field-name="payslipId" rel-field-name="payslipId"/>
+    </relation>
+    <relation type="one" fk-name="EDACC_FILE" rel-entity-name="PayrollExportFile">
+        <key-map field-name="exportFileId" rel-field-name="exportFileId"/>
+    </relation>
+    <relation type="one" fk-name="EDACC_TYPE" rel-entity-name="Enumeration">
+        <key-map field-name="accessTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+    <relation type="one" fk-name="EDACC_STAT" rel-entity-name="StatusItem">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+ <!-- ========================================================= 
+    <index name="IDX_EDACC_PARTY_DATE">
+        <index-field name="partyId"/>
+        <index-field name="accessDate"/>
+    </index>
+    <index name="IDX_EDACC_PSLP">
+        <index-field name="payslipId"/>
+    </index>
+    <index name="IDX_EDACC_FILE">
+        <index-field name="exportFileId"/>
+    </index>
+	-->
+</entity>
+    <!-- ========================================================= -->
+    <!-- 12) BANK TRANSFERS & PAYMENTS -->
+    <!-- ========================================================= -->
+	<entity entity-name="PayrollDisbursementChannel" package-name="org.apache.ofbiz.payroll" title="Payroll Disbursement Channel">
+  <field name="channelId" type="id"/>
+  <field name="channelName" type="name"/>
+  <field name="description" type="description"/>
+  <field name="isActive" type="indicator"/>
+  <field name="channelTypeId" type="id"/> <!-- FILE / API / MANUAL -->
+  <field name="createdStamp" type="date-time"/>
+  <field name="lastUpdatedStamp" type="date-time"/>
+
+  <prim-key field="channelId"/>
+</entity>
+
+
+<entity entity-name="BankTransferConfig" package-name="org.apache.ofbiz.payroll" title="Bank Transfer Config">
+    <field name="bankTransferConfigId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+
+    <field name="bankName" type="name"/>
+    <field name="bankCode" type="short-varchar"/>
+
+    <!-- Use Enumeration for format -->
+    <field name="fileFormatEnumId" type="id"/>
+
+    <field name="headerTemplate" type="long-varchar"/>
+    <field name="detailTemplate" type="long-varchar"/>
+    <field name="footerTemplate" type="long-varchar"/>
+    <field name="fieldSeparator" type="value"/>
+
+    <field name="statusId" type="id"/>
+    <field name="isActive" type="indicator"/>
+
+    <prim-key field="bankTransferConfigId"/>
+
+    <relation type="one" rel-entity-name="PayrollOrganization" fk-name="BTCFG_ORG" title="Org">
+        <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="BTCFG_STAT" title="Status">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+
+    <!-- FIXED: file format is Enumeration -->
+    <relation type="one" rel-entity-name="Enumeration" fk-name="BTCFG_FMT" title="FileFormat">
+        <key-map field-name="fileFormatEnumId" rel-field-name="enumId"/>
+    </relation>
+</entity>
+
+<entity entity-name="BankTransferBatch" package-name="org.apache.ofbiz.payroll" title="Bank Transfer Batch">
+    <field name="bankTransferBatchId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+    <field name="payrollRunId" type="id"/>
+    <field name="bankTransferConfigId" type="id"/>
+
+    <!-- payer account (company account used to pay out) -->
+    <field name="disbursementFinAccountId" type="id"/>
+
+    <field name="totalAmount" type="currency-amount"/>
+    <field name="currencyUomId" type="id"/>
+    <field name="totalRecords" type="numeric"/>
+
+    <field name="generatedExportFileId" type="id"/>
+    <field name="generatedDate" type="date-time"/>
+
+    <!-- NEW: lifecycle after upload -->
+    <field name="statusId" type="id"/>                <!-- BTCH_NEW/BTCH_GEN/BTCH_SENT/BTCH_CONF/BTCH_REJ/BTCH_VOID -->
+    <field name="batchVersion" type="numeric"/>
+    <field name="fileHash" type="very-long"/>
+    <field name="externalReferenceId" type="id"/>     <!-- bank portal reference or API reference -->
+    <field name="sentDate" type="date-time"/>
+    <field name="confirmedDate" type="date-time"/>
+
+    <!-- optional governance -->
+    <field name="createdByUserLoginId" type="id"/>
+    <field name="createdDate" type="date-time"/>
+
+    <prim-key field="bankTransferBatchId"/>
+
+    <relation type="one" rel-entity-name="PayrollOrganization" fk-name="BTB_ORG" title="Org">
+        <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PayrollRun" fk-name="BTB_RUN" title="Run">
+        <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="BankTransferConfig" fk-name="BTB_CFG" title="Config">
+        <key-map field-name="bankTransferConfigId" rel-field-name="bankTransferConfigId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PayrollExportFile" fk-name="BTB_FILE" title="GeneratedFile">
+        <key-map field-name="generatedExportFileId" rel-field-name="exportFileId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Uom" fk-name="BTB_CURR" title="Currency">
+        <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="BTB_STAT" title="Status">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="FinAccount" fk-name="BTB_PAYACCT" title="DisbursementAccount">
+        <key-map field-name="disbursementFinAccountId" rel-field-name="finAccountId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="BTB_CRBY" title="CreatedBy">
+        <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+</entity>
+
+<entity entity-name="BankTransferBatchLine" package-name="org.apache.ofbiz.payroll" title="Bank Transfer Batch Line">
+    <field name="bankTransferBatchLineId" type="id"/>
+    <field name="bankTransferBatchId" type="id"/>
+
+    <!-- source payroll result -->
+    <field name="payrollResultId" type="id"/>
+
+    <!-- employee -->
+    <field name="partyId" type="id"/>
+
+    <!-- receiving instrument used (OFBiz parent) -->
+    <field name="paymentMethodId" type="id"/>
+
+    <!-- optional: which allocation created this line -->
+    <field name="paymentAllocationId" type="id"/>
+
+    <field name="amount" type="currency-amount"/>
+    <field name="currencyUomId" type="id"/>
+
+    <!-- snapshots for audit/export (keep encrypted) -->
+    <field name="beneficiaryName" type="name"/>
+    <field name="iban" type="very-long" encrypt="true"/>
+    <field name="bankAccountNumber" type="very-long" encrypt="true"/>
+    <field name="bankName" type="name"/>
+    <field name="bankCode" type="short-varchar"/>
+
+    <!-- lifecycle -->
+    <field name="statusId" type="id"/>               <!-- LINE_NEW/LINE_SENT/LINE_CONF/LINE_FAIL -->
+    <field name="sequenceNum" type="numeric"/>
+
+    <!-- NEW: response/audit -->
+    <field name="externalLineRef" type="id"/>
+    <field name="failureReason" type="very-long"/>
+    <field name="sentStamp" type="date-time"/>
+    <field name="confirmedStamp" type="date-time"/>
+
+    <prim-key field="bankTransferBatchLineId"/>
+
+    <relation type="one" rel-entity-name="BankTransferBatch" fk-name="BTBL_BATCH" title="Batch">
+        <key-map field-name="bankTransferBatchId" rel-field-name="bankTransferBatchId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="EmployeePayrollResult" fk-name="BTBL_RES" title="Result">
+        <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Party" fk-name="BTBL_PARTY" title="Employee">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PaymentMethod" fk-name="BTBL_PM" title="PaymentMethod">
+        <key-map field-name="paymentMethodId" rel-field-name="paymentMethodId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="EmployeePaymentAllocation" fk-name="BTBL_ALLOC" title="Allocation">
+        <key-map field-name="paymentAllocationId" rel-field-name="paymentAllocationId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Uom" fk-name="BTBL_CURR" title="Currency">
+        <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="BTBL_STAT" title="Status">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+</entity>
+
+
+<entity entity-name="EmployeePaymentAllocation" package-name="org.apache.ofbiz.payroll" title="Employee Payment Allocation">
+    <field name="paymentAllocationId" type="id"/>
+
+    <field name="partyId" type="id"/>
+
+    <!-- NEW: disbursement channel target (BANK_FILE/CASH/CHEQUE/WPS_FILE/CARD_FILE/WALLET_FILE/BANK_API) -->
+    <field name="disbursementChannelId" type="id"/>
+
+    <!-- destination instrument (OFBiz PaymentMethod) -->
+    <field name="paymentMethodId" type="id"/>
+
+    <!-- optional: destination account reference (recommended if you model bank accounts as FinAccount) -->
+    <field name="finAccountId" type="id"/>
+
+    <!-- optional: destination snapshots for export/audit (use if you don't have normalized account entity) -->
+    <field name="iban" type="very-long" encrypt="true"/>
+    <field name="accountNumber" type="very-long" encrypt="true"/>
+    <field name="bankName" type="name"/>
+    <field name="bankCode" type="short-varchar"/>
+
+    <!-- how to allocate: PERCENT / FIXED / REMAINDER -->
+    <field name="allocationTypeEnumId" type="id"/>
+
+    <!-- value meaning depends on allocation type:
+         - PERCENT: 0..100
+         - FIXED: amount in currencyUomId
+         - REMAINDER: null/0
+    -->
+    <field name="allocationValue" type="floating-point"/>
+    <field name="currencyUomId" type="id"/>
+
+    <!-- priority order for deterministic splits -->
+    <field name="prioritySeq" type="numeric"/>
+
+    <!-- effective dating -->
+    <field name="fromDate" type="date-time"/>
+    <field name="thruDate" type="date-time"/>
+
+    <field name="statusId" type="id"/>
+    <field name="isDefaultRemainder" type="indicator"/>
+
+    <!-- governance/audit -->
+    <field name="createdByUserLoginId" type="id"/>
+    <field name="createdDate" type="date-time"/>
+    <field name="lastUpdatedByUserLoginId" type="id"/>
+    <field name="lastUpdatedDate" type="date-time"/>
+
+    <prim-key field="paymentAllocationId"/>
+
+    <relation type="one" rel-entity-name="Party" fk-name="EPAL_PARTY" title="Employee">
+        <key-map field-name="partyId" rel-field-name="partyId"/>
+    </relation>
+
+    <!-- Optional: Channel master relation when you add PayrollDisbursementChannel -->
+    <!--
+    <relation type="one" rel-entity-name="PayrollDisbursementChannel" fk-name="EPAL_CH" title="DisbursementChannel">
+        <key-map field-name="disbursementChannelId" rel-field-name="channelId"/>
+    </relation>
+    -->
+
+    <relation type="one" rel-entity-name="PaymentMethod" fk-name="EPAL_PM" title="PaymentMethod">
+        <key-map field-name="paymentMethodId" rel-field-name="paymentMethodId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="FinAccount" fk-name="EPAL_FINACCT" title="FinAccount">
+        <key-map field-name="finAccountId" rel-field-name="finAccountId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Enumeration" fk-name="EPAL_ATYPE" title="AllocationType">
+        <key-map field-name="allocationTypeEnumId" rel-field-name="enumId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="Uom" fk-name="EPAL_CURR" title="Currency">
+        <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="StatusItem" fk-name="EPAL_STAT" title="Status">
+        <key-map field-name="statusId" rel-field-name="statusId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="EPAL_CRBY" title="CreatedBy">
+        <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="EPAL_UPBY" title="LastUpdatedBy">
+        <key-map field-name="lastUpdatedByUserLoginId" rel-field-name="userLoginId"/>
+    </relation>
+</entity>
+
+
+
+    <!-- ========================================================= -->
+    <!-- 13) COMMUNICATION QUEUES -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="PayrollEmailQueue" package-name="org.apache.ofbiz.payroll" title="Payroll Email Queue">
+        <field name="emailQueueId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollRunId" type="id"/>
+        <field name="payrollResultId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="toAddress" type="value"/>
+        <field name="ccAddress" type="value"/>
+        <field name="bccAddress" type="value"/>
+        <field name="subject" type="description"/>
+        <field name="content" type="long-varchar"/>
+        <field name="attachmentExportFileId" type="id"/>
+        <field name="payslipAccessTokenId" type="id"/>
+        <field name="statusId" type="id"/>
+        <field name="attemptCount" type="numeric"/>
+        <field name="createdDate" type="date-time"/>
+        <field name="lastAttemptDate" type="date-time"/>
+        <field name="sentDate" type="date-time"/>
+        <field name="errorMessage" type="long-varchar"/>
+
+        <prim-key field="emailQueueId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="EMQ_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollRun" fk-name="EMQ_RUN" title="Run">
+            <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="EmployeePayrollResult" fk-name="EMQ_RES" title="Result">
+            <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="EMQ_PARTY" title="Party">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollExportFile" fk-name="EMQ_FILE" title="AttachmentFile">
+            <key-map field-name="attachmentExportFileId" rel-field-name="exportFileId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayslipAccessToken" fk-name="EMQ_TOK" title="PayslipToken">
+            <key-map field-name="payslipAccessTokenId" rel-field-name="payslipAccessTokenId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="EMQ_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollSmsQueue" package-name="org.apache.ofbiz.payroll" title="Payroll SMS Queue">
+        <field name="smsQueueId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollRunId" type="id"/>
+        <field name="payrollResultId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="toNumber" type="value"/>
+        <field name="messageText" type="long-varchar"/>
+        <field name="statusId" type="id"/>
+        <field name="attemptCount" type="numeric"/>
+        <field name="createdDate" type="date-time"/>
+        <field name="lastAttemptDate" type="date-time"/>
+        <field name="sentDate" type="date-time"/>
+        <field name="providerMessageId" type="value"/>
+        <field name="errorMessage" type="long-varchar"/>
+
+        <prim-key field="smsQueueId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="SMSQ_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollRun" fk-name="SMSQ_RUN" title="Run">
+            <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="EmployeePayrollResult" fk-name="SMSQ_RES" title="Result">
+            <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="SMSQ_PARTY" title="Party">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="SMSQ_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- 14) AUDIT & COMPLIANCE -->
+    <!-- ========================================================= -->
+
+    <entity entity-name="PayrollAuditLog" package-name="org.apache.ofbiz.payroll" title="Payroll Audit Log">
+        <field name="payrollAuditLogId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="entityName" type="short-varchar"/>
+        <field name="recordId" type="id"/>
+        <field name="actionTypeId" type="id"/>
+        <field name="oldValuesJson" type="long-varchar"/>
+        <field name="newValuesJson" type="long-varchar"/>
+        <field name="changedByUserLoginId" type="id"/>
+        <field name="changedDate" type="date-time"/>
+        <field name="ipAddress" type="value"/>
+
+        <prim-key field="payrollAuditLogId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="AUD_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="AUD_USER" title="ChangedBy">
+            <key-map field-name="changedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="AUD_ACTION" title="ActionType">
+            <key-map field-name="actionTypeId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+ <entity entity-name="PayrollAuditEvent"
+        package-name="org.apache.ofbiz.payroll"
+        title="Payroll Audit Event">
+
+    <!-- ========================================================= -->
+    <!-- Primary / business fields -->
+    <!-- ========================================================= -->
+    <field name="payrollAuditEventId" type="id"/>
+    <field name="organizationPartyId" type="id"/>
+
+    <!-- StatusItem FK (StatusItem PK is usually: statusId + statusTypeId) -->
+    <field name="eventTypeId" type="id"/>
+    <field name="eventTypeStatusTypeId" type="id"/> <!-- REQUIRED for composite FK -->
+
+    <field name="entityName" type="short-varchar"/>
+    <field name="recordId" type="id"/>
+    <field name="oldValue" type="long-varchar"/>
+    <field name="newValue" type="long-varchar"/>
+    <field name="eventDate" type="date-time"/>
+    <field name="userLoginId" type="id"/>
+    <field name="sourceIp" type="long-varchar"/>
+
+    <field name="payrollRunId" type="id"/>
+    <!-- optional -->
+    <field name="payrollPeriodId" type="id"/>
+
+    <!-- ========================================================= -->
+    <!-- PK -->
+    <!-- ========================================================= -->
+    <prim-key field="payrollAuditEventId"/>
+
+    <!-- ========================================================= -->
+    <!-- Relations -->
+    <!-- ========================================================= -->
+
+    <relation type="one" rel-entity-name="PayrollOrganization" fk-name="PAEV_ORG" title="Org">
+        <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="UserLogin" fk-name="PAEV_USER" title="UserLogin">
+        <key-map field-name="userLoginId" rel-field-name="userLoginId"/>
+    </relation>
+
+    <!-- FIXED: composite FK to StatusItem -->
+    <relation type="one" rel-entity-name="StatusItem" fk-name="PAEV_TYPE" title="EventType">
+        <key-map field-name="eventTypeId" rel-field-name="statusId"/>
+        <key-map field-name="eventTypeStatusTypeId" rel-field-name="statusTypeId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PayrollRun" fk-name="PAEV_RUN" title="PayrollRun">
+        <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+    </relation>
+
+    <relation type="one" rel-entity-name="PayrollPeriod" fk-name="PAEV_PER" title="PayrollPeriod">
+        <key-map field-name="payrollPeriodId" rel-field-name="payrollPeriodId"/>
+    </relation>
+
+</entity>
+
+    <entity entity-name="PayrollComplianceReport" package-name="org.apache.ofbiz.payroll" title="Payroll Compliance Report">
+        <field name="payrollComplianceReportId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="reportTypeId" type="id"/>
+        <field name="periodYear" type="numeric"/>
+        <field name="periodMonth" type="numeric"/>
+        <field name="generatedDate" type="date-time"/>
+        <field name="generatedByUserLoginId" type="id"/>
+        <field name="statusId" type="id"/>
+        <field name="filePath" type="long-varchar"/>
+
+        <prim-key field="payrollComplianceReportId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="PCREP_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="PCREP_BY" title="GeneratedBy">
+            <key-map field-name="generatedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PCREP_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PCREP_TYPE" title="ReportType">
+            <key-map field-name="reportTypeId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollComplianceReportLine" package-name="org.apache.ofbiz.payroll" title="Payroll Compliance Report Line">
+        <field name="payrollComplianceReportLineId" type="id"/>
+        <field name="payrollComplianceReportId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="metricTypeId" type="id"/>
+        <field name="amount" type="currency-amount"/>
+
+        <prim-key field="payrollComplianceReportLineId"/>
+
+        <relation type="one" rel-entity-name="PayrollComplianceReport" fk-name="PAY_COMP_LINE_REP" title="Report">
+            <key-map field-name="payrollComplianceReportId" rel-field-name="payrollComplianceReportId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="PAY_COMP_LINE_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PAY_COMP_LINE_MET" title="MetricType">
+            <key-map field-name="metricTypeId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+</entitymodel>
+

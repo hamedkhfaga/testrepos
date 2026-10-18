@@ -1,0 +1,18 @@
+{
+  "phase": "Phase 13D",
+  "title": "Repayment financials split flag",
+  "changedFiles": [
+    "LoanServices.java",
+    "services.xml"
+  ],
+  "includedUnchanged": [
+    "LoanAccountingServices.java"
+  ],
+  "changes": [
+    "recordUnifiedLoanRepaymentFinancialFirstV1 resolves repaymentMethodEnumId from LoanRepaymentMethodConfig if paymentMethodTypeId/paymentMethodId are omitted",
+    "added skipAccounting input flag",
+    "when skipAccounting=Y, service creates repayment/payment/invoice/payment application only",
+    "when skipAccounting=Y, service returns nextAction CALL_ORCHESTRATE_LOAN_REPAYMENT_ACCOUNTING",
+    "when skipAccounting=Y, runReconciliation is forced to N to avoid premature reconciliation"
+  ]
+}

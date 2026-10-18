@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to the Apache Software Foundation (ASF) under the Apache License, Version 2.0. -->
+<entity-engine-xml>
+    <AsseterpOrgConfig partyId="Company" currencyUomId="USD" defaultLocaleString="en"
+            defaultFixedAssetTypeId="ASSET_OTHER" isActive="Y"
+            createdDate="2001-05-13 12:00:00.0" createdByUserLogin="system"/>
+</entity-engine-xml>

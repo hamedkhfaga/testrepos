@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+
+    <service name="runMonthlyPayroll"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollSchedulerServices"
+             invoke="runMonthlyPayroll"
+             auth="true">
+        <description>Monthly automatic payroll run</description>
+    </service>
+
+</services>

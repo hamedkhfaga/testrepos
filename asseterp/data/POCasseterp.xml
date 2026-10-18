@@ -1,0 +1,462 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    POCasseterp.xml - Full Asset ERP Proof-of-Concept Dataset
+    Load: place in plugins/asseterp/data/ and run gradlew ofbiz with load-data readers=ext
+    Parties used: DemoEmployee, DemoCustomer, admin (must exist in demo data)
+    Currency: USD throughout
+    Acquisitions from 2022-01-01; 3 years of annual depreciation history (2022-2024)
+    GL accounts: new asseterp-prefixed accounts (no conflict with OFBiz demo chart)
+-->
+<entity-engine-xml>
+
+    <!-- ================================================================
+         SECTION 1: GL ACCOUNTS (asseterp-prefixed, no conflict)
+         ================================================================ -->
+
+    <!-- Asset Cost (typeId=FIXED_ASSET, classId=LONGTERM_ASSET) -->
+    <GlAccount glAccountId="ASSETERP-141000" glAccountTypeId="FIXED_ASSET" glAccountClassId="LONGTERM_ASSET" accountCode="141000" accountName="IT Hardware - Cost"          description="IT Hardware and Computer Equipment - Cost"/>
+    <GlAccount glAccountId="ASSETERP-141100" glAccountTypeId="FIXED_ASSET" glAccountClassId="LONGTERM_ASSET" accountCode="141100" accountName="Software Licenses - Cost"     description="Software and Digital Assets - Cost"/>
+    <GlAccount glAccountId="ASSETERP-141200" glAccountTypeId="FIXED_ASSET" glAccountClassId="LONGTERM_ASSET" accountCode="141200" accountName="Fleet and Vehicles - Cost"     description="Fleet and Vehicles - Cost"/>
+    <GlAccount glAccountId="ASSETERP-141300" glAccountTypeId="FIXED_ASSET" glAccountClassId="LONGTERM_ASSET" accountCode="141300" accountName="Plant and Machinery - Cost"    description="Plant and Production Equipment - Cost"/>
+    <GlAccount glAccountId="ASSETERP-141400" glAccountTypeId="FIXED_ASSET" glAccountClassId="LONGTERM_ASSET" accountCode="141400" accountName="Furniture and Fixtures - Cost" description="Furniture and Fixtures - Cost"/>
+    <GlAccount glAccountId="ASSETERP-145000" glAccountTypeId="FIXED_ASSET" glAccountClassId="LONGTERM_ASSET" accountCode="145000" accountName="Construction in Progress"      description="Assets Under Construction - CIP"/>
+
+    <!-- Accumulated Depreciation (typeId=FIXED_ASSET, classId=ACCUM_DEPRECIATION) -->
+    <GlAccount glAccountId="ASSETERP-142000" glAccountTypeId="FIXED_ASSET" glAccountClassId="ACCUM_DEPRECIATION" accountCode="142000" accountName="IT Hardware - Accum Depr"  description="Accumulated Depreciation - IT Hardware"/>
+    <GlAccount glAccountId="ASSETERP-142100" glAccountTypeId="FIXED_ASSET" glAccountClassId="ACCUM_DEPRECIATION" accountCode="142100" accountName="Software - Accum Depr"     description="Accumulated Depreciation - Software"/>
+    <GlAccount glAccountId="ASSETERP-142200" glAccountTypeId="FIXED_ASSET" glAccountClassId="ACCUM_DEPRECIATION" accountCode="142200" accountName="Vehicles - Accum Depr"     description="Accumulated Depreciation - Vehicles"/>
+    <GlAccount glAccountId="ASSETERP-142300" glAccountTypeId="FIXED_ASSET" glAccountClassId="ACCUM_DEPRECIATION" accountCode="142300" accountName="Machinery - Accum Depr"    description="Accumulated Depreciation - Machinery"/>
+    <GlAccount glAccountId="ASSETERP-142400" glAccountTypeId="FIXED_ASSET" glAccountClassId="ACCUM_DEPRECIATION" accountCode="142400" accountName="Furniture - Accum Depr"    description="Accumulated Depreciation - Furniture"/>
+
+    <!-- Depreciation Expense (typeId=EXPENSE, classId=DEPRECIATION) -->
+    <GlAccount glAccountId="ASSETERP-741000" glAccountTypeId="EXPENSE" glAccountClassId="DEPRECIATION" accountCode="741000" accountName="Depr Expense - IT Hardware" description="Depreciation Expense - IT Hardware"/>
+    <GlAccount glAccountId="ASSETERP-741100" glAccountTypeId="EXPENSE" glAccountClassId="DEPRECIATION" accountCode="741100" accountName="Depr Expense - Software"   description="Depreciation Expense - Software"/>
+    <GlAccount glAccountId="ASSETERP-741200" glAccountTypeId="EXPENSE" glAccountClassId="DEPRECIATION" accountCode="741200" accountName="Depr Expense - Vehicles"   description="Depreciation Expense - Vehicles"/>
+    <GlAccount glAccountId="ASSETERP-741300" glAccountTypeId="EXPENSE" glAccountClassId="DEPRECIATION" accountCode="741300" accountName="Depr Expense - Machinery"  description="Depreciation Expense - Machinery"/>
+    <GlAccount glAccountId="ASSETERP-741400" glAccountTypeId="EXPENSE" glAccountClassId="DEPRECIATION" accountCode="741400" accountName="Depr Expense - Furniture"  description="Depreciation Expense - Furniture"/>
+
+    <!-- Disposal (gain=OTHER_INCOME/INCOME, loss=OTHER_EXPENSE/EXPENSE) -->
+    <GlAccount glAccountId="ASSETERP-881000" glAccountTypeId="OTHER_INCOME"  glAccountClassId="INCOME"   accountCode="881000" accountName="Gain on Asset Disposal" description="Gain on Disposal of Fixed Assets"/>
+    <GlAccount glAccountId="ASSETERP-882000" glAccountTypeId="OTHER_EXPENSE" glAccountClassId="EXPENSE"  accountCode="882000" accountName="Loss on Asset Disposal" description="Loss on Disposal of Fixed Assets"/>
+
+    <!-- Organization assignments MUST precede the AcctgTransEntry rows below:
+         ACCTG_TRANS_ENTRY carries an FK to GL_ACCOUNT_ORGANIZATION
+         (glAccountId, organizationPartyId). Duplicated in POCGlAccountOrg.xml,
+         which is harmless under create-update load semantics. -->
+    <GlAccountOrganization glAccountId="ASSETERP-141000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141100" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141200" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141300" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-141400" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142100" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142200" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142300" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-142400" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-145000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741100" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741200" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741300" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-741400" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-881000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+    <GlAccountOrganization glAccountId="ASSETERP-882000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+
+    <!-- Opening-balance equity counter-account for the asset import journal -->
+    <GlAccount glAccountId="ASSETERP-390000" glAccountTypeId="OWNERS_EQUITY" glAccountClassId="OWNERS_EQUITY" accountCode="390000" accountName="Asset Opening Balance Equity" description="Equity offset for legacy asset import opening balances"/>
+    <GlAccountOrganization glAccountId="ASSETERP-390000" organizationPartyId="Company" fromDate="2022-01-01 00:00:00.0"/>
+
+    <!-- Opening acquisition journal: without it every disposal credit (e.g.
+         AT-DISP-VH004 removing VH-004 cost 28,000) leaves the 141xxx cost
+         accounts NEGATIVE on the balance sheet. Debits = per-category sums of
+         the 25 demo assets' purchaseCost; credit = opening balance equity. -->
+    <AcctgTrans acctgTransId="AT-OPEN-ASSETS" acctgTransTypeId="INTERNAL_ACCTG_TRANS" glFiscalTypeId="ACTUAL" transactionDate="2022-01-01 00:00:00.0" postedDate="2022-01-01 09:00:00.0" isPosted="Y" description="Legacy asset import — opening cost balances (25 assets)" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-OPEN-ASSETS" acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-141000" debitCreditFlag="D" amount="85000.00"  currencyUomId="USD" description="Opening cost — IT Hardware"/>
+    <AcctgTransEntry acctgTransId="AT-OPEN-ASSETS" acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-141100" debitCreditFlag="D" amount="61500.00"  currencyUomId="USD" description="Opening cost — Software"/>
+    <AcctgTransEntry acctgTransId="AT-OPEN-ASSETS" acctgTransEntrySeqId="03" organizationPartyId="Company" glAccountId="ASSETERP-141200" debitCreditFlag="D" amount="173000.00" currencyUomId="USD" description="Opening cost — Fleet and Vehicles"/>
+    <AcctgTransEntry acctgTransId="AT-OPEN-ASSETS" acctgTransEntrySeqId="04" organizationPartyId="Company" glAccountId="ASSETERP-141300" debitCreditFlag="D" amount="180000.00" currencyUomId="USD" description="Opening cost — Plant and Machinery"/>
+    <AcctgTransEntry acctgTransId="AT-OPEN-ASSETS" acctgTransEntrySeqId="05" organizationPartyId="Company" glAccountId="ASSETERP-141400" debitCreditFlag="D" amount="42500.00"  currencyUomId="USD" description="Opening cost — Furniture and Fixtures"/>
+    <AcctgTransEntry acctgTransId="AT-OPEN-ASSETS" acctgTransEntrySeqId="06" organizationPartyId="Company" glAccountId="ASSETERP-390000" debitCreditFlag="C" amount="542000.00" currencyUomId="USD" description="Opening balance equity — asset import"/>
+
+    <!-- ================================================================
+         SECTION 2: ORG CONFIG (Company pointed to new GL accounts)
+         ================================================================ -->
+    <AsseterpOrgConfig partyId="Company" currencyUomId="USD" defaultLocaleString="en"
+            defaultFixedAssetTypeId="ASSET_IT_HW" capitalizationThreshold="1000.00"
+            fiscalYearStartMonth="1" defaultDepreciationMethodId="DEP_SL"
+            assetCostGlAccountId="ASSETERP-141000"
+            accumDepGlAccountId="ASSETERP-142000"
+            depExpenseGlAccountId="ASSETERP-741000"
+            gainOnDisposalGlAccountId="ASSETERP-881000"
+            lossOnDisposalGlAccountId="ASSETERP-882000"
+            cipGlAccountId="ASSETERP-145000"
+            isActive="Y"
+            createdDate="2022-01-01 08:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- ================================================================
+         SECTION 3: TYPE DATA RELOAD (Enumerations + Status + Types)
+         In case AsseterpTypeData.xml was not loaded or types changed.
+         ================================================================ -->
+
+    <StatusType statusTypeId="ASSET_ERP_STATUS" description="Asset ERP Lifecycle Status"/>
+    <StatusItem statusId="ASSET_REQUESTED"   statusTypeId="ASSET_ERP_STATUS" statusCode="REQUESTED"     sequenceId="01" description="Asset Requested"/>
+    <StatusItem statusId="ASSET_APPROVED"    statusTypeId="ASSET_ERP_STATUS" statusCode="APPROVED"      sequenceId="02" description="Asset Approved"/>
+    <StatusItem statusId="ASSET_REGISTERED"  statusTypeId="ASSET_ERP_STATUS" statusCode="REGISTERED"    sequenceId="06" description="Asset Registered"/>
+    <StatusItem statusId="ASSET_ACTIVE"      statusTypeId="ASSET_ERP_STATUS" statusCode="ACTIVE"        sequenceId="08" description="Asset Active"/>
+    <StatusItem statusId="ASSET_ASSIGNED"    statusTypeId="ASSET_ERP_STATUS" statusCode="ASSIGNED"      sequenceId="09" description="Asset Assigned"/>
+    <StatusItem statusId="ASSET_IN_MAINT"    statusTypeId="ASSET_ERP_STATUS" statusCode="IN_MAINT"      sequenceId="11" description="Asset In Maintenance"/>
+    <StatusItem statusId="ASSET_RETIRED"     statusTypeId="ASSET_ERP_STATUS" statusCode="RETIRED"       sequenceId="17" description="Asset Retired"/>
+    <StatusItem statusId="ASSET_SOLD"        statusTypeId="ASSET_ERP_STATUS" statusCode="SOLD"          sequenceId="16" description="Asset Sold"/>
+
+    <FixedAssetType fixedAssetTypeId="ASSET_IT_HW"     description="IT Hardware"                    hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_SOFTWARE"  description="Software and Digital Assets"    hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_VEHICLE"   description="Fleet and Vehicles"             hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_MACHINERY" description="Plant and Production Equipment" hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_FURNITURE" description="Furniture and Fixtures"         hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_BUILDING"  description="Buildings and Real Estate"      hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_LAND"      description="Land"                           hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_OFF_EQUIP" description="Office Equipment"               hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_TOOLS"     description="Tools and Small Equipment"      hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_CIP"       description="Construction in Progress"       hasTable="N"/>
+    <FixedAssetType fixedAssetTypeId="ASSET_OTHER"     description="Other Enterprise Assets"        hasTable="N"/>
+
+    <RoleType roleTypeId="ASSET_CUSTODIAN" parentTypeId="EMPLOYEE" hasTable="N" description="Asset Custodian"/>
+    <RoleType roleTypeId="ASSET_APPROVER"  parentTypeId="MANAGER"  hasTable="N" description="Asset Approver"/>
+
+    <EnumerationType enumTypeId="AE_EVENT_TYPE"   description="Asset ERP Lifecycle Event Type"/>
+    <Enumeration enumId="AEVT_REGISTERED"  enumTypeId="AE_EVENT_TYPE" sequenceId="07" description="Asset registered in fixed asset register"/>
+    <Enumeration enumId="AEVT_CAPITALIZED" enumTypeId="AE_EVENT_TYPE" sequenceId="08" description="Asset capitalized from CIP"/>
+    <Enumeration enumId="AEVT_ASSIGNED"    enumTypeId="AE_EVENT_TYPE" sequenceId="09" description="Asset custody assigned"/>
+    <Enumeration enumId="AEVT_TRANSFERRED" enumTypeId="AE_EVENT_TYPE" sequenceId="10" description="Asset custody transferred"/>
+    <Enumeration enumId="AEVT_MAINT_CREATED"   enumTypeId="AE_EVENT_TYPE" sequenceId="11" description="Maintenance work order created"/>
+    <Enumeration enumId="AEVT_MAINT_COMPLETED" enumTypeId="AE_EVENT_TYPE" sequenceId="12" description="Maintenance work order completed"/>
+    <Enumeration enumId="AEVT_DEP_POSTED"  enumTypeId="AE_EVENT_TYPE" sequenceId="15" description="Depreciation posted to GL"/>
+    <Enumeration enumId="AEVT_DEP_RUN"     enumTypeId="AE_EVENT_TYPE" sequenceId="16" description="Batch depreciation run completed"/>
+    <Enumeration enumId="AEVT_BOOK_CREATED" enumTypeId="AE_EVENT_TYPE" sequenceId="17" description="Depreciation book created"/>
+    <Enumeration enumId="AEVT_REVALUED"    enumTypeId="AE_EVENT_TYPE" sequenceId="19" description="Asset revalued (IAS 16)"/>
+    <Enumeration enumId="AEVT_SOLD"        enumTypeId="AE_EVENT_TYPE" sequenceId="26" description="Asset sold"/>
+    <Enumeration enumId="AEVT_RETIRED"     enumTypeId="AE_EVENT_TYPE" sequenceId="24" description="Asset retired from service"/>
+    <Enumeration enumId="AEVT_SCRAPPED"    enumTypeId="AE_EVENT_TYPE" sequenceId="25" description="Asset scrapped"/>
+
+    <EnumerationType enumTypeId="AE_DEP_METHOD" description="Asset ERP Depreciation Method"/>
+    <Enumeration enumId="DEP_SL"   enumTypeId="AE_DEP_METHOD" sequenceId="01" description="Straight Line"/>
+    <Enumeration enumId="DEP_DDB"  enumTypeId="AE_DEP_METHOD" sequenceId="02" description="Double Declining Balance"/>
+    <Enumeration enumId="DEP_SYD"  enumTypeId="AE_DEP_METHOD" sequenceId="03" description="Sum of Years Digits"/>
+    <Enumeration enumId="DEP_UOP"  enumTypeId="AE_DEP_METHOD" sequenceId="04" description="Units of Production"/>
+    <Enumeration enumId="DEP_RB"   enumTypeId="AE_DEP_METHOD" sequenceId="05" description="Reducing Balance"/>
+    <Enumeration enumId="DEP_NONE" enumTypeId="AE_DEP_METHOD" sequenceId="06" description="Non-Depreciable (Land)"/>
+
+    <EnumerationType enumTypeId="AE_BOOK_TYPE" description="Asset ERP Depreciation Book Type"/>
+    <Enumeration enumId="BOOK_GAAP" enumTypeId="AE_BOOK_TYPE" sequenceId="01" description="GAAP / Local Statutory Book"/>
+    <Enumeration enumId="BOOK_TAX"  enumTypeId="AE_BOOK_TYPE" sequenceId="02" description="Tax Book"/>
+    <Enumeration enumId="BOOK_IFRS" enumTypeId="AE_BOOK_TYPE" sequenceId="03" description="IFRS / Management Book"/>
+
+    <!-- ================================================================
+         SECTION 4: FIXED ASSETS — 25 assets across 5 categories
+         Depreciation formulas used:
+           IT HW   (ASSET_IT_HW):    SL 5yr, 10% salvage
+           Software (ASSET_SOFTWARE): SL 3yr, 0% salvage
+           Vehicles (ASSET_VEHICLE):  DDB 5yr, 10% salvage (floor)
+           Machinery (ASSET_MACHINERY): SL 10yr, 5% salvage
+           Furniture (ASSET_FURNITURE): SL 10yr, 5% salvage
+         accumulatedDepreciation shown as of 2024-12-31 (3 full years)
+         ================================================================ -->
+
+    <!-- IT Hardware: SL 5yr, 10% salvage, annual dep = (cost*0.9)/5 -->
+    <!-- After 3 years: accum = dep*3, NBV = cost - accum -->
+    <FixedAsset fixedAssetId="ASSET-IT-001" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="Dell PowerEdge R750 Server"       statusId="ASSET_ACTIVE"   dateAcquired="2022-01-15 00:00:00.0" purchaseCost="12000.00" salvageValue="1200.00"  currencyUomId="USD" serialNumber="SRV-PE-2201" locatedAtFacilityId="WebStoreWarehouse" description="Primary application server - 2-socket 24-core"/>
+    <FixedAsset fixedAssetId="ASSET-IT-002" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="Cisco Catalyst 9300 Switch"        statusId="ASSET_ACTIVE"   dateAcquired="2022-02-01 00:00:00.0" purchaseCost="4500.00"  salvageValue="450.00"   currencyUomId="USD" serialNumber="SW-C9300-2202" locatedAtFacilityId="WebStoreWarehouse" description="48-port PoE+ core switch"/>
+    <FixedAsset fixedAssetId="ASSET-IT-003" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="HP ProBook 450 G9 Laptops x10"    statusId="ASSET_ACTIVE"   dateAcquired="2022-03-01 00:00:00.0" purchaseCost="15000.00" salvageValue="1500.00"  currencyUomId="USD" serialNumber="BATCH-HPB-2203"  locatedAtFacilityId="WebStoreWarehouse" description="Staff laptop batch — 10 units"/>
+    <FixedAsset fixedAssetId="ASSET-IT-004" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="Lenovo ThinkPad X1 Carbon"         statusId="ASSET_ASSIGNED" dateAcquired="2022-04-01 00:00:00.0" purchaseCost="1800.00"  salvageValue="180.00"   currencyUomId="USD" serialNumber="TPX1-2204-001" locatedAtFacilityId="WebStoreWarehouse" description="Executive laptop"/>
+    <FixedAsset fixedAssetId="ASSET-IT-005" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="APC Smart-UPS 3000VA"              statusId="ASSET_ACTIVE"   dateAcquired="2022-05-15 00:00:00.0" purchaseCost="3200.00"  salvageValue="320.00"   currencyUomId="USD" serialNumber="UPS-APC-2205" locatedAtFacilityId="WebStoreWarehouse" description="Server room UPS — 3000VA rack mount"/>
+    <FixedAsset fixedAssetId="ASSET-IT-006" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="NetApp AFF A250 SAN Storage"       statusId="ASSET_ACTIVE"   dateAcquired="2022-06-01 00:00:00.0" purchaseCost="28000.00" salvageValue="2800.00"  currencyUomId="USD" serialNumber="SAN-NTAP-2206" locatedAtFacilityId="WebStoreWarehouse" description="All-flash SAN storage array 96TB raw"/>
+    <FixedAsset fixedAssetId="ASSET-IT-007" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="Poly Studio X70 Video Conf System" statusId="ASSET_ACTIVE"   dateAcquired="2022-07-01 00:00:00.0" purchaseCost="5500.00"  salvageValue="550.00"   currencyUomId="USD" serialNumber="VC-POLY-2207" locatedAtFacilityId="WebStoreWarehouse" description="Boardroom video conferencing system"/>
+    <FixedAsset fixedAssetId="ASSET-IT-008" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="Fortinet FortiGate 200F Firewall"  statusId="ASSET_ACTIVE"   dateAcquired="2022-08-01 00:00:00.0" purchaseCost="8000.00"  salvageValue="800.00"   currencyUomId="USD" serialNumber="FW-FTN-2208"  locatedAtFacilityId="WebStoreWarehouse" description="Next-gen firewall — 27Gbps throughput"/>
+    <FixedAsset fixedAssetId="ASSET-IT-009" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="HP LaserJet MFP M776 Printer"      statusId="ASSET_ACTIVE"   dateAcquired="2022-09-01 00:00:00.0" purchaseCost="2200.00"  salvageValue="220.00"   currencyUomId="USD" serialNumber="MFP-HP-2209"  locatedAtFacilityId="WebStoreWarehouse" description="Color multifunction laser printer"/>
+    <FixedAsset fixedAssetId="ASSET-IT-010" fixedAssetTypeId="ASSET_IT_HW"    fixedAssetName="Ubiquiti UniFi AP AC Pro x12"      statusId="ASSET_ACTIVE"   dateAcquired="2022-10-01 00:00:00.0" purchaseCost="4800.00"  salvageValue="480.00"   currencyUomId="USD" serialNumber="BATCH-UAP-2210"  locatedAtFacilityId="WebStoreWarehouse" description="WiFi 6 access point deployment — 12 units"/>
+
+    <!-- Software: SL 3yr, 0% salvage, annual dep = cost/3 -->
+    <!-- SW-001 and SW-002 are fully depreciated after 3 years -->
+    <FixedAsset fixedAssetId="ASSET-SW-001" fixedAssetTypeId="ASSET_SOFTWARE"  fixedAssetName="Apache OFBiz Enterprise Support"  statusId="ASSET_ACTIVE"   dateAcquired="2022-01-15 00:00:00.0" purchaseCost="35000.00" salvageValue="0.00"     currencyUomId="USD" serialNumber="SW-OFB-2201"   locatedAtFacilityId="WebStoreWarehouse" description="3-year enterprise support contract — capitalised"/>
+    <FixedAsset fixedAssetId="ASSET-SW-002" fixedAssetTypeId="ASSET_SOFTWARE"  fixedAssetName="Microsoft 365 E3 Perpetual"       statusId="ASSET_ACTIVE"   dateAcquired="2022-02-01 00:00:00.0" purchaseCost="12000.00" salvageValue="0.00"     currencyUomId="USD" serialNumber="SW-M365-2202"  locatedAtFacilityId="WebStoreWarehouse" description="Microsoft 365 E3 perpetual licenses — 50 seats"/>
+    <FixedAsset fixedAssetId="ASSET-SW-003" fixedAssetTypeId="ASSET_SOFTWARE"  fixedAssetName="AutoCAD 2022 LT x5 Perpetual"    statusId="ASSET_ACTIVE"   dateAcquired="2022-03-01 00:00:00.0" purchaseCost="8500.00"  salvageValue="0.00"     currencyUomId="USD" serialNumber="SW-ACAD-2203" locatedAtFacilityId="WebStoreWarehouse" description="AutoCAD LT perpetual 5-seat license"/>
+    <FixedAsset fixedAssetId="ASSET-SW-004" fixedAssetTypeId="ASSET_SOFTWARE"  fixedAssetName="Adobe Creative Cloud Teams"       statusId="ASSET_ACTIVE"   dateAcquired="2022-04-01 00:00:00.0" purchaseCost="6000.00"  salvageValue="0.00"     currencyUomId="USD" serialNumber="SW-ADO-2204"   locatedAtFacilityId="WebStoreWarehouse" description="Adobe CC Teams — 10 users, 3-year prepaid capitalised"/>
+
+    <!-- Vehicles: DDB 5yr, 10% salvage floor -->
+    <!-- DDB rate = 40%; Year1 = cost*40%, Year2 = NBV1*40%, Year3 = NBV2*40% -->
+    <FixedAsset fixedAssetId="ASSET-VH-001" fixedAssetTypeId="ASSET_VEHICLE"   fixedAssetName="Toyota Hilux Double Cab 4x4"      statusId="ASSET_ASSIGNED" dateAcquired="2022-01-20 00:00:00.0" purchaseCost="38000.00" salvageValue="3800.00"  currencyUomId="USD" serialNumber="VH-THL-2201"   locatedAtFacilityId="WebStoreWarehouse" description="Field operations pickup truck"/>
+    <FixedAsset fixedAssetId="ASSET-VH-002" fixedAssetTypeId="ASSET_VEHICLE"   fixedAssetName="Ford Transit 350 Cargo Van"        statusId="ASSET_ASSIGNED" dateAcquired="2022-02-15 00:00:00.0" purchaseCost="42000.00" salvageValue="4200.00"  currencyUomId="USD" serialNumber="VH-FTV-2202"   locatedAtFacilityId="WebStoreWarehouse" description="Delivery and logistics van"/>
+    <FixedAsset fixedAssetId="ASSET-VH-003" fixedAssetTypeId="ASSET_VEHICLE"   fixedAssetName="Toyota Land Cruiser GX 200"        statusId="ASSET_ASSIGNED" dateAcquired="2022-03-01 00:00:00.0" purchaseCost="65000.00" salvageValue="6500.00"  currencyUomId="USD" serialNumber="VH-TLC-2203"   locatedAtFacilityId="WebStoreWarehouse" description="Executive transport — CEO pool vehicle"/>
+    <FixedAsset fixedAssetId="ASSET-VH-004" fixedAssetTypeId="ASSET_VEHICLE"   fixedAssetName="Honda Civic 1.5T Executive"        statusId="ASSET_SOLD"     dateAcquired="2022-04-01 00:00:00.0" purchaseCost="28000.00" salvageValue="2800.00"  currencyUomId="USD" serialNumber="VH-HCV-2204"   locatedAtFacilityId="WebStoreWarehouse" description="Staff vehicle — sold 2024-06-30"/>
+
+    <!-- Machinery: SL 10yr, 5% salvage -->
+    <FixedAsset fixedAssetId="ASSET-MC-001" fixedAssetTypeId="ASSET_MACHINERY" fixedAssetName="Haas VF-4 CNC Vertical Mill"       statusId="ASSET_ACTIVE"   dateAcquired="2022-01-10 00:00:00.0" purchaseCost="85000.00" salvageValue="4250.00"  currencyUomId="USD" serialNumber="CNC-HAAS-2201"  locatedAtFacilityId="WebStoreWarehouse" description="CNC 5-axis vertical machining center"/>
+    <FixedAsset fixedAssetId="ASSET-MC-002" fixedAssetTypeId="ASSET_MACHINERY" fixedAssetName="Mazak QuickTurn 250 CNC Lathe"     statusId="ASSET_ACTIVE"   dateAcquired="2022-02-01 00:00:00.0" purchaseCost="45000.00" salvageValue="2250.00"  currencyUomId="USD" serialNumber="LAT-MZK-2202"   locatedAtFacilityId="WebStoreWarehouse" description="CNC turning center"/>
+    <FixedAsset fixedAssetId="ASSET-MC-003" fixedAssetTypeId="ASSET_MACHINERY" fixedAssetName="Crown SC 5500 Reach Forklift"      statusId="ASSET_IN_MAINT" dateAcquired="2022-03-01 00:00:00.0" purchaseCost="32000.00" salvageValue="1600.00"  currencyUomId="USD" serialNumber="FLK-CRN-2203"   locatedAtFacilityId="WebStoreWarehouse" description="Electric reach truck — 5500lb capacity"/>
+    <FixedAsset fixedAssetId="ASSET-MC-004" fixedAssetTypeId="ASSET_MACHINERY" fixedAssetName="Atlas Copco GA 22 Air Compressor"  statusId="ASSET_ACTIVE"   dateAcquired="2022-04-01 00:00:00.0" purchaseCost="18000.00" salvageValue="900.00"   currencyUomId="USD" serialNumber="ARC-ACO-2204"   locatedAtFacilityId="WebStoreWarehouse" description="Rotary screw air compressor — 30HP 125PSI"/>
+
+    <!-- Furniture: SL 10yr, 5% salvage -->
+    <FixedAsset fixedAssetId="ASSET-FN-001" fixedAssetTypeId="ASSET_FURNITURE" fixedAssetName="Executive Office Suite"            statusId="ASSET_ACTIVE"   dateAcquired="2022-01-15 00:00:00.0" purchaseCost="8500.00"  salvageValue="425.00"   currencyUomId="USD" serialNumber="FN-EOS-2201"   locatedAtFacilityId="WebStoreWarehouse" description="CEO office — desk, credenza, meeting table"/>
+    <FixedAsset fixedAssetId="ASSET-FN-002" fixedAssetTypeId="ASSET_FURNITURE" fixedAssetName="Open Plan Workstations x20"        statusId="ASSET_ACTIVE"   dateAcquired="2022-02-01 00:00:00.0" purchaseCost="22000.00" salvageValue="1100.00"  currencyUomId="USD" serialNumber="BATCH-WS-2202"  locatedAtFacilityId="WebStoreWarehouse" description="Herman Miller Everywhere desks — 20-unit batch"/>
+    <FixedAsset fixedAssetId="ASSET-FN-003" fixedAssetTypeId="ASSET_FURNITURE" fixedAssetName="Boardroom Conference Table Set"    statusId="ASSET_ACTIVE"   dateAcquired="2022-03-01 00:00:00.0" purchaseCost="12000.00" salvageValue="600.00"   currencyUomId="USD" serialNumber="FN-CRF-2203"   locatedAtFacilityId="WebStoreWarehouse" description="18-seat conference table with executive chairs"/>
+
+    <!-- ================================================================
+         SECTION 5: DEPRECIATION BOOKS
+         GAAP (SL) for all assets; TAX (DDB) for vehicles; IFRS (SL) for machinery
+         lastDepRunDate = 2024-12-31 (3 full annual runs completed)
+         accumulatedDepreciation and netBookValue as of end of 2024
+         ================================================================ -->
+
+    <!-- IT HW GAAP books — SL 5yr, 10% salvage. depPerYr = cost*0.9/5. After 3yr: accum=dep*3 -->
+    <!-- ASSET-IT-001: dep/yr=2160, accum3yr=6480, NBV=5520 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT001-GAAP" fixedAssetId="ASSET-IT-001" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="1200.00" accumulatedDepreciation="6480.00" netBookValue="5520.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-01-15 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-IT-002: dep/yr=810, accum3yr=2430, NBV=2070 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT002-GAAP" fixedAssetId="ASSET-IT-002" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="450.00"  accumulatedDepreciation="2430.00" netBookValue="2070.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-02-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-IT-003: dep/yr=2700, accum3yr=8100, NBV=6900 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT003-GAAP" fixedAssetId="ASSET-IT-003" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="1500.00" accumulatedDepreciation="8100.00" netBookValue="6900.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-03-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-IT-004: dep/yr=324, accum3yr=972, NBV=828 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT004-GAAP" fixedAssetId="ASSET-IT-004" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="180.00"  accumulatedDepreciation="972.00"  netBookValue="828.00"  lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-04-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-IT-005: dep/yr=576, accum3yr=1728, NBV=1472 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT005-GAAP" fixedAssetId="ASSET-IT-005" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="320.00"  accumulatedDepreciation="1728.00" netBookValue="1472.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-05-15 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-IT-006: dep/yr=5040, accum3yr=15120, NBV=12880 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT006-GAAP" fixedAssetId="ASSET-IT-006" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="2800.00" accumulatedDepreciation="15120.00" netBookValue="12880.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-06-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-IT-007: dep/yr=990, accum3yr=2970, NBV=2530 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT007-GAAP" fixedAssetId="ASSET-IT-007" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="550.00"  accumulatedDepreciation="2970.00" netBookValue="2530.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-07-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-IT-008: dep/yr=1440, accum3yr=4320, NBV=3680 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT008-GAAP" fixedAssetId="ASSET-IT-008" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="800.00"  accumulatedDepreciation="4320.00" netBookValue="3680.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-08-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-IT-009: dep/yr=396, accum3yr=1188, NBV=1012 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT009-GAAP" fixedAssetId="ASSET-IT-009" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="220.00"  accumulatedDepreciation="1188.00" netBookValue="1012.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-09-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-IT-010: dep/yr=864, accum3yr=2592, NBV=2208 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-IT010-GAAP" fixedAssetId="ASSET-IT-010" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="5" salvageValue="480.00"  accumulatedDepreciation="2592.00" netBookValue="2208.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-10-01 00:00:00.0" currencyUomId="USD"/>
+
+    <!-- Software GAAP books — SL 3yr, 0% salvage. After 3yr = fully depreciated -->
+    <!-- ASSET-SW-001: dep/yr=11666.67, fully depr after 3yr, NBV=0 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-SW001-GAAP" fixedAssetId="ASSET-SW-001" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="3" salvageValue="0.00" accumulatedDepreciation="35000.00" netBookValue="0.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-01-15 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-SW-002: dep/yr=4000, accum3yr=12000, NBV=0 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-SW002-GAAP" fixedAssetId="ASSET-SW-002" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="3" salvageValue="0.00" accumulatedDepreciation="12000.00" netBookValue="0.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-02-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-SW-003: dep/yr=2833.33, accum3yr=8500, NBV=0 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-SW003-GAAP" fixedAssetId="ASSET-SW-003" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="3" salvageValue="0.00" accumulatedDepreciation="8500.00"  netBookValue="0.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-03-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- ASSET-SW-004: dep/yr=2000, accum3yr=6000, NBV=0 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-SW004-GAAP" fixedAssetId="ASSET-SW-004" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL" usefulLifeYears="3" salvageValue="0.00" accumulatedDepreciation="6000.00"  netBookValue="0.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-04-01 00:00:00.0" currencyUomId="USD"/>
+
+    <!-- Vehicle GAAP books — SL 5yr, 10% salvage (alternative book; DDB is TAX) -->
+    <!-- VH-001: SL dep/yr=(38000-3800)/5=6840, accum3yr=20520, NBV=17480 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-VH001-GAAP" fixedAssetId="ASSET-VH-001" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="5" salvageValue="3800.00" accumulatedDepreciation="20520.00" netBookValue="17480.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-01-20 00:00:00.0" currencyUomId="USD"/>
+    <!-- VH-002: SL dep/yr=(42000-4200)/5=7560, accum3yr=22680, NBV=19320 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-VH002-GAAP" fixedAssetId="ASSET-VH-002" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="5" salvageValue="4200.00" accumulatedDepreciation="22680.00" netBookValue="19320.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-02-15 00:00:00.0" currencyUomId="USD"/>
+    <!-- VH-003: SL dep/yr=(65000-6500)/5=11700, accum3yr=35100, NBV=29900 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-VH003-GAAP" fixedAssetId="ASSET-VH-003" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="5" salvageValue="6500.00" accumulatedDepreciation="35100.00" netBookValue="29900.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-03-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- VH-004 sold 2024-06-30 after 2.25yr; prorated accum = 10800 + 5670 = 16470(approx 2 full yrs) -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-VH004-GAAP" fixedAssetId="ASSET-VH-004" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="5" salvageValue="2800.00" accumulatedDepreciation="15120.00" netBookValue="12880.00" lastDepRunDate="2023-12-31 00:00:00.0" fromDate="2022-04-01 00:00:00.0" thruDate="2024-06-30 00:00:00.0" currencyUomId="USD"/>
+
+    <!-- Vehicle TAX books — DDB 5yr (40% rate). Used for tax depreciation demonstration -->
+    <!-- VH-001 DDB: Y1=15200, Y2=9120, Y3=5472, accum=29792, NBV=8208 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-VH001-TAX"  fixedAssetId="ASSET-VH-001" bookTypeId="BOOK_TAX"  depreciationMethodId="DEP_DDB" usefulLifeYears="5" salvageValue="3800.00" accumulatedDepreciation="29792.00" netBookValue="8208.00"  lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-01-20 00:00:00.0" currencyUomId="USD"/>
+    <!-- VH-002 DDB: Y1=16800, Y2=10080, Y3=6048, accum=32928, NBV=9072 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-VH002-TAX"  fixedAssetId="ASSET-VH-002" bookTypeId="BOOK_TAX"  depreciationMethodId="DEP_DDB" usefulLifeYears="5" salvageValue="4200.00" accumulatedDepreciation="32928.00" netBookValue="9072.00"  lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-02-15 00:00:00.0" currencyUomId="USD"/>
+    <!-- VH-003 DDB: Y1=26000, Y2=15600, Y3=9360, accum=50960, NBV=14040 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-VH003-TAX"  fixedAssetId="ASSET-VH-003" bookTypeId="BOOK_TAX"  depreciationMethodId="DEP_DDB" usefulLifeYears="5" salvageValue="6500.00" accumulatedDepreciation="50960.00" netBookValue="14040.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-03-01 00:00:00.0" currencyUomId="USD"/>
+
+    <!-- Machinery GAAP books — SL 10yr, 5% salvage. dep/yr=(cost*0.95)/10. After 3yr: accum=dep*3 -->
+    <!-- MC-001: dep/yr=8075, accum3yr=24225, NBV=60775 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-MC001-GAAP" fixedAssetId="ASSET-MC-001" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="10" salvageValue="4250.00" accumulatedDepreciation="24225.00" netBookValue="60775.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-01-10 00:00:00.0" currencyUomId="USD"/>
+    <!-- MC-002: dep/yr=4275, accum3yr=12825, NBV=32175 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-MC002-GAAP" fixedAssetId="ASSET-MC-002" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="10" salvageValue="2250.00" accumulatedDepreciation="12825.00" netBookValue="32175.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-02-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- MC-003: dep/yr=3040, accum3yr=9120, NBV=22880 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-MC003-GAAP" fixedAssetId="ASSET-MC-003" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="10" salvageValue="1600.00" accumulatedDepreciation="9120.00"  netBookValue="22880.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-03-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- MC-004: dep/yr=1710, accum3yr=5130, NBV=12870 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-MC004-GAAP" fixedAssetId="ASSET-MC-004" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="10" salvageValue="900.00"  accumulatedDepreciation="5130.00"  netBookValue="12870.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-04-01 00:00:00.0" currencyUomId="USD"/>
+
+    <!-- Machinery IFRS books — SL 10yr same but IFRS treatment -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-MC001-IFRS" fixedAssetId="ASSET-MC-001" bookTypeId="BOOK_IFRS" depreciationMethodId="DEP_SL"  usefulLifeYears="10" salvageValue="4250.00" accumulatedDepreciation="24225.00" netBookValue="60775.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-01-10 00:00:00.0" currencyUomId="USD"/>
+    <AsseterpAssetBook asseterpAssetBookId="BK-MC002-IFRS" fixedAssetId="ASSET-MC-002" bookTypeId="BOOK_IFRS" depreciationMethodId="DEP_SL"  usefulLifeYears="10" salvageValue="2250.00" accumulatedDepreciation="12825.00" netBookValue="32175.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-02-01 00:00:00.0" currencyUomId="USD"/>
+
+    <!-- Furniture GAAP books — SL 10yr, 5% salvage -->
+    <!-- FN-001: dep/yr=807.50, accum3yr=2422.50, NBV=6077.50 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-FN001-GAAP" fixedAssetId="ASSET-FN-001" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="10" salvageValue="425.00"  accumulatedDepreciation="2422.50"  netBookValue="6077.50"  lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-01-15 00:00:00.0" currencyUomId="USD"/>
+    <!-- FN-002: dep/yr=2090, accum3yr=6270, NBV=15730 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-FN002-GAAP" fixedAssetId="ASSET-FN-002" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="10" salvageValue="1100.00" accumulatedDepreciation="6270.00"  netBookValue="15730.00" lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-02-01 00:00:00.0" currencyUomId="USD"/>
+    <!-- FN-003: dep/yr=1140, accum3yr=3420, NBV=8580 -->
+    <AsseterpAssetBook asseterpAssetBookId="BK-FN003-GAAP" fixedAssetId="ASSET-FN-003" bookTypeId="BOOK_GAAP" depreciationMethodId="DEP_SL"  usefulLifeYears="10" salvageValue="600.00"  accumulatedDepreciation="3420.00"  netBookValue="8580.00"  lastDepRunDate="2024-12-31 00:00:00.0" fromDate="2022-03-01 00:00:00.0" currencyUomId="USD"/>
+
+    <!-- ================================================================
+         SECTION 6: DEPRECIATION RUNS (3 annual GAAP + 3 annual TAX)
+         Total amounts:
+           IT HW GAAP/yr:  2160+810+2700+324+576+5040+990+1440+396+864 = 15300
+           SW GAAP yr1-3: 11666.67+4000+2833.33+2000 = 20500 (full 3yr; yr4 =0)
+           VH GAAP/yr:     6840+7560+11700+5040=31140 (VH-004 included to 2023)
+           MC GAAP/yr:     8075+4275+3040+1710 = 17100
+           FN GAAP/yr:     807.50+2090+1140 = 4037.50
+         ================================================================ -->
+
+    <AsseterpDepreciationRun asseterpDepreciationRunId="DR-GAAP-2022" partyId="Company" periodDate="2022-12-31 00:00:00.0" bookTypeId="BOOK_GAAP" runDate="2023-01-05 09:00:00.0" runByPartyId="admin" statusId="ASSET_ACTIVE" totalDepAmount="88077.50" currencyUomId="USD"/>
+    <AsseterpDepreciationRun asseterpDepreciationRunId="DR-GAAP-2023" partyId="Company" periodDate="2023-12-31 00:00:00.0" bookTypeId="BOOK_GAAP" runDate="2024-01-05 09:00:00.0" runByPartyId="admin" statusId="ASSET_ACTIVE" totalDepAmount="88077.50" currencyUomId="USD"/>
+    <AsseterpDepreciationRun asseterpDepreciationRunId="DR-GAAP-2024" partyId="Company" periodDate="2024-12-31 00:00:00.0" bookTypeId="BOOK_GAAP" runDate="2025-01-05 09:00:00.0" runByPartyId="admin" statusId="ASSET_ACTIVE" totalDepAmount="83037.50" currencyUomId="USD"/>
+    <!-- TAX book runs — vehicles only -->
+    <AsseterpDepreciationRun asseterpDepreciationRunId="DR-TAX-2022"  partyId="Company" periodDate="2022-12-31 00:00:00.0" bookTypeId="BOOK_TAX"  runDate="2023-01-05 10:00:00.0" runByPartyId="admin" statusId="ASSET_ACTIVE" totalDepAmount="58000.00" currencyUomId="USD"/>
+    <AsseterpDepreciationRun asseterpDepreciationRunId="DR-TAX-2023"  partyId="Company" periodDate="2023-12-31 00:00:00.0" bookTypeId="BOOK_TAX"  runDate="2024-01-05 10:00:00.0" runByPartyId="admin" statusId="ASSET_ACTIVE" totalDepAmount="34800.00" currencyUomId="USD"/>
+    <AsseterpDepreciationRun asseterpDepreciationRunId="DR-TAX-2024"  partyId="Company" periodDate="2024-12-31 00:00:00.0" bookTypeId="BOOK_TAX"  runDate="2025-01-05 10:00:00.0" runByPartyId="admin" statusId="ASSET_ACTIVE" totalDepAmount="20880.00" currencyUomId="USD"/>
+
+    <!-- ================================================================
+         SECTION 8: GL TRANSACTIONS — AcctgTrans + AcctgTransEntry
+         One transaction per asset category per annual run.
+         Dr Depreciation Expense / Cr Accumulated Depreciation
+         ================================================================ -->
+
+    <!-- GAAP 2022 IT Hardware -->
+    <AcctgTrans acctgTransId="AT-GAAP-2022-IT"  acctgTransTypeId="DEPRECIATION" glFiscalTypeId="ACTUAL" transactionDate="2022-12-31 00:00:00.0" postedDate="2023-01-05 09:00:00.0" isPosted="Y" description="Annual Depreciation 2022 — IT Hardware (SL)" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-IT" acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-741000" debitCreditFlag="D" amount="15300.00" currencyUomId="USD" description="Depr Expense IT Hardware 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-IT" acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-142000" debitCreditFlag="C" amount="15300.00" currencyUomId="USD" description="Accum Depr IT Hardware 2022"/>
+
+    <!-- GAAP 2022 Software -->
+    <AcctgTrans acctgTransId="AT-GAAP-2022-SW"  acctgTransTypeId="DEPRECIATION" glFiscalTypeId="ACTUAL" transactionDate="2022-12-31 00:00:00.0" postedDate="2023-01-05 09:00:00.0" isPosted="Y" description="Annual Depreciation 2022 — Software (SL)" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-SW" acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-741100" debitCreditFlag="D" amount="20500.00" currencyUomId="USD" description="Depr Expense Software 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-SW" acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-142100" debitCreditFlag="C" amount="20500.00" currencyUomId="USD" description="Accum Depr Software 2022"/>
+
+    <!-- GAAP 2022 Vehicles -->
+    <AcctgTrans acctgTransId="AT-GAAP-2022-VH"  acctgTransTypeId="DEPRECIATION" glFiscalTypeId="ACTUAL" transactionDate="2022-12-31 00:00:00.0" postedDate="2023-01-05 09:00:00.0" isPosted="Y" description="Annual Depreciation 2022 — Vehicles (SL)" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-VH" acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-741200" debitCreditFlag="D" amount="31140.00" currencyUomId="USD" description="Depr Expense Vehicles 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-VH" acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-142200" debitCreditFlag="C" amount="31140.00" currencyUomId="USD" description="Accum Depr Vehicles 2022"/>
+
+    <!-- GAAP 2022 Machinery -->
+    <AcctgTrans acctgTransId="AT-GAAP-2022-MC"  acctgTransTypeId="DEPRECIATION" glFiscalTypeId="ACTUAL" transactionDate="2022-12-31 00:00:00.0" postedDate="2023-01-05 09:00:00.0" isPosted="Y" description="Annual Depreciation 2022 — Machinery (SL)" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-MC" acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-741300" debitCreditFlag="D" amount="17100.00" currencyUomId="USD" description="Depr Expense Machinery 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-MC" acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-142300" debitCreditFlag="C" amount="17100.00" currencyUomId="USD" description="Accum Depr Machinery 2022"/>
+
+    <!-- GAAP 2022 Furniture -->
+    <AcctgTrans acctgTransId="AT-GAAP-2022-FN"  acctgTransTypeId="DEPRECIATION" glFiscalTypeId="ACTUAL" transactionDate="2022-12-31 00:00:00.0" postedDate="2023-01-05 09:00:00.0" isPosted="Y" description="Annual Depreciation 2022 — Furniture (SL)" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-FN" acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-741400" debitCreditFlag="D" amount="4037.50" currencyUomId="USD" description="Depr Expense Furniture 2022"/>
+    <AcctgTransEntry acctgTransId="AT-GAAP-2022-FN" acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-142400" debitCreditFlag="C" amount="4037.50" currencyUomId="USD" description="Accum Depr Furniture 2022"/>
+
+    <!-- TAX 2022/2023/2024 Vehicle DDB transactions -->
+    <AcctgTrans acctgTransId="AT-TAX-2022-VH"   acctgTransTypeId="DEPRECIATION" glFiscalTypeId="ACTUAL" transactionDate="2022-12-31 00:00:00.0" postedDate="2023-01-05 10:00:00.0" isPosted="Y" description="Tax Depreciation 2022 — Vehicles (DDB)" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-TAX-2022-VH"  acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-741200" debitCreditFlag="D" amount="58000.00" currencyUomId="USD" description="Tax Depr Expense Vehicles 2022 DDB"/>
+    <AcctgTransEntry acctgTransId="AT-TAX-2022-VH"  acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-142200" debitCreditFlag="C" amount="58000.00" currencyUomId="USD" description="Tax Accum Depr Vehicles 2022 DDB"/>
+
+    <AcctgTrans acctgTransId="AT-TAX-2023-VH"   acctgTransTypeId="DEPRECIATION" glFiscalTypeId="ACTUAL" transactionDate="2023-12-31 00:00:00.0" postedDate="2024-01-05 10:00:00.0" isPosted="Y" description="Tax Depreciation 2023 — Vehicles (DDB)" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-TAX-2023-VH"  acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-741200" debitCreditFlag="D" amount="34800.00" currencyUomId="USD" description="Tax Depr Expense Vehicles 2023 DDB"/>
+    <AcctgTransEntry acctgTransId="AT-TAX-2023-VH"  acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-142200" debitCreditFlag="C" amount="34800.00" currencyUomId="USD" description="Tax Accum Depr Vehicles 2023 DDB"/>
+
+    <AcctgTrans acctgTransId="AT-TAX-2024-VH"   acctgTransTypeId="DEPRECIATION" glFiscalTypeId="ACTUAL" transactionDate="2024-12-31 00:00:00.0" postedDate="2025-01-05 10:00:00.0" isPosted="Y" description="Tax Depreciation 2024 — Vehicles (DDB)" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-TAX-2024-VH"  acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-741200" debitCreditFlag="D" amount="20880.00" currencyUomId="USD" description="Tax Depr Expense Vehicles 2024 DDB"/>
+    <AcctgTransEntry acctgTransId="AT-TAX-2024-VH"  acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-142200" debitCreditFlag="C" amount="20880.00" currencyUomId="USD" description="Tax Accum Depr Vehicles 2024 DDB"/>
+
+    <!-- VH-004 Disposal 2024-06-30: Sale proceeds 15000, cost 28000, accum 15120, NBV 12880, Loss 2120 -->
+    <AcctgTrans acctgTransId="AT-DISP-VH004"    acctgTransTypeId="PERIOD_CLOSING" glFiscalTypeId="ACTUAL" transactionDate="2024-06-30 00:00:00.0" postedDate="2024-07-02 09:00:00.0" isPosted="Y" description="Disposal of ASSET-VH-004 Honda Civic - sold at loss" partyId="Company" currencyUomId="USD"/>
+    <AcctgTransEntry acctgTransId="AT-DISP-VH004" acctgTransEntrySeqId="01" organizationPartyId="Company" glAccountId="ASSETERP-142200" debitCreditFlag="D" amount="15120.00"  currencyUomId="USD" description="Remove accum depreciation — VH-004"/>
+    <AcctgTransEntry acctgTransId="AT-DISP-VH004" acctgTransEntrySeqId="02" organizationPartyId="Company" glAccountId="ASSETERP-882000" debitCreditFlag="D" amount="2120.00"   currencyUomId="USD" description="Loss on disposal — VH-004 (NBV 12880 - proceeds 10760)"/>
+    <AcctgTransEntry acctgTransId="AT-DISP-VH004" acctgTransEntrySeqId="03" organizationPartyId="Company" glAccountId="ASSETERP-141200" debitCreditFlag="C" amount="28000.00"  currencyUomId="USD" description="Remove asset cost — VH-004"/>
+
+    <!-- ================================================================
+         SECTION 7: DEPRECIATION LINES (GAAP 2022 run, all assets)
+         Illustrates all methods and asset types for the 2022 period.
+         2023 and 2024 lines follow the same pattern — only amounts change.
+         ================================================================ -->
+
+    <!-- GAAP 2022 — IT Hardware (SL) -->
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT001" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-001" asseterpAssetBookId="BK-IT001-GAAP" depreciationMethodId="DEP_SL" openingNbv="12000.00" depAmount="2160.00" closingNbv="9840.00"  acctgTransId="AT-GAAP-2022-IT"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT002" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-002" asseterpAssetBookId="BK-IT002-GAAP" depreciationMethodId="DEP_SL" openingNbv="4500.00"  depAmount="810.00"  closingNbv="3690.00"  acctgTransId="AT-GAAP-2022-IT"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT003" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-003" asseterpAssetBookId="BK-IT003-GAAP" depreciationMethodId="DEP_SL" openingNbv="15000.00" depAmount="2700.00" closingNbv="12300.00" acctgTransId="AT-GAAP-2022-IT"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT004" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-004" asseterpAssetBookId="BK-IT004-GAAP" depreciationMethodId="DEP_SL" openingNbv="1800.00"  depAmount="324.00"  closingNbv="1476.00"  acctgTransId="AT-GAAP-2022-IT"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT005" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-005" asseterpAssetBookId="BK-IT005-GAAP" depreciationMethodId="DEP_SL" openingNbv="3200.00"  depAmount="576.00"  closingNbv="2624.00"  acctgTransId="AT-GAAP-2022-IT"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT006" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-006" asseterpAssetBookId="BK-IT006-GAAP" depreciationMethodId="DEP_SL" openingNbv="28000.00" depAmount="5040.00" closingNbv="22960.00" acctgTransId="AT-GAAP-2022-IT"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT007" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-007" asseterpAssetBookId="BK-IT007-GAAP" depreciationMethodId="DEP_SL" openingNbv="5500.00"  depAmount="990.00"  closingNbv="4510.00"  acctgTransId="AT-GAAP-2022-IT"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT008" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-008" asseterpAssetBookId="BK-IT008-GAAP" depreciationMethodId="DEP_SL" openingNbv="8000.00"  depAmount="1440.00" closingNbv="6560.00"  acctgTransId="AT-GAAP-2022-IT"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT009" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-009" asseterpAssetBookId="BK-IT009-GAAP" depreciationMethodId="DEP_SL" openingNbv="2200.00"  depAmount="396.00"  closingNbv="1804.00"  acctgTransId="AT-GAAP-2022-IT"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-IT010" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-IT-010" asseterpAssetBookId="BK-IT010-GAAP" depreciationMethodId="DEP_SL" openingNbv="4800.00"  depAmount="864.00"  closingNbv="3936.00"  acctgTransId="AT-GAAP-2022-IT"/>
+    <!-- GAAP 2022 — Software (SL) -->
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-SW001" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-SW-001" asseterpAssetBookId="BK-SW001-GAAP" depreciationMethodId="DEP_SL" openingNbv="35000.00" depAmount="11666.67" closingNbv="23333.33" acctgTransId="AT-GAAP-2022-SW"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-SW002" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-SW-002" asseterpAssetBookId="BK-SW002-GAAP" depreciationMethodId="DEP_SL" openingNbv="12000.00" depAmount="4000.00"  closingNbv="8000.00"   acctgTransId="AT-GAAP-2022-SW"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-SW003" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-SW-003" asseterpAssetBookId="BK-SW003-GAAP" depreciationMethodId="DEP_SL" openingNbv="8500.00"  depAmount="2833.33"  closingNbv="5666.67"   acctgTransId="AT-GAAP-2022-SW"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-SW004" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-SW-004" asseterpAssetBookId="BK-SW004-GAAP" depreciationMethodId="DEP_SL" openingNbv="6000.00"  depAmount="2000.00"  closingNbv="4000.00"   acctgTransId="AT-GAAP-2022-SW"/>
+    <!-- GAAP 2022 — Vehicles (SL for GAAP book) -->
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-VH001" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-VH-001" asseterpAssetBookId="BK-VH001-GAAP" depreciationMethodId="DEP_SL" openingNbv="38000.00" depAmount="6840.00"  closingNbv="31160.00" acctgTransId="AT-GAAP-2022-VH"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-VH002" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-VH-002" asseterpAssetBookId="BK-VH002-GAAP" depreciationMethodId="DEP_SL" openingNbv="42000.00" depAmount="7560.00"  closingNbv="34440.00" acctgTransId="AT-GAAP-2022-VH"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-VH003" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-VH-003" asseterpAssetBookId="BK-VH003-GAAP" depreciationMethodId="DEP_SL" openingNbv="65000.00" depAmount="11700.00" closingNbv="53300.00" acctgTransId="AT-GAAP-2022-VH"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-VH004" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-VH-004" asseterpAssetBookId="BK-VH004-GAAP" depreciationMethodId="DEP_SL" openingNbv="28000.00" depAmount="5040.00"  closingNbv="22960.00" acctgTransId="AT-GAAP-2022-VH"/>
+    <!-- GAAP 2022 — Machinery (SL) -->
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-MC001" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-MC-001" asseterpAssetBookId="BK-MC001-GAAP" depreciationMethodId="DEP_SL" openingNbv="85000.00" depAmount="8075.00"  closingNbv="76925.00" acctgTransId="AT-GAAP-2022-MC"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-MC002" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-MC-002" asseterpAssetBookId="BK-MC002-GAAP" depreciationMethodId="DEP_SL" openingNbv="45000.00" depAmount="4275.00"  closingNbv="40725.00" acctgTransId="AT-GAAP-2022-MC"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-MC003" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-MC-003" asseterpAssetBookId="BK-MC003-GAAP" depreciationMethodId="DEP_SL" openingNbv="32000.00" depAmount="3040.00"  closingNbv="28960.00" acctgTransId="AT-GAAP-2022-MC"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-MC004" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-MC-004" asseterpAssetBookId="BK-MC004-GAAP" depreciationMethodId="DEP_SL" openingNbv="18000.00" depAmount="1710.00"  closingNbv="16290.00" acctgTransId="AT-GAAP-2022-MC"/>
+    <!-- GAAP 2022 — Furniture (SL) -->
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-FN001" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-FN-001" asseterpAssetBookId="BK-FN001-GAAP" depreciationMethodId="DEP_SL" openingNbv="8500.00"  depAmount="807.50"   closingNbv="7692.50"  acctgTransId="AT-GAAP-2022-FN"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-FN002" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-FN-002" asseterpAssetBookId="BK-FN002-GAAP" depreciationMethodId="DEP_SL" openingNbv="22000.00" depAmount="2090.00"  closingNbv="19910.00" acctgTransId="AT-GAAP-2022-FN"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-GAAP22-FN003" asseterpDepreciationRunId="DR-GAAP-2022" fixedAssetId="ASSET-FN-003" asseterpAssetBookId="BK-FN003-GAAP" depreciationMethodId="DEP_SL" openingNbv="12000.00" depAmount="1140.00"  closingNbv="10860.00" acctgTransId="AT-GAAP-2022-FN"/>
+
+    <!-- TAX 2022 — Vehicles DDB (Year 1: cost * 40%) -->
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-TAX22-VH001"  asseterpDepreciationRunId="DR-TAX-2022"  fixedAssetId="ASSET-VH-001" asseterpAssetBookId="BK-VH001-TAX"  depreciationMethodId="DEP_DDB" openingNbv="38000.00" depAmount="15200.00" closingNbv="22800.00" acctgTransId="AT-TAX-2022-VH"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-TAX22-VH002"  asseterpDepreciationRunId="DR-TAX-2022"  fixedAssetId="ASSET-VH-002" asseterpAssetBookId="BK-VH002-TAX"  depreciationMethodId="DEP_DDB" openingNbv="42000.00" depAmount="16800.00" closingNbv="25200.00" acctgTransId="AT-TAX-2022-VH"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-TAX22-VH003"  asseterpDepreciationRunId="DR-TAX-2022"  fixedAssetId="ASSET-VH-003" asseterpAssetBookId="BK-VH003-TAX"  depreciationMethodId="DEP_DDB" openingNbv="65000.00" depAmount="26000.00" closingNbv="39000.00" acctgTransId="AT-TAX-2022-VH"/>
+    <!-- TAX 2023 — Vehicles DDB (Year 2: NBV1 * 40%) -->
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-TAX23-VH001"  asseterpDepreciationRunId="DR-TAX-2023"  fixedAssetId="ASSET-VH-001" asseterpAssetBookId="BK-VH001-TAX"  depreciationMethodId="DEP_DDB" openingNbv="22800.00" depAmount="9120.00"  closingNbv="13680.00" acctgTransId="AT-TAX-2023-VH"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-TAX23-VH002"  asseterpDepreciationRunId="DR-TAX-2023"  fixedAssetId="ASSET-VH-002" asseterpAssetBookId="BK-VH002-TAX"  depreciationMethodId="DEP_DDB" openingNbv="25200.00" depAmount="10080.00" closingNbv="15120.00" acctgTransId="AT-TAX-2023-VH"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-TAX23-VH003"  asseterpDepreciationRunId="DR-TAX-2023"  fixedAssetId="ASSET-VH-003" asseterpAssetBookId="BK-VH003-TAX"  depreciationMethodId="DEP_DDB" openingNbv="39000.00" depAmount="15600.00" closingNbv="23400.00" acctgTransId="AT-TAX-2023-VH"/>
+    <!-- TAX 2024 — Vehicles DDB (Year 3: NBV2 * 40%) -->
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-TAX24-VH001"  asseterpDepreciationRunId="DR-TAX-2024"  fixedAssetId="ASSET-VH-001" asseterpAssetBookId="BK-VH001-TAX"  depreciationMethodId="DEP_DDB" openingNbv="13680.00" depAmount="5472.00"  closingNbv="8208.00"  acctgTransId="AT-TAX-2024-VH"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-TAX24-VH002"  asseterpDepreciationRunId="DR-TAX-2024"  fixedAssetId="ASSET-VH-002" asseterpAssetBookId="BK-VH002-TAX"  depreciationMethodId="DEP_DDB" openingNbv="15120.00" depAmount="6048.00"  closingNbv="9072.00"  acctgTransId="AT-TAX-2024-VH"/>
+    <AsseterpDepreciationLine asseterpDepreciationLineId="DL-TAX24-VH003"  asseterpDepreciationRunId="DR-TAX-2024"  fixedAssetId="ASSET-VH-003" asseterpAssetBookId="BK-VH003-TAX"  depreciationMethodId="DEP_DDB" openingNbv="23400.00" depAmount="9360.00"  closingNbv="14040.00" acctgTransId="AT-TAX-2024-VH"/>
+
+    <!-- ================================================================
+         SECTION 9: LIFECYCLE EVENTS
+         Registration, book creation, depreciation posts, custody assignment,
+         maintenance, and disposal events for selected assets.
+         ================================================================ -->
+
+    <!-- Registration events -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-REG-IT001" fixedAssetId="ASSET-IT-001" partyId="admin" statusId="ASSET_REGISTERED" enumId="AEVT_REGISTERED" eventDate="2022-01-15 10:00:00.0" description="Dell PowerEdge server registered in asset register" currencyUomId="USD" amount="12000.00" createdDate="2022-01-15 10:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-REG-IT006" fixedAssetId="ASSET-IT-006" partyId="admin" statusId="ASSET_REGISTERED" enumId="AEVT_REGISTERED" eventDate="2022-06-01 10:00:00.0" description="NetApp SAN storage array registered" currencyUomId="USD" amount="28000.00" createdDate="2022-06-01 10:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-REG-SW001" fixedAssetId="ASSET-SW-001" partyId="admin" statusId="ASSET_REGISTERED" enumId="AEVT_REGISTERED" eventDate="2022-01-15 11:00:00.0" description="OFBiz Enterprise Support capitalised as intangible asset" currencyUomId="USD" amount="35000.00" createdDate="2022-01-15 11:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-REG-VH001" fixedAssetId="ASSET-VH-001" partyId="admin" statusId="ASSET_REGISTERED" enumId="AEVT_REGISTERED" eventDate="2022-01-20 09:00:00.0" description="Toyota Hilux registered — field operations fleet" currencyUomId="USD" amount="38000.00" createdDate="2022-01-20 09:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-REG-VH003" fixedAssetId="ASSET-VH-003" partyId="admin" statusId="ASSET_REGISTERED" enumId="AEVT_REGISTERED" eventDate="2022-03-01 09:00:00.0" description="Toyota Land Cruiser registered — executive transport" currencyUomId="USD" amount="65000.00" createdDate="2022-03-01 09:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-REG-MC001" fixedAssetId="ASSET-MC-001" partyId="admin" statusId="ASSET_REGISTERED" enumId="AEVT_REGISTERED" eventDate="2022-01-10 08:00:00.0" description="Haas VF-4 CNC Mill registered and commissioned" currencyUomId="USD" amount="85000.00" createdDate="2022-01-10 08:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-REG-FN002" fixedAssetId="ASSET-FN-002" partyId="admin" statusId="ASSET_REGISTERED" enumId="AEVT_REGISTERED" eventDate="2022-02-01 10:00:00.0" description="Open plan workstations x20 registered as batch asset" currencyUomId="USD" amount="22000.00" createdDate="2022-02-01 10:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- Book creation events -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-BK-MC001G" fixedAssetId="ASSET-MC-001" partyId="admin" enumId="AEVT_BOOK_CREATED" eventDate="2022-01-10 08:30:00.0" description="GAAP depreciation book created — SL 10yr" createdDate="2022-01-10 08:30:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-BK-MC001I" fixedAssetId="ASSET-MC-001" partyId="admin" enumId="AEVT_BOOK_CREATED" eventDate="2022-01-10 08:35:00.0" description="IFRS depreciation book created — SL 10yr component approach" createdDate="2022-01-10 08:35:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-BK-VH001T" fixedAssetId="ASSET-VH-001" partyId="admin" enumId="AEVT_BOOK_CREATED" eventDate="2022-01-20 09:30:00.0" description="TAX book created — DDB 5yr for accelerated tax depreciation" createdDate="2022-01-20 09:30:00.0" createdByUserLogin="admin"/>
+
+    <!-- Depreciation run events (annual) -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-DEP-2022"  fixedAssetId="ASSET-IT-001"  partyId="admin" enumId="AEVT_DEP_RUN"    eventDate="2023-01-05 09:00:00.0" description="Annual GAAP depreciation run 2022 completed — 25 assets, USD 88,077.50 total" createdDate="2023-01-05 09:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-DEP-2023"  fixedAssetId="ASSET-IT-001"  partyId="admin" enumId="AEVT_DEP_RUN"    eventDate="2024-01-05 09:00:00.0" description="Annual GAAP depreciation run 2023 completed — 25 assets, USD 88,077.50 total" createdDate="2024-01-05 09:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-DEP-2024"  fixedAssetId="ASSET-IT-001"  partyId="admin" enumId="AEVT_DEP_RUN"    eventDate="2025-01-05 09:00:00.0" description="Annual GAAP depreciation run 2024 completed — software fully depreciated, USD 83,037.50 total" createdDate="2025-01-05 09:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- Custody assignment events -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-ASGN-IT004"  fixedAssetId="ASSET-IT-004" partyId="DemoEmployee" statusId="ASSET_ASSIGNED" enumId="AEVT_ASSIGNED" eventDate="2022-04-05 10:00:00.0" description="ThinkPad X1 assigned to DemoEmployee — IT department" createdDate="2022-04-05 10:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-ASGN-VH001"  fixedAssetId="ASSET-VH-001" partyId="DemoEmployee" statusId="ASSET_ASSIGNED" enumId="AEVT_ASSIGNED" eventDate="2022-01-25 09:00:00.0" description="Toyota Hilux assigned to DemoEmployee — field team" createdDate="2022-01-25 09:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-ASGN-VH003"  fixedAssetId="ASSET-VH-003" partyId="DemoCustomer" statusId="ASSET_ASSIGNED" enumId="AEVT_ASSIGNED" eventDate="2022-03-05 09:00:00.0" description="Land Cruiser assigned to DemoCustomer exec pool" createdDate="2022-03-05 09:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-ASGN-VH002"  fixedAssetId="ASSET-VH-002" partyId="DemoEmployee" statusId="ASSET_ASSIGNED" enumId="AEVT_ASSIGNED" eventDate="2022-02-20 09:00:00.0" description="Ford Transit assigned to DemoEmployee — logistics" createdDate="2022-02-20 09:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- Transfer event -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-TRNF-VH001"  fixedAssetId="ASSET-VH-001" partyId="DemoCustomer" statusId="ASSET_TRANSFERRED" enumId="AEVT_TRANSFERRED" eventDate="2023-06-01 09:00:00.0" description="Toyota Hilux transferred from DemoEmployee to DemoCustomer operations" createdDate="2023-06-01 09:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- Maintenance events -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-MAINT-MC003" fixedAssetId="ASSET-MC-003" partyId="admin" statusId="ASSET_IN_MAINT" enumId="AEVT_MAINT_CREATED"   eventDate="2024-09-01 08:00:00.0" description="Forklift sent for annual safety inspection and battery replacement" currencyUomId="USD" amount="2800.00" createdDate="2024-09-01 08:00:00.0" createdByUserLogin="admin"/>
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-MNTC-MC003" fixedAssetId="ASSET-MC-003" partyId="admin" statusId="ASSET_ACTIVE"   enumId="AEVT_MAINT_COMPLETED" eventDate="2024-09-15 16:00:00.0" description="Maintenance completed — forklift returned to service" currencyUomId="USD" amount="2800.00" createdDate="2024-09-15 16:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- GL posted events -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-GL-GAAP22"  fixedAssetId="ASSET-IT-001"  partyId="admin" enumId="AEVT_DEP_POSTED" eventDate="2023-01-05 09:30:00.0" description="2022 GAAP depreciation GL entries posted — acctgTransId AT-GAAP-2022-*" sourceReferenceId="AT-GAAP-2022-IT" currencyUomId="USD" amount="88077.50" createdDate="2023-01-05 09:30:00.0" createdByUserLogin="admin"/>
+
+    <!-- Revaluation event — MC-001 revalued upward in 2023 per IAS 16 -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-REVAL-MC001" fixedAssetId="ASSET-MC-001" partyId="admin" enumId="AEVT_REVALUED"   eventDate="2023-12-31 00:00:00.0" description="CNC Mill revalued to fair value per IAS 16 — replacement cost assessment" currencyUomId="USD" amount="92000.00" createdDate="2023-12-31 00:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- Disposal event — VH-004 sold -->
+    <AsseterpLifecycleEvent asseterpLifecycleEventId="EVT-SOLD-VH004"  fixedAssetId="ASSET-VH-004" partyId="DemoCustomer" statusId="ASSET_SOLD" enumId="AEVT_SOLD" eventDate="2024-06-30 14:00:00.0" description="Honda Civic sold to DemoCustomer for USD 10,760 — loss on disposal USD 2,120" currencyUomId="USD" amount="10760.00" sourceReferenceId="AT-DISP-VH004" createdDate="2024-06-30 14:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- ================================================================
+         SECTION 10: CUSTODY RECORDS
+         ================================================================ -->
+
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-IT004-EMP"  fixedAssetId="ASSET-IT-004" custodianPartyId="DemoEmployee" assignedDate="2022-04-05 10:00:00.0" assignedByPartyId="admin" acknowledgementDate="2022-04-05 11:00:00.0" notes="ThinkPad X1 issued to DemoEmployee — IT department laptop for daily use"/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-VH001-EMP"  fixedAssetId="ASSET-VH-001" custodianPartyId="DemoEmployee" assignedDate="2022-01-25 09:00:00.0" assignedByPartyId="admin" returnDate="2023-06-01 09:00:00.0"           acknowledgementDate="2022-01-25 10:00:00.0" notes="Toyota Hilux issued to DemoEmployee for field operations — returned on transfer"/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-VH001-CST"  fixedAssetId="ASSET-VH-001" custodianPartyId="DemoCustomer" assignedDate="2023-06-01 09:00:00.0"  assignedByPartyId="admin" acknowledgementDate="2023-06-02 09:00:00.0" notes="Toyota Hilux transferred to DemoCustomer operations team"/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-VH002-EMP"  fixedAssetId="ASSET-VH-002" custodianPartyId="DemoEmployee" assignedDate="2022-02-20 09:00:00.0" assignedByPartyId="admin" acknowledgementDate="2022-02-20 10:00:00.0" notes="Ford Transit assigned to DemoEmployee logistics team"/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-VH003-CST"  fixedAssetId="ASSET-VH-003" custodianPartyId="DemoCustomer" assignedDate="2022-03-05 09:00:00.0"  assignedByPartyId="admin" acknowledgementDate="2022-03-05 10:00:00.0" notes="Land Cruiser in DemoCustomer executive pool"/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-IT001-ADM"  fixedAssetId="ASSET-IT-001" custodianPartyId="admin"        assignedDate="2022-01-15 10:00:00.0" assignedByPartyId="admin" acknowledgementDate="2022-01-15 10:00:00.0" notes="Dell PowerEdge under IT admin custody — server room"/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-IT006-ADM"  fixedAssetId="ASSET-IT-006" custodianPartyId="admin"        assignedDate="2022-06-01 10:00:00.0" assignedByPartyId="admin" acknowledgementDate="2022-06-01 10:00:00.0" notes="SAN Storage under IT admin custody — data center"/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-MC001-EMP"  fixedAssetId="ASSET-MC-001" custodianPartyId="DemoEmployee" assignedDate="2022-01-12 08:00:00.0" assignedByPartyId="admin" acknowledgementDate="2022-01-12 09:00:00.0" notes="CNC Mill under production supervisor custody"/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-MC003-EMP"  fixedAssetId="ASSET-MC-003" custodianPartyId="DemoEmployee" assignedDate="2022-03-05 08:00:00.0" assignedByPartyId="admin" acknowledgementDate="2022-03-05 09:00:00.0" notes="Forklift under warehouse team custody"/>
+    <AsseterpCustodyRecord asseterpCustodyRecordId="CR-VH004-CST"  fixedAssetId="ASSET-VH-004" custodianPartyId="DemoCustomer" assignedDate="2022-04-05 09:00:00.0"  returnDate="2024-06-30 14:00:00.0" assignedByPartyId="admin" acknowledgementDate="2022-04-05 10:00:00.0" notes="Honda Civic in exec pool — returned on sale 2024-06-30"/>
+
+</entity-engine-xml>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+
+    <!-- ========================= -->
+    <!-- Addition Type (Master)    -->
+    <!-- ========================= -->
+    <entity entity-name="AdditionType"
+            package-name="org.apache.ofbiz.payroll"
+            table-name="ADDITION_TYPE"
+            title="Addition Type">
+
+        <field name="additionTypeId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="description" type="description"/>
+        <field name="isTaxable" type="indicator"/>
+        <field name="calculationMethodId" type="id"/>
+        <field name="defaultAmount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="additionTypeId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="ADDT_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="ADDT_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="ADDT_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ================================== -->
+    <!-- Employee Addition (Optional Master) -->
+    <!-- Like EmployeeAllowance/EmployeeDeduction -->
+    <!-- ================================== -->
+    <entity entity-name="EmployeeAddition"
+            package-name="org.apache.ofbiz.payroll"
+            table-name="EMPLOYEE_ADDITION"
+            title="Employee Addition (Recurring/Effective)">
+
+        <field name="employeeAdditionId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="partyId" type="id"/>
+        <field name="additionTypeId" type="id"/>
+        <field name="amount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="effectiveDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="statusId" type="id"/>
+
+        <prim-key field="employeeAdditionId"/>
+
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="EMPA_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="EMPA_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AdditionType" fk-name="EMPA_TYPE" title="AdditionType">
+            <key-map field-name="additionTypeId" rel-field-name="additionTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="EMPA_CURR" title="Currency">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="EMPA_STAT" title="Status">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+    <!-- ============================== -->
+    <!-- Payroll Addition Item (Txn)    -->
+    <!-- Mirror of PayrollDeductionItem -->
+    <!-- ============================== -->
+    <entity entity-name="PayrollAdditionItem"
+            package-name="org.apache.ofbiz.payroll"
+            table-name="PAYROLL_ADDITION_ITEM"
+            title="Payroll Addition Item">
+
+        <field name="payrollAdditionItemId" type="id"/>
+        <field name="payrollRunId" type="id"/>         <!-- strongly recommended -->
+        <field name="payrollResultId" type="id"/>      <!-- NULL until attached -->
+        <field name="additionTypeId" type="id"/>
+        <field name="amount" type="currency-amount"/>
+        <field name="partyId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="remarks" type="comment"/>
+
+        <prim-key field="payrollAdditionItemId"/>
+
+        <relation type="one" rel-entity-name="PayrollRun" fk-name="PADD_RUN" title="Run">
+            <key-map field-name="payrollRunId" rel-field-name="payrollRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="EmployeePayrollResult" fk-name="PADD_RES" title="Result">
+            <key-map field-name="payrollResultId" rel-field-name="payrollResultId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AdditionType" fk-name="PADD_TYPE" title="AdditionType">
+            <key-map field-name="additionTypeId" rel-field-name="additionTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="PADD_PARTY" title="Employee">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollOrganization" fk-name="PADD_ORG" title="Org">
+            <key-map field-name="organizationPartyId" rel-field-name="organizationPartyId"/>
+        </relation>
+    </entity>
+
+</entitymodel>

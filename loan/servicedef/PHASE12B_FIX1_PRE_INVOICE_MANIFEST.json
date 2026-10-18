@@ -1,0 +1,6 @@
+{
+  "phase": "Phase 12B-Fix1",
+  "title": "Pre-Invoice Unified Repayment",
+  "newService": "recordUnifiedLoanRepaymentFinancialFirstV1",
+  "purpose": "Generate repayment invoice before PartyLoanSchedule outstandingAmount is reduced."
+}

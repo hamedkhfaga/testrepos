@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <!-- ================================================= -->
+    <!-- Home -->
+    <!-- ================================================= -->
+	
+	
+	<screen name="main">
+    <section>
+        <widgets>
+            <decorator-screen name="CommonAppDecorator"
+                              location="component://common/widget/CommonScreens.xml">
+                <decorator-section name="body">
+                    <container>
+                        <label text="${uiLabelMap['Fingerprint.ModuleTitle']}" style="h1"/>
+                        <container style="margin-top:10px;">
+                            <include-menu name="FingerprintMainMenu"
+                                          location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        </container>
+                    </container>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+
+    <screen name="FingerprintHome">
+        <section>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap['Fingerprint.ModuleTitle']}"/>
+                        <container style="margin-top:10px;">
+                            <label text="Hi every body called Main"/>
+                            <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <!-- ================================================= -->
+    <!-- BiometricDevice List / Create -->
+    <!-- ================================================= -->
+    <screen name="BiometricDeviceList">
+        <section>
+            <actions>
+                <set field="titleProperty" value="Entity.BiometricDevice"/>
+                <entity-condition entity-name="BiometricDevice" list="biometricDeviceList"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        <label style="h2" text="${uiLabelMap['Entity.BiometricDevice']}"/>
+
+                        <container style="margin:10px 0;">
+                            <link target="BiometricDeviceCreate" text="${uiLabelMap['Common.Create']}"/>
+                        </container>
+
+                        <grid>
+                            <columns>
+                                <column width="25"><label text="${uiLabelMap['Entity.BiometricDevice.deviceName']}"/></column>
+                                <column width="25"><label text="${uiLabelMap['Entity.BiometricDevice.serialNumber']}"/></column>
+                                <column width="25"><label text="${uiLabelMap['Entity.BiometricDevice.ipAddress']}"/></column>
+                                <column width="25"><label text="${uiLabelMap.Common.Status}"/></column>
+                            </columns>
+                            <rows>
+                                <iterate list="biometricDeviceList" entry="row">
+                                    <row>
+                                        <column><label text="${row.deviceName}"/></column>
+                                        <column><label text="${row.serialNumber}"/></column>
+                                        <column><label text="${row.ipAddress}"/></column>
+                                        <column><label text="${row.statusId}"/></column>
+                                    </row>
+                                </iterate>
+                            </rows>
+                        </grid>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="BiometricDeviceCreate">
+        <section>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        <label style="h2" text="${uiLabelMap['Common.Create']} - ${uiLabelMap['Entity.BiometricDevice']}"/>
+                        <include-form name="BiometricDeviceCreateForm" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <!-- ================================================= -->
+    <!-- BiometricDeviceUser List / Create -->
+    <!-- ================================================= -->
+<screen name="BiometricDeviceUserList">
+    <section>
+        <actions>
+            <!-- Pagination parameters (OFBiz standard) -->
+            <set field="viewIndex" from-field="parameters.VIEW_INDEX" default-value="0"/>
+            <set field="viewSize"  from-field="parameters.VIEW_SIZE"  default-value="20"/>
+
+            <!-- Real query: fetch list from entity -->
+            <entity-find entity-name="BiometricDeviceUser"
+                         list="biometricDeviceUserList"
+                         paginate="true"
+                         view-index="${viewIndex}"
+                         view-size="${viewSize}">
+                <order-by field-name="biometricDeviceId"/>
+                <order-by field-name="partyId"/>
+                <order-by field-name="fromDate"/>
+            </entity-find>
+        </actions>
+
+        <widgets>
+            <decorator-screen name="main-decorator"
+                              location="component://common/widget/CommonScreens.xml">
+                <decorator-section name="body">
+
+                    <!-- Menu -->
+                    <include-menu name="FingerprintMainMenu"
+                                  location="component://fingerprint/widget/FingerprintMenus.xml"/>
+
+                    <!-- Title -->
+                    <label style="h2" text="${uiLabelMap['Entity.BiometricDeviceUser']}"/>
+
+                    <!-- Optional: show how many rows loaded (remove after verification) -->
+                    <label text="Rows loaded: ${biometricDeviceUserList.size()}"/>
+
+                    <!-- Create link -->
+                    <container style="margin:10px 0;">
+                        <link target="BiometricDeviceUserCreate" text="${uiLabelMap['Common.Create']}"/>
+                    </container>
+
+                    <!-- Grid -->
+                    <grid>
+                        <columns>
+                            <column width="25">
+                                <label text="${uiLabelMap['Entity.BiometricDeviceUser.biometricDeviceId']}"/>
+                            </column>
+                            <column width="25">
+                                <label text="${uiLabelMap['Entity.BiometricDeviceUser.partyId']}"/>
+                            </column>
+                            <column width="25">
+                                <label text="${uiLabelMap['Entity.BiometricDeviceUser.deviceUserId']}"/>
+                            </column>
+                            <column width="25">
+                                <label text="${uiLabelMap['Common.FromDate']}"/>
+                            </column>
+                        </columns>
+
+                        <rows>
+                            <iterate list="biometricDeviceUserList" entry="row">
+                                <row>
+                                    <column><label text="${row.biometricDeviceId}"/></column>
+                                    <column><label text="${row.partyId}"/></column>
+                                    <column><label text="${row.deviceUserId}"/></column>
+                                    <column><label text="${row.fromDate}"/></column>
+                                </row>
+                            </iterate>
+                        </rows>
+                    </grid>
+
+                    <!-- Basic pagination controls (optional, but useful) -->
+                    <container style="margin-top:15px;display:flex;gap:10px;align-items:center;">
+                        <link target="BiometricDeviceUserList"
+                              text="Previous"
+                              url-mode="intra-app">
+                            <parameter param-name="VIEW_INDEX" from-field="${viewIndex - 1}"/>
+                            <parameter param-name="VIEW_SIZE" from-field="${viewSize}"/>
+                        </link>
+
+                        <label text="Page: ${viewIndex}  Size: ${viewSize}"/>
+
+                        <link target="BiometricDeviceUserList"
+                              text="Next"
+                              url-mode="intra-app">
+                            <parameter param-name="VIEW_INDEX" from-field="${viewIndex + 1}"/>
+                            <parameter param-name="VIEW_SIZE" from-field="${viewSize}"/>
+                        </link>
+                    </container>
+
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+    <screen name="BiometricDeviceUserCreate">
+        <section>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        <label style="h2" text="${uiLabelMap['Common.Create']} - ${uiLabelMap['Entity.BiometricDeviceUser']}"/>
+                        <include-form name="BiometricDeviceUserCreateForm" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <!-- ================================================= -->
+    <!-- WorkShift List / Create -->
+    <!-- ================================================= -->
+    <screen name="WorkShiftList">
+        <section>
+            <actions>
+                <entity-condition entity-name="WorkShift" list="workShiftList"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        <label style="h2" text="${uiLabelMap['Entity.WorkShift']}"/>
+
+                        <container style="margin:10px 0;">
+                            <link target="WorkShiftCreate" text="${uiLabelMap['Common.Create']}"/>
+                        </container>
+
+                        <grid>
+                            <columns>
+                                <column width="40"><label text="${uiLabelMap['Entity.WorkShift.shiftName']}"/></column>
+                                <column width="20"><label text="${uiLabelMap['Entity.WorkShift.startTime']}"/></column>
+                                <column width="20"><label text="${uiLabelMap['Entity.WorkShift.endTime']}"/></column>
+                                <column width="20"><label text="${uiLabelMap.Common.Status}"/></column>
+                            </columns>
+                            <rows>
+                                <iterate list="workShiftList" entry="row">
+                                    <row>
+                                        <column><label text="${row.shiftName}"/></column>
+                                        <column><label text="${row.startTime}"/></column>
+                                        <column><label text="${row.endTime}"/></column>
+                                        <column><label text="${row.shiftStatusId}"/></column>
+                                    </row>
+                                </iterate>
+                            </rows>
+                        </grid>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="WorkShiftCreate">
+        <section>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        <label style="h2" text="${uiLabelMap['Common.Create']} - ${uiLabelMap['Entity.WorkShift']}"/>
+                        <include-form name="WorkShiftCreateForm" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <!-- ================================================= -->
+    <!-- AttendancePolicy List / Create -->
+    <!-- ================================================= -->
+    <screen name="AttendancePolicyList">
+        <section>
+            <actions>
+                <entity-condition entity-name="AttendancePolicy" list="attendancePolicyList"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        <label style="h2" text="${uiLabelMap['Entity.AttendancePolicy']}"/>
+
+                        <container style="margin:10px 0;">
+                            <link target="AttendancePolicyCreate" text="${uiLabelMap['Common.Create']}"/>
+                        </container>
+
+                        <grid>
+                            <columns>
+                                <column width="60"><label text="${uiLabelMap['Entity.AttendancePolicy.policyName']}"/></column>
+                                <column width="20"><label text="${uiLabelMap.Common.Status}"/></column>
+                                <column width="20"><label text="${uiLabelMap['Entity.AttendancePolicy.allowManualAdjustFlag']}"/></column>
+                            </columns>
+                            <rows>
+                                <iterate list="attendancePolicyList" entry="row">
+                                    <row>
+                                        <column><label text="${row.policyName}"/></column>
+                                        <column><label text="${row.policyStatusId}"/></column>
+                                        <column><label text="${row.allowManualAdjustFlag}"/></column>
+                                    </row>
+                                </iterate>
+                            </rows>
+                        </grid>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="AttendancePolicyCreate">
+        <section>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        <label style="h2" text="${uiLabelMap['Common.Create']} - ${uiLabelMap['Entity.AttendancePolicy']}"/>
+                        <include-form name="AttendancePolicyCreateForm" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <!-- ================================================= -->
+    <!-- AttendanceDaySummary List (read-only skeleton) -->
+    <!-- ================================================= -->
+    <screen name="AttendanceDaySummaryList">
+        <section>
+            <actions>
+                <entity-condition entity-name="AttendanceDaySummary" list="attendanceDaySummaryList"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        <label style="h2" text="${uiLabelMap['Entity.AttendanceDaySummary']}"/>
+
+                        <grid>
+                            <columns>
+                                <column width="25"><label text="${uiLabelMap['Entity.AttendanceDaySummary.partyId']}"/></column>
+                                <column width="25"><label text="${uiLabelMap['Entity.AttendanceDaySummary.workDate']}"/></column>
+                                <column width="25"><label text="${uiLabelMap['Entity.AttendanceDaySummary.workedMinutes']}"/></column>
+                                <column width="25"><label text="${uiLabelMap['Entity.AttendanceDaySummary.summaryStatusId']}"/></column>
+                            </columns>
+                            <rows>
+                                <iterate list="attendanceDaySummaryList" entry="row">
+                                    <row>
+                                        <column><label text="${row.partyId}"/></column>
+                                        <column><label text="${row.workDate}"/></column>
+                                        <column><label text="${row.workedMinutes}"/></column>
+                                        <column><label text="${row.summaryStatusId}"/></column>
+                                    </row>
+                                </iterate>
+                            </rows>
+                        </grid>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <!-- ================================================= -->
+    <!-- AttendanceException List (read-only skeleton) -->
+    <!-- ================================================= -->
+    <screen name="AttendanceExceptionList">
+        <section>
+            <actions>
+                <entity-condition entity-name="AttendanceException" list="attendanceExceptionList"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        <label style="h2" text="${uiLabelMap['Entity.AttendanceException']}"/>
+
+                        <grid>
+                            <columns>
+                                <column width="25"><label text="${uiLabelMap['Entity.AttendanceException.partyId']}"/></column>
+                                <column width="25"><label text="${uiLabelMap['Entity.AttendanceException.workDate']}"/></column>
+                                <column width="25"><label text="${uiLabelMap['Entity.AttendanceException.exceptionTypeEnumId']}"/></column>
+                                <column width="25"><label text="${uiLabelMap['Entity.AttendanceException.exceptionStatusId']}"/></column>
+                            </columns>
+                            <rows>
+                                <iterate list="attendanceExceptionList" entry="row">
+                                    <row>
+                                        <column><label text="${row.partyId}"/></column>
+                                        <column><label text="${row.workDate}"/></column>
+                                        <column><label text="${row.exceptionTypeEnumId}"/></column>
+                                        <column><label text="${row.exceptionStatusId}"/></column>
+                                    </row>
+                                </iterate>
+                            </rows>
+                        </grid>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <!-- ================================================= -->
+    <!-- BiometricEventLog List (read-only skeleton) -->
+    <!-- ================================================= -->
+<screen name="BiometricEventLogList">
+    <section>
+        <actions>
+            <!-- Decorator -->
+            <set field="mainDecoratorLocation"
+                 value="component://fingerprint/widget/CommonScreens.xml"
+                 global="false"/>
+            <set field="decoratorName"
+                 value="CommonAppDecorator"
+                 global="false"/>
+
+            <!-- Pagination defaults -->
+            <set field="viewIndex" from-field="parameters.VIEW_INDEX" default-value="0"/>
+            <set field="viewSize"  from-field="parameters.VIEW_SIZE"  default-value="20"/>
+
+            <!-- performFind input -->
+            <set field="pfIn.entityName" value="BiometricEventLog"/>
+            <set field="pfIn.orderBy" value="eventDateTime DESC"/>
+            <set field="pfIn.viewIndex" from-field="viewIndex"/>
+            <set field="pfIn.viewSize" from-field="viewSize"/>
+
+            <!-- IMPORTANT: allow list without filters -->
+            <set field="pfIn.noConditionFind" value="Y"/>
+
+            <!-- If you want filters later, map from parameters here:
+                 <set field="pfIn.inputFields.biometricDeviceId" from-field="parameters.biometricDeviceId"/>
+                 <set field="pfIn.inputFields.processStatusId"   from-field="parameters.processStatusId"/>
+            -->
+
+            <!-- Call standard OFBiz service -->
+            <call-service service-name="performFind" in-map-name="pfIn" out-map-name="pfOut"/>
+
+            <!-- Put results into the list name your form expects -->
+            <set field="biometricEventLogList" from-field="pfOut.listIt"/>
+            <set field="biometricEventLogListSize" from-field="pfOut.listSize"/>
+        </actions>
+
+        <widgets>
+            <decorator-screen name="${decoratorName}" location="${mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="${uiLabelMap['Entity.BiometricEventLog']}">
+                        <include-form name="BiometricEventLogListForm"
+                                      location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+
+
+
+
+</screens>

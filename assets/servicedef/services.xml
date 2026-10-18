@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>Assets Services</description>
+    <vendor></vendor>
+    <version>1.0</version>
+
+    <service name="assetsPermissionCheck" engine="java"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsPermissionCheck"
+            export="true" action="POST">
+        <description>Assets component permission check using OFBiz SecurityPermission data.</description>
+        <implements service="permissionInterface"/>
+    </service>
+
+    <service name="assetsFindDepreciationCandidates" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsFindDepreciationCandidates"
+            export="true" action="GET">
+        <description>Find AssetsBookDetail rows eligible for depreciation using OFBiz performFindList.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="true"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="viewIndex" type="Integer" mode="INOUT" optional="true"/>
+        <attribute name="viewSize" type="Integer" mode="INOUT" optional="true"/>
+        <attribute name="assetBookDetails" type="java.util.List" mode="OUT" optional="true"/>
+        <attribute name="listSize" type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsValidateAssetBookPostingSetup" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsValidateAssetBookPostingSetup"
+            export="true" action="POST">
+        <description>Validate company accounting preferences, book currency, fiscal period, and optional GL mapping for an asset book.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="fixedAssetTypeId" type="String" mode="INOUT" optional="true"/>
+        <attribute name="customTimePeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodStartDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="periodEndDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="transactionDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="assetsBook" type="org.apache.ofbiz.entity.GenericValue" mode="OUT" optional="true"/>
+        <attribute name="assetsBookGlAccount" type="org.apache.ofbiz.entity.GenericValue" mode="OUT" optional="true"/>
+        <attribute name="depGlAccountId" type="String" mode="OUT" optional="true"/>
+        <attribute name="accDepGlAccountId" type="String" mode="OUT" optional="true"/>
+        <attribute name="assetGlAccountId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsResolveAssetBookGlAccounts" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsResolveAssetBookGlAccounts"
+            export="true" action="GET">
+        <description>Resolve explicit AssetsBookGlAccount overrides for a book, asset type, and fixed asset.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="fixedAssetTypeId" type="String" mode="INOUT" optional="true"/>
+        <attribute name="customTimePeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodStartDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="periodEndDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="transactionDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="assetsBookGlAccount" type="org.apache.ofbiz.entity.GenericValue" mode="OUT" optional="true"/>
+        <attribute name="depGlAccountId" type="String" mode="OUT" optional="true"/>
+        <attribute name="accDepGlAccountId" type="String" mode="OUT" optional="true"/>
+        <attribute name="assetGlAccountId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsRunDepreciationFormula" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsRunDepreciationFormula"
+            export="true" action="POST">
+        <description>Resolve CustomMethod.customMethodName and run a DEPRECIATION_FORMULA service.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="depreciationCustomMethodId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="true"/>
+        <attribute name="customTimePeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodStartDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="periodEndDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="transactionDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="capitalizedCost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="originalCost" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="salvageValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="depreciableBasis" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="accumulatedDepreciation" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="netBookValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="usefulLifeMonths" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="remainingLifeMonths" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="usageQuantity" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="productionCapacity" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="componentCost" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="depreciationRate" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="macrsRate" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="rateFactor" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="depreciationAmount" type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="formulaServiceName" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsCalculateDepreciationForPeriod" engine="java" auth="true" use-transaction="true" transaction-timeout="600"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsCalculateDepreciationForPeriod"
+            export="true" action="POST">
+        <description>Calculate depreciation for an asset book period without writing schedules or GL transactions.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="customTimePeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodStartDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="periodEndDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="transactionDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="processedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="resultItems" type="java.util.List" mode="OUT" optional="true"/>
+        <attribute name="proposedAcctgTransEntries" type="java.util.List" mode="OUT" optional="true"/>
+        <attribute name="dryRun" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsCreateDepreciationSchedule" engine="java" auth="true" use-transaction="true" transaction-timeout="600"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsCreateDepreciationSchedule"
+            export="true" action="POST">
+        <description>Create planned AssetsBookDepSchedule rows for an asset book period. Pass dryRun=N to write rows.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="CREATE"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="customTimePeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodStartDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="periodEndDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="transactionDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true"/>
+        <attribute name="assetsDepRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="processedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="resultItems" type="java.util.List" mode="OUT" optional="true"/>
+        <attribute name="proposedAcctgTransEntries" type="java.util.List" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsPostDepreciationForPeriod" engine="java" auth="true" use-transaction="true" transaction-timeout="900"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsPostDepreciationForPeriod"
+            export="true" action="POST">
+        <description>Calculate, schedule, and post depreciation for all eligible assets in a book period. Pass dryRun=N to write and post.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="CREATE"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="customTimePeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodStartDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="periodEndDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="transactionDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true"/>
+        <attribute name="assetsDepRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="processedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="resultItems" type="java.util.List" mode="OUT" optional="true"/>
+        <attribute name="proposedAcctgTransEntries" type="java.util.List" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsPostDepreciationForAssetBook" engine="java" auth="true" use-transaction="true" transaction-timeout="900"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsPostDepreciationForAssetBook"
+            export="true" action="POST">
+        <description>Alias for depreciation posting by asset book, with optional fixedAssetId filtering. Pass dryRun=N to write and post.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="CREATE"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="customTimePeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="periodStartDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="periodEndDate" type="java.sql.Date" mode="IN" optional="true"/>
+        <attribute name="transactionDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true"/>
+        <attribute name="assetsDepRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="processedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="skippedCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="resultItems" type="java.util.List" mode="OUT" optional="true"/>
+        <attribute name="proposedAcctgTransEntries" type="java.util.List" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsReverseDepreciationPosting" engine="java" auth="true" use-transaction="true" transaction-timeout="600"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="assetsReverseDepreciationPosting"
+            export="true" action="POST">
+        <description>Reverse a posted depreciation schedule row and its linked OFBiz accounting transaction. Pass dryRun=N to write reversal.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/>
+        <attribute name="assetsBookDepScheduleId" type="String" mode="INOUT" optional="false"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true"/>
+        <attribute name="postedAcctgTransId" type="String" mode="OUT" optional="true"/>
+        <attribute name="reversalAcctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="straightLineMonthlyDepreciation" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="straightLineMonthlyDepreciation"
+            export="true" action="POST">
+        <description>Depreciation formula service: straight-line monthly depreciation.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="capitalizedCost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="salvageValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="depreciableBasis" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="accumulatedDepreciation" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="netBookValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="usefulLifeMonths" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="depreciationAmount" type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="rateFactor" type="BigDecimal" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="decliningBalanceDepreciation" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="decliningBalanceDepreciation"
+            export="true" action="POST">
+        <description>Depreciation formula service: monthly declining balance depreciation.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="capitalizedCost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="salvageValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="accumulatedDepreciation" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="netBookValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="usefulLifeMonths" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="depreciationRate" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="depreciationAmount" type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="rateFactor" type="BigDecimal" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="sumOfYearsDigitsDepreciation" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="sumOfYearsDigitsDepreciation"
+            export="true" action="POST">
+        <description>Depreciation formula service: monthly sum-of-years-digits depreciation.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="capitalizedCost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="salvageValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="depreciableBasis" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="remainingLifeMonths" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="usefulLifeMonths" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="depreciationAmount" type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="rateFactor" type="BigDecimal" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="unitsOfProductionDepreciation" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="unitsOfProductionDepreciation"
+            export="true" action="POST">
+        <description>Depreciation formula service: units-of-production depreciation.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="capitalizedCost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="salvageValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="depreciableBasis" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="usageQuantity" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="productionCapacity" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="depreciationAmount" type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="rateFactor" type="BigDecimal" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="macrsDepreciation" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="macrsDepreciation"
+            export="true" action="POST">
+        <description>Depreciation formula service: MACRS-style table-rate depreciation. Caller supplies macrsRate or rateFactor.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="capitalizedCost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="salvageValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="depreciableBasis" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="macrsRate" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="rateFactor" type="BigDecimal" mode="INOUT" optional="true"/>
+        <attribute name="depreciationAmount" type="BigDecimal" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="componentDepreciation" engine="java" auth="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsDepreciationServices" invoke="componentDepreciation"
+            export="true" action="POST">
+        <description>Depreciation formula service: component depreciation using componentCost when supplied.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="capitalizedCost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="componentCost" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="salvageValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="depreciableBasis" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="accumulatedDepreciation" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="netBookValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="usefulLifeMonths" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="depreciationAmount" type="BigDecimal" mode="OUT" optional="false"/>
+        <attribute name="rateFactor" type="BigDecimal" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsCreateBook" engine="java" auth="true" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsBookLifecycleServices" invoke="assetsCreateBook"
+            export="true" action="POST">
+        <description>Create an accounting-controlled AssetsBook with primary, posting, currency, status, and effective-date validation.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="CREATE"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="roleTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="bookName" type="String" mode="IN" optional="false"/>
+        <attribute name="description" type="String" mode="IN" optional="true"/>
+        <attribute name="bookTypeEnumId" type="String" mode="IN" optional="false"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true" default-value="ASSETS_PENDING"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="false"/>
+        <attribute name="isPrimaryBook" type="String" mode="IN" optional="true" default-value="N"/>
+        <attribute name="isPostingBook" type="String" mode="IN" optional="true" default-value="N"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="assetsBook" type="org.apache.ofbiz.entity.GenericValue" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsCloseBook" engine="java" auth="true" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsBookLifecycleServices" invoke="assetsCloseBook"
+            export="true" action="POST">
+        <description>Close a non-primary AssetsBook, preserve history, close effective assignments, and cancel only future unposted schedules.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="effectiveDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="closedAssignmentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="cancelledScheduleCount" type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsTransitionPrimaryBook" engine="java" auth="true" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsBookLifecycleServices" invoke="assetsTransitionPrimaryBook"
+            export="true" action="POST">
+        <description>Atomically close one active primary book and activate its approved successor at the same exclusive/inclusive boundary.</description>
+        <required-permissions join-type="OR"><check-permission permission="ASSETS_APPROVE"/><check-permission permission="ASSETS_ADMIN"/></required-permissions>
+        <attribute name="predecessorAssetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="successorAssetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="transitionDate" type="Timestamp" mode="INOUT" optional="false"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="migratedAssignmentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="createdAssignmentCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="cancelledScheduleCount" type="Integer" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsAssignFixedAssetToBook" engine="java" auth="true" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsBookServices" invoke="assetsAssignFixedAssetToBook"
+            export="true" action="POST">
+        <description>Validate and create an effective-dated AssetsBookDetail assignment without duplicating FixedAsset.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="CREATE"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true" default-value="ASSETS_IN_SERVICE"/>
+        <attribute name="placedInServiceDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="capitalizationDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="originalCost" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="capitalizedCost" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="salvageValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="accumulatedDepreciation" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="impairmentAmount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="revaluationAmount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="netBookValue" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="usefulLifeMonths" type="Long" mode="IN" optional="false"/>
+        <attribute name="remainingLifeMonths" type="Long" mode="IN" optional="true"/>
+        <attribute name="depreciationCustomMethodId" type="String" mode="IN" optional="false"/>
+        <attribute name="depConventionEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="prorationMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="productionCapacity" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="productionCapacityUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="lastDepreciationDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="nextDepreciationDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="bookDetail" type="org.apache.ofbiz.entity.GenericValue" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsRemoveFixedAssetFromBook" engine="java" auth="true" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsBookServices" invoke="assetsRemoveFixedAssetFromBook"
+            export="true" action="POST">
+        <description>Close an AssetsBookDetail assignment and cancel only future unposted depreciation schedules.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="effectiveDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="cancelledScheduleCount" type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsProcessApprovalDecision" engine="java" auth="true" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsApprovalServices" invoke="assetsProcessApprovalDecision"
+            export="true" action="POST">
+        <description>Preview or atomically commit an Assets approval decision and synchronize the native OFBiz Requirement status.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/>
+        <attribute name="assetsApprovalDecisionId" type="String" mode="INOUT" optional="false"/>
+        <attribute name="decisionEnumId" type="String" mode="INOUT" optional="false"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="requirementId" type="String" mode="OUT" optional="true"/>
+        <attribute name="decisionStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="requestStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="cancelledDecisionCount" type="Integer" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsGetRequestSetup" engine="java" auth="true" export="true" action="POST" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsRequestServices" invoke="assetsGetRequestSetup">
+        <description>Assets workflow service assetsGetRequestSetup</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="organizations" type="List" mode="OUT" optional="true"/>
+        <attribute name="assetTypes" type="List" mode="OUT" optional="true"/>
+        <attribute name="requirementTypes" type="List" mode="OUT" optional="true"/>
+        <attribute name="currencies" type="List" mode="OUT" optional="true"/>
+        <attribute name="requestTypes" type="List" mode="OUT" optional="true"/>
+        <attribute name="priorities" type="List" mode="OUT" optional="true"/>
+        <attribute name="budgetStatuses" type="List" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsCreateAssetRequest" engine="java" auth="true" export="true" action="POST" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsRequestServices" invoke="assetsCreateAssetRequest">
+        <description>Assets workflow service assetsCreateAssetRequest</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="CREATE"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="roleTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="requirementTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="description" type="String" mode="IN" optional="false"/>
+        <attribute name="productId" type="String" mode="IN" optional="true"/>
+        <attribute name="quantity" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="facilityId" type="String" mode="IN" optional="true"/>
+        <attribute name="requestTypeEnumId" type="String" mode="IN" optional="false"/>
+        <attribute name="priorityEnumId" type="String" mode="IN" optional="false"/>
+        <attribute name="budgetStatusEnumId" type="String" mode="IN" optional="false"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="false"/>
+        <attribute name="submissionKey" type="String" mode="IN" optional="false"/>
+        <attribute name="estimatedCapitalizedCost" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="requestedInServiceDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="requirementId" type="String" mode="OUT" optional="true"/>
+        <attribute name="requestStatusId" type="String" mode="OUT" optional="true"/>
+        <attribute name="approvalTasks" type="List" mode="OUT" optional="true"/>
+        <attribute name="replayed" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsSaveApprovalRule" engine="java" auth="true" export="true" action="POST" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsRequestServices" invoke="assetsSaveApprovalRule">
+        <description>Assets workflow service assetsSaveApprovalRule</description>
+        <required-permissions join-type="AND"><check-permission permission="ASSETS_ADMIN"/></required-permissions>
+        <attribute name="assetsApprovalRuleId" type="String" mode="INOUT" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="roleTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="approverPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="approverRoleTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="statusId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="requestTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="budgetStatusEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="description" type="String" mode="IN" optional="true"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="sequenceNum" type="Long" mode="IN" optional="false"/>
+        <attribute name="minAmount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="maxAmount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+    </service>
+
+    <service name="assetsGetAccumDep" engine="java" auth="true" export="true" action="POST" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsBalanceServices" invoke="assetsGetAccumDep">
+        <description>Assets workflow service assetsGetAccumDep</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="fixedAssetIds" type="List" mode="IN" optional="false"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="true"/>
+        <attribute name="assetList" type="List" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsGrantOrganizationAccess" engine="entity-auto" invoke="create" default-entity-name="AssetsOrganizationAccess" auth="true" export="true" action="POST">
+        <description>Administrator-managed organization access for Assets workflows.</description>
+        <required-permissions join-type="AND"><check-permission permission="ASSETS_ADMIN"/></required-permissions>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+
+    <service name="assetsUpdateOrganizationAccess" engine="entity-auto" invoke="update" default-entity-name="AssetsOrganizationAccess" auth="true" export="true" action="POST">
+        <description>Administrator-managed organization access for Assets workflows.</description>
+        <required-permissions join-type="AND"><check-permission permission="ASSETS_ADMIN"/></required-permissions>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="assetsCreatePurchaseOrder" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="300"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsProcurementServices" invoke="assetsCreatePurchaseOrder">
+        <description>Create a native purchase order and requirement commitment atomically after Assets approvals.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="CREATE"/>
+        <attribute name="requirementId" type="String" mode="INOUT" optional="false"/>
+        <attribute name="supplierPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="unitPrice" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="shipToContactMechId" type="String" mode="IN" optional="false"/>
+        <attribute name="shipmentMethodTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="carrierPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="orderId" type="String" mode="OUT" optional="true"/>
+        <attribute name="orderItemSeqId" type="String" mode="OUT" optional="true"/>
+        <attribute name="quantity" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="orderTotal" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsGetGlMappingSetup" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsGlMappingServices" invoke="assetsGetGlMappingSetup">
+        <description>Read organization-scoped books, mappings, and assigned native GL accounts.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="true"/>
+        <attribute name="books" type="List" mode="OUT" optional="true"/>
+        <attribute name="assetTypes" type="List" mode="OUT" optional="true"/>
+        <attribute name="accounts" type="List" mode="OUT" optional="true"/>
+        <attribute name="mappings" type="List" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsSaveGlMapping" engine="java" auth="true" export="true" action="POST" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsGlMappingServices" invoke="assetsSaveGlMapping">
+        <description>Create an effective-dated Assets GL mapping; preserve prior posted accounting history.</description>
+        <required-permissions join-type="AND"><check-permission permission="ASSETS_ADMIN"/></required-permissions>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="true"/>
+        <attribute name="fixedAssetTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="assetGlAccountId" type="String" mode="IN" optional="false"/>
+        <attribute name="depGlAccountId" type="String" mode="IN" optional="false"/>
+        <attribute name="accDepGlAccountId" type="String" mode="IN" optional="false"/>
+        <attribute name="cipGlAccountId" type="String" mode="IN" optional="true"/>
+        <attribute name="capitalizationReasonId" type="String" mode="IN" optional="true"/>
+        <attribute name="capitalizationReasonDescription" type="String" mode="IN" optional="true"/>
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+        <attribute name="assetsBookGlAccountId" type="String" mode="OUT" optional="true"/>
+    <attribute name="profitGlAccountId" type="String" mode="IN" optional="true"/><attribute name="lossGlAccountId" type="String" mode="IN" optional="true"/><attribute name="disposalProceedsGlAccountId" type="String" mode="IN" optional="true"/></service>
+    <service name="assetsReceivePurchaseOrder" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="600"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsProcurementServices" invoke="assetsReceivePurchaseOrder">
+        <description>Receive an approved native Assets purchase into the owning organization's facility atomically.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="CREATE"/>
+        <attribute name="requirementId" type="String" mode="IN" optional="false"/>
+        <attribute name="orderId" type="String" mode="IN" optional="false"/>
+        <attribute name="orderItemSeqId" type="String" mode="IN" optional="false"/>
+        <attribute name="facilityId" type="String" mode="IN" optional="false"/>
+        <attribute name="inventoryItemTypeId" type="String" mode="IN" optional="false"/>
+        <attribute name="quantityAccepted" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="quantityRejected" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="serialNumber" type="String" mode="IN" optional="true"/>
+        <attribute name="rejectionId" type="String" mode="IN" optional="true"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="outstandingQuantity" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="shipmentId" type="String" mode="OUT" optional="true"/>
+        <attribute name="receipts" type="List" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsInspectReceipt" engine="java" auth="true" export="true" action="POST" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsCapitalizationServices" invoke="assetsInspectReceipt">
+        <description>Record an accountable Assets inspection outcome against a native purchase receipt.</description>
+        <required-permissions join-type="OR"><check-permission permission="ASSETS_APPROVE"/><check-permission permission="ASSETS_ADMIN"/></required-permissions>
+        <attribute name="requirementId" type="String" mode="IN" optional="false"/>
+        <attribute name="receiptId" type="String" mode="IN" optional="false"/>
+        <attribute name="statusId" type="String" mode="IN" optional="false"/>
+        <attribute name="comments" type="String" mode="IN" optional="false"/>
+    </service>
+    <service name="assetsCapitalizeReceipt" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="600"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsCapitalizationServices" invoke="assetsCapitalizeReceipt">
+        <description>Capitalize one inspected and invoiced stock unit, using native inventory conversion accounting.</description>
+        <required-permissions join-type="OR"><check-permission permission="ASSETS_APPROVE"/><check-permission permission="ASSETS_ADMIN"/></required-permissions>
+        <attribute name="requirementId" type="String" mode="IN" optional="false"/>
+        <attribute name="receiptId" type="String" mode="IN" optional="false"/>
+        <attribute name="invoiceId" type="String" mode="IN" optional="false"/>
+        <attribute name="invoiceItemSeqId" type="String" mode="IN" optional="false"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="fixedAssetId" type="String" mode="INOUT" optional="true"/>
+        <attribute name="fixedAssetName" type="String" mode="IN" optional="false"/>
+        <attribute name="salvageValue" type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="usefulLifeMonths" type="Long" mode="IN" optional="false"/>
+        <attribute name="depreciationCustomMethodId" type="String" mode="IN" optional="false"/>
+        <attribute name="varianceReasonId" type="String" mode="IN" optional="false"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true" default-value="Y"/>
+        <attribute name="capitalizedAmount" type="BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="assetGlAccountId" type="String" mode="OUT" optional="true"/>
+        <attribute name="sourceGlAccountId" type="String" mode="OUT" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="OUT" optional="true"/>
+        <attribute name="assetsCapitalizationId" type="String" mode="OUT" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsPlaceInService" engine="java" auth="true" export="true" action="POST" use-transaction="true"
+            location="org.apache.ofbiz.assets.fixedasset.AssetsCapitalizationServices" invoke="assetsPlaceInService">
+        <description>Place a capitalized asset in service once, preserving native journal and request links.</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/>
+        <attribute name="fixedAssetId" type="String" mode="INOUT" optional="false"/>
+        <attribute name="assetsBookId" type="String" mode="IN" optional="false"/>
+        <attribute name="replayed" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="assetsGetCustodyWorkspace" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsCustodyServices" invoke="assetsGetCustodyWorkspace">
+        <description>Assets operational custody assetsGetCustodyWorkspace</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="asset" type="Map" mode="OUT" optional="true"/>
+        <attribute name="control" type="Map" mode="OUT" optional="true"/>
+        <attribute name="provenance" type="Map" mode="OUT" optional="true"/>
+        <attribute name="assignments" type="List" mode="OUT" optional="true"/>
+        <attribute name="movements" type="List" mode="OUT" optional="true"/>
+        <attribute name="events" type="List" mode="OUT" optional="true"/>
+        <attribute name="facilities" type="List" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsFindCustodyRecipients" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsCustodyServices" invoke="assetsFindCustodyRecipients">
+        <description>Assets operational custody assetsFindCustodyRecipients</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="query" type="String" mode="IN" optional="true"/>
+        <attribute name="viewIndex" type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewSize" type="Integer" mode="IN" optional="true"/>
+        <attribute name="rows" type="List" mode="OUT" optional="true"/>
+        <attribute name="total" type="Integer" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsSubmitCustodyMovement" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsCustodyServices" invoke="assetsSubmitCustodyMovement">
+        <description>Assets operational custody assetsSubmitCustodyMovement</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="movementType" type="String" mode="IN" optional="false"/>
+        <attribute name="toPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="toRoleTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="toFacilityId" type="String" mode="IN" optional="false"/>
+        <attribute name="toLocationSeqId" type="String" mode="IN" optional="true"/>
+        <attribute name="conditionId" type="String" mode="IN" optional="false"/>
+        <attribute name="comments" type="String" mode="IN" optional="false"/>
+        <attribute name="dryRun" type="String" mode="INOUT" optional="true"/>
+        <attribute name="provenance" type="Map" mode="OUT" optional="true"/>
+        <attribute name="assetsCustodyMovementId" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsProcessCustodyMovement" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsCustodyServices" invoke="assetsProcessCustodyMovement">
+        <description>Assets operational custody assetsProcessCustodyMovement</description>
+        <permission-service service-name="assetsPermissionCheck" main-action="VIEW"/>
+        <attribute name="assetsCustodyMovementId" type="String" mode="INOUT" optional="false"/>
+        <attribute name="action" type="String" mode="IN" optional="false"/>
+        <attribute name="comments" type="String" mode="IN" optional="false"/>
+        <attribute name="onBehalf" type="String" mode="IN" optional="true"/>
+        <attribute name="conditionId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="assetsReleaseCustodyQuarantine" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsCustodyServices" invoke="assetsReleaseCustodyQuarantine">
+        <description>Assets operational custody assetsReleaseCustodyQuarantine</description>
+        <required-permissions join-type="OR"><check-permission permission="ASSETS_APPROVE"/><check-permission permission="ASSETS_ADMIN"/></required-permissions>
+        <attribute name="fixedAssetId" type="String" mode="IN" optional="false"/>
+        <attribute name="comments" type="String" mode="IN" optional="false"/>
+    </service>
+<service name="assetsGetDisposalWorkspace" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsDisposalServices" invoke="assetsGetDisposalWorkspace"><description>Controlled Assets disposal assetsGetDisposalWorkspace</description><permission-service service-name="assetsPermissionCheck" main-action="VIEW"/><attribute name="fixedAssetId" type="String" mode="IN" optional="true"/><attribute name="partyId" type="String" mode="IN" optional="true"/><attribute name="asset" type="org.apache.ofbiz.entity.GenericValue" mode="OUT" optional="true"/><attribute name="rows" type="List" mode="OUT" optional="true"/><attribute name="books" type="List" mode="OUT" optional="true"/><attribute name="events" type="List" mode="OUT" optional="true"/><attribute name="provenance" type="Map" mode="OUT" optional="true"/><attribute name="assetsDisposalId" type="String" mode="IN" optional="true"/></service>
+<service name="assetsRequestDisposal" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsDisposalServices" invoke="assetsRequestDisposal"><description>Controlled Assets disposal assetsRequestDisposal</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="fixedAssetId" type="String" mode="IN" optional="false"/><attribute name="disposalTypeEnumId" type="String" mode="IN" optional="false"/><attribute name="disposalDate" type="Timestamp" mode="IN" optional="false"/><attribute name="proceedsAmount" type="BigDecimal" mode="IN" optional="false"/><attribute name="invoiceId" type="String" mode="IN" optional="true"/><attribute name="invoiceItemSeqId" type="String" mode="IN" optional="true"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="dryRun" type="String" mode="IN" optional="true"/><attribute name="expectedFingerprint" type="String" mode="IN" optional="true"/><attribute name="plan" type="Map" mode="OUT" optional="true"/><attribute name="assetsDisposalId" type="String" mode="OUT" optional="true"/></service>
+<service name="assetsProcessDisposal" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsDisposalServices" invoke="assetsProcessDisposal"><description>Controlled Assets disposal assetsProcessDisposal</description><permission-service service-name="assetsPermissionCheck" main-action="VIEW"/><attribute name="assetsDisposalId" type="String" mode="IN" optional="false"/><attribute name="action" type="String" mode="IN" optional="false"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="onBehalf" type="String" mode="IN" optional="true"/><attribute name="assetsDisposalId" type="String" mode="OUT" optional="true"/><attribute name="statusId" type="String" mode="OUT" optional="true"/><attribute name="acctgTransId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/></service>
+<service name="assetsGetMaintenanceWorkspace" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsMaintenanceServices" invoke="assetsGetMaintenanceWorkspace"><description>Controlled native Assets maintenance</description><permission-service service-name="assetsPermissionCheck" main-action="VIEW"/><attribute name="fixedAssetId" type="String" mode="IN" optional="false"/><attribute name="asset" type="Map" mode="OUT" optional="true"/><attribute name="rows" type="List" mode="OUT" optional="true"/><attribute name="events" type="List" mode="OUT" optional="true"/><attribute name="types" type="List" mode="OUT" optional="true"/><attribute name="provenance" type="Map" mode="OUT" optional="true"/></service><service name="assetsCreateMaintenance" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsMaintenanceServices" invoke="assetsCreateMaintenance"><description>Controlled native Assets maintenance</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="fixedAssetId" type="String" mode="INOUT" optional="false"/><attribute name="maintenanceKind" type="String" mode="IN" optional="false"/><attribute name="productMaintTypeId" type="String" mode="IN" optional="false"/><attribute name="workEffortName" type="String" mode="IN" optional="false"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="estimatedStartDate" type="Timestamp" mode="IN" optional="false"/><attribute name="estimatedCompletionDate" type="Timestamp" mode="IN" optional="false"/><attribute name="submissionKey" type="String" mode="IN" optional="false"/><attribute name="dryRun" type="String" mode="INOUT" optional="true"/><attribute name="maintHistSeqId" type="String" mode="OUT" optional="true"/><attribute name="statusId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/></service><service name="assetsProcessMaintenance" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="180" location="org.apache.ofbiz.assets.fixedasset.AssetsMaintenanceServices" invoke="assetsProcessMaintenance"><description>Controlled native Assets maintenance</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="fixedAssetId" type="String" mode="INOUT" optional="false"/><attribute name="maintHistSeqId" type="String" mode="INOUT" optional="false"/><attribute name="action" type="String" mode="IN" optional="false"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="statusId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/></service><service name="assetsGetMaintenanceCosts" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsMaintenanceCostServices" invoke="assetsGetMaintenanceCosts"><description>Native maintenance parts and evidenced cost treatment</description><permission-service service-name="assetsPermissionCheck" main-action="VIEW"/><attribute name="fixedAssetId" type="String" mode="IN" optional="false"/><attribute name="asset" type="Map" mode="OUT" optional="true"/><attribute name="provenance" type="Map" mode="OUT" optional="true"/><attribute name="rows" type="List" mode="OUT" optional="true"/><attribute name="events" type="List" mode="OUT" optional="true"/><attribute name="snapshots" type="List" mode="OUT" optional="true"/><attribute name="maintenance" type="List" mode="OUT" optional="true"/></service><service name="assetsIssueMaintenancePart" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsMaintenanceCostServices" invoke="assetsIssueMaintenancePart"><description>Native maintenance parts and evidenced cost treatment</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="fixedAssetId" type="String" mode="IN" optional="false"/><attribute name="maintHistSeqId" type="String" mode="IN" optional="false"/><attribute name="inventoryItemId" type="String" mode="IN" optional="false"/><attribute name="quantity" type="BigDecimal" mode="IN" optional="false"/><attribute name="submissionKey" type="String" mode="IN" optional="false"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="dryRun" type="String" mode="IN" optional="true"/><attribute name="assetsMaintenanceCostId" type="String" mode="OUT" optional="true"/><attribute name="statusId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/><attribute name="plan" type="Map" mode="OUT" optional="true"/><attribute name="expectedFingerprint" type="String" mode="IN" optional="true"/></service><service name="assetsReturnMaintenancePart" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsMaintenanceCostServices" invoke="assetsReturnMaintenancePart"><description>Native maintenance parts and evidenced cost treatment</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="assetsMaintenanceCostId" type="String" mode="INOUT" optional="false"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="statusId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/></service><service name="assetsAttachMaintenanceInvoice" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsMaintenanceCostServices" invoke="assetsAttachMaintenanceInvoice"><description>Native maintenance parts and evidenced cost treatment</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="fixedAssetId" type="String" mode="IN" optional="false"/><attribute name="maintHistSeqId" type="String" mode="IN" optional="false"/><attribute name="invoiceId" type="String" mode="IN" optional="false"/><attribute name="invoiceItemSeqId" type="String" mode="IN" optional="false"/><attribute name="submissionKey" type="String" mode="IN" optional="false"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="dryRun" type="String" mode="IN" optional="true"/><attribute name="assetsMaintenanceCostId" type="String" mode="OUT" optional="true"/><attribute name="statusId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/><attribute name="plan" type="Map" mode="OUT" optional="true"/><attribute name="expectedFingerprint" type="String" mode="IN" optional="true"/></service><service name="assetsSettleMaintenanceCost" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsMaintenanceCostServices" invoke="assetsSettleMaintenanceCost"><description>Native maintenance parts and evidenced cost treatment</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="assetsMaintenanceCostId" type="String" mode="INOUT" optional="false"/><attribute name="treatment" type="String" mode="IN" optional="false"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="dryRun" type="String" mode="IN" optional="true"/><attribute name="expectedFingerprint" type="String" mode="IN" optional="true"/><attribute name="onBehalf" type="String" mode="IN" optional="true"/><attribute name="statusId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/><attribute name="plan" type="Map" mode="OUT" optional="true"/><attribute name="acceptFullMonthPolicy" type="String" mode="IN" optional="true"/></service><service name="assetsGetVerification" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsVerificationServices" invoke="assetsGetVerification"><description>Controlled physical asset verification and reconciliation</description><permission-service service-name="assetsPermissionCheck" main-action="VIEW"/><attribute name="assetsVerificationId" type="String" mode="IN" optional="true"/><attribute name="partyId" type="String" mode="IN" optional="true"/><attribute name="viewIndex" type="Integer" mode="IN" optional="true"/><attribute name="viewSize" type="Integer" mode="IN" optional="true"/><attribute name="campaign" type="Map" mode="OUT" optional="true"/><attribute name="campaigns" type="List" mode="OUT" optional="true"/><attribute name="rows" type="List" mode="OUT" optional="true"/><attribute name="events" type="List" mode="OUT" optional="true"/><attribute name="total" type="Integer" mode="OUT" optional="true"/></service><service name="assetsCreateVerification" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsVerificationServices" invoke="assetsCreateVerification"><description>Controlled physical asset verification and reconciliation</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="partyId" type="String" mode="IN" optional="false"/><attribute name="campaignName" type="String" mode="IN" optional="false"/><attribute name="facilityId" type="String" mode="IN" optional="true"/><attribute name="custodianPartyId" type="String" mode="IN" optional="true"/><attribute name="fixedAssetIds" type="List" mode="IN" optional="true"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="submissionKey" type="String" mode="IN" optional="false"/><attribute name="assetsVerificationId" type="String" mode="OUT" optional="true"/><attribute name="statusId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/></service><service name="assetsRecordVerificationCount" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsVerificationServices" invoke="assetsRecordVerificationCount"><description>Controlled physical asset verification and reconciliation</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="assetsVerificationId" type="String" mode="IN" optional="false"/><attribute name="scanCode" type="String" mode="IN" optional="false"/><attribute name="finding" type="String" mode="IN" optional="false"/><attribute name="conditionId" type="String" mode="IN" optional="false"/><attribute name="observedFacilityId" type="String" mode="IN" optional="true"/><attribute name="observedLocationSeqId" type="String" mode="IN" optional="true"/><attribute name="observedCustodianPartyId" type="String" mode="IN" optional="true"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="assetsVerificationLineId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/></service><service name="assetsProcessVerification" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsVerificationServices" invoke="assetsProcessVerification"><description>Controlled physical asset verification and reconciliation</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="assetsVerificationId" type="String" mode="INOUT" optional="false"/><attribute name="action" type="String" mode="IN" optional="false"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="assetsVerificationLineId" type="String" mode="IN" optional="true"/><attribute name="onBehalf" type="String" mode="IN" optional="true"/><attribute name="statusId" type="String" mode="OUT" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/></service><service name="assetsReviewVerificationLine" engine="java" auth="true" export="true" action="POST" use-transaction="true" transaction-timeout="240" location="org.apache.ofbiz.assets.fixedasset.AssetsVerificationServices" invoke="assetsReviewVerificationLine"><description>Controlled physical asset verification and reconciliation</description><permission-service service-name="assetsPermissionCheck" main-action="UPDATE"/><attribute name="assetsVerificationId" type="String" mode="IN" optional="false"/><attribute name="assetsVerificationLineId" type="String" mode="INOUT" optional="false"/><attribute name="decision" type="String" mode="IN" optional="false"/><attribute name="comments" type="String" mode="IN" optional="false"/><attribute name="onBehalf" type="String" mode="IN" optional="true"/><attribute name="assetsCustodyMovementId" type="String" mode="IN" optional="true"/><attribute name="replayed" type="String" mode="OUT" optional="true"/></service>
+</services>

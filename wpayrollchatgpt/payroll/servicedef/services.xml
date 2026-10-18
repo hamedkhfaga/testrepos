@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ========================================================= -->
+    <!-- Payroll Accounting Router (Pattern A/B) -->
+    <!-- ========================================================= -->
+
+    <service name="dispatchPayrollAccounting"
+             engine="java"
+             location="org.apache.ofbiz.payroll.acctg.PayrollAccountingService"
+             invoke="dispatchPayrollAccounting"
+             auth="true"
+             export="true">
+        <description>Route payroll accounting by PayrollAcctgConfig pattern (A=GL, B=PayRun)</description>
+
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollStructureId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="responseMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="errorMessage" type="String" mode="OUT" optional="true"/>
+
+        <attribute name="postingId" type="String" mode="OUT" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+        <attribute name="postingLevelStatusId" type="String" mode="OUT" optional="true"/>
+
+        <attribute name="payRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="itemsCreated" type="Long" mode="OUT" optional="true"/>
+        <attribute name="payMethodTypeId" type="String" mode="OUT" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="OUT" optional="true"/>
+        <attribute name="invoiceTypeId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="postPayrollAccountingPatternA"
+             engine="java"
+             location="org.apache.ofbiz.payroll.acctg.PayrollAccountingService"
+             invoke="postPayrollAccountingPatternA"
+             auth="true"
+             export="true">
+        <description>Pattern A: Create AcctgTrans/AcctgTransEntry from EmployeePayrollResult and store PayrollAcctgPosting</description>
+
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <!-- RECOMMENDED: make optional to avoid validation failure if caller doesn't pass it -->
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollStructureId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="postingId" type="String" mode="OUT" optional="true"/>
+        <attribute name="acctgTransId" type="String" mode="OUT" optional="true"/>
+        <attribute name="postingLevelStatusId" type="String" mode="OUT" optional="true"/>
+
+        <attribute name="responseMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="errorMessage" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="generatePayrollPayRunPatternB"
+             engine="java"
+             location="org.apache.ofbiz.payroll.acctg.PayrollAccountingService"
+             invoke="generatePayrollPayRunPatternB"
+             auth="true"
+             export="true">
+        <description>Pattern B: Create PayrollPayRun + PayrollPayRunItem (optionally link Payment/Invoice later)</description>
+
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <!-- RECOMMENDED: make optional to avoid validation failure if caller doesn't pass it -->
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollStructureId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="payRunId" type="String" mode="OUT" optional="true"/>
+        <attribute name="itemsCreated" type="Long" mode="OUT" optional="true"/>
+
+        <attribute name="payMethodTypeId" type="String" mode="OUT" optional="true"/>
+        <attribute name="paymentTypeId" type="String" mode="OUT" optional="true"/>
+        <attribute name="invoiceTypeId" type="String" mode="OUT" optional="true"/>
+
+        <attribute name="responseMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="errorMessage" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="reversePayrollAccountingPatternA"
+             engine="java"
+             location="org.apache.ofbiz.payroll.acctg.PayrollAccountingService"
+             invoke="reversePayrollAccountingPatternA"
+             auth="true"
+             export="true">
+        <description>Reverse a posted PayrollAcctgPosting by generating opposite AcctgTransEntry lines</description>
+
+        <attribute name="postingId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="originalPostingId" type="String" mode="OUT" optional="true"/>
+        <attribute name="reversalPostingId" type="String" mode="OUT" optional="true"/>
+        <attribute name="reversalAcctgTransId" type="String" mode="OUT" optional="true"/>
+
+        <attribute name="responseMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="successMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="errorMessage" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- ========================================================= -->
+    <!-- FINAL PAYROLL ENGINE SERVICES -->
+    <!-- Class: org.apache.ofbiz.payroll.PayrollEngine -->
+    <!-- ========================================================= -->
+
+    <service name="processPayrollIteration"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollEngine"
+             invoke="processPayrollIteration"
+             auth="true"
+             export="true">
+        <description>Create PayrollIteration + EmployeePayrollResult rows for a period</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollStructureId"   type="String" mode="IN" optional="true"/>
+
+        <attribute name="payPeriodFrom" type="java.sql.Timestamp" mode="IN" optional="false"/>
+        <attribute name="payPeriodThru" type="java.sql.Timestamp" mode="IN" optional="false"/>
+        <attribute name="payDate"       type="java.sql.Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="payrollIterationId"  type="String" mode="OUT" optional="true"/>
+        <attribute name="totalEmployees"      type="Long"   mode="OUT" optional="true"/>
+        <attribute name="totalGrossPay"       type="java.math.BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="totalNetPay"         type="java.math.BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="totalDeductions"     type="java.math.BigDecimal" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="currencyUomId"       type="String" mode="OUT" optional="true"/>
+
+        <attribute name="responseMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="successMessage"  type="String" mode="OUT" optional="true"/>
+        <attribute name="errorMessage"    type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="approvePayrollIteration"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollEngine"
+             invoke="approvePayrollIteration"
+             auth="true"
+             export="true">
+        <description>Approve PayrollIteration then trigger accounting based on PayrollAcctgConfig pattern</description>
+
+        <attribute name="payrollIterationId" type="String" mode="IN" optional="false"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="organizationPartyId"   type="String" mode="OUT" optional="true"/>
+        <attribute name="acctgPatternStatusId"  type="String" mode="OUT" optional="true"/>
+
+        <attribute name="responseMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="successMessage"  type="String" mode="OUT" optional="true"/>
+        <attribute name="errorMessage"    type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="createEmployeePayrollAssignment"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollEngine"
+             invoke="createEmployeePayrollAssignment"
+             auth="true"
+             export="true">
+        <description>Create EmployeePayrollAssignment linked to PayrollStructure org</description>
+
+        <attribute name="partyId"            type="String" mode="IN" optional="false"/>
+        <attribute name="payrollStructureId" type="String" mode="IN" optional="false"/>
+
+        <attribute name="employmentTypeStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="contractTypeStatusId"   type="String" mode="IN" optional="true"/>
+        <attribute name="assignmentStatusId"     type="String" mode="IN" optional="true"/>
+
+        <attribute name="baseSalary"     type="java.math.BigDecimal" mode="IN" optional="true"/>
+        <attribute name="effectiveDate"  type="java.sql.Timestamp"   mode="IN" optional="false"/>
+        <attribute name="thruDate"       type="java.sql.Timestamp"   mode="IN" optional="true"/>
+
+        <attribute name="comments" type="String" mode="IN" optional="true"/>
+
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="assignmentId"        type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+
+        <attribute name="responseMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="successMessage"  type="String" mode="OUT" optional="true"/>
+        <attribute name="errorMessage"    type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="createPayrollAssignmentRest"
+             engine="java"
+             location="org.apache.ofbiz.payroll.PayrollEngine"
+             invoke="createPayrollAssignmentRest"
+             auth="true"
+             export="true">
+        <description>REST wrapper for createEmployeePayrollAssignment</description>
+
+        <attribute name="partyId"            type="String" mode="IN" optional="false"/>
+        <attribute name="payrollStructureId" type="String" mode="IN" optional="false"/>
+
+        <attribute name="employmentTypeStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="contractTypeStatusId"   type="String" mode="IN" optional="true"/>
+        <attribute name="assignmentStatusId"     type="String" mode="IN" optional="true"/>
+
+        <attribute name="baseSalary"     type="java.math.BigDecimal" mode="IN" optional="true"/>
+        <attribute name="effectiveDate"  type="java.sql.Timestamp"   mode="IN" optional="false"/>
+        <attribute name="thruDate"       type="java.sql.Timestamp"   mode="IN" optional="true"/>
+        <attribute name="comments"       type="String"               mode="IN" optional="true"/>
+
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <attribute name="assignmentId"        type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+
+        <attribute name="responseMessage" type="String" mode="OUT" optional="true"/>
+        <attribute name="successMessage"  type="String" mode="OUT" optional="true"/>
+        <attribute name="errorMessage"    type="String" mode="OUT" optional="true"/>
+    </service>
+
+</services>

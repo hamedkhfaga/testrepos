@@ -1,0 +1,232 @@
+curl -k -u admin:ofbiz -X POST https://localhost:8443/rest/services/payroll/payrollCreateEntity -H "Content-Type: application/json" -d "{ \"entityName\":\"PayrollOrganization\", \"organizationPartyId\":\"ORG100\", \"fields\":{ \"organizationPartyId\":\"ORG100\", \"orgName\":\"Demo Payroll Org\", \"defaultCurrencyUomId\":\"SAR\", \"countryGeoId\":\"SAU\", \"isActive\":\"Y\" } }"
+
+curl -k -u admin:ofbiz -X POST https://localhost:8443/rest/services/payroll/payrollUpdateEntity -H "Content-Type: application/json" -d "{ \"entityName\":\"PayrollOrganization\", \"organizationPartyId\":\"ORG100\", \"pk\":{ \"organizationPartyId\":\"ORG100\" }, \"fields\":{ \"orgName\":\"Demo Payroll Org UPDATED\", \"isActive\":\"N\" } }"
+
+curl -k -u admin:ofbiz -X POST https://localhost:8443/rest/services/payroll/payrollFindOne -H "Content-Type: application/json" -d "{ \"entityName\":\"PayrollOrganization\", \"organizationPartyId\":\"ORG100\", \"pk\":{ \"organizationPartyId\":\"ORG100\" } }"
+
+curl -k -u admin:ofbiz -X POST https://localhost:8443/rest/services/payroll/payrollList -H "Content-Type: application/json" -d "{ \"entityName\":\"PayrollOrganization\", \"organizationPartyId\":\"ORG100\", \"viewIndex\":0, \"viewSize\":20, \"orderBy\":[\"organizationPartyId\"] }"
+
+curl -k -u admin:ofbiz -X POST https://localhost:8443/rest/services/payroll/payrollDeleteEntity -H "Content-Type: application/json" -d "{ \"entityName\":\"PayrollOrganization\", \"organizationPartyId\":\"ORG100\", \"pk\":{ \"organizationPartyId\":\"ORG100\" } }"
+
+
+curl  -k -u admin:ofbiz -H "Content-Type: application/json" -X POST "https://localhost:8443/rest/services/createPayrollOrganization" -d "{\"organizationPartyId\":\"ORG100\",\"orgName\":\"Demo Payroll Org\",\"defaultCurrencyUomId\":\"SAR\",\"countryGeoId\":\"SAU\",\"isActive\":\"Y\",\"sourceIp\":\"127.0.0.1\"}"
+ 
+ 
+ curl.exe -k -u admin:ofbiz -H "Content-Type: application/json" -X POST "https://localhost:8443/rest/services/updatePayrollOrganization" -d "{\"organizationPartyId\":\"ORG100\",\"orgName\":\"Demo Payroll Org - Updated\",\"isActive\":\"Y\",\"sourceIp\":\"127.0.0.1\"}"
+
+curl.exe -k -H "Authorization: Bearer $T" -H "Content-Type: application/json" -X POST "https://localhost:8443/rest/services/payrollCreateEntity" --data-raw "{\"entityName\":\"PayrollOrganization\",\"organizationPartyId\":\"ORG100\",\"fields\":{\"organizationPartyId\":\"ORG100\",\"orgName\":\"Demo Payroll Org\",\"defaultCurrencyUomId\":\"SAR\",\"countryGeoId\":\"SAU\",\"isActive\":\"Y\"}}"
+curl.exe -k -H "Authorization: Bearer $T" -H "Content-Type: application/json" -X PUT "https://localhost:8443/rest/services/payrollUpdateEntity" --data-raw "{\"entityName\":\"PayrollOrganization\",\"organizationPartyId\":\"ORG100\",\"pk\":{\"organizationPartyId\":\"ORG100\"},\"fields\":{\"orgName\":\"Demo Payroll Org UPDATED\",\"isActive\":\"Y\"}}"
+curl.exe -k -H "Authorization: Bearer $T" -G "https://localhost:8443/rest/services/payrollFindOneEntity" --data-urlencode "entityName=PayrollOrganization" --data-urlencode "organizationPartyId=ORG100" --data-urlencode "pk.organizationPartyId=ORG100"
+curl.exe -k -H "Authorization: Bearer $T" -G "https://localhost:8443/rest/services/payrollListEntities" --data-urlencode "entityName=PayrollOrganization" --data-urlencode "organizationPartyId=ORG100" --data-urlencode "viewIndex=0" --data-urlencode "viewSize=20" --data-urlencode "orderBy=orgName"
+curl.exe -k -H "Authorization: Bearer $T" -H "Content-Type: application/json" -X DELETE "https://localhost:8443/rest/services/payrollDeleteEntity" --data-raw "{\"entityName\":\"PayrollOrganization\",\"organizationPartyId\":\"ORG100\",\"pk\":{\"organizationPartyId\":\"ORG100\"}}"
+
+
+first  action 
+token 
+PS D:\ofbiz24\ofbiz> 
+curl.exe -k -H "Content-Type: application/json" -H "Authorization: Basic YWRtaW46b2ZiaXo=" -X POST "https://localhost:8443/rest/auth/token" --data-raw '{"username":"admin","password":"ofbiz"}'
+{
+  "statusCode" : 200,
+  "statusDescription" : "OK",
+  "successMessage" : "Token granted.",
+  "data" : {
+    "access_token" : "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Njk1NDU2MzksImV4cCI6MTc2OTU0NzQzOSwiaXNzIjoiQXBhY2hlT0ZCaXoiLCJ1c2VyTG9naW5JZCI6ImFkbWluIn0.IYvNS6TQNm91mpzzSTCjORVHWcpuMQg9Fe0nN1WC_P9Zoi2wJh7vqviCrpRP7Bip8mS0IWKoFY6qqpKgkOC5eg",
+    "token_type" : "Bearer",
+    "expires_in" : "1800"
+  }
+}
+PS D:\ofbiz24\ofbiz> $T="eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3Njk1NDU2MzksImV4cCI6MTc2OTU0NzQzOSwiaXNzIjoiQXBhY2hlT0ZCaXoiLCJ1c2VyTG9naW5JZCI6ImFkbWluIn0.IYvNS6TQNm91mpzzSTCjORVHWcpuMQg9Fe0nN1WC_P9Zoi2wJh7vqviCrpRP7Bip8mS0IWKoFY6qqpKgkOC5eg"
+
+
+TC1 — CREATE PayrollOrganization (expect 200 OK or 422 duplicate)
+1.1 Create request file
+Set-Content -Path .\tc_create_payorg.json -Encoding ASCII -Value '{ "entityName":"PayrollOrganization", "organizationPartyId":"ORG101", "orgName":"Org 101", "defaultCurrencyUomId":"SAR", "countryGeoId":"SAU", "isActive":"Y" }'
+
+1.2 Call CREATE (one line)
+curl.exe -k -H "Authorization: Bearer $T" -H "Content-Type: application/json" -X POST https://localhost:8443/rest/services/payrollCreateEntity --data-binary "@tc_create_payorg.json"
+
+Note: your payrollCreateEntity is currently working with flat fields (no fields map). This matches your earlier success.
+TC2 — FIND Row (POST) — verify ORG101 exists (expect 200 with record)
+2.1 Create find file
+Set-Content -Path .\tc_find_org101.json -Encoding ASCII -Value '{ "entityName":"PayrollOrganization", "pk":{ "organizationPartyId":"ORG101" } }'
+2.2 Call FIND (one line)
+curl.exe -k -H "Authorization: Bearer $T" -H "Content-Type: application/json" -X POST https://localhost:8443/rest/services/payrollFindEntityPost --data-binary "@tc_find_org101.json"
+
+TC3 — UPDATE PayrollOrganization (expect 200 OK)
+3.1 Create update file
+Set-Content -Path .\tc_update_org101.json -Encoding ASCII -Value '{ "entityName":"PayrollOrganization", "pk":{ "organizationPartyId":"ORG101" }, "fields":{ "orgName":"Org 101 - Updated", "isActive":"N" } }'
+
+curl.exe -k -H "Authorization: Bearer $T" -H "Content-Type: application/json" -X POST https://localhost:8443/rest/services/payrollUpdateEntity --data-binary "@tc_update_org101.json"
+
+TC4 — FIND Row (GET via inParams) — verify update (expect 200 with updated values)
+curl.exe -k -H "Authorization: Bearer $T" "https://localhost:8443/rest/services/payrollFindEntity?inParams=%7B%22entityName%22%3A%22PayrollOrganization%22%2C%22pk%22%3A%7B%22organizationPartyId%22%3A%22ORG101%22%7D%7D"
+
+TC5 — LIST (POST) — list PayrollOrganization (expect 200 list + listSize)
+5.1 Create list file (page 0 size 50)
+Set-Content -Path .\tc_list_payorg.json -Encoding ASCII -Value '{ "entityName":"PayrollOrganization", "filters":{}, "orderBy":["organizationPartyId"], "viewSize":50, "viewIndex":0 }'
+curl.exe -k -H "Authorization: Bearer $T" -H "Content-Type: application/json" -X POST https://localhost:8443/rest/services/payrollListEntityPost --data-binary "@tc_list_payorg.json"
+
+TC6 — LIST (GET via inParams) — list only inactive orgs (expect ORG101 included after update)
+curl.exe -k -H "Authorization: Bearer $T" "https://localhost:8443/rest/services/payrollListEntity?inParams=%7B%22entityName%22%3A%22PayrollOrganization%22%2C%22filters%22%3A%7B%22isActive%22%3A%22N%22%7D%2C%22orderBy%22%3A%5B%22organizationPartyId%22%5D%2C%22viewSize%22%3A50%2C%22viewIndex%22%3A0%7D"
+
+TC7 — DELETE PayrollOrganization (expect 200 OK OR 422 FK if referenced)
+7.1 Create delete file
+Set-Content -Path .\tc_delete_org101.json -Encoding ASCII -Value '{ "entityName":"PayrollOrganization", "pk":{ "organizationPartyId":"ORG101" } }'
+curl.exe -k -H "Authorization: Bearer $T" -H "Content-Type: application/json" -X POST https://localhost:8443/rest/services/payrollDeleteEntity --data-binary "@tc_delete_org101.json"
+
+TC8 — FIND after DELETE (POST) — expect record=null
+curl.exe -k -H "Authorization: Bearer $T" -H "Content-Type: application/json" -X POST https://localhost:8443/rest/services/payrollFindEntityPost --data-binary "@tc_find_org101.json"
+
+
+
+token
+
+
+curl.exe -k -u admin:ofbiz -X POST "https://localhost:8443/rest/auth/token"
+
+
+=======================================
+
+test  done using  api   for overtime   using postman   
+ post     https://localhost:8443/rest/services/payrollFindOnePost
+ 
+ json  
+ {
+  "entityName": "EmployeeOvertimeRequest",
+  "organizationPartyId": "WTORG",
+  "pk": {
+    "overtimeRequestId": "10001"
+  }
+}
+
+ response   
+ {
+    "statusCode": 200,
+    "statusDescription": "OK",
+    "data": {
+        "record": {
+            "lastUpdatedStamp": "2026-02-24T22:49:26.136+00:00",
+            "requestReason": "Extra shift support",
+            "createdByUserLoginId": "admin",
+            "createdTxStamp": "2026-02-24T22:38:29.001+00:00",
+            "createdStamp": "2026-02-24T22:38:29.004+00:00",
+            "lastUpdatedTxStamp": "2026-02-24T22:49:26.134+00:00",
+            "sourceTypeEnumId": "SRC_MANUAL",
+            "approvedMinutes": 120,
+            "approverUserLoginId": "admin",
+            "approvedDateTime": "2026-02-24T22:35:00.000+00:00",
+            "workDate": "2026-02-24",
+            "statusId": "OTR_APPR",
+            "overtimeRequestId": "10001",
+            "organizationPartyId": "WTORG",
+            "partyId": "PAY_EMP0001",
+            "payFlag": "Y",
+            "requestedMinutes": 120
+        }
+    }
+}
+
+
+post     https://localhost:8443/rest/services/payrollListEntityPost
+
+json
+{
+  "entityName": "EmployeeOvertimeRequest",
+  "organizationPartyId": "WTORG",
+  "filters": {},
+  "viewIndex": 0,
+  "viewSize": 20,
+  "orderBy": ["-lastUpdatedStamp"]
+}
+
+{
+    "statusCode": 200,
+    "statusDescription": "OK",
+    "data": {
+        "records": [
+            {
+                "lastUpdatedStamp": "2026-02-24T22:49:26.136+00:00",
+                "requestReason": "Extra shift support",
+                "createdByUserLoginId": "admin",
+                "createdTxStamp": "2026-02-24T22:38:29.001+00:00",
+                "createdStamp": "2026-02-24T22:38:29.004+00:00",
+                "lastUpdatedTxStamp": "2026-02-24T22:49:26.134+00:00",
+                "sourceTypeEnumId": "SRC_MANUAL",
+                "approvedMinutes": 120,
+                "approverUserLoginId": "admin",
+                "approvedDateTime": "2026-02-24T22:35:00.000+00:00",
+                "workDate": "2026-02-24",
+                "statusId": "OTR_APPR",
+                "overtimeRequestId": "10001",
+                "organizationPartyId": "WTORG",
+                "partyId": "PAY_EMP0001",
+                "payFlag": "Y",
+                "requestedMinutes": 120
+            }
+        ],
+        "totalCount": 1,
+        "viewIndex": 0,
+        "viewSize": 20
+    }
+}
+
+
+post    https://localhost:8443/rest/services/payrollCreateEntity
+json{
+  "entityName": "PayrollInputSnapshot",
+  "organizationPartyId": "WTORG",
+  "fields": {
+    "payrollInputSnapshotId": "10001",
+    "payrollRunId": "10000",
+    "payrollPeriodId": "P26001",
+    "partyId": "PAY_EMP0001",
+    "workDate": "2026-02-24",
+    "scheduledMinutes": 480,
+    "workedMinutes": 480,
+    "overtimeMinutesApproved": 60,
+    "lateMinutes": 0,
+    "earlyLeaveMinutes": 0,
+    "absenceMinutesApproved": 0,
+    "leaveDaysApproved": 0,
+    "sourceTypeEnumId": "SRC_MANUAL",
+    "snapshotStatusId": "SNAP_NEW",
+    "notes": "Phase1 snapshot test"
+  }
+}
+
+response
+{
+    "statusCode": 200,
+    "statusDescription": "OK",
+    "data": {
+        "resultId": "10001"
+    }
+}
+
+
+update  
+post   https://localhost:8443/rest/services/payrollUpdateEntity
+
+json
+{
+  "entityName": "EmployeeOvertimeRequest",
+  "organizationPartyId": "WTORG",
+  "pk": {
+    "overtimeRequestId": "10001"
+  },
+  "fields": {
+    "statusId": "OTR_APPR",
+    "approvedMinutes": 90,
+    "approverUserLoginId": "admin",
+   
+    "lastModifiedByUserLoginId": "admin"
+  }
+}
+
+response
+{
+    "statusCode": 200,
+    "statusDescription": "OK",
+    "data": {}
+}
+

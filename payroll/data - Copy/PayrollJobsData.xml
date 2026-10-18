@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ===================================================== -->
+    <!-- Payroll background workers (JobSandbox) -->
+    <!-- ===================================================== -->
+    <!-- Notes:
+         - serviceName must exist in services.xml
+         - statusId should be SERVICE_PENDING
+         - runTime is milliseconds from epoch (set to now or near-future)
+         - recurring: use recurrenceRule (RFC5545) if your OFBiz build supports it
+           otherwise schedule via a bootstrap service that re-schedules itself.
+    -->
+
+    <!-- 1) Email queue worker (every 5 minutes) -->
+    <JobSandbox jobId="PAYROLL_EMAILQ_JOB"
+               jobName="Payroll Email Queue Worker"
+               serviceName="processPayrollEmailQueue"
+               poolId="pool"
+               runAsUser="system"
+               runTime="0"
+               recurrenceRule="FREQ=MINUTELY;INTERVAL=5"
+               statusId="SERVICE_PENDING"
+               maxRetry="3"
+               currentRetryCount="0"/>
+
+    <!-- 2) SMS queue worker (every 5 minutes) -->
+    <JobSandbox jobId="PAYROLL_SMSQ_JOB"
+               jobName="Payroll SMS Queue Worker"
+               serviceName="processPayrollSmsQueue"
+               poolId="pool"
+               runAsUser="system"
+               runTime="0"
+               recurrenceRule="FREQ=MINUTELY;INTERVAL=5"
+               statusId="SERVICE_PENDING"
+               maxRetry="3"
+               currentRetryCount="0"/>
+
+    <!-- 3) Export request worker (every 10 minutes) -->
+    <!-- You can point to your export worker service if you have one
+         e.g. processPayrollExportRequestQueue; if not, keep disabled -->
+    <JobSandbox jobId="PAYROLL_EXPORT_JOB"
+               jobName="Payroll Export Worker"
+               serviceName="processPayrollExportRequest"
+               poolId="pool"
+               runAsUser="system"
+               runTime="0"
+               recurrenceRule="FREQ=MINUTELY;INTERVAL=10"
+               statusId="SERVICE_PENDING"
+               maxRetry="3"
+               currentRetryCount="0"/>
+
+    <!-- 4) Compliance report generation (daily 02:00) -->
+    <JobSandbox jobId="PAYROLL_COMPLIANCE_JOB"
+               jobName="Payroll Compliance Report Generator"
+               serviceName="generatePayrollComplianceReport"
+               poolId="pool"
+               runAsUser="system"
+               runTime="0"
+               recurrenceRule="FREQ=DAILY;BYHOUR=2;BYMINUTE=0;BYSECOND=0"
+               statusId="SERVICE_PENDING"
+               maxRetry="2"
+               currentRetryCount="0"/>
+
+</entity-engine-xml>

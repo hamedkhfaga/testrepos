@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+qrcore service ECAs — plugin-level workflow guards.
+Attached to STANDARD services without modifying them: the guard runs at the
+invoke stage and aborts the transaction (error) when the rule is violated.
+The guard itself checks the target status (Cancel/Void only) — no ECA
+condition needed, other transitions pass through untouched.
+-->
+<service-eca xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/service-eca.xsd">
+
+    <!-- deny Cancel / Void payment for members of QRC_PMT_NOVOID -->
+    <eca service="setPaymentStatus" event="invoke">
+        <action service="qrcorePaymentVoidGuard" mode="sync"/>
+    </eca>
+    <eca service="voidPayment" event="invoke">
+        <action service="qrcorePaymentVoidGuard" mode="sync"/>
+    </eca>
+
+    <!-- audit trail: log every successful status transition / void
+         (return stage — fires only when the service succeeded; the
+         setPaymentStatus result carries oldStatusId) -->
+    <eca service="setPaymentStatus" event="return">
+        <action service="qrcoreAuditPaymentStatus" mode="sync"/>
+    </eca>
+    <eca service="voidPayment" event="return">
+        <action service="qrcoreAuditPaymentVoid" mode="sync"/>
+    </eca>
+</service-eca>

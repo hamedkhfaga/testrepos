@@ -1,0 +1,726 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+  <!-- POC WT Employee Contacts (1..60) -->
+  <!-- WTEMP001 -->
+  <ContactMech contactMechId="WTE001E" contactMechTypeId="EMAIL_ADDRESS" infoString="ahmed.hassan@wt.sa"/>
+  <ContactMech contactMechId="WTE001P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE001P" countryCode="966" contactNumber="50000001"/>
+  <ContactMech contactMechId="WTE001A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE001A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP001" contactMechId="WTE001E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP001" contactMechId="WTE001P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP001" contactMechId="WTE001A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP001" contactMechId="WTE001E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP001" contactMechId="WTE001P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP001" contactMechId="WTE001A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP002 -->
+  <ContactMech contactMechId="WTE002E" contactMechTypeId="EMAIL_ADDRESS" infoString="mohammed.saleh@wt.sa"/>
+  <ContactMech contactMechId="WTE002P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE002P" countryCode="966" contactNumber="50000002"/>
+  <ContactMech contactMechId="WTE002A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE002A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP002" contactMechId="WTE002E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP002" contactMechId="WTE002P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP002" contactMechId="WTE002A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP002" contactMechId="WTE002E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP002" contactMechId="WTE002P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP002" contactMechId="WTE002A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP003 -->
+  <ContactMech contactMechId="WTE003E" contactMechTypeId="EMAIL_ADDRESS" infoString="ali.ibrahim@wt.sa"/>
+  <ContactMech contactMechId="WTE003P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE003P" countryCode="966" contactNumber="50000003"/>
+  <ContactMech contactMechId="WTE003A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE003A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP003" contactMechId="WTE003E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP003" contactMechId="WTE003P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP003" contactMechId="WTE003A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP003" contactMechId="WTE003E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP003" contactMechId="WTE003P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP003" contactMechId="WTE003A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP004 -->
+  <ContactMech contactMechId="WTE004E" contactMechTypeId="EMAIL_ADDRESS" infoString="omar.khaled@wt.sa"/>
+  <ContactMech contactMechId="WTE004P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE004P" countryCode="966" contactNumber="50000004"/>
+  <ContactMech contactMechId="WTE004A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE004A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP004" contactMechId="WTE004E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP004" contactMechId="WTE004P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP004" contactMechId="WTE004A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP004" contactMechId="WTE004E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP004" contactMechId="WTE004P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP004" contactMechId="WTE004A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP005 -->
+  <ContactMech contactMechId="WTE005E" contactMechTypeId="EMAIL_ADDRESS" infoString="khalid.fahad@wt.sa"/>
+  <ContactMech contactMechId="WTE005P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE005P" countryCode="966" contactNumber="50000005"/>
+  <ContactMech contactMechId="WTE005A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE005A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP005" contactMechId="WTE005E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP005" contactMechId="WTE005P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP005" contactMechId="WTE005A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP005" contactMechId="WTE005E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP005" contactMechId="WTE005P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP005" contactMechId="WTE005A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP006 -->
+  <ContactMech contactMechId="WTE006E" contactMechTypeId="EMAIL_ADDRESS" infoString="yousef.nasser@wt.sa"/>
+  <ContactMech contactMechId="WTE006P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE006P" countryCode="966" contactNumber="50000006"/>
+  <ContactMech contactMechId="WTE006A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE006A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP006" contactMechId="WTE006E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP006" contactMechId="WTE006P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP006" contactMechId="WTE006A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP006" contactMechId="WTE006E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP006" contactMechId="WTE006P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP006" contactMechId="WTE006A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP007 -->
+  <ContactMech contactMechId="WTE007E" contactMechTypeId="EMAIL_ADDRESS" infoString="saud.abdullah@wt.sa"/>
+  <ContactMech contactMechId="WTE007P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE007P" countryCode="966" contactNumber="50000007"/>
+  <ContactMech contactMechId="WTE007A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE007A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP007" contactMechId="WTE007E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP007" contactMechId="WTE007P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP007" contactMechId="WTE007A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP007" contactMechId="WTE007E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP007" contactMechId="WTE007P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP007" contactMechId="WTE007A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP008 -->
+  <ContactMech contactMechId="WTE008E" contactMechTypeId="EMAIL_ADDRESS" infoString="faisal.saeed@wt.sa"/>
+  <ContactMech contactMechId="WTE008P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE008P" countryCode="966" contactNumber="50000008"/>
+  <ContactMech contactMechId="WTE008A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE008A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP008" contactMechId="WTE008E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP008" contactMechId="WTE008P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP008" contactMechId="WTE008A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP008" contactMechId="WTE008E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP008" contactMechId="WTE008P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP008" contactMechId="WTE008A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP009 -->
+  <ContactMech contactMechId="WTE009E" contactMechTypeId="EMAIL_ADDRESS" infoString="abdulrahman.othman@wt.sa"/>
+  <ContactMech contactMechId="WTE009P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE009P" countryCode="966" contactNumber="50000009"/>
+  <ContactMech contactMechId="WTE009A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE009A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP009" contactMechId="WTE009E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP009" contactMechId="WTE009P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP009" contactMechId="WTE009A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP009" contactMechId="WTE009E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP009" contactMechId="WTE009P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP009" contactMechId="WTE009A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP010 -->
+  <ContactMech contactMechId="WTE010E" contactMechTypeId="EMAIL_ADDRESS" infoString="hani.mahmoud@wt.sa"/>
+  <ContactMech contactMechId="WTE010P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE010P" countryCode="966" contactNumber="50000010"/>
+  <ContactMech contactMechId="WTE010A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE010A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP010" contactMechId="WTE010E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP010" contactMechId="WTE010P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP010" contactMechId="WTE010A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP010" contactMechId="WTE010E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP010" contactMechId="WTE010P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP010" contactMechId="WTE010A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP011 -->
+  <ContactMech contactMechId="WTE011E" contactMechTypeId="EMAIL_ADDRESS" infoString="nawaf.hamdan@wt.sa"/>
+  <ContactMech contactMechId="WTE011P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE011P" countryCode="966" contactNumber="50000011"/>
+  <ContactMech contactMechId="WTE011A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE011A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP011" contactMechId="WTE011E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP011" contactMechId="WTE011P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP011" contactMechId="WTE011A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP011" contactMechId="WTE011E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP011" contactMechId="WTE011P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP011" contactMechId="WTE011A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP012 -->
+  <ContactMech contactMechId="WTE012E" contactMechTypeId="EMAIL_ADDRESS" infoString="salman.jaber@wt.sa"/>
+  <ContactMech contactMechId="WTE012P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE012P" countryCode="966" contactNumber="50000012"/>
+  <ContactMech contactMechId="WTE012A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE012A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP012" contactMechId="WTE012E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP012" contactMechId="WTE012P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP012" contactMechId="WTE012A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP012" contactMechId="WTE012E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP012" contactMechId="WTE012P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP012" contactMechId="WTE012A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP013 -->
+  <ContactMech contactMechId="WTE013E" contactMechTypeId="EMAIL_ADDRESS" infoString="waleed.aziz@wt.sa"/>
+  <ContactMech contactMechId="WTE013P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE013P" countryCode="966" contactNumber="50000013"/>
+  <ContactMech contactMechId="WTE013A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE013A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP013" contactMechId="WTE013E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP013" contactMechId="WTE013P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP013" contactMechId="WTE013A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP013" contactMechId="WTE013E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP013" contactMechId="WTE013P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP013" contactMechId="WTE013A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP014 -->
+  <ContactMech contactMechId="WTE014E" contactMechTypeId="EMAIL_ADDRESS" infoString="tariq.fawzi@wt.sa"/>
+  <ContactMech contactMechId="WTE014P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE014P" countryCode="966" contactNumber="50000014"/>
+  <ContactMech contactMechId="WTE014A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE014A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP014" contactMechId="WTE014E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP014" contactMechId="WTE014P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP014" contactMechId="WTE014A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP014" contactMechId="WTE014E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP014" contactMechId="WTE014P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP014" contactMechId="WTE014A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP015 -->
+  <ContactMech contactMechId="WTE015E" contactMechTypeId="EMAIL_ADDRESS" infoString="bader.mansour@wt.sa"/>
+  <ContactMech contactMechId="WTE015P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE015P" countryCode="966" contactNumber="50000015"/>
+  <ContactMech contactMechId="WTE015A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE015A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP015" contactMechId="WTE015E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP015" contactMechId="WTE015P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP015" contactMechId="WTE015A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP015" contactMechId="WTE015E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP015" contactMechId="WTE015P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP015" contactMechId="WTE015A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP016 -->
+  <ContactMech contactMechId="WTE016E" contactMechTypeId="EMAIL_ADDRESS" infoString="majed.hatem@wt.sa"/>
+  <ContactMech contactMechId="WTE016P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE016P" countryCode="966" contactNumber="50000016"/>
+  <ContactMech contactMechId="WTE016A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE016A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP016" contactMechId="WTE016E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP016" contactMechId="WTE016P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP016" contactMechId="WTE016A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP016" contactMechId="WTE016E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP016" contactMechId="WTE016P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP016" contactMechId="WTE016A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP017 -->
+  <ContactMech contactMechId="WTE017E" contactMechTypeId="EMAIL_ADDRESS" infoString="rami.samir@wt.sa"/>
+  <ContactMech contactMechId="WTE017P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE017P" countryCode="966" contactNumber="50000017"/>
+  <ContactMech contactMechId="WTE017A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE017A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP017" contactMechId="WTE017E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP017" contactMechId="WTE017P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP017" contactMechId="WTE017A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP017" contactMechId="WTE017E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP017" contactMechId="WTE017P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP017" contactMechId="WTE017A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP018 -->
+  <ContactMech contactMechId="WTE018E" contactMechTypeId="EMAIL_ADDRESS" infoString="hassan.adel@wt.sa"/>
+  <ContactMech contactMechId="WTE018P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE018P" countryCode="966" contactNumber="50000018"/>
+  <ContactMech contactMechId="WTE018A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE018A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP018" contactMechId="WTE018E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP018" contactMechId="WTE018P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP018" contactMechId="WTE018A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP018" contactMechId="WTE018E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP018" contactMechId="WTE018P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP018" contactMechId="WTE018A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP019 -->
+  <ContactMech contactMechId="WTE019E" contactMechTypeId="EMAIL_ADDRESS" infoString="ibrahim.yahya@wt.sa"/>
+  <ContactMech contactMechId="WTE019P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE019P" countryCode="966" contactNumber="50000019"/>
+  <ContactMech contactMechId="WTE019A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE019A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP019" contactMechId="WTE019E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP019" contactMechId="WTE019P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP019" contactMechId="WTE019A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP019" contactMechId="WTE019E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP019" contactMechId="WTE019P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP019" contactMechId="WTE019A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP020 -->
+  <ContactMech contactMechId="WTE020E" contactMechTypeId="EMAIL_ADDRESS" infoString="mustafa.rashid@wt.sa"/>
+  <ContactMech contactMechId="WTE020P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE020P" countryCode="966" contactNumber="50000020"/>
+  <ContactMech contactMechId="WTE020A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE020A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP020" contactMechId="WTE020E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP020" contactMechId="WTE020P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP020" contactMechId="WTE020A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP020" contactMechId="WTE020E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP020" contactMechId="WTE020P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP020" contactMechId="WTE020A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP021 -->
+  <ContactMech contactMechId="WTE021E" contactMechTypeId="EMAIL_ADDRESS" infoString="nasser.karim@wt.sa"/>
+  <ContactMech contactMechId="WTE021P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE021P" countryCode="966" contactNumber="50000021"/>
+  <ContactMech contactMechId="WTE021A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE021A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP021" contactMechId="WTE021E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP021" contactMechId="WTE021P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP021" contactMechId="WTE021A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP021" contactMechId="WTE021E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP021" contactMechId="WTE021P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP021" contactMechId="WTE021A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP022 -->
+  <ContactMech contactMechId="WTE022E" contactMechTypeId="EMAIL_ADDRESS" infoString="fahad.hussein@wt.sa"/>
+  <ContactMech contactMechId="WTE022P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE022P" countryCode="966" contactNumber="50000022"/>
+  <ContactMech contactMechId="WTE022A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE022A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP022" contactMechId="WTE022E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP022" contactMechId="WTE022P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP022" contactMechId="WTE022A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP022" contactMechId="WTE022E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP022" contactMechId="WTE022P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP022" contactMechId="WTE022A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP023 -->
+  <ContactMech contactMechId="WTE023E" contactMechTypeId="EMAIL_ADDRESS" infoString="sultan.latif@wt.sa"/>
+  <ContactMech contactMechId="WTE023P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE023P" countryCode="966" contactNumber="50000023"/>
+  <ContactMech contactMechId="WTE023A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE023A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP023" contactMechId="WTE023E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP023" contactMechId="WTE023P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP023" contactMechId="WTE023A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP023" contactMechId="WTE023E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP023" contactMechId="WTE023P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP023" contactMechId="WTE023A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP024 -->
+  <ContactMech contactMechId="WTE024E" contactMechTypeId="EMAIL_ADDRESS" infoString="ammar.salim@wt.sa"/>
+  <ContactMech contactMechId="WTE024P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE024P" countryCode="966" contactNumber="50000024"/>
+  <ContactMech contactMechId="WTE024A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE024A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP024" contactMechId="WTE024E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP024" contactMechId="WTE024P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP024" contactMechId="WTE024A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP024" contactMechId="WTE024E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP024" contactMechId="WTE024P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP024" contactMechId="WTE024A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP025 -->
+  <ContactMech contactMechId="WTE025E" contactMechTypeId="EMAIL_ADDRESS" infoString="zaid.najjar@wt.sa"/>
+  <ContactMech contactMechId="WTE025P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE025P" countryCode="966" contactNumber="50000025"/>
+  <ContactMech contactMechId="WTE025A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE025A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP025" contactMechId="WTE025E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP025" contactMechId="WTE025P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP025" contactMechId="WTE025A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP025" contactMechId="WTE025E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP025" contactMechId="WTE025P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP025" contactMechId="WTE025A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP026 -->
+  <ContactMech contactMechId="WTE026E" contactMechTypeId="EMAIL_ADDRESS" infoString="hussam.bashir@wt.sa"/>
+  <ContactMech contactMechId="WTE026P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE026P" countryCode="966" contactNumber="50000026"/>
+  <ContactMech contactMechId="WTE026A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE026A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP026" contactMechId="WTE026E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP026" contactMechId="WTE026P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP026" contactMechId="WTE026A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP026" contactMechId="WTE026E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP026" contactMechId="WTE026P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP026" contactMechId="WTE026A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP027 -->
+  <ContactMech contactMechId="WTE027E" contactMechTypeId="EMAIL_ADDRESS" infoString="ayman.gamal@wt.sa"/>
+  <ContactMech contactMechId="WTE027P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE027P" countryCode="966" contactNumber="50000027"/>
+  <ContactMech contactMechId="WTE027A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE027A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP027" contactMechId="WTE027E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP027" contactMechId="WTE027P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP027" contactMechId="WTE027A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP027" contactMechId="WTE027E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP027" contactMechId="WTE027P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP027" contactMechId="WTE027A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP028 -->
+  <ContactMech contactMechId="WTE028E" contactMechTypeId="EMAIL_ADDRESS" infoString="sami.farouk@wt.sa"/>
+  <ContactMech contactMechId="WTE028P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE028P" countryCode="966" contactNumber="50000028"/>
+  <ContactMech contactMechId="WTE028A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE028A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP028" contactMechId="WTE028E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP028" contactMechId="WTE028P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP028" contactMechId="WTE028A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP028" contactMechId="WTE028E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP028" contactMechId="WTE028P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP028" contactMechId="WTE028A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP029 -->
+  <ContactMech contactMechId="WTE029E" contactMechTypeId="EMAIL_ADDRESS" infoString="bilal.nabil@wt.sa"/>
+  <ContactMech contactMechId="WTE029P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE029P" countryCode="966" contactNumber="50000029"/>
+  <ContactMech contactMechId="WTE029A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE029A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP029" contactMechId="WTE029E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP029" contactMechId="WTE029P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP029" contactMechId="WTE029A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP029" contactMechId="WTE029E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP029" contactMechId="WTE029P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP029" contactMechId="WTE029A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP030 -->
+  <ContactMech contactMechId="WTE030E" contactMechTypeId="EMAIL_ADDRESS" infoString="kareem.ismail@wt.sa"/>
+  <ContactMech contactMechId="WTE030P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE030P" countryCode="966" contactNumber="50000030"/>
+  <ContactMech contactMechId="WTE030A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE030A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP030" contactMechId="WTE030E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP030" contactMechId="WTE030P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP030" contactMechId="WTE030A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP030" contactMechId="WTE030E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP030" contactMechId="WTE030P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP030" contactMechId="WTE030A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP031 -->
+  <ContactMech contactMechId="WTE031E" contactMechTypeId="EMAIL_ADDRESS" infoString="yasir.anwar@wt.sa"/>
+  <ContactMech contactMechId="WTE031P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE031P" countryCode="966" contactNumber="50000031"/>
+  <ContactMech contactMechId="WTE031A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE031A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP031" contactMechId="WTE031E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP031" contactMechId="WTE031P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP031" contactMechId="WTE031A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP031" contactMechId="WTE031E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP031" contactMechId="WTE031P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP031" contactMechId="WTE031A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP032 -->
+  <ContactMech contactMechId="WTE032E" contactMechTypeId="EMAIL_ADDRESS" infoString="adnan.qasim@wt.sa"/>
+  <ContactMech contactMechId="WTE032P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE032P" countryCode="966" contactNumber="50000032"/>
+  <ContactMech contactMechId="WTE032A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE032A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP032" contactMechId="WTE032E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP032" contactMechId="WTE032P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP032" contactMechId="WTE032A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP032" contactMechId="WTE032E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP032" contactMechId="WTE032P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP032" contactMechId="WTE032A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP033 -->
+  <ContactMech contactMechId="WTE033E" contactMechTypeId="EMAIL_ADDRESS" infoString="hatem.nouri@wt.sa"/>
+  <ContactMech contactMechId="WTE033P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE033P" countryCode="966" contactNumber="50000033"/>
+  <ContactMech contactMechId="WTE033A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE033A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP033" contactMechId="WTE033E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP033" contactMechId="WTE033P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP033" contactMechId="WTE033A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP033" contactMechId="WTE033E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP033" contactMechId="WTE033P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP033" contactMechId="WTE033A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP034 -->
+  <ContactMech contactMechId="WTE034E" contactMechTypeId="EMAIL_ADDRESS" infoString="rashed.sharif@wt.sa"/>
+  <ContactMech contactMechId="WTE034P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE034P" countryCode="966" contactNumber="50000034"/>
+  <ContactMech contactMechId="WTE034A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE034A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP034" contactMechId="WTE034E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP034" contactMechId="WTE034P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP034" contactMechId="WTE034A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP034" contactMechId="WTE034E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP034" contactMechId="WTE034P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP034" contactMechId="WTE034A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP035 -->
+  <ContactMech contactMechId="WTE035E" contactMechTypeId="EMAIL_ADDRESS" infoString="munir.yousef@wt.sa"/>
+  <ContactMech contactMechId="WTE035P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE035P" countryCode="966" contactNumber="50000035"/>
+  <ContactMech contactMechId="WTE035A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE035A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP035" contactMechId="WTE035E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP035" contactMechId="WTE035P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP035" contactMechId="WTE035A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP035" contactMechId="WTE035E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP035" contactMechId="WTE035P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP035" contactMechId="WTE035A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP036 -->
+  <ContactMech contactMechId="WTE036E" contactMechTypeId="EMAIL_ADDRESS" infoString="john.miller@wt-int.com"/>
+  <ContactMech contactMechId="WTE036P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE036P" countryCode="1" contactNumber="70000036"/>
+  <ContactMech contactMechId="WTE036A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE036A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP036" contactMechId="WTE036E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP036" contactMechId="WTE036P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP036" contactMechId="WTE036A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP036" contactMechId="WTE036E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP036" contactMechId="WTE036P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP036" contactMechId="WTE036A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP037 -->
+  <ContactMech contactMechId="WTE037E" contactMechTypeId="EMAIL_ADDRESS" infoString="david.brown@wt-int.com"/>
+  <ContactMech contactMechId="WTE037P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE037P" countryCode="1" contactNumber="70000037"/>
+  <ContactMech contactMechId="WTE037A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE037A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP037" contactMechId="WTE037E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP037" contactMechId="WTE037P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP037" contactMechId="WTE037A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP037" contactMechId="WTE037E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP037" contactMechId="WTE037P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP037" contactMechId="WTE037A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP038 -->
+  <ContactMech contactMechId="WTE038E" contactMechTypeId="EMAIL_ADDRESS" infoString="michael.johnson@wt-int.com"/>
+  <ContactMech contactMechId="WTE038P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE038P" countryCode="1" contactNumber="70000038"/>
+  <ContactMech contactMechId="WTE038A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE038A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP038" contactMechId="WTE038E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP038" contactMechId="WTE038P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP038" contactMechId="WTE038A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP038" contactMechId="WTE038E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP038" contactMechId="WTE038P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP038" contactMechId="WTE038A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP039 -->
+  <ContactMech contactMechId="WTE039E" contactMechTypeId="EMAIL_ADDRESS" infoString="james.wilson@wt-int.com"/>
+  <ContactMech contactMechId="WTE039P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE039P" countryCode="1" contactNumber="70000039"/>
+  <ContactMech contactMechId="WTE039A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE039A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP039" contactMechId="WTE039E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP039" contactMechId="WTE039P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP039" contactMechId="WTE039A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP039" contactMechId="WTE039E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP039" contactMechId="WTE039P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP039" contactMechId="WTE039A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP040 -->
+  <ContactMech contactMechId="WTE040E" contactMechTypeId="EMAIL_ADDRESS" infoString="robert.taylor@wt-int.com"/>
+  <ContactMech contactMechId="WTE040P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE040P" countryCode="1" contactNumber="70000040"/>
+  <ContactMech contactMechId="WTE040A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE040A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP040" contactMechId="WTE040E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP040" contactMechId="WTE040P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP040" contactMechId="WTE040A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP040" contactMechId="WTE040E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP040" contactMechId="WTE040P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP040" contactMechId="WTE040A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP041 -->
+  <ContactMech contactMechId="WTE041E" contactMechTypeId="EMAIL_ADDRESS" infoString="chris.anderson@wt-int.com"/>
+  <ContactMech contactMechId="WTE041P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE041P" countryCode="1" contactNumber="70000041"/>
+  <ContactMech contactMechId="WTE041A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE041A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP041" contactMechId="WTE041E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP041" contactMechId="WTE041P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP041" contactMechId="WTE041A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP041" contactMechId="WTE041E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP041" contactMechId="WTE041P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP041" contactMechId="WTE041A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP042 -->
+  <ContactMech contactMechId="WTE042E" contactMechTypeId="EMAIL_ADDRESS" infoString="daniel.thomas@wt-int.com"/>
+  <ContactMech contactMechId="WTE042P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE042P" countryCode="1" contactNumber="70000042"/>
+  <ContactMech contactMechId="WTE042A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE042A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP042" contactMechId="WTE042E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP042" contactMechId="WTE042P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP042" contactMechId="WTE042A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP042" contactMechId="WTE042E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP042" contactMechId="WTE042P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP042" contactMechId="WTE042A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP043 -->
+  <ContactMech contactMechId="WTE043E" contactMechTypeId="EMAIL_ADDRESS" infoString="andrew.scott@wt-int.com"/>
+  <ContactMech contactMechId="WTE043P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE043P" countryCode="1" contactNumber="70000043"/>
+  <ContactMech contactMechId="WTE043A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE043A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP043" contactMechId="WTE043E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP043" contactMechId="WTE043P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP043" contactMechId="WTE043A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP043" contactMechId="WTE043E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP043" contactMechId="WTE043P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP043" contactMechId="WTE043A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP044 -->
+  <ContactMech contactMechId="WTE044E" contactMechTypeId="EMAIL_ADDRESS" infoString="oliver.walker@wt-int.com"/>
+  <ContactMech contactMechId="WTE044P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE044P" countryCode="1" contactNumber="70000044"/>
+  <ContactMech contactMechId="WTE044A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE044A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP044" contactMechId="WTE044E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP044" contactMechId="WTE044P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP044" contactMechId="WTE044A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP044" contactMechId="WTE044E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP044" contactMechId="WTE044P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP044" contactMechId="WTE044A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP045 -->
+  <ContactMech contactMechId="WTE045E" contactMechTypeId="EMAIL_ADDRESS" infoString="ethan.lee@wt-int.com"/>
+  <ContactMech contactMechId="WTE045P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE045P" countryCode="1" contactNumber="70000045"/>
+  <ContactMech contactMechId="WTE045A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE045A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP045" contactMechId="WTE045E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP045" contactMechId="WTE045P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP045" contactMechId="WTE045A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP045" contactMechId="WTE045E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP045" contactMechId="WTE045P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP045" contactMechId="WTE045A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP046 -->
+  <ContactMech contactMechId="WTE046E" contactMechTypeId="EMAIL_ADDRESS" infoString="arjun.sharma@wt-int.com"/>
+  <ContactMech contactMechId="WTE046P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE046P" countryCode="1" contactNumber="70000046"/>
+  <ContactMech contactMechId="WTE046A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE046A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP046" contactMechId="WTE046E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP046" contactMechId="WTE046P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP046" contactMechId="WTE046A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP046" contactMechId="WTE046E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP046" contactMechId="WTE046P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP046" contactMechId="WTE046A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP047 -->
+  <ContactMech contactMechId="WTE047E" contactMechTypeId="EMAIL_ADDRESS" infoString="rahul.verma@wt-int.com"/>
+  <ContactMech contactMechId="WTE047P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE047P" countryCode="1" contactNumber="70000047"/>
+  <ContactMech contactMechId="WTE047A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE047A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP047" contactMechId="WTE047E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP047" contactMechId="WTE047P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP047" contactMechId="WTE047A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP047" contactMechId="WTE047E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP047" contactMechId="WTE047P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP047" contactMechId="WTE047A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP048 -->
+  <ContactMech contactMechId="WTE048E" contactMechTypeId="EMAIL_ADDRESS" infoString="vikram.singh@wt-int.com"/>
+  <ContactMech contactMechId="WTE048P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE048P" countryCode="1" contactNumber="70000048"/>
+  <ContactMech contactMechId="WTE048A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE048A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP048" contactMechId="WTE048E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP048" contactMechId="WTE048P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP048" contactMechId="WTE048A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP048" contactMechId="WTE048E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP048" contactMechId="WTE048P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP048" contactMechId="WTE048A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP049 -->
+  <ContactMech contactMechId="WTE049E" contactMechTypeId="EMAIL_ADDRESS" infoString="sanjay.patel@wt-int.com"/>
+  <ContactMech contactMechId="WTE049P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE049P" countryCode="1" contactNumber="70000049"/>
+  <ContactMech contactMechId="WTE049A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE049A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP049" contactMechId="WTE049E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP049" contactMechId="WTE049P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP049" contactMechId="WTE049A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP049" contactMechId="WTE049E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP049" contactMechId="WTE049P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP049" contactMechId="WTE049A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP050 -->
+  <ContactMech contactMechId="WTE050E" contactMechTypeId="EMAIL_ADDRESS" infoString="amit.kumar@wt-int.com"/>
+  <ContactMech contactMechId="WTE050P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE050P" countryCode="1" contactNumber="70000050"/>
+  <ContactMech contactMechId="WTE050A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE050A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP050" contactMechId="WTE050E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP050" contactMechId="WTE050P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP050" contactMechId="WTE050A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP050" contactMechId="WTE050E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP050" contactMechId="WTE050P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP050" contactMechId="WTE050A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP051 -->
+  <ContactMech contactMechId="WTE051E" contactMechTypeId="EMAIL_ADDRESS" infoString="omar.farid@wt-int.com"/>
+  <ContactMech contactMechId="WTE051P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE051P" countryCode="1" contactNumber="70000051"/>
+  <ContactMech contactMechId="WTE051A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE051A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP051" contactMechId="WTE051E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP051" contactMechId="WTE051P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP051" contactMechId="WTE051A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP051" contactMechId="WTE051E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP051" contactMechId="WTE051P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP051" contactMechId="WTE051A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP052 -->
+  <ContactMech contactMechId="WTE052E" contactMechTypeId="EMAIL_ADDRESS" infoString="karim.nasser@wt-int.com"/>
+  <ContactMech contactMechId="WTE052P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE052P" countryCode="1" contactNumber="70000052"/>
+  <ContactMech contactMechId="WTE052A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE052A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP052" contactMechId="WTE052E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP052" contactMechId="WTE052P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP052" contactMechId="WTE052A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP052" contactMechId="WTE052E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP052" contactMechId="WTE052P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP052" contactMechId="WTE052A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP053 -->
+  <ContactMech contactMechId="WTE053E" contactMechTypeId="EMAIL_ADDRESS" infoString="hisham.adel@wt-int.com"/>
+  <ContactMech contactMechId="WTE053P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE053P" countryCode="1" contactNumber="70000053"/>
+  <ContactMech contactMechId="WTE053A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE053A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP053" contactMechId="WTE053E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP053" contactMechId="WTE053P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP053" contactMechId="WTE053A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP053" contactMechId="WTE053E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP053" contactMechId="WTE053P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP053" contactMechId="WTE053A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP054 -->
+  <ContactMech contactMechId="WTE054E" contactMechTypeId="EMAIL_ADDRESS" infoString="tamer.said@wt-int.com"/>
+  <ContactMech contactMechId="WTE054P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE054P" countryCode="1" contactNumber="70000054"/>
+  <ContactMech contactMechId="WTE054A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE054A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP054" contactMechId="WTE054E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP054" contactMechId="WTE054P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP054" contactMechId="WTE054A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP054" contactMechId="WTE054E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP054" contactMechId="WTE054P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP054" contactMechId="WTE054A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP055 -->
+  <ContactMech contactMechId="WTE055E" contactMechTypeId="EMAIL_ADDRESS" infoString="yassin.kamel@wt-int.com"/>
+  <ContactMech contactMechId="WTE055P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE055P" countryCode="1" contactNumber="70000055"/>
+  <ContactMech contactMechId="WTE055A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE055A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP055" contactMechId="WTE055E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP055" contactMechId="WTE055P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP055" contactMechId="WTE055A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP055" contactMechId="WTE055E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP055" contactMechId="WTE055P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP055" contactMechId="WTE055A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP056 -->
+  <ContactMech contactMechId="WTE056E" contactMechTypeId="EMAIL_ADDRESS" infoString="george.clark@wt-int.com"/>
+  <ContactMech contactMechId="WTE056P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE056P" countryCode="1" contactNumber="70000056"/>
+  <ContactMech contactMechId="WTE056A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE056A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP056" contactMechId="WTE056E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP056" contactMechId="WTE056P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP056" contactMechId="WTE056A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP056" contactMechId="WTE056E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP056" contactMechId="WTE056P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP056" contactMechId="WTE056A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP057 -->
+  <ContactMech contactMechId="WTE057E" contactMechTypeId="EMAIL_ADDRESS" infoString="henry.white@wt-int.com"/>
+  <ContactMech contactMechId="WTE057P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE057P" countryCode="1" contactNumber="70000057"/>
+  <ContactMech contactMechId="WTE057A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE057A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP057" contactMechId="WTE057E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP057" contactMechId="WTE057P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP057" contactMechId="WTE057A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP057" contactMechId="WTE057E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP057" contactMechId="WTE057P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP057" contactMechId="WTE057A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP058 -->
+  <ContactMech contactMechId="WTE058E" contactMechTypeId="EMAIL_ADDRESS" infoString="lucas.martin@wt-int.com"/>
+  <ContactMech contactMechId="WTE058P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE058P" countryCode="1" contactNumber="70000058"/>
+  <ContactMech contactMechId="WTE058A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE058A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP058" contactMechId="WTE058E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP058" contactMechId="WTE058P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP058" contactMechId="WTE058A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP058" contactMechId="WTE058E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP058" contactMechId="WTE058P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP058" contactMechId="WTE058A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP059 -->
+  <ContactMech contactMechId="WTE059E" contactMechTypeId="EMAIL_ADDRESS" infoString="noah.hall@wt-int.com"/>
+  <ContactMech contactMechId="WTE059P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE059P" countryCode="1" contactNumber="70000059"/>
+  <ContactMech contactMechId="WTE059A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE059A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP059" contactMechId="WTE059E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP059" contactMechId="WTE059P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP059" contactMechId="WTE059A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP059" contactMechId="WTE059E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP059" contactMechId="WTE059P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP059" contactMechId="WTE059A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+  <!-- WTEMP060 -->
+  <ContactMech contactMechId="WTE060E" contactMechTypeId="EMAIL_ADDRESS" infoString="adam.king@wt-int.com"/>
+  <ContactMech contactMechId="WTE060P" contactMechTypeId="TELECOM_NUMBER"/>
+  <TelecomNumber contactMechId="WTE060P" countryCode="1" contactNumber="70000060"/>
+  <ContactMech contactMechId="WTE060A" contactMechTypeId="POSTAL_ADDRESS"/>
+  <PostalAddress contactMechId="WTE060A" address1="WT Staff Housing Block" city="Riyadh" postalCode="11564" countryGeoId="SAU"/>
+  <PartyContactMech partyId="WTEMP060" contactMechId="WTE060E" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP060" contactMechId="WTE060P" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMech partyId="WTEMP060" contactMechId="WTE060A" fromDate="2025-01-01 00:00:00.000" allowSolicitation="N"/>
+  <PartyContactMechPurpose partyId="WTEMP060" contactMechId="WTE060E" contactMechPurposeTypeId="PRIMARY_EMAIL" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP060" contactMechId="WTE060P" contactMechPurposeTypeId="PRIMARY_PHONE" fromDate="2025-01-01 00:00:00.000"/>
+  <PartyContactMechPurpose partyId="WTEMP060" contactMechId="WTE060A" contactMechPurposeTypeId="PRIMARY_LOCATION" fromDate="2025-01-01 00:00:00.000"/>
+</entity-engine-xml>
+
+

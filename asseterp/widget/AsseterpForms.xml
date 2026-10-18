@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Widget-Form" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Form http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+    <!-- ================================================================
+         ASSET BOOK SEARCH FORM
+         ================================================================ -->
+
+    <form name="FindAssetBooks" type="single" target="FindAssetBooks">
+        <field name="fixedAssetId" title="${uiLabelMap.AsseterpFieldFixedAssetId}">
+            <text-find/>
+        </field>
+        <field name="bookTypeId" title="${uiLabelMap.AsseterpFieldBookTypeId}">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="Enumeration" description="${description}" key-field-name="enumId">
+                    <entity-constraint name="enumTypeId" value="AE_BOOK_TYPE"/>
+                    <entity-order-by field-name="sequenceId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="noConditionFind"><hidden value="Y"/></field>
+        <field name="searchButton" title="${uiLabelMap.CommonFind}">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+    <!-- ================================================================
+         ASSET BOOK LIST (results grid)
+         ================================================================ -->
+
+    <form name="ListAssetBooks" type="list" list-name="assetBookList"
+            odd-row-style="alternate-row" default-table-style="basic-table hover-bar">
+        <field name="asseterpAssetBookId" title="${uiLabelMap.CommonId}">
+            <hyperlink description="${asseterpAssetBookId}" target="ViewAssetBook">
+                <parameter param-name="asseterpAssetBookId"/>
+            </hyperlink>
+        </field>
+        <field name="fixedAssetId" title="${uiLabelMap.AsseterpFieldFixedAssetId}">
+            <display/>
+        </field>
+        <field name="bookTypeId" title="${uiLabelMap.AsseterpFieldBookTypeId}">
+            <display-entity entity-name="Enumeration" description="${description}"
+                    key-field-name="enumId"/>
+        </field>
+        <field name="depreciationMethodId" title="${uiLabelMap.AsseterpFieldDepreciationMethodId}">
+            <display-entity entity-name="Enumeration" description="${description}"
+                    key-field-name="enumId"/>
+        </field>
+        <field name="usefulLifeYears" title="${uiLabelMap.AsseterpFieldUsefulLifeYears}">
+            <display/>
+        </field>
+        <field name="salvageValue" title="${uiLabelMap.AsseterpFieldSalvageValue}">
+            <display type="currency" currency="${currencyUomId}"/>
+        </field>
+        <field name="accumulatedDepreciation" title="${uiLabelMap.AsseterpFieldAccumulatedDepreciation}">
+            <display type="currency" currency="${currencyUomId}"/>
+        </field>
+        <field name="netBookValue" title="${uiLabelMap.AsseterpFieldNetBookValue}">
+            <display type="currency" currency="${currencyUomId}"/>
+        </field>
+        <field name="lastDepRunDate" title="${uiLabelMap.AsseterpFieldLastDepRunDate}">
+            <display type="date-time"/>
+        </field>
+        <field name="fromDate" title="${uiLabelMap.AsseterpFieldFromDate}">
+            <display type="date-time"/>
+        </field>
+        <field name="thruDate" title="${uiLabelMap.AsseterpFieldThruDate}">
+            <display type="date-time"/>
+        </field>
+        <field name="editButton" title=" ">
+            <hyperlink description="${uiLabelMap.CommonEdit}" target="EditAssetBook">
+                <parameter param-name="asseterpAssetBookId"/>
+            </hyperlink>
+        </field>
+    </form>
+
+    <!-- ================================================================
+         ASSET BOOK DETAIL VIEW (read-only)
+         ================================================================ -->
+
+    <form name="ViewAssetBook" type="single" default-map-name="assetBook">
+        <field name="asseterpAssetBookId" title="${uiLabelMap.CommonId}">
+            <display/>
+        </field>
+        <field name="fixedAssetId" title="${uiLabelMap.AsseterpFieldFixedAssetId}">
+            <display/>
+        </field>
+        <field name="bookTypeId" title="${uiLabelMap.AsseterpFieldBookTypeId}">
+            <display-entity entity-name="Enumeration" description="${description}"
+                    key-field-name="enumId" key-value="${assetBook.bookTypeId}"/>
+        </field>
+        <field name="depreciationMethodId" title="${uiLabelMap.AsseterpFieldDepreciationMethodId}">
+            <display-entity entity-name="Enumeration" description="${description}"
+                    key-field-name="enumId" key-value="${assetBook.depreciationMethodId}"/>
+        </field>
+        <field name="usefulLifeYears" title="${uiLabelMap.AsseterpFieldUsefulLifeYears}">
+            <display/>
+        </field>
+        <field name="salvageValue" title="${uiLabelMap.AsseterpFieldSalvageValue}">
+            <display type="currency" currency="${assetBook.currencyUomId}"/>
+        </field>
+        <field name="revaluedCost" title="${uiLabelMap.AsseterpFieldFairValue}">
+            <display type="currency" currency="${assetBook.currencyUomId}"/>
+        </field>
+        <field name="accumulatedDepreciation" title="${uiLabelMap.AsseterpFieldAccumulatedDepreciation}">
+            <display type="currency" currency="${assetBook.currencyUomId}"/>
+        </field>
+        <field name="netBookValue" title="${uiLabelMap.AsseterpFieldNetBookValue}">
+            <display type="currency" currency="${assetBook.currencyUomId}"/>
+        </field>
+        <field name="currencyUomId" title="${uiLabelMap.AsseterpFieldCurrencyUomId}">
+            <display/>
+        </field>
+        <field name="lastDepRunDate" title="${uiLabelMap.AsseterpFieldLastDepRunDate}">
+            <display type="date-time"/>
+        </field>
+        <field name="fromDate" title="${uiLabelMap.AsseterpFieldFromDate}">
+            <display type="date-time"/>
+        </field>
+        <field name="thruDate" title="${uiLabelMap.AsseterpFieldThruDate}">
+            <display type="date-time"/>
+        </field>
+    </form>
+
+    <!-- ================================================================
+         ASSET BOOK CREATE / EDIT FORM
+         Shared by both create (no asseterpAssetBookId) and edit (has id).
+         The screen sets target="CreateAssetBook" or "UpdateAssetBook".
+         ================================================================ -->
+
+    <form name="CreateUpdateAssetBook" type="single" default-map-name="assetBook">
+        <field name="asseterpAssetBookId"><hidden/></field>
+
+        <field name="fixedAssetId" title="${uiLabelMap.AsseterpFieldFixedAssetId}"
+                required-field="true">
+            <text size="20" maxlength="20"/>
+        </field>
+        <field name="bookTypeId" title="${uiLabelMap.AsseterpFieldBookTypeId}"
+                required-field="true">
+            <drop-down no-current-selected-key="BOOK_GAAP">
+                <entity-options entity-name="Enumeration" description="${description}" key-field-name="enumId">
+                    <entity-constraint name="enumTypeId" value="AE_BOOK_TYPE"/>
+                    <entity-order-by field-name="sequenceId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="depreciationMethodId" title="${uiLabelMap.AsseterpFieldDepreciationMethodId}"
+                required-field="true">
+            <drop-down no-current-selected-key="DEP_SL">
+                <entity-options entity-name="Enumeration" description="${description}" key-field-name="enumId">
+                    <entity-constraint name="enumTypeId" value="AE_DEP_METHOD"/>
+                    <entity-order-by field-name="sequenceId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="usefulLifeYears" title="${uiLabelMap.AsseterpFieldUsefulLifeYears}"
+                required-field="true">
+            <text size="8"/>
+        </field>
+        <field name="salvageValue" title="${uiLabelMap.AsseterpFieldSalvageValue}">
+            <text size="12"/>
+        </field>
+        <field name="currencyUomId" title="${uiLabelMap.AsseterpFieldCurrencyUomId}">
+            <drop-down no-current-selected-key="USD">
+                <entity-options entity-name="Uom" description="${abbreviation} - ${description}" key-field-name="uomId">
+                    <entity-constraint name="uomTypeId" value="CURRENCY_MEASURE"/>
+                    <entity-order-by field-name="abbreviation"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="fromDate" title="${uiLabelMap.AsseterpFieldFromDate}">
+            <date-time type="timestamp"/>
+        </field>
+        <field name="thruDate" title="${uiLabelMap.AsseterpFieldThruDate}">
+            <date-time type="timestamp"/>
+        </field>
+        <field name="reason" title="${uiLabelMap.AsseterpFieldNotes}">
+            <textarea rows="3" cols="50"/>
+        </field>
+        <field name="submitButton">
+            <submit button-type="button"/>
+        </field>
+    </form>
+
+</forms>

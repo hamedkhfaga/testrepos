@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+  
+    <StatusType statusTypeId="BIO_DEV_ST" description="Biometric Device Status"/>
+    <StatusItem statusId="DEV_ONLINE" statusTypeId="BIO_DEV_ST" description="Online" sequenceId="01"/>
+    <StatusItem statusId="DEV_OFFLINE" statusTypeId="BIO_DEV_ST" description="Offline" sequenceId="02"/>
+    <StatusItem statusId="DEV_MAINTENANCE" statusTypeId="BIO_DEV_ST" description="In Maintenance" sequenceId="03"/>
+
+    <StatusType statusTypeId="BIO_USR_ST" description="Biometric Device User Status"/>
+    <StatusItem statusId="USR_ACTIVE" statusTypeId="BIO_USR_ST" description="Active" sequenceId="01"/>
+    <StatusItem statusId="USR_DISABLED" statusTypeId="BIO_USR_ST" description="Disabled" sequenceId="02"/>
+
+    <StatusType statusTypeId="FP_STAT_ST" description="Fingerprint Processing Status"/>
+    <StatusItem statusId="FP_RAW" statusTypeId="FP_STAT_ST" description="Raw Log" sequenceId="01"/>
+    <StatusItem statusId="FP_PAIRED" statusTypeId="FP_STAT_ST" description="Paired (In/Out)" sequenceId="02"/>
+    <StatusItem statusId="FP_PROCESSED" statusTypeId="FP_STAT_ST" description="Processed into Summary" sequenceId="03"/>
+    <StatusItem statusId="FP_ERROR" statusTypeId="FP_STAT_ST" description="Error/Exception" sequenceId="04"/>
+
+    <StatusType statusTypeId="POLICY_STATUS" description="Attendance Policy Status"/>
+    <StatusItem statusId="POL_ACTIVE" statusTypeId="POLICY_STATUS" description="Active Policy" sequenceId="01"/>
+    <StatusItem statusId="POL_INACTIVE" statusTypeId="POLICY_STATUS" description="Inactive Policy" sequenceId="02"/>
+ 
+</entity-engine-xml>

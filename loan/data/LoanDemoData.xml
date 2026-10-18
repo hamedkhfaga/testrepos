@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<entity-engine-xml>
+    <GlAccountOrganization glAccountId="111100" organizationPartyId="Company" fromDate="2001-01-01 00:00:00.000" />
+    <GlAccountOrganization glAccountId="111200" organizationPartyId="Company" fromDate="2026-04-29 00:00:00.000" />
+    <GlAccountOrganization glAccountId="124100" organizationPartyId="Company" fromDate="2001-01-01 00:00:00.000" />
+    <LoanAcctgCfg loanAcctgCfgId="LNACFG_COMPANY" organizationPartyId="Company" description="Company loan accounting config" fromDate="2026-01-01 00:00:00.0" isActive="Y" />
+    <LoanAcctgCfgDtl loanAcctgCfgId="LNACFG_COMPANY" repaymentSourceEnumId="LNACFG_DISBURSEMENT" acctgTransTypeId="OUTGOING_PAYMENT" glFiscalTypeId="ACTUAL" debitGlAccountId="124100" finAccountTransTypeId="WITHDRAWAL" sequenceNum="3" />
+    <LoanAcctgCfgDtl loanAcctgCfgId="LNACFG_COMPANY" repaymentSourceEnumId="LNRS_MANUAL" acctgTransTypeId="PAYMENT_ACCTG_TRANS" glFiscalTypeId="ACTUAL" debitGlAccountId="111000" creditGlAccountId="124100" finAccountTransTypeId="DEPOSIT" sequenceNum="1" />
+    <LoanAcctgCfgDtl loanAcctgCfgId="LNACFG_COMPANY" repaymentSourceEnumId="LNRS_PAYROLL" acctgTransTypeId="PAYMENT_ACCTG_TRANS" glFiscalTypeId="ACTUAL" debitGlAccountId="111200" creditGlAccountId="124100" finAccountTransTypeId="DEPOSIT" sequenceNum="2" />
+</entity-engine-xml>

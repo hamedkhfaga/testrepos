@@ -1,0 +1,1131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Widget-Form" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Form http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+
+ 
+    <!-- ===================================================== -->
+    <!-- PayrollRun Create -->
+    <!-- ===================================================== -->
+    <form name="PayrollRunCreateForm" type="single" target="PayrollRunCreateSubmit" title="Create Payroll Run">
+        <field name="organizationPartyId" title="Organization Party ID"><text/></field>
+        <field name="payrollPeriodId" title="Payroll Period"><text/></field>
+        <field name="currencyUomId" title="Currency UOM"><text/></field>
+        <field name="runName" title="Run Name" optional="true"><text/></field>
+
+        <!-- service required -->
+        <field name="createdByUserLoginId"><hidden value="${userLogin.userLoginId}"/></field>
+
+        <field name="submitButton" title="Create"><submit button-type="button"/></field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- PayrollRun List -->
+    <!-- ===================================================== -->
+    <form name="PayrollRunListForm" type="list" list-name="payrollRunList"
+          paginate-target="PayrollRunList" title="Payroll Runs">
+        <field name="payrollRunId" title="Run ID">
+            <display/>
+        </field>
+        <field name="organizationPartyId" title="Org"><display/></field>
+        <field name="payrollPeriodId" title="Period"><display/></field>
+        <field name="statusId" title="Status"><display/></field>
+        <field name="runDate" title="Run Date"><display/></field>
+        <field name="totalEmployees" title="Employees"><display/></field>
+        <field name="totalNetPay" title="Total Net"><display/></field>
+
+        <!-- approve -->
+        <field name="approveAction" title="Approve">
+            <submit button-type="button" target="PayrollRunApproveSubmit">
+                <param name="payrollRunId" from-field="payrollRunId"/>
+                <param name="approvedByUserLoginId" value="${userLogin.userLoginId}"/>
+            </submit>
+        </field>
+
+        <!-- process -->
+        <field name="processAction" title="Process">
+            <submit button-type="button" target="PayrollRunProcessSubmit">
+                <param name="payrollRunId" from-field="payrollRunId"/>
+                <param name="processedByUserLoginId" value="${userLogin.userLoginId}"/>
+            </submit>
+        </field>
+
+        <!-- view results -->
+        <field name="resultsAction" title="Results">
+            <link target="EmployeePayrollResultList" text="Open">
+                <parameter param-name="payrollRunId" from-field="payrollRunId"/>
+            </link>
+        </field>
+
+        <!-- create export request (per run) -->
+        <field name="exportAction" title="Export">
+            <submit button-type="button" target="PayrollExportRequestCreateSubmit">
+                <param name="organizationPartyId" from-field="organizationPartyId"/>
+                <param name="payrollRunId" from-field="payrollRunId"/>
+                <param name="exportTypeId" value="PAYSLIP"/>
+                <!-- choose PDF_OPENPDF or PDF_FOP -->
+                <param name="formatTypeId" value="PDF_OPENPDF"/>
+                <param name="requestedByUserLoginId" value="${userLogin.userLoginId}"/>
+            </submit>
+        </field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- EmployeePayrollResult List -->
+    <!-- ===================================================== -->
+    <form name="EmployeePayrollResultListForm" type="list" list-name="resultList"
+          paginate-target="EmployeePayrollResultList" title="Employee Payroll Results">
+        <field name="payrollResultId" title="Result ID">
+            <link target="EmployeePayrollResultView" text="${payrollResultId}">
+                <parameter param-name="payrollResultId" from-field="payrollResultId"/>
+            </link>
+        </field>
+        <field name="payrollRunId" title="Run"><display/></field>
+        <field name="partyId" title="Employee Party"><display/></field>
+        <field name="grossSalary" title="Gross"><display/></field>
+        <field name="totalDeductions" title="Deductions"><display/></field>
+        <field name="netSalary" title="Net"><display/></field>
+
+        <!-- export request per employee result -->
+        <field name="exportAction" title="Export Payslip">
+            <submit button-type="button" target="PayrollExportRequestCreateSubmit">
+                <param name="organizationPartyId" from-field="organizationPartyId"/>
+                <param name="payrollResultId" from-field="payrollResultId"/>
+                <param name="exportTypeId" value="PAYSLIP"/>
+                <param name="formatTypeId" value="PDF_OPENPDF"/>
+                <param name="requestedByUserLoginId" value="${userLogin.userLoginId}"/>
+            </submit>
+        </field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- EmployeePayrollResult View -->
+    <!-- ===================================================== -->
+    <form name="EmployeePayrollResultViewForm" type="single" title="Payroll Result (Employee)">
+        <field name="payrollResultId" title="Result ID"><display/></field>
+        <field name="payrollRunId" title="Run ID"><display/></field>
+        <field name="partyId" title="Employee Party"><display/></field>
+        <field name="basicSalary" title="Basic"><display/></field>
+        <field name="overtimeAmount" title="Overtime"><display/></field>
+        <field name="allowancesTotal" title="Allowances"><display/></field>
+        <field name="grossSalary" title="Gross"><display/></field>
+        <field name="incomeTax" title="Tax"><display/></field>
+        <field name="socialSecurity" title="Social Security"><display/></field>
+        <field name="loanDeductions" title="Loan"><display/></field>
+        <field name="otherDeductions" title="Other Deduction"><display/></field>
+        <field name="netSalary" title="Net"><display/></field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- Export Request List -->
+    <!-- ===================================================== -->
+    <form name="PayrollExportRequestListForm" type="list" list-name="exportReqList"
+          paginate-target="PayrollExportRequestList" title="Payroll Export Requests">
+        <field name="exportRequestId" title="Request ID"><display/></field>
+        <field name="exportTypeId" title="Type"><display/></field>
+        <field name="formatTypeId" title="Format"><display/></field>
+        <field name="statusId" title="Status"><display/></field>
+        <field name="requestedDate" title="Requested"><display/></field>
+
+        <field name="processAction" title="Process">
+            <submit button-type="button" target="PayrollExportRequestProcessSubmit">
+                <param name="exportRequestId" from-field="exportRequestId"/>
+            </submit>
+        </field>
+    </form>
+
+ 
+ 
+    <!-- ===================================================== -->
+    <!-- GL Mapping Forms -->
+    <!-- ===================================================== -->
+
+    <form name="PayrollGlMappingFindForm" type="single" target="PayrollGlMappingList" title="Find GL Mappings">
+        <field name="organizationPartyId" title="Organization">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="PayrollOrganization" key-field-name="organizationPartyId" description="${orgName}">
+                    <order-by field-name="organizationPartyId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="lineTypeId" title="Line Type">
+            <text-find size="20"/>
+        </field>
+        <field name="isActive" title="Active">
+            <drop-down allow-empty="true">
+                <option key="Y" description="Y"/>
+                <option key="N" description="N"/>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="">
+            <submit button-type="button" text="Search"/>
+        </field>
+    </form>
+
+    <form name="PayrollGlMappingListForm" type="list" list-name="glMappingList" title="GL Mappings">
+        <field name="payrollGlMappingId" title="ID"><display/></field>
+        <field name="organizationPartyId" title="Org"><display/></field>
+        <field name="lineTypeId" title="Line Type"><display/></field>
+        <field name="glAccountId" title="GL Account"><display/></field>
+        <field name="drCrFlag" title="DR/CR"><display/></field>
+        <field name="isActive" title="Active"><display/></field>
+
+        <field name="editLink" title="">
+            <hyperlink description="Edit" target="PayrollGlMappingEdit">
+                <parameter param-name="payrollGlMappingId" from-field="payrollGlMappingId"/>
+            </hyperlink>
+        </field>
+        <field name="deleteLink" title="">
+            <hyperlink description="Delete" target="deletePayrollGlMapping" link-type="hidden-form">
+                <parameter param-name="payrollGlMappingId" from-field="payrollGlMappingId"/>
+            </hyperlink>
+        </field>
+    </form>
+
+    <form name="PayrollGlMappingEditForm" type="single"
+          target="updatePayrollGlMapping" title="GL Mapping">
+        <field name="payrollGlMappingId" title="ID">
+            <display/>
+            <hidden/>
+        </field>
+
+        <field name="organizationPartyId" title="Organization (empty = global)">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="PayrollOrganization" key-field-name="organizationPartyId" description="${orgName}">
+                    <order-by field-name="organizationPartyId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="lineTypeId" title="Line Type"><text size="30"/></field>
+
+        <field name="glAccountId" title="GL Account">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="GlAccount" key-field-name="glAccountId"
+                                description="${glAccountId} - ${accountName}">
+                    <order-by field-name="glAccountId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="drCrFlag" title="DR/CR">
+            <drop-down allow-empty="false">
+                <option key="DR" description="Debit"/>
+                <option key="CR" description="Credit"/>
+            </drop-down>
+        </field>
+
+        <field name="isActive" title="Active">
+            <drop-down allow-empty="false">
+                <option key="Y" description="Y"/>
+                <option key="N" description="N"/>
+            </drop-down>
+        </field>
+
+        <field name="fromDate" title="From Date"><date-time/></field>
+        <field name="thruDate" title="Thru Date"><date-time/></field>
+
+        <field name="saveButton" title="">
+            <submit button-type="button" text="Save"/>
+        </field>
+    </form>
+
+    <form name="PayrollGlMappingCreateForm" type="single"
+          target="createPayrollGlMapping" title="Create GL Mapping">
+        <field name="organizationPartyId" title="Organization (empty = global)">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="PayrollOrganization" key-field-name="organizationPartyId" description="${orgName}">
+                    <order-by field-name="organizationPartyId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="lineTypeId" title="Line Type"><text size="30"/></field>
+
+        <field name="glAccountId" title="GL Account">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="GlAccount" key-field-name="glAccountId"
+                                description="${glAccountId} - ${accountName}">
+                    <order-by field-name="glAccountId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="drCrFlag" title="DR/CR">
+            <drop-down allow-empty="false">
+                <option key="DR" description="Debit"/>
+                <option key="CR" description="Credit"/>
+            </drop-down>
+        </field>
+
+        <field name="isActive" title="Active">
+            <drop-down allow-empty="false">
+                <option key="Y" description="Y"/>
+                <option key="N" description="N"/>
+            </drop-down>
+        </field>
+
+        <field name="fromDate" title="From Date"><date-time/></field>
+        <field name="thruDate" title="Thru Date"><date-time/></field>
+
+        <field name="createButton" title="">
+            <submit button-type="button" text="Create"/>
+        </field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- Invoice Mapping Forms -->
+    <!-- ===================================================== -->
+
+    <form name="PayrollInvoiceMappingFindForm" type="single" target="PayrollInvoiceMappingList" title="Find Invoice Mappings">
+        <field name="organizationPartyId" title="Organization">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="PayrollOrganization" key-field-name="organizationPartyId" description="${orgName}">
+                    <order-by field-name="organizationPartyId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+        <field name="lineTypeId" title="Line Type"><text-find size="20"/></field>
+        <field name="isActive" title="Active">
+            <drop-down allow-empty="true">
+                <option key="Y" description="Y"/>
+                <option key="N" description="N"/>
+            </drop-down>
+        </field>
+        <field name="submitButton" title="">
+            <submit button-type="button" text="Search"/>
+        </field>
+    </form>
+
+    <form name="PayrollInvoiceMappingListForm" type="list" list-name="invMappingList" title="Invoice Mappings">
+        <field name="payrollInvoiceMappingId" title="ID"><display/></field>
+        <field name="organizationPartyId" title="Org"><display/></field>
+        <field name="lineTypeId" title="Line Type"><display/></field>
+        <field name="invoiceItemTypeId" title="Invoice Item Type"><display/></field>
+        <field name="isActive" title="Active"><display/></field>
+
+        <field name="editLink" title="">
+            <hyperlink description="Edit" target="PayrollInvoiceMappingEdit">
+                <parameter param-name="payrollInvoiceMappingId" from-field="payrollInvoiceMappingId"/>
+            </hyperlink>
+        </field>
+        <field name="deleteLink" title="">
+            <hyperlink description="Delete" target="deletePayrollInvoiceMapping" link-type="hidden-form">
+                <parameter param-name="payrollInvoiceMappingId" from-field="payrollInvoiceMappingId"/>
+            </hyperlink>
+        </field>
+    </form>
+
+    <form name="PayrollInvoiceMappingEditForm" type="single"
+          target="updatePayrollInvoiceMapping" title="Invoice Mapping">
+        <field name="payrollInvoiceMappingId" title="ID">
+            <display/>
+            <hidden/>
+        </field>
+
+        <field name="organizationPartyId" title="Organization (empty = global)">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="PayrollOrganization" key-field-name="organizationPartyId" description="${orgName}">
+                    <order-by field-name="organizationPartyId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="lineTypeId" title="Line Type"><text size="30"/></field>
+
+        <field name="invoiceItemTypeId" title="Invoice Item Type">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="InvoiceItemType" key-field-name="invoiceItemTypeId"
+                                description="${invoiceItemTypeId} - ${description}">
+                    <order-by field-name="invoiceItemTypeId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="isActive" title="Active">
+            <drop-down allow-empty="false">
+                <option key="Y" description="Y"/>
+                <option key="N" description="N"/>
+            </drop-down>
+        </field>
+
+        <field name="fromDate" title="From Date"><date-time/></field>
+        <field name="thruDate" title="Thru Date"><date-time/></field>
+
+        <field name="saveButton" title="">
+            <submit button-type="button" text="Save"/>
+        </field>
+    </form>
+
+    <form name="PayrollInvoiceMappingCreateForm" type="single"
+          target="createPayrollInvoiceMapping" title="Create Invoice Mapping">
+        <field name="organizationPartyId" title="Organization (empty = global)">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="PayrollOrganization" key-field-name="organizationPartyId" description="${orgName}">
+                    <order-by field-name="organizationPartyId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="lineTypeId" title="Line Type"><text size="30"/></field>
+
+        <field name="invoiceItemTypeId" title="Invoice Item Type">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="InvoiceItemType" key-field-name="invoiceItemTypeId"
+                                description="${invoiceItemTypeId} - ${description}">
+                    <order-by field-name="invoiceItemTypeId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="isActive" title="Active">
+            <drop-down allow-empty="false">
+                <option key="Y" description="Y"/>
+                <option key="N" description="N"/>
+            </drop-down>
+        </field>
+
+        <field name="fromDate" title="From Date"><date-time/></field>
+        <field name="thruDate" title="Thru Date"><date-time/></field>
+
+        <field name="createButton" title="">
+            <submit button-type="button" text="Create"/>
+        </field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- Organization setup (vendor) -->
+    <!-- ===================================================== -->
+    <form name="PayrollOrganizationEditForm" type="single"
+          target="updatePayrollOrganization" title="Payroll Organization Setup">
+
+        <field name="organizationPartyId" title="Org Party Id">
+            <display/>
+            <hidden/>
+        </field>
+
+        <field name="orgName" title="Org Name"><text size="40"/></field>
+
+        <field name="defaultCurrencyUomId" title="Default Currency">
+            <drop-down allow-empty="false">
+                <entity-options entity-name="Uom" key-field-name="uomId" description="${description}">
+                    <entity-constraint name="uomTypeId" operator="equals" value="CURRENCY_MEASURE"/>
+                    <order-by field-name="uomId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="payrollVendorPartyId" title="Payroll Vendor (Supplier)">
+            <drop-down allow-empty="true">
+                <entity-options entity-name="Party" key-field-name="partyId" description="${partyId}">
+                    <order-by field-name="partyId"/>
+                </entity-options>
+            </drop-down>
+        </field>
+
+        <field name="isActive" title="Active">
+            <drop-down allow-empty="false">
+                <option key="Y" description="Y"/>
+                <option key="N" description="N"/>
+            </drop-down>
+        </field>
+
+        <field name="saveButton" title="">
+            <submit button-type="button" text="Save"/>
+        </field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- PayrollRun accounting option -->
+    <!-- ===================================================== -->
+    <form name="PayrollRunPostOptionForm" type="single"
+          target="updatePayrollRunPostOption" title="Payroll Run Accounting Option">
+        <field name="payrollRunId" title="Payroll Run Id">
+            <display/>
+            <hidden/>
+        </field>
+
+        <field name="accountingPostOptionId" title="Posting Option">
+            <drop-down allow-empty="true">
+                <option key="PAY_POST_NONE" description="None"/>
+                <option key="PAY_POST_GL" description="Post to GL"/>
+                <option key="PAY_POST_INVOICE" description="Post to Invoice"/>
+                <option key="PAY_POST_BOTH" description="Post to Both"/>
+            </drop-down>
+        </field>
+
+        <field name="saveButton" title="">
+            <submit button-type="button" text="Save"/>
+        </field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- Posting Audit -->
+    <!-- ===================================================== -->
+    <form name="PayrollPostingListForm" type="list" list-name="postingList" title="Payroll Postings">
+        <field name="payrollPostingId" title="Posting ID"><display/></field>
+        <field name="payrollRunId" title="Run ID"><display/></field>
+        <field name="postingTypeId" title="Type"><display/></field>
+        <field name="postingStatusId" title="Status"><display/></field>
+        <field name="postedDate" title="Posted Date"><display/></field>
+        <field name="glJournalId" title="AcctgTrans"><display/></field>
+        <field name="invoiceId" title="Invoice"><display/></field>
+
+        <field name="viewLink" title="">
+            <hyperlink description="View" target="PayrollPostingView">
+                <parameter param-name="payrollPostingId" from-field="payrollPostingId"/>
+            </hyperlink>
+        </field>
+    </form>
+
+    <form name="PayrollPostingLineListForm" type="list" list-name="postingLineList" title="Posting Lines">
+        <field name="lineTypeId" title="Line Type"><display/></field>
+        <field name="amount" title="Amount"><display/></field>
+        <field name="currencyUomId" title="Currency"><display/></field>
+        <field name="drCrFlag" title="DR/CR"><display/></field>
+        <field name="glAccountId" title="GL Account"><display/></field>
+        <field name="invoiceItemTypeId" title="Invoice Item Type"><display/></field>
+        <field name="referenceId" title="Reference"><display/></field>
+    </form>
+  
+
+ 
+    <!-- ===================================================== -->
+    <!-- Search / Create PayrollRun -->
+    <!-- ===================================================== -->
+    <form name="PayrollRunSearchForm" type="single" target="PayrollRunList" title="Create / Filter">
+        <field name="organizationPartyId">
+            <text-find default-value="${parameters.organizationPartyId}"/>
+        </field>
+
+        <field name="payrollPeriodId" title="Payroll Period Id">
+            <text-find/>
+        </field>
+
+        <field name="currencyUomId" title="Currency">
+            <text-find/>
+        </field>
+
+        <field name="runName" title="Run Name">
+            <text-find/>
+        </field>
+
+        <field name="accountingPostOptionId" title="Post Option (GL/INV/BOTH)">
+            <text-find/>
+        </field>
+
+        <field name="submitCreate" title="Create Run">
+            <submit button-type="button" image-location="" submit-type="submit" />
+        </field>
+
+        <!-- Use separate action button (POST) to create -->
+        <field name="createRunBtn" title="Create Run">
+            <submit target="CreatePayrollRun" submit-type="submit"/>
+        </field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- PayrollRun List -->
+    <!-- ===================================================== -->
+    <form name="PayrollRunListForm" type="list" list-name="payrollRunList" paginate="true">
+        <field name="payrollRunId" title="Run Id">
+            <display/>
+        </field>
+        <field name="runDate" title="Run Date">
+            <display/>
+        </field>
+        <field name="currencyUomId" title="Currency">
+            <display/>
+        </field>
+        <field name="statusId" title="Status">
+            <display/>
+        </field>
+        <field name="totalEmployees" title="Employees">
+            <display/>
+        </field>
+        <field name="totalNetPay" title="Total Net">
+            <display/>
+        </field>
+
+        <field name="view" title="View">
+            <hyperlink target="PayrollRunView" description="Open">
+                <parameter param-name="payrollRunId" from-field="payrollRunId"/>
+                <parameter param-name="organizationPartyId" from-field="${parameters.organizationPartyId}"/>
+            </hyperlink>
+        </field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- PayrollRun View (read-only) -->
+    <!-- ===================================================== -->
+    <form name="PayrollRunViewForm" type="single" default-map-name="payrollRun" title="Payroll Run">
+        <field name="payrollRunId"><display/></field>
+        <field name="organizationPartyId"><display/></field>
+        <field name="payrollPeriodId"><display/></field>
+        <field name="runDate"><display/></field>
+        <field name="currencyUomId"><display/></field>
+        <field name="statusId"><display/></field>
+        <field name="totalEmployees"><display/></field>
+        <field name="totalGrossPay"><display/></field>
+        <field name="totalDeductions"><display/></field>
+        <field name="totalNetPay"><display/></field>
+        <field name="glJournalId"><display/></field>
+        <field name="invoiceId"><display/></field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- EmployeePayrollResult List (per run) -->
+    <!-- ===================================================== -->
+    <form name="EmployeePayrollResultListForm" type="list" list-name="payrollResultList">
+        <field name="partyId" title="Employee PartyId"><display/></field>
+        <field name="grossSalary" title="Gross"><display/></field>
+        <field name="totalDeductions" title="Deductions"><display/></field>
+        <field name="netSalary" title="Net"><display/></field>
+        <field name="currencyUomId" title="Currency"><display/></field>
+
+        <field name="view" title="View">
+            <hyperlink target="EmployeePayrollResultView" description="Open">
+                <parameter param-name="payrollResultId" from-field="payrollResultId"/>
+                <parameter param-name="organizationPartyId" from-field="${parameters.organizationPartyId}"/>
+            </hyperlink>
+        </field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- EmployeePayrollResult View -->
+    <!-- ===================================================== -->
+    <form name="EmployeePayrollResultViewForm" type="single" default-map-name="payrollResult" title="Employee Result">
+        <field name="payrollResultId"><display/></field>
+        <field name="payrollRunId"><display/></field>
+        <field name="organizationPartyId"><display/></field>
+        <field name="partyId"><display/></field>
+        <field name="basicSalary"><display/></field>
+        <field name="allowancesTotal"><display/></field>
+        <field name="grossSalary"><display/></field>
+        <field name="totalDeductions"><display/></field>
+        <field name="netSalary"><display/></field>
+        <field name="currencyUomId"><display/></field>
+        <field name="statusId"><display/></field>
+        <field name="payslipRef"><display/></field>
+        <field name="isPayslipGenerated"><display/></field>
+        <field name="isPayslipSent"><display/></field>
+    </form>
+
+    <!-- ===================================================== -->
+    <!-- Result Lines -->
+    <!-- ===================================================== -->
+    <form name="EmployeePayrollResultLineListForm" type="list" list-name="payrollResultLineList">
+        <field name="sequenceNum" title="#"><display/></field>
+        <field name="lineTypeId" title="Type"><display/></field>
+        <field name="description" title="Description"><display/></field>
+        <field name="amount" title="Amount"><display/></field>
+        <field name="currencyUomId" title="Currency"><display/></field>
+    </form>
+ 
+
+
+
+<form name="PayrollOrganizationCreateForm" type="single" target="CreatePayrollOrganization" title="Create Organization">
+    <field name="organizationPartyId"><text-find/></field>
+    <field name="parentOrgPartyId"><text-find/></field>
+    <field name="orgName"><text-find/></field>
+    <field name="defaultCurrencyUomId"><text-find/></field>
+    <field name="countryGeoId"><text-find/></field>
+    <field name="isActive"><text-find default-value="Y"/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="PayrollOrganizationListForm" type="list" list-name="orgList">
+    <field name="organizationPartyId" title="Org PartyId"><display/></field>
+    <field name="orgName" title="Name"><display/></field>
+    <field name="defaultCurrencyUomId" title="Currency"><display/></field>
+    <field name="countryGeoId" title="Country"><display/></field>
+    <field name="isActive" title="Active"><display/></field>
+    <field name="view" title="View">
+        <hyperlink target="PayrollOrganizationView" description="Open">
+            <parameter param-name="organizationPartyId" from-field="organizationPartyId"/>
+        </hyperlink>
+    </field>
+</form>
+
+<form name="PayrollOrganizationUpdateForm" type="single" target="UpdatePayrollOrganization" default-map-name="org" title="Update Organization">
+    <field name="organizationPartyId"><display/></field>
+    <field name="parentOrgPartyId"><text-find/></field>
+    <field name="orgName"><text-find/></field>
+    <field name="defaultCurrencyUomId"><text-find/></field>
+    <field name="countryGeoId"><text-find/></field>
+    <field name="isActive"><text-find/></field>
+    <field name="saveBtn" title="Save"><submit/></field>
+</form>
+
+
+
+
+<form name="PayrollStructureCreateForm" type="single" target="CreatePayrollStructure" title="Create Structure">
+    <field name="payrollStructureId"><text-find/></field>
+    <field name="organizationPartyId"><text-find default-value="${parameters.organizationPartyId}"/></field>
+    <field name="structureName"><text-find/></field>
+    <field name="description"><text-find/></field>
+    <field name="payFrequencyTypeId"><text-find/></field>
+    <field name="currencyUomId"><text-find/></field>
+    <field name="fromDate"><date-time/></field>
+    <field name="thruDate"><date-time/></field>
+    <field name="statusId"><text-find/></field>
+    <field name="overtimePolicyId"><text-find/></field>
+    <field name="hrPolicySetId"><text-find/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="PayrollStructureListForm" type="list" list-name="structureList">
+    <field name="payrollStructureId" title="Id"><display/></field>
+    <field name="structureName" title="Name"><display/></field>
+    <field name="currencyUomId" title="Currency"><display/></field>
+    <field name="payFrequencyTypeId" title="Frequency"><display/></field>
+    <field name="fromDate" title="From"><display/></field>
+    <field name="thruDate" title="Thru"><display/></field>
+    <field name="statusId" title="Status"><display/></field>
+
+    <field name="view" title="View">
+        <hyperlink target="PayrollStructureView" description="Open">
+            <parameter param-name="payrollStructureId" from-field="payrollStructureId"/>
+            <parameter param-name="organizationPartyId" from-field="${parameters.organizationPartyId}"/>
+        </hyperlink>
+    </field>
+</form>
+
+<form name="PayrollStructureUpdateForm" type="single" target="UpdatePayrollStructure" default-map-name="structure" title="Update Structure">
+    <field name="payrollStructureId"><display/></field>
+    <field name="organizationPartyId"><display/></field>
+    <field name="structureName"><text-find/></field>
+    <field name="description"><text-find/></field>
+    <field name="payFrequencyTypeId"><text-find/></field>
+    <field name="currencyUomId"><text-find/></field>
+    <field name="fromDate"><date-time/></field>
+    <field name="thruDate"><date-time/></field>
+    <field name="statusId"><text-find/></field>
+    <field name="overtimePolicyId"><text-find/></field>
+    <field name="hrPolicySetId"><text-find/></field>
+    <field name="saveBtn" title="Save"><submit/></field>
+</form>
+
+<form name="PayrollCurrencyRateCreateForm" type="single" target="CreatePayrollCurrencyRate" title="Add Currency Rate">
+    <field name="payrollCurrencyRateId"><text-find/></field>
+    <field name="organizationPartyId"><text-find default-value="${parameters.organizationPartyId}"/></field>
+    <field name="fromCurrencyUomId"><text-find/></field>
+    <field name="toCurrencyUomId"><text-find/></field>
+    <field name="rateDate"><date/></field>
+    <field name="exchangeRate"><text-find/></field>
+    <field name="rateTypeId"><text-find/></field>
+    <field name="isActive"><text-find default-value="Y"/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="PayrollCurrencyRateListForm" type="list" list-name="fxList">
+    <field name="rateDate"><display/></field>
+    <field name="fromCurrencyUomId" title="From"><display/></field>
+    <field name="toCurrencyUomId" title="To"><display/></field>
+    <field name="exchangeRate" title="Rate"><display/></field>
+    <field name="isActive" title="Active"><display/></field>
+</form>
+
+
+<form name="OvertimePolicyCreateForm" type="single" target="CreateOvertimePolicy" title="Create Overtime Policy">
+    <field name="overtimePolicyId"><text-find/></field>
+    <field name="organizationPartyId"><text-find default-value="${parameters.organizationPartyId}"/></field>
+    <field name="policyName"><text-find/></field>
+    <field name="normalMultiplier"><text-find default-value="1.0"/></field>
+    <field name="holidayMultiplier"><text-find default-value="1.0"/></field>
+    <field name="weekendMultiplier"><text-find default-value="1.0"/></field>
+    <field name="maxOvertimeHours"><text-find/></field>
+    <field name="effectiveDate"><date-time/></field>
+    <field name="thruDate"><date-time/></field>
+    <field name="statusId"><text-find/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="OvertimePolicyListForm" type="list" list-name="otpList">
+    <field name="overtimePolicyId" title="Id"><display/></field>
+    <field name="policyName" title="Name"><display/></field>
+    <field name="effectiveDate" title="Effective"><display/></field>
+    <field name="thruDate" title="Thru"><display/></field>
+    <field name="statusId" title="Status"><display/></field>
+</form>
+
+
+<form name="HrPolicySetCreateForm" type="single" target="CreateHrPolicySet" title="Create HR Policy Set">
+    <field name="hrPolicySetId"><text-find/></field>
+    <field name="organizationPartyId"><text-find default-value="${parameters.organizationPartyId}"/></field>
+    <field name="setName"><text-find/></field>
+    <field name="countryGeoId"><text-find/></field>
+    <field name="effectiveDate"><date-time/></field>
+    <field name="thruDate"><date-time/></field>
+    <field name="statusId"><text-find/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="HrPolicySetListForm" type="list" list-name="policySetList">
+    <field name="hrPolicySetId" title="Id"><display/></field>
+    <field name="setName" title="Name"><display/></field>
+    <field name="countryGeoId" title="Country"><display/></field>
+    <field name="effectiveDate" title="Effective"><display/></field>
+    <field name="statusId" title="Status"><display/></field>
+</form>
+
+
+<form name="HrPolicyCreateForm" type="single" target="CreateHrPolicy" title="Create HR Policy">
+    <field name="hrPolicyId"><text-find/></field>
+    <field name="hrPolicySetId"><text-find default-value="${parameters.hrPolicySetId}"/></field>
+    <field name="policyName"><text-find/></field>
+    <field name="policyTypeId"><text-find/></field>
+    <field name="sequenceNum"><text-find/></field>
+    <field name="statusId"><text-find/></field>
+    <!-- policyContent can be big; keep as text-find for now or convert to textarea in theme -->
+    <field name="policyContent"><text-find/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="HrPolicyListForm" type="list" list-name="hrPolicyList">
+    <field name="hrPolicyId" title="Id"><display/></field>
+    <field name="hrPolicySetId" title="Set"><display/></field>
+    <field name="sequenceNum" title="#"><display/></field>
+    <field name="policyName" title="Name"><display/></field>
+    <field name="policyTypeId" title="Type"><display/></field>
+    <field name="statusId" title="Status"><display/></field>
+</form>
+
+
+<form name="PayrollTaxConfigCreateForm" type="single" target="CreatePayrollTaxConfig" title="Create Tax Config">
+    <field name="taxConfigId"><text-find/></field>
+    <field name="organizationPartyId"><text-find default-value="${parameters.organizationPartyId}"/></field>
+    <field name="countryGeoId"><text-find/></field>
+    <field name="taxYear"><text-find/></field>
+    <field name="taxTypeId"><text-find/></field>
+    <field name="minIncome"><text-find/></field>
+    <field name="maxIncome"><text-find/></field>
+    <field name="taxRate"><text-find/></field>
+    <field name="additionalAmount"><text-find/></field>
+    <field name="currencyUomId"><text-find/></field>
+    <field name="effectiveFromDate"><date/></field>
+    <field name="effectiveThruDate"><date/></field>
+    <field name="statusId"><text-find/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="PayrollTaxConfigListForm" type="list" list-name="taxList">
+    <field name="taxYear" title="Year"><display/></field>
+    <field name="countryGeoId" title="Country"><display/></field>
+    <field name="taxTypeId" title="Type"><display/></field>
+    <field name="minIncome" title="Min"><display/></field>
+    <field name="maxIncome" title="Max"><display/></field>
+    <field name="taxRate" title="Rate"><display/></field>
+    <field name="statusId" title="Status"><display/></field>
+</form>
+
+
+<form name="SocialSecurityConfigCreateForm" type="single" target="CreateSocialSecurityConfig" title="Create Social Security Config">
+    <field name="ssConfigId"><text-find/></field>
+    <field name="organizationPartyId"><text-find default-value="${parameters.organizationPartyId}"/></field>
+    <field name="countryGeoId"><text-find/></field>
+    <field name="effectiveDate"><date-time/></field>
+    <field name="thruDate"><date-time/></field>
+    <field name="employeeRate"><text-find/></field>
+    <field name="employerRate"><text-find/></field>
+    <field name="maxContributionBase"><text-find/></field>
+    <field name="minContributionBase"><text-find/></field>
+    <field name="currencyUomId"><text-find/></field>
+    <field name="statusId"><text-find/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="SocialSecurityConfigListForm" type="list" list-name="ssList">
+    <field name="countryGeoId" title="Country"><display/></field>
+    <field name="employeeRate" title="Emp Rate"><display/></field>
+    <field name="employerRate" title="Er Rate"><display/></field>
+    <field name="effectiveDate" title="Effective"><display/></field>
+    <field name="thruDate" title="Thru"><display/></field>
+</form>
+
+
+<form name="AllowanceTypeCreateForm" type="single" target="CreateAllowanceType" title="Create Allowance Type">
+    <field name="allowanceTypeId"><text-find/></field>
+    <field name="organizationPartyId"><text-find default-value="${parameters.organizationPartyId}"/></field>
+    <field name="description"><text-find/></field>
+    <field name="isTaxable"><text-find default-value="Y"/></field>
+    <field name="calculationMethodId"><text-find/></field>
+    <field name="defaultAmount"><text-find/></field>
+    <field name="currencyUomId"><text-find/></field>
+    <field name="statusId"><text-find/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="AllowanceTypeListForm" type="list" list-name="allowanceTypeList">
+    <field name="allowanceTypeId" title="Id"><display/></field>
+    <field name="description" title="Description"><display/></field>
+    <field name="isTaxable" title="Taxable"><display/></field>
+    <field name="defaultAmount" title="Default"><display/></field>
+    <field name="currencyUomId" title="Currency"><display/></field>
+    <field name="statusId" title="Status"><display/></field>
+</form>
+
+
+<form name="DeductionTypeCreateForm" type="single" target="CreateDeductionType" title="Create Deduction Type">
+    <field name="deductionTypeId"><text-find/></field>
+    <field name="organizationPartyId"><text-find default-value="${parameters.organizationPartyId}"/></field>
+    <field name="description"><text-find/></field>
+    <field name="isPreTax"><text-find default-value="N"/></field>
+    <field name="calculationMethodId"><text-find/></field>
+    <field name="defaultAmount"><text-find/></field>
+    <field name="currencyUomId"><text-find/></field>
+    <field name="statusId"><text-find/></field>
+    <field name="createBtn" title="Create"><submit/></field>
+</form>
+
+<form name="DeductionTypeListForm" type="list" list-name="deductionTypeList">
+    <field name="deductionTypeId" title="Id"><display/></field>
+    <field name="description" title="Description"><display/></field>
+    <field name="isPreTax" title="PreTax"><display/></field>
+    <field name="defaultAmount" title="Default"><display/></field>
+    <field name="currencyUomId" title="Currency"><display/></field>
+    <field name="statusId" title="Status"><display/></field>
+</form>
+
+
+ 
+    <!-- ================================================= -->
+    <!-- Payroll Structure Grid -->
+    <!-- ================================================= -->
+    <form name="PayrollStructureListForm" type="list" list-name="list">
+        <field name="payrollStructureId"><display/></field>
+        <field name="structureName"><display/></field>
+        <field name="description"><display/></field>
+    </form>
+
+    <!-- ================================================= -->
+    <!-- Employee Payroll Assignment Grid -->
+    <!-- ================================================= -->
+    <form name="EmployeePayrollAssignmentListForm" type="list" list-name="list">
+        <field name="assignmentId"><display/></field>
+        <field name="partyId"><display/></field>
+        <field name="payrollStructureId"><display/></field>
+        <field name="effectiveDate"><display/></field>
+        <field name="thruDate"><display/></field>
+    </form>
+
+    <!-- ================================================= -->
+    <!-- Payroll Run Grid -->
+    <!-- ================================================= -->
+    <form name="PayrollRunListForm" type="list" list-name="payrollRunList">
+        <field name="payrollRunId"><display/></field>
+        <field name="runMonth"><display/></field>
+        <field name="runYear"><display/></field>
+        <field name="statusId"><display/></field>
+    </form>
+
+ 
+<!-- ================================================= -->
+<!-- Retro Payroll: Filter -->
+<!-- ================================================= -->
+<form name="PayrollRetroBatchFilterForm" type="single" target="PayrollRetroBatchList" title="Retro Batches Filter">
+    <field name="organizationPartyId" title="Organization">
+        <text-find/>
+    </field>
+    <field name="periodYear" title="Year">
+        <text-find/>
+    </field>
+    <field name="periodMonth" title="Month">
+        <text-find/>
+    </field>
+    <field name="statusId" title="Status">
+        <text-find/>
+    </field>
+
+    <field name="submitButton" title="Search">
+        <submit button-type="button"/>
+    </field>
+</form>
+
+<!-- ================================================= -->
+<!-- Retro Payroll: Batch Grid -->
+<!-- context.list is populated by getPayrollRetroBatchList -->
+<!-- ================================================= -->
+<form name="PayrollRetroBatchListForm" type="list" list-name="list" title="Retro Payroll Batches">
+    <field name="payrollRetroBatchId" title="Batch ID"><display/></field>
+    <field name="organizationPartyId" title="Org"><display/></field>
+    <field name="periodYear" title="Year"><display/></field>
+    <field name="periodMonth" title="Month"><display/></field>
+    <field name="effectiveDate" title="Effective Date"><display/></field>
+    <field name="postMode" title="Post Mode"><display/></field>
+    <field name="statusId" title="Status"><display/></field>
+    <field name="createdDate" title="Created"><display/></field>
+
+    <!-- Actions (buttons) -->
+    <field name="calcAction" title="Calculate">
+        <link target="CalculatePayrollRetroBatch" text="Calculate">
+            <parameter param-name="payrollRetroBatchId" from-field="payrollRetroBatchId"/>
+        </link>
+    </field>
+
+    <field name="deltaReview" title="Delta Review">
+        <link target="PayrollRetroDeltaList" text="View Deltas">
+            <parameter param-name="payrollRetroBatchId" from-field="payrollRetroBatchId"/>
+        </link>
+    </field>
+
+    <field name="approveAction" title="Approve">
+        <link target="ApprovePayrollRetroBatch" text="Approve">
+            <parameter param-name="payrollRetroBatchId" from-field="payrollRetroBatchId"/>
+        </link>
+    </field>
+
+    <field name="postAction" title="Post">
+        <link target="PostPayrollRetroBatch" text="Post">
+            <parameter param-name="payrollRetroBatchId" from-field="payrollRetroBatchId"/>
+        </link>
+    </field>
+</form>
+
+<!-- ================================================= -->
+<!-- Retro Payroll: Create Batch Form -->
+<!-- Target: CreatePayrollRetroBatch (service event in controller) -->
+<!-- ================================================= -->
+<form name="PayrollRetroBatchCreateForm"
+      type="single"
+      target="CreatePayrollRetroBatch"
+      title="Create Retro Payroll Batch">
+
+    <field name="organizationPartyId" title="Organization Party ID">
+        <text/>
+    </field>
+
+    <field name="periodYear" title="Period Year">
+        <text/>
+    </field>
+
+    <field name="periodMonth" title="Period Month">
+        <text/>
+    </field>
+
+    <field name="effectiveDate" title="Effective Date (Timestamp)">
+        <text/>
+    </field>
+
+    <field name="postMode" title="Post Mode (GL / INVOICE)">
+        <text/>
+    </field>
+
+    <field name="applyInPayrollRunId" title="Apply In Payroll Run ID (Optional)">
+        <text/>
+    </field>
+
+    <field name="reason" title="Reason (Optional)">
+        <text-area/>
+    </field>
+
+    <field name="submitButton" title="Create">
+        <submit button-type="button"/>
+    </field>
+</form>
+
+
+<!-- ================================================= -->
+<!-- Retro Payroll: Add Employees Form -->
+<!-- Target: AddEmployeesToRetroBatch (event -> service) -->
+<!-- ================================================= -->
+<form name="PayrollRetroEmployeeAddForm"
+      type="single"
+      target="AddEmployeesToRetroBatch"
+      title="Add Employees to Retro Batch">
+
+    <field name="payrollRetroBatchId" title="Retro Batch ID">
+        <text/>
+    </field>
+
+    <field name="partyIdsText" title="Employee Party IDs (one per line)">
+        <text-area/>
+    </field>
+
+    <field name="submitButton" title="Add Employees">
+        <submit button-type="button"/>
+    </field>
+</form>
+
+<!-- ================================================= -->
+<!-- Retro Payroll: Delta Filter -->
+<!-- ================================================= -->
+<form name="PayrollRetroDeltaFilterForm" type="single" target="PayrollRetroDeltaList" title="Retro Delta Filter">
+    <field name="payrollRetroBatchId" title="Retro Batch ID">
+        <text-find/>
+    </field>
+    <field name="submitButton" title="Load">
+        <submit button-type="button"/>
+    </field>
+</form>
+
+<!-- ================================================= -->
+<!-- Retro Payroll: Delta Grid -->
+<!-- list-name must match context key from service: 'list' -->
+<!-- ================================================= -->
+<form name="PayrollRetroDeltaListForm" type="list" list-name="list" title="Retro Delta Lines">
+    <field name="partyId" title="Employee"><display/></field>
+    <field name="lineTypeId" title="Line Type"><display/></field>
+    <field name="payComponentTypeId" title="Component"><display/></field>
+
+    <field name="oldAmount" title="Old Amount"><display/></field>
+    <field name="newAmount" title="New Amount"><display/></field>
+    <field name="deltaAmount" title="Delta"><display/></field>
+
+    <field name="statusId" title="Status"><display/></field>
+    <field name="originalPayrollRunItemId" title="Original Run Item"><display/></field>
+</form>
+
+<form name="PayrollComplianceReportFilterForm" type="single" target="PayrollComplianceReportList">
+    <field name="organizationPartyId"><text-find/></field>
+    <field name="periodYear"><text-find/></field>
+    <field name="periodMonth"><text-find/></field>
+    <field name="reportTypeId"><text-find/></field>
+    <field name="submit"><submit/></field>
+</form>
+
+<form name="PayrollComplianceReportListForm" type="list" list-name="list" title="Compliance Reports">
+    <field name="payrollComplianceReportId"><display/></field>
+    <field name="reportTypeId"><display/></field>
+    <field name="periodYear"><display/></field>
+    <field name="periodMonth"><display/></field>
+    <field name="statusId"><display/></field>
+    <field name="generatedDate"><display/></field>
+
+    <field name="export">
+        <link target="ExportPayrollComplianceReport" text="Export">
+            <parameter param-name="payrollComplianceReportId" from-field="payrollComplianceReportId"/>
+        </link>
+    </field>
+
+    <field name="approve">
+        <link target="ApprovePayrollComplianceReport" text="Approve">
+            <parameter param-name="payrollComplianceReportId" from-field="payrollComplianceReportId"/>
+        </link>
+    </field>
+</form>
+
+
+
+</forms>

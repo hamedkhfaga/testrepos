@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <StatusType statusTypeId="LOAN_HEADER_ST" description="Loan Header Status"/>
+    <StatusType statusTypeId="LOAN_SCH_ST" description="Loan Schedule Status"/>
+    <StatusType statusTypeId="LOAN_REPAY_ST" description="Loan Repayment Status"/>
+
+    <StatusItem statusId="LN_DRAFT" statusTypeId="LOAN_HEADER_ST" description="Draft"/>
+    <StatusItem statusId="LN_APPROVED" statusTypeId="LOAN_HEADER_ST" description="Approved"/>
+    <StatusItem statusId="LN_ACTIVE" statusTypeId="LOAN_HEADER_ST" description="Active"/>
+    <StatusItem statusId="LN_PARTIAL" statusTypeId="LOAN_HEADER_ST" description="Partially Repaid"/>
+    <StatusItem statusId="LN_CLOSED" statusTypeId="LOAN_HEADER_ST" description="Closed"/>
+
+    <StatusItem statusId="LNS_PENDING" statusTypeId="LOAN_SCH_ST" description="Pending"/>
+    <StatusItem statusId="LNS_PARTIAL" statusTypeId="LOAN_SCH_ST" description="Partially Paid"/>
+    <StatusItem statusId="LNS_PAID" statusTypeId="LOAN_SCH_ST" description="Paid"/>
+    <StatusItem statusId="LNS_RESCH" statusTypeId="LOAN_SCH_ST" description="Rescheduled"/>\n    <StatusItem statusId="LNS_OVERDUE" statusTypeId="LOAN_SCH_ST" description="Overdue"/>
+
+    <StatusItem statusId="LNR_POSTED" statusTypeId="LOAN_REPAY_ST" description="Posted"/>
+	 
+<StatusItem
+    statusId="LN_PARTIAL"
+    statusTypeId="LOAN_HEADER_ST"
+    description="Partially Repaid"/>
+	 
+  <StatusItem statusId="LN_DISB_PENDING"
+            statusTypeId="LOAN_HEADER_ST"
+            description="Disbursement Pending"/>
+    <AgreementType agreementTypeId="LOAN_AGREEMENT"
+                   description="Loan Agreement"/>
+
+    <RoleType roleTypeId="LOAN_PROVIDER"
+              parentTypeId="ORGANIZATION_ROLE"
+              description="Loan Provider"/>
+
+    <RoleType roleTypeId="LOAN_BORROWER"
+              description="Loan Borrower"/>
+
+    <PartyRole partyId="Company"
+               roleTypeId="LOAN_PROVIDER"/>
+
+    <PartyRole partyId="PAY_EMP001"
+               roleTypeId="LOAN_BORROWER"/>
+
+    <Agreement agreementId="AGR_LOAN_10001"
+               agreementTypeId="LOAN_AGREEMENT"
+               partyIdFrom="Company"
+               partyIdTo="PAY_EMP001"
+               statusId="AGR_ACTIVE"
+               description="Employee Loan Agreement - Test"
+               agreementDate="2026-03-22 00:00:00.0"/>
+
+    <AgreementRole agreementId="AGR_LOAN_10001"
+                   partyId="Company"
+                   roleTypeId="LOAN_PROVIDER"/>
+
+    <AgreementRole agreementId="AGR_LOAN_10001"
+                   partyId="PAY_EMP001"
+                   roleTypeId="LOAN_BORROWER"/>
+ <FinAccount finAccountId="FIN10001"
+                finAccountTypeId="BANK_ACCOUNT"
+                statusId="FNACT_ACTIVE"
+                finAccountName="Loan Funding Account"
+                ownerPartyId="Company"
+                currencyUomId="USD"/>
+
+ 
+ 
+
+    <LoanReconciliationIssuePolicy
+        issueTypeEnumId="ACCTG_TRANS_MISSING"
+        policyStatusId="ACTIVE"
+        riskLevelEnumId="MEDIUM"
+        autoRepairAllowed="Y"
+        manualApprovalRequired="N"
+        blockBatchRepair="N"
+        recommendedAction="Run controlled accounting backfill. Payment exists but accounting transaction is missing."/>
+
+    <LoanReconciliationIssuePolicy
+        issueTypeEnumId="ACCTG_3TXN_MODEL_INCOMPLETE"
+        policyStatusId="ACTIVE"
+        riskLevelEnumId="HIGH"
+        autoRepairAllowed="N"
+        manualApprovalRequired="Y"
+        blockBatchRepair="N"
+        recommendedAction="Use controlled repair only after dry-run validation. Preserve accepted 3-transaction model."/>
+
+    <LoanReconciliationIssuePolicy
+        issueTypeEnumId="PAYMENT_APPLICATION_MISSING"
+        policyStatusId="ACTIVE"
+        riskLevelEnumId="HIGH"
+        autoRepairAllowed="N"
+        manualApprovalRequired="Y"
+        blockBatchRepair="N"
+        recommendedAction="Review invoice/payment relationship before creating payment application."/>
+
+    <LoanReconciliationIssuePolicy
+        issueTypeEnumId="REPAYMENT_MISSING_PAYMENT"
+        policyStatusId="ACTIVE"
+        riskLevelEnumId="HIGH"
+        autoRepairAllowed="N"
+        manualApprovalRequired="Y"
+        blockBatchRepair="Y"
+        recommendedAction="Manual review required before creating missing payment for historical repayment."/>
+
+    <LoanReconciliationIssuePolicy
+        issueTypeEnumId="LOAN_SCHEDULE_OUTSTANDING_MISMATCH"
+        policyStatusId="ACTIVE"
+        riskLevelEnumId="CRITICAL"
+        autoRepairAllowed="N"
+        manualApprovalRequired="Y"
+        blockBatchRepair="Y"
+        recommendedAction="Manual balance review required. Do not auto-repair schedule financial balances."/>
+
+    <LoanReconciliationIssuePolicy
+        issueTypeEnumId="PAYMENT_AMOUNT_MISMATCH"
+        policyStatusId="ACTIVE"
+        riskLevelEnumId="CRITICAL"
+        autoRepairAllowed="N"
+        manualApprovalRequired="Y"
+        blockBatchRepair="Y"
+        recommendedAction="Manual finance investigation required. Payment amount mismatch must not be auto-repaired."/>
+ 
+  <StatusType statusTypeId="LOAN_REPAIR_PROP_ST"
+            description="Loan Repair Proposal Status"/>
+			<StatusItem statusId="LRP_PROPOSED"
+            statusTypeId="LOAN_REPAIR_PROP_ST"
+            description="Proposed"/>
+
+<StatusItem statusId="LRP_PENDING_APPROVAL"
+            statusTypeId="LOAN_REPAIR_PROP_ST"
+            description="Pending Approval"/>
+
+<StatusItem statusId="LRP_APPROVED"
+            statusTypeId="LOAN_REPAIR_PROP_ST"
+            description="Approved"/>
+
+<StatusItem statusId="LRP_REJECTED"
+            statusTypeId="LOAN_REPAIR_PROP_ST"
+            description="Rejected"/>
+
+<StatusItem statusId="LRP_EXECUTING"
+            statusTypeId="LOAN_REPAIR_PROP_ST"
+            description="Executing"/>
+
+<StatusItem statusId="LRP_EXECUTED"
+            statusTypeId="LOAN_REPAIR_PROP_ST"
+            description="Executed"/>
+
+<StatusItem statusId="LRP_EXEC_FAILED"
+            statusTypeId="LOAN_REPAIR_PROP_ST"
+            description="Execution Failed"/>
+
+<StatusItem statusId="LRP_BLOCKED"
+            statusTypeId="LOAN_REPAIR_PROP_ST"
+            description="Blocked"/>
+  
+<StatusType statusTypeId="LOAN_REPAIR_DRY_ST"
+            description="Loan Repair Dry Run Status"/>
+			
+	 <StatusItem statusId="LRP_DRY_NOT_RUN"
+            statusTypeId="LOAN_REPAIR_DRY_ST"
+            description="Dry Run Not Executed"/>
+
+<StatusItem statusId="LRP_DRY_PASSED"
+            statusTypeId="LOAN_REPAIR_DRY_ST"
+            description="Dry Run Passed"/>
+
+<StatusItem statusId="LRP_DRY_FAILED"
+            statusTypeId="LOAN_REPAIR_DRY_ST"
+            description="Dry Run Failed"/>
+			
+			<StatusType statusTypeId="LOAN_REPAIR_PROP"
+            parentTypeId=""
+            description="Loan Repair Proposal Status"/>
+
+<StatusItem statusId="LRP_OBSOLETE"
+            statusTypeId="LOAN_REPAIR_PROP"
+            sequenceId="90"
+            description="Obsolete"/>
+			
+			
+</entity-engine-xml>

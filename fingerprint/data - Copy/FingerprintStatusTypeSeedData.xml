@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <StatusType statusTypeId="BIO_DEV_ST" description="Biometric Device Status"/>
+    <StatusType statusTypeId="BIO_USR_ST" description="Biometric Device User Status"/>
+    <StatusType statusTypeId="FP_STAT_ST" description="Fingerprint Status"/>
+	
+</entity-engine-xml>

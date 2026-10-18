@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ========================= -->
+    <!-- Phase #3: Posting -->
+    <!-- ========================= -->
+    <service name="postPayrollRunV3"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollPostingServicesV3"
+             invoke="postPayrollRunV3"
+             auth="true" export="true" action="POST">
+        <description>Post payroll results to GL/Invoice and mark PayrollRun posted</description>
+
+        <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+        <attribute name="accountingPostOptionId" type="String" mode="IN" optional="false"/> <!-- PO_GL / PO_INV -->
+        <attribute name="forceRepost" type="String" mode="IN" optional="true"/> <!-- Y/N -->
+
+        <attribute name="postedCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="glJournalId" type="String" mode="OUT" optional="true"/>
+        <attribute name="invoiceId" type="String" mode="OUT" optional="true"/>
+
+        <!-- V2 contract -->
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- ========================= -->
+    <!-- Phase #3: Payment Routing -->
+    <!-- ========================= -->
+    <service name="routeEmployeePaymentsForRunV3"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollPaymentRoutingServicesV3"
+             invoke="routeEmployeePaymentsForRunV3"
+             auth="true" export="true" action="POST">
+        <description>Create PayrollPaymentInstruction per employee for a run</description>
+
+        <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+        <attribute name="forceReroute" type="String" mode="IN" optional="true"/> <!-- Y/N -->
+        <attribute name="defaultDisbursementChannelId" type="String" mode="IN" optional="true"/> <!-- BANK/CASH/... -->
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/> <!-- Y/N -->
+
+        <attribute name="instructionCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="bankCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="cashCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="chequeCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="walletCount" type="Long" mode="OUT" optional="true"/>
+
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- ========================= -->
+    <!-- Phase #3: Bank Batch -->
+    <!-- ========================= -->
+    <service name="generateBankTransferBatchV3"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollBankTransferServicesV3"
+             invoke="generateBankTransferBatchV3"
+              auth="true" export="true" action="POST">
+        <description>Generate BankTransferBatch + items from BANK payment instructions</description>
+
+        <attribute name="payrollRunId" type="String" mode="IN" optional="false"/>
+        <attribute name="bankTransferConfigId" type="String" mode="IN" optional="false"/>
+        <attribute name="forceRegenerate" type="String" mode="IN" optional="true"/> <!-- Y/N -->
+        <attribute name="dryRun" type="String" mode="IN" optional="true"/> <!-- Y/N -->
+
+        <attribute name="bankTransferBatchId" type="String" mode="OUT" optional="true"/>
+        <attribute name="itemCount" type="Long" mode="OUT" optional="true"/>
+        <attribute name="totalAmount" type="BigDecimal" mode="OUT" optional="true"/>
+
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+	
+	
+	<service name="approveBankTransferBatchV3"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollBankTransferServicesV3"
+         invoke="approveBankTransferBatchV3"
+          auth="true" export="true" action="POST">
+    <description>Approve bank transfer batch</description>
+
+    <attribute name="bankTransferBatchId" type="String" mode="IN" optional="false"/>
+    <attribute name="approveNote" type="String" mode="IN" optional="true"/>
+
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+<service name="exportBankTransferFileV3"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollBankTransferServicesV3"
+         invoke="exportBankTransferFileV3"
+         auth="true" export="true" action="POST">
+    <description>Export bank transfer batch to CSV file</description>
+
+    <attribute name="bankTransferBatchId" type="String" mode="IN" optional="false"/>
+    <attribute name="outDir" type="String" mode="IN" optional="false"/>
+    <attribute name="fileName" type="String" mode="IN" optional="true"/> <!-- optional override -->
+    <attribute name="dryRun" type="String" mode="IN" optional="true"/>
+
+    <attribute name="filePath" type="String" mode="OUT" optional="true"/>
+    <attribute name="fileReference" type="String" mode="OUT" optional="true"/>
+    <attribute name="itemCount" type="Long" mode="OUT" optional="true"/>
+    <attribute name="totalAmount" type="BigDecimal" mode="OUT" optional="true"/>
+
+    <attribute name="data" type="Map" mode="OUT" optional="true"/>
+    <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+</service>
+
+
+
+
+</services>

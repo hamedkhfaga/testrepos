@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Asset ERP POC — PartyRole + PartyFixedAssetAssignment for Company -->
+<entity-engine-xml>
+    <!-- Company must have OWNER role before PartyFixedAssetAssignment can reference it -->
+    <PartyRole partyId="Company" roleTypeId="OWNER"/>
+
+    <!-- IT Hardware — 10 assets -->
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-001" fromDate="2022-01-15 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-002" fromDate="2022-02-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-003" fromDate="2022-03-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-004" fromDate="2022-04-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-005" fromDate="2022-05-15 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-006" fromDate="2022-06-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-007" fromDate="2022-07-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-008" fromDate="2022-08-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-009" fromDate="2022-09-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-IT-010" fromDate="2022-10-01 00:00:00.0"/>
+
+    <!-- Software — 4 assets -->
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-SW-001" fromDate="2022-01-15 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-SW-002" fromDate="2022-02-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-SW-003" fromDate="2022-03-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-SW-004" fromDate="2022-04-01 00:00:00.0"/>
+
+    <!-- Vehicles — 4 assets -->
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-VH-001" fromDate="2022-01-20 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-VH-002" fromDate="2022-02-15 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-VH-003" fromDate="2022-03-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-VH-004" fromDate="2022-04-01 00:00:00.0"/>
+
+    <!-- Machinery — 4 assets -->
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-MC-001" fromDate="2022-01-10 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-MC-002" fromDate="2022-02-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-MC-003" fromDate="2022-03-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-MC-004" fromDate="2022-04-01 00:00:00.0"/>
+
+    <!-- Furniture — 3 assets -->
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-FN-001" fromDate="2022-01-15 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-FN-002" fromDate="2022-02-01 00:00:00.0"/>
+    <PartyFixedAssetAssignment partyId="Company" roleTypeId="OWNER" fixedAssetId="ASSET-FN-003" fromDate="2022-03-01 00:00:00.0"/>
+</entity-engine-xml>

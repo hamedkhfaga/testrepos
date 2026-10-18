@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ===================================================== -->
+    <!-- PAYROLL CATALOG TEST DATA                             -->
+    <!-- Org: Company                                            -->
+    <!-- Employees: PAY_EMP0001 / PAY_EMP0002 / PAY_EMP0003    -->
+    <!-- Period target: P26001                                 -->
+    <!-- ===================================================== -->
+ 
+  
+ 
+<PayrollRun payrollRunId="10010"
+            organizationPartyId="Company"
+            payrollPeriodId="P26001"
+            statusId="PR_NEW"/>
+
+<PayrollRun payrollRunId="10011"
+            organizationPartyId="Company"
+            payrollPeriodId="P26001"
+            statusId="PR_NEW"/>
+			<PayrollRun payrollRunId="10012"
+            organizationPartyId="Company"
+            payrollPeriodId="P26001"
+            statusId="PR_NEW"/>
+			<PayrollRun payrollRunId="10013"
+            organizationPartyId="Company"
+            payrollPeriodId="P26001"
+            statusId="PR_NEW"/>
+			<PayrollRun payrollRunId="10014"
+            organizationPartyId="Company"
+            payrollPeriodId="P26001"
+            statusId="PR_NEW"/>
+  
+    <!-- ========================= -->
+    <!-- EMPLOYEE ADDITIONS        -->
+    <!-- Recurring / master-level  -->
+    <!-- ========================= -->
+    <EmployeeAddition employeeAdditionId="EA_CAT_0001"
+                      organizationPartyId="Company"
+                      partyId="PAY_EMP0002"
+                      additionTypeId="ADD_BONUS"
+                      amount="500"
+                      currencyUomId="EUR"
+                      effectiveDate="2026-01-01 00:00:00.000"
+                      thruDate="2026-12-31 23:59:59.000"
+                      statusId="PAYADD_ACT"/>
+
+    <EmployeeAddition employeeAdditionId="EA_CAT_0002"
+                      organizationPartyId="Company"
+                      partyId="PAY_EMP0002"
+                      additionTypeId="ADD_VAR"
+                      amount="275"
+                      currencyUomId="EUR"
+                      effectiveDate="2026-01-01 00:00:00.000"
+                      thruDate="2026-12-31 23:59:59.000"
+                      statusId="PAYADD_ACT"/>
+
+    <!-- ========================= -->
+    <!-- PAYROLL ADDITION ITEMS    -->
+    <!-- Run-scoped / one-time     -->
+    <!-- ========================= -->
+    <PayrollAdditionItem payrollAdditionItemId="PAI_CAT_10011_01"
+                         payrollRunId="10011"
+                         additionTypeId="ADD_ONETIME"
+                         amount="350"
+                         partyId="PAY_EMP0002"
+                         organizationPartyId="Company"
+                         remarks="Catalog one-time addition test"/>
+
+    <PayrollAdditionItem payrollAdditionItemId="PAI_CAT_10014_01"
+                         payrollRunId="10014"
+                         additionTypeId="ADD_ONETIME"
+                         amount="420"
+                         partyId="PAY_EMP0002"
+                         organizationPartyId="Company"
+                         remarks="Catalog mixed scenario one-time addition"/>
+
+   
+    <!-- ========================= -->
+    <!-- EMPLOYEE DEDUCTIONS       -->
+    <!-- Recurring / master-level  -->
+    <!-- ========================= -->
+    <EmployeeDeduction employeeDeductionId="ED_CAT_0001"
+                       organizationPartyId="Company"
+                       partyId="PAY_EMP0003"
+                       deductionTypeId="DED_LOAN"
+                       amount="150"
+                       currencyUomId="EUR"
+                       effectiveDate="2026-01-01 00:00:00.000"
+                       thruDate="2026-12-31 23:59:59.000"
+                       statusId="PAYDED_ACT"/>
+
+    <EmployeeDeduction employeeDeductionId="ED_CAT_0002"
+                       organizationPartyId="Company"
+                       partyId="PAY_EMP0003"
+                       deductionTypeId="DED_MISC"
+                       amount="45"
+                       currencyUomId="EUR"
+                       effectiveDate="2026-01-01 00:00:00.000"
+                       thruDate="2026-12-31 23:59:59.000"
+                       statusId="PAYDED_ACT"/>
+
+    <!-- ========================= -->
+    <!-- PAYROLL DEDUCTION ITEMS   -->
+    <!-- Run-scoped / one-time     -->
+    <!-- ========================= -->
+    <PayrollDeductionItem payrollDeductionItemId="PDI_CAT_10012_01"
+                          payrollRunId="10012"
+                          deductionTypeId="DED_ADV"
+                          amount="82"
+                          partyId="PAY_EMP0003"
+                          organizationPartyId="Company"/>
+
+    <PayrollDeductionItem payrollDeductionItemId="PDI_CAT_10014_01"
+                          payrollRunId="10014"
+                          deductionTypeId="DED_ADV"
+                          amount="100"
+                          partyId="PAY_EMP0002"
+                          organizationPartyId="Company"/>
+
+    <!-- ========================= -->
+    <!-- OVERTIME TEST INPUTS      -->
+    <!-- ========================= -->
+    <EmployeeOvertimeRequest overtimeRequestId="OTCAT10001"
+                             organizationPartyId="Company"
+                             partyId="PAY_EMP0001"
+                             workDate="2026-01-15"
+                             requestedMinutes="180"
+                             approvedMinutes="120"
+                             payFlag="Y"
+                             statusId="OT_APPR"
+                             sourceTypeEnumId="SRC_MANUAL"
+                             requestReason="Catalog OT test"
+                             createdByUserLoginId="admin"/>
+
+    <EmployeeOvertimeRequest overtimeRequestId="OTCAT10002"
+                             organizationPartyId="Company"
+                             partyId="PAY_EMP0002"
+                             workDate="2026-01-16"
+                             requestedMinutes="240"
+                             approvedMinutes="180"
+                             payFlag="Y"
+                             statusId="OT_APPR"
+                             sourceTypeEnumId="SRC_MANUAL"
+                             requestReason="Catalog mixed OT test"
+                             createdByUserLoginId="admin"/>
+
+    <!-- ========================= -->
+    <!-- LEAVE TEST INPUTS         -->
+    <!-- ========================= -->
+    <EmployeeLeaveRequest leaveRequestId="LVCAT10001"
+                          organizationPartyId="Company"
+                          partyId="PAY_EMP0001"
+                          leaveTypeId="ANNUAL"
+                          fromDate="2026-01-20"
+                          thruDate="2026-01-20"
+                          totalDays="1"
+                          paidFlag="N"
+                          statusId="LV_APPR"
+                          sourceTypeEnumId="SRC_MANUAL"
+                          requestNote="Catalog leave deduction test"
+                          createdByUserLoginId="admin"/>
+
+    <!-- ========================= -->
+    <!-- ABSENCE TEST INPUTS       -->
+    <!-- ========================= -->
+    <EmployeeAbsenceRequest absenceRequestId="ABCAT10001"
+                            organizationPartyId="Company"
+                            partyId="PAY_EMP0001"
+                            workDate="2026-01-22"
+                            absenceTypeId="ABS_UNEXCUSED"
+                            minutes="60"
+                            paidFlag="N"
+                            statusId="ABS_APPR"
+                            sourceTypeEnumId="SRC_MANUAL"
+                            reason="Catalog absence deduction test"
+                            createdByUserLoginId="admin"/>
+
+</entity-engine-xml>

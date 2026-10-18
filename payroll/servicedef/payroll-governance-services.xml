@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ====================================================== -->
+    <!-- Audit                                                  -->
+    <!-- ====================================================== -->
+    <service name="createPayrollActionAudit"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollAuditServicesV2"
+             invoke="createPayrollActionAudit"
+             auth="true" export="true" action="POST"
+             require-new-transaction="true">
+
+        <description>Create immutable payroll action audit record</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollRunId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollPeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="bankTransferBatchId" type="String" mode="IN" optional="true"/>
+        <attribute name="partyId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="actionTypeId" type="String" mode="IN"/>
+        <attribute name="actionStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="reasonCode" type="String" mode="IN" optional="true"/>
+        <attribute name="messageText" type="String" mode="IN" optional="true"/>
+        <attribute name="requestJson" type="String" mode="IN" optional="true"/>
+        <attribute name="responseJson" type="String" mode="IN" optional="true"/>
+        <attribute name="referenceId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <!-- ====================================================== -->
+    <!-- Governance                                             -->
+    <!-- ====================================================== -->
+    <service name="lockPayrollRun"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollGovernanceServices"
+             invoke="lockPayrollRun"
+             auth="true" export="true" action="POST">
+        <attribute name="payrollRunId" type="String" mode="IN"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="lockReason" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="unlockPayrollRun"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollGovernanceServices"
+             invoke="unlockPayrollRun"
+              auth="true" export="true" action="POST"> 
+        <attribute name="payrollRunId" type="String" mode="IN"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="unlockReason" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="lockPayrollPeriod"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollGovernanceServices"
+             invoke="lockPayrollPeriod"
+              auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN"/>
+        <attribute name="payrollPeriodId" type="String" mode="IN"/>
+        <attribute name="lockReason" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="closePayrollPeriod"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollGovernanceServices"
+             invoke="closePayrollPeriod"
+              auth="true" export="true" action="POST">
+        <attribute name="organizationPartyId" type="String" mode="IN"/>
+        <attribute name="payrollPeriodId" type="String" mode="IN"/>
+        <attribute name="closeReason" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN"/>
+        <attribute name="data" type="Map" mode="OUT" optional="true"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="true"/>
+    </service>
+<service name="reopenPayrollPeriod"
+         engine="java"
+         location="org.apache.ofbiz.payroll.services.PayrollGovernanceServices"
+         invoke="reopenPayrollPeriod"
+         auth="true"
+         export="true" action="POST">
+
+    <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+    <attribute name="payrollPeriodId" type="String" mode="IN" optional="false"/>
+    <attribute name="reopenReason" type="String" mode="IN" optional="true"/>
+    <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+    <attribute name="controlStatusId" type="String" mode="OUT" optional="true"/>
+</service>
+</services>

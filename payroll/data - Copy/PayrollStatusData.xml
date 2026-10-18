@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <!-- ===================================================== -->
+    <!-- Payroll Status Framework (UNIFIED / SAFE LOAD)         -->
+    <!-- SAFE-LOAD RULES:                                      -->
+    <!-- 1) Define StatusType BEFORE StatusItem.                -->
+    <!-- 2) Define EnumerationType BEFORE Enumeration.          -->
+    <!-- 3) This file contains ONLY status/enums (NO org seed). -->
+    <!-- ===================================================== -->
+
+    <!-- ===================================================== -->
+    <!-- 0) Generic Payroll Status (used by many tables)        -->
+    <!-- ===================================================== -->
+    <StatusType statusTypeId="PAY_STATUS" description="Payroll Generic Status"/>
+    <StatusItem statusId="P_ACT" statusTypeId="PAY_STATUS" description="Active"/>
+    <StatusItem statusId="P_INA" statusTypeId="PAY_STATUS" description="Inactive"/>
+
+    <!-- ===================================================== -->
+    <!-- 1) Payroll Result Status                               -->
+    <!-- ===================================================== -->
+    <StatusType statusTypeId="PAY_RES_STAT" description="Payroll Result Status"/>
+
+    <StatusItem statusId="RES_NEW"  statusTypeId="PAY_RES_STAT" description="New"/>
+    <StatusItem statusId="RES_CALC" statusTypeId="PAY_RES_STAT" description="Calculated"/>
+    <StatusItem statusId="RES_DONE" statusTypeId="PAY_RES_STAT" description="Finalized"/>
+    <StatusItem statusId="RES_FAIL" statusTypeId="PAY_RES_STAT" description="Failed"/>
+
+    <!-- Structure member/item active statuses -->
+    <StatusItem statusId="PAYSTRM_ACT" statusTypeId="PAY_RES_STAT" description="Payroll Structure Member Active"/>
+    <StatusItem statusId="PAYSTRI_ACT" statusTypeId="PAY_RES_STAT" description="Payroll Structure Item Active"/>
+
+    <!-- ===================================================== -->
+    <!-- 2) Payroll Run Status (SINGLE SOURCE OF TRUTH)         -->
+    <!-- ===================================================== -->
+    <StatusType statusTypeId="PAY_RUN_STAT" description="Payroll Run Status"/>
+
+    <StatusItem statusId="PR_NEW"       statusTypeId="PAY_RUN_STAT" description="New (created, not submitted)."/>
+    <StatusItem statusId="PR_DRAFT"     statusTypeId="PAY_RUN_STAT" description="Draft"/>
+    <StatusItem statusId="PR_SUBM"      statusTypeId="PAY_RUN_STAT" description="Submitted"/>
+    <StatusItem statusId="PR_PROC"      statusTypeId="PAY_RUN_STAT" description="Processing (calculation running)."/>
+    <StatusItem statusId="PR_PROCESSED" statusTypeId="PAY_RUN_STAT" description="Processed: results created and ready for approval/post/bank steps."/>
+    <StatusItem statusId="PR_APPR"      statusTypeId="PAY_RUN_STAT" description="Approved (approval audit may link to bank batch)."/>
+    <StatusItem statusId="PR_DONE"      statusTypeId="PAY_RUN_STAT" description="Completed/closed."/>
+    <StatusItem statusId="PR_POST"      statusTypeId="PAY_RUN_STAT" description="Posted (GL/invoice posted, accounting finalized)."/>
+    <StatusItem statusId="PR_FAIL"      statusTypeId="PAY_RUN_STAT" description="Failed processing"/>
+    <StatusItem statusId="PR_VOID"      statusTypeId="PAY_RUN_STAT" description="Voided/cancelled run (optional)"/>
+    <StatusItem statusId="PR_REJ"       statusTypeId="PAY_RUN_STAT" description="Rejected for rework (optional)"/>
+
+    <!-- ===================================================== -->
+    <!-- 3) HR INPUT SOURCE                                    -->
+    <!-- ===================================================== -->
+    <EnumerationType enumTypeId="HR_SOURCE_TYPE" description="HR Input Source Type (FP/API/MANUAL/POLICY)"/>
+    <Enumeration enumId="SRC_FP"     enumTypeId="HR_SOURCE_TYPE" description="Fingerprint / biometric source"/>
+    <Enumeration enumId="SRC_API"    enumTypeId="HR_SOURCE_TYPE" description="External API import source"/>
+    <Enumeration enumId="SRC_MANUAL" enumTypeId="HR_SOURCE_TYPE" description="Manual HR entry / request source"/>
+    <Enumeration enumId="SRC_POLICY" enumTypeId="HR_SOURCE_TYPE" description="Policy-derived (schedule/policy rules)"/>
+
+    <!-- ===================================================== -->
+    <!-- 4) Payroll Component Enums                             -->
+    <!-- ===================================================== -->
+    <EnumerationType enumTypeId="PAY_COMP_TYPE" description="Payroll Component Type"/>
+    <EnumerationType enumTypeId="PAY_CALC_METHOD" description="Payroll Calculation Method"/>
+
+    <Enumeration enumId="EARNING"   enumTypeId="PAY_COMP_TYPE" description="Earning"/>
+    <Enumeration enumId="ALLOWANCE" enumTypeId="PAY_COMP_TYPE" description="Allowance"/>
+    <Enumeration enumId="DEDUCTION" enumTypeId="PAY_COMP_TYPE" description="Deduction"/>
+
+    <Enumeration enumId="FIXED"        enumTypeId="PAY_CALC_METHOD" description="Fixed Amount"/>
+    <Enumeration enumId="PERCENT"      enumTypeId="PAY_CALC_METHOD" description="Percent of Base"/>
+    <Enumeration enumId="FLAT_PERCENT" enumTypeId="PAY_CALC_METHOD" description="Flat Percent"/>
+
+    <!-- ===================================================== -->
+    <!-- 5) Leave / OT / Absence / Snapshot Status              -->
+    <!-- ===================================================== -->
+    <StatusType statusTypeId="PAY_LEAVE_REQ_STS" description="Employee Leave Request Status"/>
+    <StatusItem statusId="LR_NEW"    statusTypeId="PAY_LEAVE_REQ_STS" description="New request (draft/submitted)."/>
+    <StatusItem statusId="LR_APPR"   statusTypeId="PAY_LEAVE_REQ_STS" description="Approved."/>
+    <StatusItem statusId="LR_REJ"    statusTypeId="PAY_LEAVE_REQ_STS" description="Rejected."/>
+    <StatusItem statusId="LR_CANCEL" statusTypeId="PAY_LEAVE_REQ_STS" description="Cancelled."/>
+    <StatusItem statusId="LR_USED"   statusTypeId="PAY_LEAVE_REQ_STS" description="Consumed into PayrollInputSnapshot."/>
+    <StatusItem statusId="LR_VOID"   statusTypeId="PAY_LEAVE_REQ_STS" description="Voided."/>
+
+    <StatusType statusTypeId="PAY_OT_REQ_STS" description="Employee Overtime Request Status"/>
+    <StatusType statusTypeId="PAY_OT_ACT_STS" description="Employee Overtime Actual Status"/>
+    <StatusItem statusId="OTR_NEW"    statusTypeId="PAY_OT_REQ_STS" description="New overtime request."/>
+    <StatusItem statusId="OTR_APPR"   statusTypeId="PAY_OT_REQ_STS" description="Approved overtime request."/>
+    <StatusItem statusId="OTR_REJ"    statusTypeId="PAY_OT_REQ_STS" description="Rejected overtime request."/>
+    <StatusItem statusId="OTR_CANCEL" statusTypeId="PAY_OT_REQ_STS" description="Cancelled."/>
+    <StatusItem statusId="OTR_USED"   statusTypeId="PAY_OT_REQ_STS" description="Consumed into PayrollInputSnapshot."/>
+    <StatusItem statusId="OTR_VOID"   statusTypeId="PAY_OT_REQ_STS" description="Voided."/>
+    <StatusItem statusId="OTA_NEW"    statusTypeId="PAY_OT_ACT_STS" description="Measured/loaded."/>
+    <StatusItem statusId="OTA_VER"    statusTypeId="PAY_OT_ACT_STS" description="Verified."/>
+    <StatusItem statusId="OTA_USED"   statusTypeId="PAY_OT_ACT_STS" description="Consumed into PayrollInputSnapshot."/>
+    <StatusItem statusId="OTA_VOID"   statusTypeId="PAY_OT_ACT_STS" description="Voided."/>
+
+    <StatusType statusTypeId="PAY_ABS_REQ_STS" description="Employee Absence Request Status"/>
+    <StatusItem statusId="ABS_NEW"    statusTypeId="PAY_ABS_REQ_STS" description="New absence record/request."/>
+    <StatusItem statusId="ABS_APPR"   statusTypeId="PAY_ABS_REQ_STS" description="Approved absence."/>
+    <StatusItem statusId="ABS_REJ"    statusTypeId="PAY_ABS_REQ_STS" description="Rejected."/>
+    <StatusItem statusId="ABS_CANCEL" statusTypeId="PAY_ABS_REQ_STS" description="Cancelled."/>
+    <StatusItem statusId="ABS_USED"   statusTypeId="PAY_ABS_REQ_STS" description="Consumed into PayrollInputSnapshot."/>
+    <StatusItem statusId="ABS_VOID"   statusTypeId="PAY_ABS_REQ_STS" description="Voided."/>
+
+    <StatusType statusTypeId="PAY_INP_SNAP_STS" description="Payroll Input Snapshot Status"/>
+    <StatusItem statusId="SNAP_NEW"    statusTypeId="PAY_INP_SNAP_STS" description="Created/loaded."/>
+    <StatusItem statusId="SNAP_READY"  statusTypeId="PAY_INP_SNAP_STS" description="Ready for payroll run."/>
+    <StatusItem statusId="SNAP_USED"   statusTypeId="PAY_INP_SNAP_STS" description="Used to calculate results."/>
+    <StatusItem statusId="SNAP_POSTED" statusTypeId="PAY_INP_SNAP_STS" description="Posted with payroll run."/>
+    <StatusItem statusId="SNAP_VOID"   statusTypeId="PAY_INP_SNAP_STS" description="Voided."/>
+
+    <!-- ===================================================== -->
+    <!-- 6) BANK TRANSFER (V2 canonical)                        -->
+    <!-- ===================================================== -->
+    <StatusType statusTypeId="BANK_TR_BATCH_STS" description="Bank Transfer Batch Status (V2 canonical)"/>
+    <StatusType statusTypeId="BANK_TR_LINE_STS"  description="Bank Transfer Batch Line Status (V2 canonical)"/>
+
+    <StatusItem statusId="BTB_NEW"       statusTypeId="BANK_TR_BATCH_STS" description="Draft batch created."/>
+    <StatusItem statusId="BTB_GEN"       statusTypeId="BANK_TR_BATCH_STS" description="Generated (optional legacy state)."/>
+    <StatusItem statusId="BTB_EXPORTED"  statusTypeId="BANK_TR_BATCH_STS" description="Exported (file produced)."/>
+    <StatusItem statusId="BTB_SENT"      statusTypeId="BANK_TR_BATCH_STS" description="Sent to bank."/>
+    <StatusItem statusId="BTB_DONE"      statusTypeId="BANK_TR_BATCH_STS" description="Done (optional)."/>
+    <StatusItem statusId="BTB_CONFIRMED" statusTypeId="BANK_TR_BATCH_STS" description="Confirmed by bank."/>
+    <StatusItem statusId="BTB_FAIL"      statusTypeId="BANK_TR_BATCH_STS" description="Failed."/>
+    <StatusItem statusId="BTB_VOID"      statusTypeId="BANK_TR_BATCH_STS" description="Voided."/>
+    <StatusItem statusId="BTB_APPR"      statusTypeId="BANK_TR_BATCH_STS" description="Approved (optional)."/>
+
+    <StatusItem statusId="BTBL_NEW"  statusTypeId="BANK_TR_LINE_STS" description="Line new."/>
+    <StatusItem statusId="BTBL_HOLD" statusTypeId="BANK_TR_LINE_STS" description="Line on hold."/>
+    <StatusItem statusId="BTBL_SENT" statusTypeId="BANK_TR_LINE_STS" description="Line sent (optional)."/>
+    <StatusItem statusId="BTBL_DONE" statusTypeId="BANK_TR_LINE_STS" description="Line paid (optional)."/>
+    <StatusItem statusId="BTBL_FAIL" statusTypeId="BANK_TR_LINE_STS" description="Line failed (optional)."/>
+
+    <!-- Legacy status types (unique ids) -->
+    <StatusType statusTypeId="PAY_BTCFG_STAT"   description="(LEGACY) Bank Transfer Config Status (POC)"/>
+    <StatusType statusTypeId="PAY_BTBATCH_STAT" description="(LEGACY) Bank Transfer Batch Status (POC)"/>
+    <StatusType statusTypeId="PAY_BTLINE_STAT"  description="(LEGACY) Bank Transfer Batch Line Status (POC)"/>
+    <StatusType statusTypeId="PAY_ALLOC_STAT"   description="(LEGACY) Employee Payment Allocation Status (POC)"/>
+
+    <StatusItem statusId="BTCFG_ACTIVE"   statusTypeId="PAY_BTCFG_STAT" description="Active"/>
+    <StatusItem statusId="BTCFG_INACTIVE" statusTypeId="PAY_BTCFG_STAT" description="Inactive"/>
+
+    <StatusItem statusId="BTL_NEW"    statusTypeId="PAY_BTLINE_STAT" description="(LEGACY) New"/>
+    <StatusItem statusId="BTL_VALID"  statusTypeId="PAY_BTLINE_STAT" description="(LEGACY) Validated"/>
+    <StatusItem statusId="BTL_REJECT" statusTypeId="PAY_BTLINE_STAT" description="(LEGACY) Rejected"/>
+    <StatusItem statusId="BTL_PAID"   statusTypeId="PAY_BTLINE_STAT" description="(LEGACY) Paid"/>
+
+    <StatusItem statusId="ALLOC_ACTIVE"   statusTypeId="PAY_ALLOC_STAT" description="(LEGACY) Active"/>
+    <StatusItem statusId="ALLOC_INACTIVE" statusTypeId="PAY_ALLOC_STAT" description="(LEGACY) Inactive"/>
+
+    <StatusType statusTypeId="PAY_ALLOC_STAT_V2" description="Employee Payment Allocation Status (V2 canonical)"/>
+    <StatusItem statusId="PAY_ALLOC_ACT" statusTypeId="PAY_ALLOC_STAT_V2" description="Active"/>
+    <StatusItem statusId="PAY_ALLOC_INA" statusTypeId="PAY_ALLOC_STAT_V2" description="Inactive"/>
+
+    <!-- ===================================================== -->
+    <!-- 7) ENUMS: Bank formats + allocation types              -->
+    <!-- ===================================================== -->
+    <EnumerationType enumTypeId="PAY_BANK_FILE_FMT" description="Payroll Bank File Format"/>
+    <EnumerationType enumTypeId="PAY_ALLOC_TYPE"    description="Payroll Payment Allocation Type"/>
+
+    <Enumeration enumId="PAY_FMT_CSV"      enumTypeId="PAY_BANK_FILE_FMT" description="CSV"/>
+    <Enumeration enumId="PAY_FMT_SAMA"     enumTypeId="PAY_BANK_FILE_FMT" description="SAMA / SARIE (KSA)"/>
+    <Enumeration enumId="PAY_FMT_ISO20022" enumTypeId="PAY_BANK_FILE_FMT" description="ISO 20022 Pain.001"/>
+
+    <Enumeration enumId="PAY_ALLOC_PERCENT"   enumTypeId="PAY_ALLOC_TYPE" description="Percent"/>
+    <Enumeration enumId="PAY_ALLOC_FIXED"     enumTypeId="PAY_ALLOC_TYPE" description="Fixed Amount"/>
+    <Enumeration enumId="PAY_ALLOC_REMAINDER" enumTypeId="PAY_ALLOC_TYPE" description="Remainder"/>
+
+    <!-- ===================================================== -->
+    <!-- 8) Payroll Run Type                                    -->
+    <!-- ===================================================== -->
+    <EnumerationType enumTypeId="PAYROLL_RUN_TYPE" description="Payroll Run Type"/>
+    <Enumeration enumId="RUN_MONTHLY"    enumTypeId="PAYROLL_RUN_TYPE" description="Monthly Payroll"/>
+    <Enumeration enumId="RUN_OFFCYCLE"   enumTypeId="PAYROLL_RUN_TYPE" description="Off-Cycle Payroll"/>
+    <Enumeration enumId="RUN_FINAL"      enumTypeId="PAYROLL_RUN_TYPE" description="Final Settlement Payroll"/>
+    <Enumeration enumId="RUN_ADJUSTMENT" enumTypeId="PAYROLL_RUN_TYPE" description="Adjustment Payroll"/>
+
+    <!-- ===================================================== -->
+    <!-- 9) Payroll Result Line Types + Component Line IDs       -->
+    <!-- ===================================================== -->
+    <StatusType statusTypeId="PAY_RES_LINE_TYPE" description="Payroll Result Line Type" hasTable="N"/>
+    <StatusItem statusId="BASIC"   statusTypeId="PAY_RES_LINE_TYPE" description="Basic Salary"/>
+    <StatusItem statusId="ALLOW"   statusTypeId="PAY_RES_LINE_TYPE" description="Allowance"/>
+    <StatusItem statusId="DEDUCT"  statusTypeId="PAY_RES_LINE_TYPE" description="Deduction"/>
+    <StatusItem statusId="TAX"     statusTypeId="PAY_RES_LINE_TYPE" description="Tax"/>
+    <StatusItem statusId="SOC_SEC" statusTypeId="PAY_RES_LINE_TYPE" description="Social Security"/>
+    <StatusItem statusId="LOAN"    statusTypeId="PAY_RES_LINE_TYPE" description="Loan Installment"/>
+    <StatusItem statusId="NET"     statusTypeId="PAY_RES_LINE_TYPE" description="Net Pay"/>
+
+    <StatusType statusTypeId="PAY_RES_LINE" description="Payroll Component Line Id (POC alt ids)"/>
+    <StatusItem statusId="P_LN_BAS"  statusTypeId="PAY_RES_LINE" description="Basic Salary"/>
+    <StatusItem statusId="P_LN_ALW"  statusTypeId="PAY_RES_LINE" description="Allowance"/>
+    <StatusItem statusId="P_LN_DED"  statusTypeId="PAY_RES_LINE" description="Deduction"/>
+    <StatusItem statusId="P_LN_TAX"  statusTypeId="PAY_RES_LINE" description="Tax"/>
+    <StatusItem statusId="P_LN_NET"  statusTypeId="PAY_RES_LINE" description="Net Pay"/>
+    <StatusItem statusId="P_LN_HOU"  statusTypeId="PAY_RES_LINE" description="Housing Allowance"/>
+    <StatusItem statusId="P_LN_TRA"  statusTypeId="PAY_RES_LINE" description="Transport Allowance"/>
+    <StatusItem statusId="P_LN_SSE"  statusTypeId="PAY_RES_LINE" description="Social Security (Employee)"/>
+    <StatusItem statusId="P_LN_LOAN" statusTypeId="PAY_RES_LINE" description="Loan Installment"/>
+	
+	
+	
+
+</entity-engine-xml>

@@ -1,0 +1,1987 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/entitymodel.xsd">
+
+    <title>Asset ERP Plugin: Entity Model v6</title>
+    <description>51 entities: full lifecycle from acquisition through disposal.
+        Naming: Asseterp prefix on entity names, asseterpXxxId on PKs,
+        OFBiz standard names on all FK fields to OFBiz tables,
+        no prefix on regular descriptive fields.
+        All statusId fields relate to StatusItem (OFBiz standard).
+        All *TypeId lookup fields relate to Enumeration (OFBiz standard) via one-nofk.
+        AsseterpEventType removed — event types use EnumerationType/Enumeration.
+        AsseterpLifecycleEvent.enumId replaces asseterpEventTypeId.
+        Indexes declared for all reporting and UI query patterns.</description>
+    <copyright></copyright>
+    <version>5.0</version>
+
+    <!-- ================================================================
+         SECTION 1: CONFIGURATION AND REFERENCE  (6 entities)
+         ================================================================ -->
+
+    <!-- 01: removed — event types now use OFBiz standard EnumerationType / Enumeration.
+         All lifecycle events carry enumId pointing to an Enumeration with
+         enumTypeId = AE_EVENT_TYPE.  See AsseterpTypeData.xml for seeded values. -->
+
+    <!-- 02: one row per legal entity -->
+    <entity entity-name="AsseterpOrgConfig"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Organization Configuration">
+        <field name="partyId"                     type="id"/>
+        <field name="currencyUomId"               type="id"/>
+        <field name="defaultLocaleString"         type="short-varchar"/>
+        <field name="defaultFixedAssetTypeId"     type="id"/>
+        <field name="capitalizationThreshold"     type="currency-amount"/>
+        <field name="fiscalYearStartMonth"        type="numeric"/>
+        <field name="defaultDepreciationMethodId" type="id"/>
+        <!-- which book type posts to the GL; all other book types are memo books -->
+        <field name="postingBookTypeId"           type="id"/>
+        <field name="assetCostGlAccountId"        type="id"/>
+        <field name="accumDepGlAccountId"         type="id"/>
+        <field name="depExpenseGlAccountId"       type="id"/>
+        <field name="gainOnDisposalGlAccountId"   type="id"/>
+        <field name="lossOnDisposalGlAccountId"   type="id"/>
+        <field name="cipGlAccountId"              type="id"/>
+        <field name="isActive"                    type="indicator"/>
+        <field name="createdDate"                 type="date-time"/>
+        <field name="createdByUserLogin"          type="id-vlong"/>
+        <field name="lastModifiedDate"            type="date-time"/>
+        <field name="lastModifiedByUserLogin"     type="id-vlong"/>
+        <prim-key field="partyId"/>
+        <relation type="one" fk-name="AOC_PARTY"   rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AOC_CURR"    rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" fk-name="AOC_FXASTYP" rel-entity-name="FixedAssetType">
+            <key-map field-name="defaultFixedAssetTypeId"
+                     rel-field-name="fixedAssetTypeId"/>
+        </relation>
+        <relation type="one" fk-name="AOC_ASTGL"   title="AssetCost"
+                  rel-entity-name="GlAccount">
+            <key-map field-name="assetCostGlAccountId"
+                     rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" fk-name="AOC_ADPGL"   title="AccumDep"
+                  rel-entity-name="GlAccount">
+            <key-map field-name="accumDepGlAccountId"
+                     rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" fk-name="AOC_DEPXGL"  title="DepExp"
+                  rel-entity-name="GlAccount">
+            <key-map field-name="depExpenseGlAccountId"
+                     rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" fk-name="AOC_GAINGL"  title="GainDisp"
+                  rel-entity-name="GlAccount">
+            <key-map field-name="gainOnDisposalGlAccountId"
+                     rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" fk-name="AOC_LOSSGL"  title="LossDisp"
+                  rel-entity-name="GlAccount">
+            <key-map field-name="lossOnDisposalGlAccountId"
+                     rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" fk-name="AOC_CIPGL"   title="CIP"
+                  rel-entity-name="GlAccount">
+            <key-map field-name="cipGlAccountId"
+                     rel-field-name="glAccountId"/>
+        </relation>
+    </entity>
+
+    <!-- 03: flexible GL mapping per event type per org -->
+    <entity entity-name="AsseterpGlMapping"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP GL Account Mapping">
+        <field name="asseterpGlMappingId" type="id"/>
+        <field name="partyId"             type="id"/>
+        <field name="glMappingTypeId"     type="id"/>
+        <field name="fixedAssetTypeId"    type="id"/>
+        <field name="glAccountId"         type="id"/>
+        <field name="fromDate"            type="date-time"/>
+        <field name="thruDate"            type="date-time"/>
+        <prim-key field="asseterpGlMappingId"/>
+        <relation type="one" fk-name="AGM_PARTY"   rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AGM_GLACCT"  rel-entity-name="GlAccount">
+            <key-map field-name="glAccountId"/>
+        </relation>
+        <relation type="one" fk-name="AGM_FXASTYP" rel-entity-name="FixedAssetType">
+            <key-map field-name="fixedAssetTypeId"
+                     rel-field-name="fixedAssetTypeId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AGM_GLMTYP" rel-entity-name="Enumeration">
+            <key-map field-name="glMappingTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_AGM_PTY_TYP">
+            <index-field name="partyId"/>
+            <index-field name="glMappingTypeId"/>
+        </index>
+    </entity>
+
+    <!-- 04: capitalization rules, useful-life defaults per org and asset type -->
+    <entity entity-name="AsseterpPolicy"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Policy">
+        <field name="asseterpPolicyId"  type="id"/>
+        <field name="partyId"           type="id"/>
+        <field name="fixedAssetTypeId"  type="id"/>
+        <field name="policyTypeId"      type="id"/>
+        <field name="policyValue"       type="long-varchar"/>
+        <field name="fromDate"          type="date-time"/>
+        <field name="thruDate"          type="date-time"/>
+        <field name="description"       type="description"/>
+        <prim-key field="asseterpPolicyId"/>
+        <relation type="one" fk-name="APL_PARTY"   rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="APL_FXASTYP" rel-entity-name="FixedAssetType">
+            <key-map field-name="fixedAssetTypeId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="APL_POLTYP" rel-entity-name="Enumeration">
+            <key-map field-name="policyTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_APL_PTY_TYP">
+            <index-field name="partyId"/>
+            <index-field name="policyTypeId"/>
+        </index>
+    </entity>
+
+    <!-- 05: alert rule configuration (days-before thresholds) -->
+    <entity entity-name="AsseterpAlertConfig"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Alert Configuration">
+        <field name="asseterpAlertConfigId" type="id"/>
+        <field name="partyId"               type="id"/>
+        <field name="alertTypeId"           type="id"/>
+        <field name="alertDaysBefore"       type="numeric"/>
+        <field name="recipientRoleTypeId"   type="id"/>
+        <field name="isActive"              type="indicator"/>
+        <prim-key field="asseterpAlertConfigId"/>
+        <relation type="one" fk-name="AAC_PARTY" rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AAC_ROLE"  rel-entity-name="RoleType">
+            <key-map field-name="recipientRoleTypeId"
+                     rel-field-name="roleTypeId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AAC_ALTTYP" rel-entity-name="Enumeration">
+            <key-map field-name="alertTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_AAC_PTY_TYP">
+            <index-field name="partyId"/>
+            <index-field name="alertTypeId"/>
+        </index>
+    </entity>
+
+    <!-- 06: triggered alert instance -->
+    <entity entity-name="AsseterpAlert"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Alert Instance">
+        <field name="asseterpAlertId"       type="id"/>
+        <field name="asseterpAlertConfigId" type="id"/>
+        <field name="fixedAssetId"          type="id"/>
+        <field name="alertTypeId"           type="id"/>
+        <field name="alertDate"             type="date-time"/>
+        <field name="dueDate"               type="date-time"/>
+        <field name="message"               type="description"/>
+        <field name="statusId"              type="id"/>
+        <field name="acknowledgedByPartyId" type="id"/>
+        <field name="acknowledgedDate"      type="date-time"/>
+        <prim-key field="asseterpAlertId"/>
+        <relation type="one" fk-name="AALT_CFG"    rel-entity-name="AsseterpAlertConfig">
+            <key-map field-name="asseterpAlertConfigId"/>
+        </relation>
+        <relation type="one" fk-name="AALT_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AALT_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AALT_ACKBY"  title="AcknowledgedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="acknowledgedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AALT_ALTTYP" rel-entity-name="Enumeration">
+            <key-map field-name="alertTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_AALT_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_AALT_TYDT">
+            <index-field name="alertTypeId"/>
+            <index-field name="statusId"/>
+            <index-field name="alertDate"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 2: LIFECYCLE AUDIT LOG  (1 entity)
+         ================================================================ -->
+
+    <!-- 07: immutable one-row-per-event log -->
+    <entity entity-name="AsseterpLifecycleEvent"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Lifecycle Event">
+        <field name="asseterpLifecycleEventId" type="id"/>
+        <field name="fixedAssetId"             type="id"/>
+        <field name="partyId"                  type="id"/>
+        <field name="facilityId"               type="id"/>
+        <field name="statusId"                 type="id"/>
+        <field name="enumId"                   type="id"/>
+        <field name="eventDate"                type="date-time"/>
+        <field name="description"              type="description"/>
+        <field name="serviceName"              type="long-varchar"/>
+        <field name="sourceReferenceId"        type="id-long"/>
+        <field name="currencyUomId"            type="id"/>
+        <field name="amount"                   type="currency-amount"/>
+        <field name="createdDate"              type="date-time"/>
+        <field name="createdByUserLogin"       type="id-vlong"/>
+        <prim-key field="asseterpLifecycleEventId"/>
+        <relation type="one" fk-name="ALE_FXAST"   rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ALE_PARTY"   rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ALE_FAC"     rel-entity-name="Facility">
+            <key-map field-name="facilityId"/>
+        </relation>
+        <relation type="one" fk-name="ALE_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ALE_EVTTYP" rel-entity-name="Enumeration">
+            <key-map field-name="enumId"/>
+        </relation>
+        <relation type="one" fk-name="ALE_CURR"    rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_ALE_FXDT">
+            <index-field name="fixedAssetId"/>
+            <index-field name="eventDate"/>
+        </index>
+        <index name="IX_ALE_EVTTYP">
+            <index-field name="enumId"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 3: APPROVAL AND BUDGET  (6 entities)
+         ================================================================ -->
+
+    <!-- 08: pre-acquisition asset request -->
+    <entity entity-name="AsseterpAssetRequest"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Asset Request">
+        <field name="asseterpAssetRequestId" type="id"/>
+        <field name="partyId"                type="id"/>
+        <field name="requestForPartyId"      type="id"/>
+        <field name="facilityId"             type="id"/>
+        <field name="fixedAssetTypeId"       type="id"/>
+        <field name="quantity"               type="fixed-point"/>
+        <field name="estimatedCost"          type="currency-amount"/>
+        <field name="currencyUomId"          type="id"/>
+        <field name="justification"          type="very-long"/>
+        <field name="statusId"               type="id"/>
+        <field name="asseterpBudgetId"       type="id"/>
+        <field name="requestDate"            type="date-time"/>
+        <field name="requiredDate"           type="date-time"/>
+        <field name="createdByUserLogin"     type="id-vlong"/>
+        <prim-key field="asseterpAssetRequestId"/>
+        <relation type="one" fk-name="AAR_PARTY"    title="Requester"
+                  rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AAR_RQFPARTY" title="RequestFor"
+                  rel-entity-name="Party">
+            <key-map field-name="requestForPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AAR_FAC"      rel-entity-name="Facility">
+            <key-map field-name="facilityId"/>
+        </relation>
+        <relation type="one" fk-name="AAR_FXASTYP"  rel-entity-name="FixedAssetType">
+            <key-map field-name="fixedAssetTypeId"/>
+        </relation>
+        <relation type="one" fk-name="AAR_STATUS"   rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AAR_BUDGET"   rel-entity-name="AsseterpBudget">
+            <key-map field-name="asseterpBudgetId"/>
+        </relation>
+        <relation type="one" fk-name="AAR_CURR"     rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_AAR_PTYST">
+            <index-field name="partyId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_AAR_BGDT">
+            <index-field name="asseterpBudgetId"/>
+            <index-field name="requestDate"/>
+        </index>
+    </entity>
+
+    <!-- 09: approval matrix: routes by org, asset type, and value band -->
+    <entity entity-name="AsseterpApprovalMatrix"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Approval Matrix">
+        <field name="asseterpApprovalMatrixId" type="id"/>
+        <field name="partyId"                  type="id"/>
+        <field name="fixedAssetTypeId"         type="id"/>
+        <field name="approvalLevel"            type="numeric"/>
+        <field name="minAmount"                type="currency-amount"/>
+        <field name="maxAmount"                type="currency-amount"/>
+        <field name="currencyUomId"            type="id"/>
+        <field name="approverRoleTypeId"       type="id"/>
+        <field name="approverPartyId"          type="id"/>
+        <field name="isActive"                 type="indicator"/>
+        <prim-key field="asseterpApprovalMatrixId"/>
+        <relation type="one" fk-name="AAM_PARTY"    rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AAM_FXASTYP"  rel-entity-name="FixedAssetType">
+            <key-map field-name="fixedAssetTypeId"/>
+        </relation>
+        <relation type="one" fk-name="AAM_APPRPTY"  title="Approver"
+                  rel-entity-name="Party">
+            <key-map field-name="approverPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AAM_APPROLE"  rel-entity-name="RoleType">
+            <key-map field-name="approverRoleTypeId"
+                     rel-field-name="roleTypeId"/>
+        </relation>
+        <relation type="one" fk-name="AAM_CURR"     rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_AAM_PTYTYP">
+            <index-field name="partyId"/>
+            <index-field name="fixedAssetTypeId"/>
+        </index>
+    </entity>
+
+    <!-- 10: approval transaction record: audit trail per level per request -->
+    <entity entity-name="AsseterpApprovalRecord"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Approval Record">
+        <field name="asseterpApprovalRecordId" type="id"/>
+        <field name="asseterpAssetRequestId"   type="id"/>
+        <field name="approvalLevel"            type="numeric"/>
+        <field name="decision"                 type="id"/>
+        <field name="decidedByPartyId"         type="id"/>
+        <field name="decisionDate"             type="date-time"/>
+        <field name="delegatedToPartyId"       type="id"/>
+        <field name="comments"                 type="description"/>
+        <prim-key field="asseterpApprovalRecordId"/>
+        <relation type="one" fk-name="APREC_REQ"    rel-entity-name="AsseterpAssetRequest">
+            <key-map field-name="asseterpAssetRequestId"/>
+        </relation>
+        <relation type="one" fk-name="APREC_DECBY"  title="DecidedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="decidedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="APREC_DELBY"  title="DelegatedTo"
+                  rel-entity-name="Party">
+            <key-map field-name="delegatedToPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <index name="IX_APREC_REQLV">
+            <index-field name="asseterpAssetRequestId"/>
+            <index-field name="approvalLevel"/>
+        </index>
+    </entity>
+
+    <!-- 11: unified budget: CAPEX / OPEX / MAINT via budgetTypeId -->
+    <entity entity-name="AsseterpBudget"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Budget">
+        <field name="asseterpBudgetId"   type="id"/>
+        <field name="partyId"            type="id"/>
+        <field name="budgetTypeId"       type="id"/>
+        <field name="fiscalYear"         type="numeric"/>
+        <field name="customTimePeriodId" type="id"/>
+        <field name="description"        type="description"/>
+        <field name="totalBudget"        type="currency-amount"/>
+        <field name="currencyUomId"      type="id"/>
+        <field name="statusId"           type="id"/>
+        <field name="approvedByPartyId"  type="id"/>
+        <field name="approvedDate"       type="date-time"/>
+        <prim-key field="asseterpBudgetId"/>
+        <relation type="one" fk-name="ABG_PARTY"    rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ABG_PERIOD"   rel-entity-name="CustomTimePeriod">
+            <key-map field-name="customTimePeriodId"/>
+        </relation>
+        <relation type="one" fk-name="ABG_STATUS"   rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="ABG_APPRPTY"  title="Approver"
+                  rel-entity-name="Party">
+            <key-map field-name="approvedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ABG_CURR"     rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ABG_BGTYP" rel-entity-name="Enumeration">
+            <key-map field-name="budgetTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ABG_PTYTPYR">
+            <index-field name="partyId"/>
+            <index-field name="budgetTypeId"/>
+            <index-field name="fiscalYear"/>
+        </index>
+    </entity>
+
+    <!-- 12: budget line by asset type within a budget -->
+    <entity entity-name="AsseterpBudgetItem"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Budget Item">
+        <field name="asseterpBudgetItemId" type="id"/>
+        <field name="asseterpBudgetId"     type="id"/>
+        <field name="fixedAssetTypeId"     type="id"/>
+        <field name="description"          type="description"/>
+        <field name="budgetedAmount"       type="currency-amount"/>
+        <field name="committedAmount"      type="currency-amount"/>
+        <field name="actualAmount"         type="currency-amount"/>
+        <prim-key field="asseterpBudgetItemId"/>
+        <relation type="one" fk-name="ABGI_BUDGET"  rel-entity-name="AsseterpBudget">
+            <key-map field-name="asseterpBudgetId"/>
+        </relation>
+        <relation type="one" fk-name="ABGI_FXASTYP" rel-entity-name="FixedAssetType">
+            <key-map field-name="fixedAssetTypeId"/>
+        </relation>
+        <index name="IX_ABGI_BGT">
+            <index-field name="asseterpBudgetId"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 4: DEPRECIATION  3 books x 5 methods  (3 entities)
+         ================================================================ -->
+
+    <!-- 13: per-asset book: method, life, running NBV -->
+    <entity entity-name="AsseterpAssetBook"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Asset Depreciation Book">
+        <field name="asseterpAssetBookId"     type="id"/>
+        <field name="fixedAssetId"            type="id"/>
+        <field name="bookTypeId"              type="id"/>
+        <field name="depreciationMethodId"    type="id"/>
+        <field name="usefulLifeYears"         type="floating-point"/>
+        <field name="usefulLifeUomId"         type="id"/>
+        <field name="salvageValue"            type="currency-amount"/>
+        <field name="revaluedCost"            type="currency-amount"/>
+        <field name="accumulatedDepreciation" type="currency-amount"/>
+        <field name="netBookValue"            type="currency-amount"/>
+        <field name="lastDepRunDate"          type="date-time"/>
+        <field name="fromDate"                type="date-time"/>
+        <field name="thruDate"                type="date-time"/>
+        <field name="currencyUomId"           type="id"/>
+        <prim-key field="asseterpAssetBookId"/>
+        <relation type="one" fk-name="AAB_FXAST"   rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AAB_LIFEUOM" title="LifeUom"
+                  rel-entity-name="Uom">
+            <key-map field-name="usefulLifeUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" fk-name="AAB_CURR"    rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AAB_BKTYP" rel-entity-name="Enumeration">
+            <key-map field-name="bookTypeId" rel-field-name="enumId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AAB_DEPMET" rel-entity-name="Enumeration">
+            <key-map field-name="depreciationMethodId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_AAB_FXBK">
+            <index-field name="fixedAssetId"/>
+            <index-field name="bookTypeId"/>
+        </index>
+        <index name="IX_AAB_FXTHRU">
+            <index-field name="fixedAssetId"/>
+            <index-field name="thruDate"/>
+        </index>
+    </entity>
+
+    <!-- 14: depreciation run batch header -->
+    <entity entity-name="AsseterpDepreciationRun"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Depreciation Run">
+        <field name="asseterpDepreciationRunId" type="id"/>
+        <field name="partyId"                   type="id"/>
+        <field name="customTimePeriodId"        type="id"/>
+        <field name="periodDate"                type="date-time"/>
+        <field name="bookTypeId"                type="id"/>
+        <field name="runDate"                   type="date-time"/>
+        <field name="runByPartyId"              type="id"/>
+        <field name="statusId"                  type="id"/>
+        <field name="totalDepAmount"            type="currency-amount"/>
+        <field name="currencyUomId"             type="id"/>
+        <prim-key field="asseterpDepreciationRunId"/>
+        <relation type="one" fk-name="ADR_PARTY"   rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ADR_PERIOD"  rel-entity-name="CustomTimePeriod">
+            <key-map field-name="customTimePeriodId"/>
+        </relation>
+        <relation type="one" fk-name="ADR_RUNPTY"  title="RunBy"
+                  rel-entity-name="Party">
+            <key-map field-name="runByPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ADR_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="ADR_CURR"    rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ADR_BKTYP" rel-entity-name="Enumeration">
+            <key-map field-name="bookTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ADR_PTYBKDT">
+            <index-field name="partyId"/>
+            <index-field name="bookTypeId"/>
+            <index-field name="periodDate"/>
+        </index>
+        <index name="IX_ADR_PERIOD">
+            <index-field name="partyId"/>
+            <index-field name="customTimePeriodId"/>
+        </index>
+    </entity>
+
+    <!-- 15: depreciation line: one row per asset per run -->
+    <entity entity-name="AsseterpDepreciationLine"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Depreciation Line">
+        <field name="asseterpDepreciationLineId" type="id"/>
+        <field name="asseterpDepreciationRunId"  type="id"/>
+        <field name="fixedAssetId"               type="id"/>
+        <field name="asseterpAssetBookId"        type="id"/>
+        <field name="depreciationMethodId"       type="id"/>
+        <field name="openingNbv"                 type="currency-amount"/>
+        <field name="depAmount"                  type="currency-amount"/>
+        <field name="closingNbv"                 type="currency-amount"/>
+        <field name="debitGlAccountId"           type="id"/>
+        <field name="creditGlAccountId"          type="id"/>
+        <field name="acctgTransId"               type="id"/>
+        <prim-key field="asseterpDepreciationLineId"/>
+        <relation type="one" fk-name="ADL_RUN"   rel-entity-name="AsseterpDepreciationRun">
+            <key-map field-name="asseterpDepreciationRunId"/>
+        </relation>
+        <relation type="one" fk-name="ADL_FXAST" rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ADL_BOOK"  rel-entity-name="AsseterpAssetBook">
+            <key-map field-name="asseterpAssetBookId"/>
+        </relation>
+        <relation type="one" fk-name="ADL_ACCTG" rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ADL_DEPMET" rel-entity-name="Enumeration">
+            <key-map field-name="depreciationMethodId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ADL_RUN">
+            <index-field name="asseterpDepreciationRunId"/>
+        </index>
+        <index name="IX_ADL_FXAST">
+            <index-field name="fixedAssetId"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 5: ACQUISITION, CIP, TAGGING, CUSTODY, DOCUMENTS
+         (7 entities)
+         ================================================================ -->
+
+    <!-- 16: physical barcode / QR / RFID tag -->
+    <entity entity-name="AsseterpAssetTag"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Physical Asset Tag">
+        <field name="asseterpAssetTagId" type="id"/>
+        <field name="fixedAssetId"       type="id"/>
+        <field name="tagTypeId"          type="id"/>
+        <field name="tagValue"           type="long-varchar"/>
+        <field name="issuedDate"         type="date-time"/>
+        <field name="statusId"           type="id"/>
+        <field name="replacedByTagId"    type="id"/>
+        <prim-key field="asseterpAssetTagId"/>
+        <relation type="one" fk-name="AAT_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AAT_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AAT_REPTAG"  title="ReplacedBy"
+                  rel-entity-name="AsseterpAssetTag">
+            <key-map field-name="replacedByTagId"
+                     rel-field-name="asseterpAssetTagId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AAT_TAGTYP" rel-entity-name="Enumeration">
+            <key-map field-name="tagTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_AAT_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_AAT_TAGVAL">
+            <index-field name="tagValue"/>
+        </index>
+    </entity>
+
+    <!-- 17: CIP project header -->
+    <entity entity-name="AsseterpCipProject"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Construction in Progress Project">
+        <field name="asseterpCipProjectId" type="id"/>
+        <field name="partyId"              type="id"/>
+        <field name="projectName"          type="name"/>
+        <field name="description"          type="description"/>
+        <field name="statusId"             type="id"/>
+        <field name="startDate"            type="date-time"/>
+        <field name="completionDate"       type="date-time"/>
+        <field name="totalCost"            type="currency-amount"/>
+        <field name="currencyUomId"        type="id"/>
+        <field name="fixedAssetId"         type="id"/>
+        <field name="capitalizedDate"      type="date-time"/>
+        <field name="acctgTransId"         type="id"/>
+        <prim-key field="asseterpCipProjectId"/>
+        <relation type="one" fk-name="ACP_PARTY"  rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ACP_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="ACP_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ACP_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" fk-name="ACP_ACCTG"  rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <index name="IX_ACP_PTYST">
+            <index-field name="partyId"/>
+            <index-field name="statusId"/>
+        </index>
+    </entity>
+
+    <!-- 18: CIP cost lines accumulated before capitalization -->
+    <entity entity-name="AsseterpCipCost"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP CIP Cost Line">
+        <field name="asseterpCipCostId"    type="id"/>
+        <field name="asseterpCipProjectId" type="id"/>
+        <field name="invoiceId"            type="id"/>
+        <field name="invoiceItemSeqId"     type="id"/>
+        <field name="costDate"             type="date-time"/>
+        <field name="amount"               type="currency-amount"/>
+        <field name="currencyUomId"        type="id"/>
+        <field name="glAccountId"          type="id"/>
+        <field name="description"          type="description"/>
+        <prim-key field="asseterpCipCostId"/>
+        <relation type="one" fk-name="ACPC_PRJ"  rel-entity-name="AsseterpCipProject">
+            <key-map field-name="asseterpCipProjectId"/>
+        </relation>
+        <relation type="one" fk-name="ACPC_INV"  rel-entity-name="Invoice">
+            <key-map field-name="invoiceId"/>
+        </relation>
+        <relation type="one" fk-name="ACPC_GL"   rel-entity-name="GlAccount">
+            <key-map field-name="glAccountId"/>
+        </relation>
+        <relation type="one" fk-name="ACPC_CURR" rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_ACPC_PRJ">
+            <index-field name="asseterpCipProjectId"/>
+            <index-field name="costDate"/>
+        </index>
+    </entity>
+
+    <!-- 19: IAS 20 government grant -->
+    <entity entity-name="AsseterpGovGrant"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Government Grant IAS 20">
+        <field name="asseterpGovGrantId"       type="id"/>
+        <field name="fixedAssetId"             type="id"/>
+        <field name="grantorPartyId"           type="id"/>
+        <field name="grantTypeId"              type="id"/>
+        <field name="grantAmount"              type="currency-amount"/>
+        <field name="currencyUomId"            type="id"/>
+        <field name="receivedDate"             type="date-time"/>
+        <field name="amortizationPeriodMonths" type="numeric"/>
+        <field name="deferredBalance"          type="currency-amount"/>
+        <field name="statusId"                 type="id"/>
+        <prim-key field="asseterpGovGrantId"/>
+        <relation type="one" fk-name="AGG_FXAST"   rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AGG_GRANTOR"  rel-entity-name="Party">
+            <key-map field-name="grantorPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AGG_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AGG_CURR"    rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AGG_GRTYP" rel-entity-name="Enumeration">
+            <key-map field-name="grantTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_AGG_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+    </entity>
+
+    <!-- 20: government grant amortization schedule -->
+    <entity entity-name="AsseterpGovGrantAmort"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Government Grant Amortization Line">
+        <field name="asseterpGovGrantAmortId" type="id"/>
+        <field name="asseterpGovGrantId"      type="id"/>
+        <field name="periodDate"              type="date-time"/>
+        <field name="amortAmount"             type="currency-amount"/>
+        <field name="postedDate"              type="date-time"/>
+        <field name="acctgTransId"            type="id"/>
+        <prim-key field="asseterpGovGrantAmortId"/>
+        <relation type="one" fk-name="AGGA_GRANT" rel-entity-name="AsseterpGovGrant">
+            <key-map field-name="asseterpGovGrantId"/>
+        </relation>
+        <relation type="one" fk-name="AGGA_ACCTG" rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <index name="IX_AGGA_GRDT">
+            <index-field name="asseterpGovGrantId"/>
+            <index-field name="periodDate"/>
+        </index>
+    </entity>
+
+    <!-- 21: custody record: full history of asset holders -->
+    <entity entity-name="AsseterpCustodyRecord"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Custody Record">
+        <field name="asseterpCustodyRecordId" type="id"/>
+        <field name="fixedAssetId"            type="id"/>
+        <field name="custodianPartyId"        type="id"/>
+        <field name="facilityId"              type="id"/>
+        <field name="assignedDate"            type="date-time"/>
+        <field name="returnDate"              type="date-time"/>
+        <field name="assignedByPartyId"       type="id"/>
+        <field name="acknowledgementDate"     type="date-time"/>
+        <field name="notes"                   type="very-long"/>
+        <prim-key field="asseterpCustodyRecordId"/>
+        <relation type="one" fk-name="ACR_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ACR_CUSTDN" title="Custodian"
+                  rel-entity-name="Party">
+            <key-map field-name="custodianPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ACR_FAC"    rel-entity-name="Facility">
+            <key-map field-name="facilityId"/>
+        </relation>
+        <relation type="one" fk-name="ACR_ASGDBY" title="AssignedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="assignedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <index name="IX_ACR_FXRTN">
+            <index-field name="fixedAssetId"/>
+            <index-field name="returnDate"/>
+        </index>
+        <index name="IX_ACR_CUSTN">
+            <index-field name="custodianPartyId"/>
+        </index>
+    </entity>
+
+    <!-- 22: document attachment linking assets to OFBiz Content -->
+    <entity entity-name="AsseterpDocument"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Document Attachment">
+        <field name="asseterpDocumentId"   type="id"/>
+        <field name="fixedAssetId"         type="id"/>
+        <field name="contentId"            type="id"/>
+        <field name="docTypeId"            type="id"/>
+        <field name="uploadedDate"         type="date-time"/>
+        <field name="uploadedByPartyId"    type="id"/>
+        <field name="description"          type="description"/>
+        <field name="statusId"             type="id"/>
+        <prim-key field="asseterpDocumentId"/>
+        <relation type="one" fk-name="ADOC_FXAST"   rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ADOC_CONTENT"  rel-entity-name="Content">
+            <key-map field-name="contentId"/>
+        </relation>
+        <relation type="one" fk-name="ADOC_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="ADOC_UPBY"    title="UploadedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="uploadedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ADOC_DOCTYP" rel-entity-name="Enumeration">
+            <key-map field-name="docTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ADOC_FXTYP">
+            <index-field name="fixedAssetId"/>
+            <index-field name="docTypeId"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 6: PHYSICAL VERIFICATION  (2 entities)
+         ================================================================ -->
+
+    <!-- 23: verification plan (audit round) -->
+    <entity entity-name="AsseterpVerificationPlan"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Physical Verification Plan">
+        <field name="asseterpVerificationPlanId" type="id"/>
+        <field name="partyId"                    type="id"/>
+        <field name="facilityId"                 type="id"/>
+        <field name="planName"                   type="name"/>
+        <field name="planDate"                   type="date-time"/>
+        <field name="completedDate"              type="date-time"/>
+        <field name="statusId"                   type="id"/>
+        <field name="conductedByPartyId"         type="id"/>
+        <prim-key field="asseterpVerificationPlanId"/>
+        <relation type="one" fk-name="AVP_PARTY"  rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AVP_FAC"    rel-entity-name="Facility">
+            <key-map field-name="facilityId"/>
+        </relation>
+        <relation type="one" fk-name="AVP_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AVP_CONDBY" title="ConductedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="conductedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <index name="IX_AVP_PTYST">
+            <index-field name="partyId"/>
+            <index-field name="statusId"/>
+            <index-field name="planDate"/>
+        </index>
+    </entity>
+
+    <!-- 24: scan result per asset in a verification plan -->
+    <entity entity-name="AsseterpVerificationLine"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Physical Verification Line">
+        <field name="asseterpVerificationLineId"  type="id"/>
+        <field name="asseterpVerificationPlanId"  type="id"/>
+        <field name="fixedAssetId"                type="id"/>
+        <field name="scanDate"                    type="date-time"/>
+        <field name="result"                      type="short-varchar"/>
+        <field name="scannedTagValue"             type="long-varchar"/>
+        <field name="notes"                       type="description"/>
+        <prim-key field="asseterpVerificationLineId"/>
+        <relation type="one" fk-name="AVL_PLAN"  rel-entity-name="AsseterpVerificationPlan">
+            <key-map field-name="asseterpVerificationPlanId"/>
+        </relation>
+        <relation type="one" fk-name="AVL_FXAST" rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <index name="IX_AVL_PLNRES">
+            <index-field name="asseterpVerificationPlanId"/>
+            <index-field name="result"/>
+        </index>
+        <index name="IX_AVL_FXAST">
+            <index-field name="fixedAssetId"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 7: MAINTENANCE  (3 entities)
+         ================================================================ -->
+
+    <!-- 25: meter readings for UOP depreciation and maintenance triggers -->
+    <entity entity-name="AsseterpMeterReading"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Meter Reading">
+        <field name="asseterpMeterReadingId" type="id"/>
+        <field name="fixedAssetId"           type="id"/>
+        <field name="meterTypeId"            type="id"/>
+        <field name="readingDate"            type="date-time"/>
+        <field name="readingValue"           type="floating-point"/>
+        <field name="readingUomId"           type="id"/>
+        <field name="recordedByPartyId"      type="id"/>
+        <prim-key field="asseterpMeterReadingId"/>
+        <relation type="one" fk-name="AMR_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AMR_MTRTYP" rel-entity-name="Enumeration">
+            <key-map field-name="meterTypeId" rel-field-name="enumId"/>
+        </relation>
+        <relation type="one" fk-name="AMR_RDGUOM" title="ReadingUom"
+                  rel-entity-name="Uom">
+            <key-map field-name="readingUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" fk-name="AMR_RECBY"  title="RecordedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="recordedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <index name="IX_AMR_FXDT">
+            <index-field name="fixedAssetId"/>
+            <index-field name="readingDate"/>
+        </index>
+    </entity>
+
+    <!-- 26: spare part issue against a maintenance work order -->
+    <entity entity-name="AsseterpSparePart"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Spare Part Issue">
+        <field name="asseterpSparePartId"  type="id"/>
+        <field name="fixedAssetId"         type="id"/>
+        <field name="workEffortId"         type="id"/>
+        <field name="productId"            type="id"/>
+        <field name="facilityId"           type="id"/>
+        <field name="quantity"             type="fixed-point"/>
+        <field name="uomId"                type="id"/>
+        <field name="issuedDate"           type="date-time"/>
+        <field name="costAmount"           type="currency-amount"/>
+        <field name="currencyUomId"        type="id"/>
+        <field name="treatmentTypeId"      type="id"/>
+        <field name="statusId"             type="id"/>
+        <prim-key field="asseterpSparePartId"/>
+        <relation type="one" fk-name="ASPT_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ASPT_WE"     rel-entity-name="WorkEffort">
+            <key-map field-name="workEffortId"/>
+        </relation>
+        <relation type="one" fk-name="ASPT_PROD"   rel-entity-name="Product">
+            <key-map field-name="productId"/>
+        </relation>
+        <relation type="one" fk-name="ASPT_FAC"    rel-entity-name="Facility">
+            <key-map field-name="facilityId"/>
+        </relation>
+        <relation type="one" fk-name="ASPT_UOM"    rel-entity-name="Uom">
+            <key-map field-name="uomId"/>
+        </relation>
+        <relation type="one" fk-name="ASPT_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" fk-name="ASPT_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ASPT_TRTTYP" rel-entity-name="Enumeration">
+            <key-map field-name="treatmentTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ASPT_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_ASPT_WE">
+            <index-field name="workEffortId"/>
+        </index>
+    </entity>
+
+    <!-- 27: batch job result for background operations -->
+    <entity entity-name="AsseterpBatchJobResult"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Batch Job Result">
+        <field name="asseterpBatchJobResultId" type="id"/>
+        <field name="jobTypeId"                type="id"/>
+        <field name="sourceReferenceId"        type="id-long"/>
+        <field name="startDateTime"            type="date-time"/>
+        <field name="endDateTime"              type="date-time"/>
+        <field name="statusId"                 type="id"/>
+        <field name="totalRecords"             type="numeric"/>
+        <field name="processedRecords"         type="numeric"/>
+        <field name="failedRecords"            type="numeric"/>
+        <field name="errorMessage"             type="very-long"/>
+        <field name="runByPartyId"             type="id"/>
+        <prim-key field="asseterpBatchJobResultId"/>
+        <relation type="one" fk-name="ABJ_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="ABJ_RUNBY"  title="RunBy"
+                  rel-entity-name="Party">
+            <key-map field-name="runByPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ABJ_JOBTYP" rel-entity-name="Enumeration">
+            <key-map field-name="jobTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ABJ_TYPST">
+            <index-field name="jobTypeId"/>
+            <index-field name="statusId"/>
+            <index-field name="startDateTime"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 8: ACCOUNTING STANDARDS
+         IAS 16  36  37  38 / IFRS 5  16  (10 entities)
+         ================================================================ -->
+
+    <!-- 28: third-party valuation / appraisal -->
+    <entity entity-name="AsseterpValuation"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Asset Valuation">
+        <field name="asseterpValuationId"        type="id"/>
+        <field name="fixedAssetId"               type="id"/>
+        <field name="valuationDate"              type="date-time"/>
+        <field name="valuedByPartyId"            type="id"/>
+        <field name="valuationMethodId"          type="id"/>
+        <field name="marketValue"                type="currency-amount"/>
+        <field name="depreciatedReplacementCost" type="currency-amount"/>
+        <field name="currencyUomId"              type="id"/>
+        <field name="reportReference"            type="short-varchar"/>
+        <field name="nextValuationDate"          type="date-time"/>
+        <field name="notes"                      type="description"/>
+        <prim-key field="asseterpValuationId"/>
+        <relation type="one" fk-name="AVAL_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AVAL_VALBY"  title="ValuedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="valuedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AVAL_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AVAL_VALMET" rel-entity-name="Enumeration">
+            <key-map field-name="valuationMethodId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_AVAL_FXDT">
+            <index-field name="fixedAssetId"/>
+            <index-field name="valuationDate"/>
+        </index>
+    </entity>
+
+    <!-- 29: IAS 16 revaluation -->
+    <entity entity-name="AsseterpRevaluation"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Revaluation IAS 16">
+        <field name="asseterpRevaluationId"   type="id"/>
+        <field name="fixedAssetId"            type="id"/>
+        <field name="revaluationDate"         type="date-time"/>
+        <field name="preRevalCost"            type="currency-amount"/>
+        <field name="preRevalAccumDep"        type="currency-amount"/>
+        <field name="fairValue"               type="currency-amount"/>
+        <field name="surplusAmount"           type="currency-amount"/>
+        <field name="deficitAmount"           type="currency-amount"/>
+        <field name="currencyUomId"           type="id"/>
+        <field name="performedByPartyId"      type="id"/>
+        <field name="acctgTransId"            type="id"/>
+        <field name="notes"                   type="description"/>
+        <prim-key field="asseterpRevaluationId"/>
+        <relation type="one" fk-name="ARV_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ARV_PERFBY" title="PerformedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="performedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ARV_ACCTG"  rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" fk-name="ARV_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_ARV_FXDT">
+            <index-field name="fixedAssetId"/>
+            <index-field name="revaluationDate"/>
+        </index>
+    </entity>
+
+    <!-- 30: IAS 36 cash-generating unit -->
+    <entity entity-name="AsseterpCgu"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Cash-Generating Unit IAS 36">
+        <field name="asseterpCguId"  type="id"/>
+        <field name="partyId"        type="id"/>
+        <field name="cguName"        type="name"/>
+        <field name="description"    type="description"/>
+        <prim-key field="asseterpCguId"/>
+        <relation type="one" fk-name="ACG_PARTY" rel-entity-name="Party">
+            <key-map field-name="partyId"/>
+        </relation>
+        <index name="IX_ACG_PTY">
+            <index-field name="partyId"/>
+        </index>
+    </entity>
+
+    <!-- 31: asset membership in a CGU with impairment allocation percentage -->
+    <entity entity-name="AsseterpCguMember"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP CGU Member Asset">
+        <field name="asseterpCguMemberId" type="id"/>
+        <field name="asseterpCguId"       type="id"/>
+        <field name="fixedAssetId"        type="id"/>
+        <field name="fromDate"            type="date-time"/>
+        <field name="thruDate"            type="date-time"/>
+        <field name="allocationPct"       type="floating-point"/>
+        <prim-key field="asseterpCguMemberId"/>
+        <relation type="one" fk-name="ACGM_CGU"   rel-entity-name="AsseterpCgu">
+            <key-map field-name="asseterpCguId"/>
+        </relation>
+        <relation type="one" fk-name="ACGM_FXAST" rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <index name="IX_ACGM_CGUFX">
+            <index-field name="asseterpCguId"/>
+            <index-field name="fixedAssetId"/>
+        </index>
+    </entity>
+
+    <!-- 32: IAS 36 impairment assessment -->
+    <entity entity-name="AsseterpImpairment"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Impairment Assessment IAS 36">
+        <field name="asseterpImpairmentId"  type="id"/>
+        <field name="fixedAssetId"          type="id"/>
+        <field name="asseterpCguId"         type="id"/>
+        <field name="assessmentDate"        type="date-time"/>
+        <field name="carryingAmount"        type="currency-amount"/>
+        <field name="recoverableAmount"     type="currency-amount"/>
+        <field name="impairmentLoss"        type="currency-amount"/>
+        <field name="reversalAmount"        type="currency-amount"/>
+        <field name="currencyUomId"         type="id"/>
+        <field name="statusId"              type="id"/>
+        <field name="acctgTransId"          type="id"/>
+        <prim-key field="asseterpImpairmentId"/>
+        <relation type="one" fk-name="AIM_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AIM_CGU"    rel-entity-name="AsseterpCgu">
+            <key-map field-name="asseterpCguId"/>
+        </relation>
+        <relation type="one" fk-name="AIM_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AIM_ACCTG"  rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" fk-name="AIM_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_AIM_FXDT">
+            <index-field name="fixedAssetId"/>
+            <index-field name="assessmentDate"/>
+        </index>
+        <index name="IX_AIM_CGU">
+            <index-field name="asseterpCguId"/>
+        </index>
+    </entity>
+
+    <!-- 33: IAS 37 asset retirement obligation -->
+    <entity entity-name="AsseterpAro"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Asset Retirement Obligation IAS 37">
+        <field name="asseterpAroId"       type="id"/>
+        <field name="fixedAssetId"        type="id"/>
+        <field name="recognitionDate"     type="date-time"/>
+        <field name="estimatedCost"       type="currency-amount"/>
+        <field name="discountRate"        type="floating-point"/>
+        <field name="presentValue"        type="currency-amount"/>
+        <field name="currencyUomId"       type="id"/>
+        <field name="expectedSettleDate"  type="date-time"/>
+        <field name="statusId"            type="id"/>
+        <field name="acctgTransId"        type="id"/>
+        <prim-key field="asseterpAroId"/>
+        <relation type="one" fk-name="AARO_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AARO_STATUS" rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AARO_ACCTG"  rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" fk-name="AARO_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_AARO_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+    </entity>
+
+    <!-- 34: ARO discount unwinding schedule -->
+    <entity entity-name="AsseterpAroSchedule"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP ARO Unwinding Schedule">
+        <field name="asseterpAroScheduleId" type="id"/>
+        <field name="asseterpAroId"         type="id"/>
+        <field name="periodDate"            type="date-time"/>
+        <field name="openingBalance"        type="currency-amount"/>
+        <field name="interestUnwound"       type="currency-amount"/>
+        <field name="closingBalance"        type="currency-amount"/>
+        <field name="acctgTransId"          type="id"/>
+        <prim-key field="asseterpAroScheduleId"/>
+        <relation type="one" fk-name="AARS_ARO"   rel-entity-name="AsseterpAro">
+            <key-map field-name="asseterpAroId"/>
+        </relation>
+        <relation type="one" fk-name="AARS_ACCTG" rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <index name="IX_AARS_ARODT">
+            <index-field name="asseterpAroId"/>
+            <index-field name="periodDate"/>
+        </index>
+    </entity>
+
+    <!-- 35: IAS 8 prospective estimate change -->
+    <entity entity-name="AsseterpEstimateChange"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Estimate Change IAS 8">
+        <field name="asseterpEstimateChangeId" type="id"/>
+        <field name="fixedAssetId"             type="id"/>
+        <field name="asseterpAssetBookId"      type="id"/>
+        <field name="changeDate"               type="date-time"/>
+        <field name="changeTypeId"             type="id"/>
+        <field name="oldValue"                 type="long-varchar"/>
+        <field name="newValue"                 type="long-varchar"/>
+        <field name="reason"                   type="description"/>
+        <field name="approvedByPartyId"        type="id"/>
+        <field name="notes"                    type="very-long"/>
+        <prim-key field="asseterpEstimateChangeId"/>
+        <relation type="one" fk-name="AEC_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AEC_BOOK"   rel-entity-name="AsseterpAssetBook">
+            <key-map field-name="asseterpAssetBookId"/>
+        </relation>
+        <relation type="one" fk-name="AEC_APPRBY" title="ApprovedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="approvedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AEC_CHGTYP" rel-entity-name="Enumeration">
+            <key-map field-name="changeTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_AEC_FXDT">
+            <index-field name="fixedAssetId"/>
+            <index-field name="changeDate"/>
+        </index>
+    </entity>
+
+    <!-- 36: IFRS 5 held-for-sale reclassification -->
+    <entity entity-name="AsseterpHeldForSale"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Held-for-Sale IFRS 5">
+        <field name="asseterpHeldForSaleId"            type="id"/>
+        <field name="fixedAssetId"                     type="id"/>
+        <field name="reclassificationDate"             type="date-time"/>
+        <field name="carryingAmountAtReclassification" type="currency-amount"/>
+        <field name="fairValueLessCostsToSell"         type="currency-amount"/>
+        <field name="writtenDownAmount"                type="currency-amount"/>
+        <field name="currencyUomId"                    type="id"/>
+        <field name="expectedSaleDate"                 type="date-time"/>
+        <field name="actualSaleDate"                   type="date-time"/>
+        <field name="statusId"                         type="id"/>
+        <field name="acctgTransId"                     type="id"/>
+        <field name="notes"                            type="description"/>
+        <prim-key field="asseterpHeldForSaleId"/>
+        <relation type="one" fk-name="AHFS_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AHFS_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AHFS_ACCTG"  rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" fk-name="AHFS_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_AHFS_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_AHFS_SALE">
+            <index-field name="expectedSaleDate"/>
+        </index>
+    </entity>
+
+    <!-- 37: IFRS 16 lease -->
+    <entity entity-name="AsseterpLease"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Lease IFRS 16">
+        <field name="asseterpLeaseId"        type="id"/>
+        <field name="fixedAssetId"           type="id"/>
+        <field name="lessorPartyId"          type="id"/>
+        <field name="leaseTypeId"            type="id"/>
+        <field name="leaseStartDate"         type="date-time"/>
+        <field name="leaseEndDate"           type="date-time"/>
+        <field name="discountRate"           type="floating-point"/>
+        <field name="presentValueLiability"  type="currency-amount"/>
+        <field name="rouAssetValue"          type="currency-amount"/>
+        <field name="currencyUomId"          type="id"/>
+        <field name="statusId"               type="id"/>
+        <field name="acctgTransId"           type="id"/>
+        <prim-key field="asseterpLeaseId"/>
+        <relation type="one" fk-name="ALS_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ALS_LESSOR"  rel-entity-name="Party">
+            <key-map field-name="lessorPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ALS_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="ALS_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" fk-name="ALS_ACCTG"  rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ALS_LSTYP" rel-entity-name="Enumeration">
+            <key-map field-name="leaseTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ALS_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_ALS_END">
+            <index-field name="leaseEndDate"/>
+        </index>
+    </entity>
+
+    <!-- 38: lease amortization schedule -->
+    <entity entity-name="AsseterpLeaseSchedule"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Lease Amortization Schedule">
+        <field name="asseterpLeaseScheduleId" type="id"/>
+        <field name="asseterpLeaseId"         type="id"/>
+        <field name="paymentDate"             type="date-time"/>
+        <field name="openingLiability"        type="currency-amount"/>
+        <field name="payment"                 type="currency-amount"/>
+        <field name="interestCharge"          type="currency-amount"/>
+        <field name="principalRepayment"      type="currency-amount"/>
+        <field name="closingLiability"        type="currency-amount"/>
+        <field name="acctgTransId"            type="id"/>
+        <prim-key field="asseterpLeaseScheduleId"/>
+        <relation type="one" fk-name="ALSS_LEASE" rel-entity-name="AsseterpLease">
+            <key-map field-name="asseterpLeaseId"/>
+        </relation>
+        <relation type="one" fk-name="ALSS_ACCTG" rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <index name="IX_ALSS_LSDT">
+            <index-field name="asseterpLeaseId"/>
+            <index-field name="paymentDate"/>
+        </index>
+    </entity>
+
+    <!-- 39: lease modification -->
+    <entity entity-name="AsseterpLeaseModification"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Lease Modification">
+        <field name="asseterpLeaseModificationId" type="id"/>
+        <field name="asseterpLeaseId"             type="id"/>
+        <field name="modificationDate"            type="date-time"/>
+        <field name="modTypeId"                   type="id"/>
+        <field name="newEndDate"                  type="date-time"/>
+        <field name="newDiscountRate"             type="floating-point"/>
+        <field name="revisedLiability"            type="currency-amount"/>
+        <field name="acctgTransId"                type="id"/>
+        <prim-key field="asseterpLeaseModificationId"/>
+        <relation type="one" fk-name="ALM_LEASE" rel-entity-name="AsseterpLease">
+            <key-map field-name="asseterpLeaseId"/>
+        </relation>
+        <relation type="one" fk-name="ALM_ACCTG" rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ALM_MODTYP" rel-entity-name="Enumeration">
+            <key-map field-name="modTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ALM_LSDT">
+            <index-field name="asseterpLeaseId"/>
+            <index-field name="modificationDate"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 9: FINANCING: RENTAL, HIRE PURCHASE  (3 entities)
+         ================================================================ -->
+
+    <!-- 40: rental contract: company as lessor -->
+    <entity entity-name="AsseterpRentalContract"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Rental Contract">
+        <field name="asseterpRentalContractId" type="id"/>
+        <field name="fixedAssetId"             type="id"/>
+        <field name="lesseePartyId"            type="id"/>
+        <field name="startDate"                type="date-time"/>
+        <field name="endDate"                  type="date-time"/>
+        <field name="monthlyRate"              type="currency-amount"/>
+        <field name="depositAmount"            type="currency-amount"/>
+        <field name="currencyUomId"            type="id"/>
+        <field name="deliveryDate"             type="date-time"/>
+        <field name="returnDate"               type="date-time"/>
+        <field name="statusId"                 type="id"/>
+        <prim-key field="asseterpRentalContractId"/>
+        <relation type="one" fk-name="ARC_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ARC_LESSEE"  rel-entity-name="Party">
+            <key-map field-name="lesseePartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ARC_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="ARC_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_ARC_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_ARC_END">
+            <index-field name="endDate"/>
+        </index>
+    </entity>
+
+    <!-- 41: hire-purchase financing -->
+    <entity entity-name="AsseterpHirePurchase"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Hire Purchase">
+        <field name="asseterpHirePurchaseId" type="id"/>
+        <field name="fixedAssetId"           type="id"/>
+        <field name="financierPartyId"       type="id"/>
+        <field name="principalAmount"        type="currency-amount"/>
+        <field name="interestRate"           type="floating-point"/>
+        <field name="termMonths"             type="numeric"/>
+        <field name="startDate"              type="date-time"/>
+        <field name="currencyUomId"          type="id"/>
+        <field name="statusId"               type="id"/>
+        <prim-key field="asseterpHirePurchaseId"/>
+        <relation type="one" fk-name="AHP_FXAST"   rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AHP_FINANCR"  title="Financier"
+                  rel-entity-name="Party">
+            <key-map field-name="financierPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AHP_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AHP_CURR"    rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_AHP_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+    </entity>
+
+    <!-- 42: hire-purchase repayment schedule -->
+    <entity entity-name="AsseterpHirePurchaseSchedule"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Hire Purchase Payment Schedule">
+        <field name="asseterpHirePurchaseScheduleId" type="id"/>
+        <field name="asseterpHirePurchaseId"         type="id"/>
+        <field name="dueDate"                        type="date-time"/>
+        <field name="openingBalance"                 type="currency-amount"/>
+        <field name="installment"                    type="currency-amount"/>
+        <field name="principal"                      type="currency-amount"/>
+        <field name="financeCharge"                  type="currency-amount"/>
+        <field name="closingBalance"                 type="currency-amount"/>
+        <field name="paidDate"                       type="date-time"/>
+        <field name="acctgTransId"                   type="id"/>
+        <prim-key field="asseterpHirePurchaseScheduleId"/>
+        <relation type="one" fk-name="AHPS_HP"    rel-entity-name="AsseterpHirePurchase">
+            <key-map field-name="asseterpHirePurchaseId"/>
+        </relation>
+        <relation type="one" fk-name="AHPS_ACCTG" rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <index name="IX_AHPS_HPDUE">
+            <index-field name="asseterpHirePurchaseId"/>
+            <index-field name="dueDate"/>
+        </index>
+        <index name="IX_AHPS_DUE">
+            <index-field name="dueDate"/>
+            <index-field name="paidDate"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 10: ASSET SERVICES
+         (booking insurance warranty compliance pledge)  (6 entities)
+         ================================================================ -->
+
+    <!-- 43: booking for shared assets -->
+    <entity entity-name="AsseterpBooking"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Asset Booking">
+        <field name="asseterpBookingId"  type="id"/>
+        <field name="fixedAssetId"       type="id"/>
+        <field name="bookedByPartyId"    type="id"/>
+        <field name="bookingFromDate"    type="date-time"/>
+        <field name="bookingThruDate"    type="date-time"/>
+        <field name="statusId"           type="id"/>
+        <field name="purpose"            type="description"/>
+        <field name="notes"              type="very-long"/>
+        <prim-key field="asseterpBookingId"/>
+        <relation type="one" fk-name="ABK_FXAST"    rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ABK_BOOKEDBY"  title="BookedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="bookedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ABK_STATUS"   rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <index name="IX_ABK_FXDATES">
+            <index-field name="fixedAssetId"/>
+            <index-field name="bookingFromDate"/>
+            <index-field name="bookingThruDate"/>
+        </index>
+        <index name="IX_ABK_BKDST">
+            <index-field name="bookedByPartyId"/>
+            <index-field name="statusId"/>
+        </index>
+    </entity>
+
+    <!-- 44: insurance policy -->
+    <entity entity-name="AsseterpInsurance"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Insurance Policy">
+        <field name="asseterpInsuranceId" type="id"/>
+        <field name="fixedAssetId"        type="id"/>
+        <field name="insurerPartyId"      type="id"/>
+        <field name="policyNumber"        type="short-varchar"/>
+        <field name="coverageType"        type="description"/>
+        <field name="startDate"           type="date-time"/>
+        <field name="endDate"             type="date-time"/>
+        <field name="premiumAmount"       type="currency-amount"/>
+        <field name="coverageAmount"      type="currency-amount"/>
+        <field name="currencyUomId"       type="id"/>
+        <field name="statusId"            type="id"/>
+        <prim-key field="asseterpInsuranceId"/>
+        <relation type="one" fk-name="AIN_FXAST"   rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AIN_INSURER"  rel-entity-name="Party">
+            <key-map field-name="insurerPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AIN_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AIN_CURR"    rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_AIN_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_AIN_END">
+            <index-field name="endDate"/>
+        </index>
+    </entity>
+
+    <!-- 45: insurance claim -->
+    <entity entity-name="AsseterpInsuranceClaim"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Insurance Claim">
+        <field name="asseterpInsuranceClaimId" type="id"/>
+        <field name="asseterpInsuranceId"      type="id"/>
+        <field name="claimDate"                type="date-time"/>
+        <field name="claimAmount"              type="currency-amount"/>
+        <field name="settledAmount"            type="currency-amount"/>
+        <field name="settlementDate"           type="date-time"/>
+        <field name="description"              type="description"/>
+        <field name="statusId"                 type="id"/>
+        <prim-key field="asseterpInsuranceClaimId"/>
+        <relation type="one" fk-name="AIC_INS"    rel-entity-name="AsseterpInsurance">
+            <key-map field-name="asseterpInsuranceId"/>
+        </relation>
+        <relation type="one" fk-name="AIC_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <index name="IX_AIC_INSST">
+            <index-field name="asseterpInsuranceId"/>
+            <index-field name="statusId"/>
+        </index>
+    </entity>
+
+    <!-- 46: warranty coverage -->
+    <entity entity-name="AsseterpWarranty"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Warranty">
+        <field name="asseterpWarrantyId"  type="id"/>
+        <field name="fixedAssetId"        type="id"/>
+        <field name="vendorPartyId"       type="id"/>
+        <field name="warrantyTypeId"      type="id"/>
+        <field name="startDate"           type="date-time"/>
+        <field name="endDate"             type="date-time"/>
+        <field name="coverageDescription" type="description"/>
+        <field name="statusId"            type="id"/>
+        <prim-key field="asseterpWarrantyId"/>
+        <relation type="one" fk-name="AWR_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AWR_VENDOR"  rel-entity-name="Party">
+            <key-map field-name="vendorPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AWR_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="AWR_WRNTYP" rel-entity-name="Enumeration">
+            <key-map field-name="warrantyTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_AWR_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_AWR_END">
+            <index-field name="endDate"/>
+        </index>
+    </entity>
+
+    <!-- 47: compliance certificate / permit -->
+    <entity entity-name="AsseterpComplianceDoc"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Compliance Document">
+        <field name="asseterpComplianceDocId" type="id"/>
+        <field name="fixedAssetId"            type="id"/>
+        <field name="docTypeId"               type="id"/>
+        <field name="docNumber"               type="short-varchar"/>
+        <field name="issuerPartyId"           type="id"/>
+        <field name="issueDate"               type="date-time"/>
+        <field name="expiryDate"              type="date-time"/>
+        <field name="nextRenewalDate"         type="date-time"/>
+        <field name="statusId"                type="id"/>
+        <prim-key field="asseterpComplianceDocId"/>
+        <relation type="one" fk-name="ACD_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ACD_ISSUER"  rel-entity-name="Party">
+            <key-map field-name="issuerPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ACD_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ACD_DOCTYP" rel-entity-name="Enumeration">
+            <key-map field-name="docTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ACD_FXTPST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="docTypeId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_ACD_EXP">
+            <index-field name="expiryDate"/>
+        </index>
+    </entity>
+
+    <!-- 48: pledge as collateral against financing -->
+    <entity entity-name="AsseterpPledge"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Asset Pledge">
+        <field name="asseterpPledgeId"  type="id"/>
+        <field name="fixedAssetId"      type="id"/>
+        <field name="lenderPartyId"     type="id"/>
+        <field name="pledgeDate"        type="date-time"/>
+        <field name="releaseDate"       type="date-time"/>
+        <field name="loanAmount"        type="currency-amount"/>
+        <field name="currencyUomId"     type="id"/>
+        <field name="statusId"          type="id"/>
+        <field name="notes"             type="description"/>
+        <prim-key field="asseterpPledgeId"/>
+        <relation type="one" fk-name="APG_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="APG_LENDER"  rel-entity-name="Party">
+            <key-map field-name="lenderPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="APG_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="APG_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_APG_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 11: FLEET AND SOFTWARE LICENSES  (3 entities)
+         ================================================================ -->
+
+    <!-- 49: fleet fuel log -->
+    <entity entity-name="AsseterpFuelLog"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Fleet Fuel Log">
+        <field name="asseterpFuelLogId"   type="id"/>
+        <field name="fixedAssetId"        type="id"/>
+        <field name="logDate"             type="date-time"/>
+        <field name="odometerReading"     type="floating-point"/>
+        <field name="fuelQuantity"        type="floating-point"/>
+        <field name="fuelUomId"           type="id"/>
+        <field name="fuelCost"            type="currency-amount"/>
+        <field name="currencyUomId"       type="id"/>
+        <field name="filledByPartyId"     type="id"/>
+        <field name="fuelStationPartyId"  type="id"/>
+        <prim-key field="asseterpFuelLogId"/>
+        <relation type="one" fk-name="AFL_FXAST"    rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AFL_FUUOM"    title="FuelUom"
+                  rel-entity-name="Uom">
+            <key-map field-name="fuelUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" fk-name="AFL_CURR"     rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one" fk-name="AFL_FILLEDBY"  title="FilledBy"
+                  rel-entity-name="Party">
+            <key-map field-name="filledByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AFL_STATION"   title="FuelStation"
+                  rel-entity-name="Party">
+            <key-map field-name="fuelStationPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <index name="IX_AFL_FXDT">
+            <index-field name="fixedAssetId"/>
+            <index-field name="logDate"/>
+        </index>
+    </entity>
+
+    <!-- 50: software license -->
+    <entity entity-name="AsseterpSoftwareLicense"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Software License">
+        <field name="asseterpSoftwareLicenseId" type="id"/>
+        <field name="fixedAssetId"              type="id"/>
+        <field name="vendorPartyId"             type="id"/>
+        <field name="licenseKey"                type="long-varchar"/>
+        <field name="licenseTypeId"             type="id"/>
+        <field name="totalSeats"                type="numeric"/>
+        <field name="startDate"                 type="date-time"/>
+        <field name="endDate"                   type="date-time"/>
+        <field name="annualCost"                type="currency-amount"/>
+        <field name="currencyUomId"             type="id"/>
+        <field name="statusId"                  type="id"/>
+        <prim-key field="asseterpSoftwareLicenseId"/>
+        <relation type="one" fk-name="ASL_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ASL_VENDOR"  rel-entity-name="Party">
+            <key-map field-name="vendorPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ASL_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="ASL_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ASL_LICTYP" rel-entity-name="Enumeration">
+            <key-map field-name="licenseTypeId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ASL_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_ASL_END">
+            <index-field name="endDate"/>
+        </index>
+    </entity>
+
+    <!-- 51: software license seat assignment -->
+    <entity entity-name="AsseterpLicenseSeat"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Software License Seat">
+        <field name="asseterpLicenseSeatId"     type="id"/>
+        <field name="asseterpSoftwareLicenseId" type="id"/>
+        <field name="assignedToPartyId"         type="id"/>
+        <field name="deviceFixedAssetId"        type="id"/>
+        <field name="assignmentDate"            type="date-time"/>
+        <field name="releaseDate"               type="date-time"/>
+        <prim-key field="asseterpLicenseSeatId"/>
+        <relation type="one" fk-name="ASLS_LIC"   rel-entity-name="AsseterpSoftwareLicense">
+            <key-map field-name="asseterpSoftwareLicenseId"/>
+        </relation>
+        <relation type="one" fk-name="ASLS_PARTY"  title="AssignedTo"
+                  rel-entity-name="Party">
+            <key-map field-name="assignedToPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ASLS_DEV"    title="Device"
+                  rel-entity-name="FixedAsset">
+            <key-map field-name="deviceFixedAssetId"
+                     rel-field-name="fixedAssetId"/>
+        </relation>
+        <index name="IX_ASLS_LICPTY">
+            <index-field name="asseterpSoftwareLicenseId"/>
+            <index-field name="assignedToPartyId"/>
+        </index>
+    </entity>
+
+    <!-- ================================================================
+         SECTION 12: INTERCOMPANY AND DISPOSAL  (2 entities)
+         ================================================================ -->
+
+    <!-- 52: intercompany asset transfer with dual GL entries -->
+    <entity entity-name="AsseterpIntercompanyTransfer"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Intercompany Transfer">
+        <field name="asseterpIntercompanyTransferId" type="id"/>
+        <field name="fixedAssetId"                   type="id"/>
+        <field name="fromPartyId"                    type="id"/>
+        <field name="toPartyId"                      type="id"/>
+        <field name="transferDate"                   type="date-time"/>
+        <field name="transferValue"                  type="currency-amount"/>
+        <field name="currencyUomId"                  type="id"/>
+        <field name="fromAcctgTransId"               type="id"/>
+        <field name="toAcctgTransId"                 type="id"/>
+        <field name="statusId"                       type="id"/>
+        <field name="authorizedByPartyId"            type="id"/>
+        <field name="notes"                          type="description"/>
+        <prim-key field="asseterpIntercompanyTransferId"/>
+        <relation type="one" fk-name="AIT_FXAST"   rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="AIT_FROMPTY"  title="FromParty"
+                  rel-entity-name="Party">
+            <key-map field-name="fromPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AIT_TOPTY"    title="ToParty"
+                  rel-entity-name="Party">
+            <key-map field-name="toPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AIT_FRMATX"   title="FromAcctg"
+                  rel-entity-name="AcctgTrans">
+            <key-map field-name="fromAcctgTransId"
+                     rel-field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" fk-name="AIT_TOATX"    title="ToAcctg"
+                  rel-entity-name="AcctgTrans">
+            <key-map field-name="toAcctgTransId"
+                     rel-field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" fk-name="AIT_STATUS"   rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="AIT_AUTHBY"   title="AuthorizedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="authorizedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="AIT_CURR"     rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <index name="IX_AIT_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_AIT_FROM">
+            <index-field name="fromPartyId"/>
+            <index-field name="transferDate"/>
+        </index>
+        <index name="IX_AIT_TO">
+            <index-field name="toPartyId"/>
+            <index-field name="transferDate"/>
+        </index>
+    </entity>
+
+    <!-- 53: disposal: sale scrap retirement write-off donation -->
+    <entity entity-name="AsseterpDisposal"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Asset ERP Disposal">
+        <field name="asseterpDisposalId"   type="id"/>
+        <field name="fixedAssetId"         type="id"/>
+        <field name="disposalMethodId"     type="id"/>
+        <field name="disposalDate"         type="date-time"/>
+        <field name="salePrice"            type="currency-amount"/>
+        <field name="currencyUomId"        type="id"/>
+        <field name="buyerPartyId"         type="id"/>
+        <field name="nbvAtDisposal"        type="currency-amount"/>
+        <field name="gainLoss"             type="currency-amount"/>
+        <field name="acctgTransId"         type="id"/>
+        <field name="authorizedByPartyId"  type="id"/>
+        <field name="statusId"             type="id"/>
+        <field name="notes"                type="description"/>
+        <prim-key field="asseterpDisposalId"/>
+        <relation type="one" fk-name="ADS_FXAST"  rel-entity-name="FixedAsset">
+            <key-map field-name="fixedAssetId"/>
+        </relation>
+        <relation type="one" fk-name="ADS_BUYER"  rel-entity-name="Party">
+            <key-map field-name="buyerPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ADS_AUTHBY"  title="AuthorizedBy"
+                  rel-entity-name="Party">
+            <key-map field-name="authorizedByPartyId"
+                     rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" fk-name="ADS_STATUS"  rel-entity-name="StatusItem">
+            <key-map field-name="statusId"/>
+        </relation>
+        <relation type="one" fk-name="ADS_ACCTG"  rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" fk-name="ADS_CURR"   rel-entity-name="Uom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+        <relation type="one-nofk" fk-name="ADS_DISMET" rel-entity-name="Enumeration">
+            <key-map field-name="disposalMethodId" rel-field-name="enumId"/>
+        </relation>
+        <index name="IX_ADS_FXST">
+            <index-field name="fixedAssetId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IX_ADS_DATE">
+            <index-field name="disposalDate"/>
+        </index>
+    </entity>
+
+    <!-- Meter type lookup — referenced by AsseterpTypeData seed data -->
+    <entity entity-name="FixedAssetMeterType"
+            package-name="org.apache.ofbiz.asseterp"
+            title="Fixed Asset Meter Type">
+        <field name="fixedAssetMeterTypeId" type="id"/>
+        <field name="description"           type="description"/>
+        <field name="defaultUomId"          type="id"/>
+        <prim-key field="fixedAssetMeterTypeId"/>
+        <relation type="one" fk-name="FAMT_UOM" rel-entity-name="Uom">
+            <key-map field-name="defaultUomId" rel-field-name="uomId"/>
+        </relation>
+    </entity>
+
+</entitymodel>

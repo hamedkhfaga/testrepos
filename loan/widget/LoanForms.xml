@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://ofbiz.apache.org/Widget-Form"
+       xsi:schemaLocation="http://ofbiz.apache.org/Widget-Form http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+    <form name="FindLoanForm" type="single" target="FindLoans" title="${uiLabelMap.LoanFindLoans}">
+        <field name="partyId"><text/></field>
+        <field name="organizationPartyId"><text/></field>
+        <field name="loanStatusId"><text/></field>
+        <field name="submitButton" title="${uiLabelMap.CommonFind}"><submit button-type="button"/></field>
+    </form>
+
+    <form name="ListLoansForm" type="list" list-name="loanList" title="${uiLabelMap.LoanLoans}">
+        <field name="loanId" title="${uiLabelMap.LoanId}"><display/></field>
+        <field name="partyId" title="${uiLabelMap.PartyPartyId}"><display/></field>
+        <field name="organizationPartyId" title="${uiLabelMap.LoanOrganization}"><display/></field>
+        <field name="loanTypeEnumId" title="${uiLabelMap.LoanType}"><display/></field>
+        <field name="principalAmount" title="${uiLabelMap.LoanPrincipal}"><display/></field>
+        <field name="outstandingAmount" title="${uiLabelMap.LoanOutstanding}"><display/></field>
+        <field name="loanStatusId" title="${uiLabelMap.CommonStatus}"><display/></field>
+    </form>
+
+    <form name="LoanOriginationToolbarForm" type="single" title="Actions">
+        <field name="createLoanButton" title="Create New Loan">
+            <hyperlink target="LoanCreate" description="Create New Loan"/>
+        </field>
+    </form>
+
+    <form name="FindLoanOriginationForm" type="single" target="LoanOrigination" title="Find Loans for Origination">
+        <field name="loanId"><text-find/></field>
+        <field name="partyId"><text-find/></field>
+        <field name="organizationPartyId"><text-find/></field>
+        <field name="loanStatusId"><text-find/></field>
+        <field name="submitButton" title="${uiLabelMap.CommonFind}"><submit button-type="button"/></field>
+    </form>
+
+    <form name="ListLoanOriginationForm" type="list" list-name="loanOriginationList" title="Loans">
+        <field name="loanId" title="Loan Id"><hyperlink target="LoanScheduleMaintenance?loanId=${loanId}" description="${loanId}"/></field>
+        <field name="partyId" title="Party Id"><display/></field>
+        <field name="organizationPartyId" title="Organization"><display/></field>
+        <field name="principalAmount" title="Principal"><display/></field>
+        <field name="outstandingAmount" title="Outstanding"><display/></field>
+        <field name="loanStatusId" title="Status"><display/></field>
+    </form>
+
+    <form name="SelectedLoanOriginationSummary" type="single" title="Selected Loan Summary">
+        <field name="loanId" title="Loan Id"><display/></field>
+        <field name="partyId" title="Party Id"><display/></field>
+        <field name="organizationPartyId" title="Organization"><display/></field>
+        <field name="principalAmount" title="Principal"><display/></field>
+        <field name="outstandingAmount" title="Outstanding"><display/></field>
+        <field name="loanStatusId" title="Status"><display/></field>
+    </form>
+
+    <form name="LoanCreateToolbarForm" type="single" title="Actions">
+        <field name="backButton" title="Back to Origination">
+            <hyperlink target="LoanOrigination" description="Back to Origination"/>
+        </field>
+    </form>
+
+    <form name="CreatePartyLoanUiForm" type="single" target="doCreatePartyLoan" title="Create Loan">
+        <field name="partyId"><text/></field>
+        <field name="organizationPartyId"><text/></field>
+        <field name="loanTypeEnumId"><text/></field>
+        <field name="currencyUomId"><text/></field>
+        <field name="principalAmount"><text/></field>
+        <field name="installmentCount"><text/></field>
+        <field name="interestAmount"><text/></field>
+        <field name="feeAmount"><text/></field>
+        <field name="firstDueDate"><text/></field>
+        <field name="remarks"><text/></field>
+        <field name="submitButton" title="Create Loan"><submit button-type="button"/></field>
+    </form>
+
+    <form name="ApprovePartyLoanUiForm" type="single" target="doApprovePartyLoan" title="Approve Loan">
+        <field name="loanId"><text/></field>
+        <field name="approvalDate"><text/></field>
+        <field name="submitButton" title="Approve Loan"><submit button-type="button"/></field>
+    </form>
+
+    <form name="DisbursePartyLoanUiForm" type="single" target="doDisbursePartyLoan" title="Disburse Loan">
+        <field name="loanId"><text/></field>
+        <field name="disbursementDate"><text/></field>
+        <field name="createPaymentFlag"><text/></field>
+        <field name="paymentMethodTypeId"><text/></field>
+        <field name="paymentMethodId"><text/></field>
+        <field name="submitButton" title="Disburse Loan"><submit button-type="button"/></field>
+    </form>
+
+    <form name="GeneratePartyLoanScheduleUiForm" type="single" target="doGeneratePartyLoanSchedule" title="Generate Loan Schedule">
+        <field name="loanId"><text/></field>
+        <field name="forceRebuild"><text/></field>
+        <field name="submitButton" title="Generate Schedule"><submit button-type="button"/></field>
+    </form>
+
+    <form name="LoanScheduleToolbarForm" type="single" title="Actions">
+        <field name="backButton" title="Back to Origination">
+            <hyperlink target="LoanOrigination" description="Back to Origination"/>
+        </field>
+    </form>
+
+    <form name="LoanScheduleListForm" type="list" list-name="loanScheduleList" title="Loan Schedule List">
+        <field name="loanScheduleId" title="Schedule Id"><hyperlink target="LoanScheduleMaintenance?loanId=${loanId}&amp;loanScheduleId=${loanScheduleId}" description="${loanScheduleId}"/></field>
+        <field name="installmentSeqNum" title="Installment #"><display/></field>
+        <field name="duePayrollPeriodId" title="Payroll Period"><display/></field>
+        <field name="dueDate" title="Due Date"><display/></field>
+        <field name="installmentAmount" title="Installment Amount"><display/></field>
+        <field name="paidAmount" title="Paid Amount"><display/></field>
+        <field name="outstandingAmount" title="Outstanding"><display/></field>
+        <field name="scheduleStatusId" title="Status"><display/></field>
+    </form>
+<form name="SelectedLoanScheduleSummary" type="single" title="Selected Schedule Summary">
+    <field name="selectedScheduleId" title="Schedule Id"><display/></field>
+    <field name="loanId" title="Loan Id"><display/></field>
+    <field name="selectedInstallmentSeqNum" title="Installment #"><display/></field>
+    <field name="selectedDueDate" title="Due Date"><display/></field>
+    <field name="selectedInstallmentAmount" title="Installment Amount"><display/></field>
+    <field name="selectedScheduleOutstandingAmount" title="Outstanding"><display/></field>
+    <field name="selectedScheduleStatusId" title="Status"><display/></field>
+</form>
+    <form name="ReschedulePartyLoanInstallmentUiForm" type="single" target="doReschedulePartyLoanInstallment" title="Edit Schedule">
+        <field name="loanScheduleId"><text/></field>
+        <field name="newDueDate"><text/></field>
+        <field name="changeReasonEnumId"><text/></field>
+        <field name="remarks"><text/></field>
+        <field name="submitButton" title="Edit Schedule"><submit button-type="button"/></field>
+    </form>
+
+    <form name="FindLoanServicingForm" type="single" target="LoanServicing" title="Find Loans for Servicing">
+        <field name="loanId"><text-find/></field>
+        <field name="partyId"><text-find/></field>
+        <field name="organizationPartyId"><text-find/></field>
+        <field name="loanStatusId"><text-find/></field>
+        <field name="submitButton" title="${uiLabelMap.CommonFind}"><submit button-type="button"/></field>
+    </form>
+
+    <form name="ListLoanServicingForm" type="list" list-name="loanServicingList" title="Loans">
+        <field name="loanId" title="Loan Id"><hyperlink target="LoanServicing?selectedLoanId=${loanId}" description="${loanId}"/></field>
+        <field name="partyId" title="Party Id"><display/></field>
+        <field name="organizationPartyId" title="Organization"><display/></field>
+        <field name="outstandingAmount" title="Outstanding"><display/></field>
+        <field name="loanStatusId" title="Status"><display/></field>
+    </form>
+
+    <form name="SelectedLoanServicingSummary" type="single" title="Selected Loan Summary">
+        <field name="loanId" title="Loan Id"><display/></field>
+        <field name="partyId" title="Party Id"><display/></field>
+        <field name="organizationPartyId" title="Organization"><display/></field>
+        <field name="outstandingAmount" title="Outstanding"><display/></field>
+        <field name="loanStatusId" title="Status"><display/></field>
+    </form>
+
+    <form name="RecordPartyLoanRepaymentUiForm" type="single" target="doRecordPartyLoanRepayment" title="Record Repayment">
+        <field name="loanId"><text/></field>
+        <field name="loanScheduleId"><text/></field>
+        <field name="amountApplied"><text/></field>
+        <field name="repaymentDate"><text/></field>
+        <field name="repaymentSourceEnumId"><text/></field>
+        <field name="createPaymentFlag"><text/></field>
+        <field name="paymentTypeId"><text/></field>
+        <field name="paymentMethodTypeId"><text/></field>
+        <field name="paymentMethodId"><text/></field>
+        <field name="remarks"><text/></field>
+        <field name="submitButton" title="Record Repayment"><submit button-type="button"/></field>
+    </form>
+
+    <form name="SettlePartyLoanEarlyUiForm" type="single" target="doSettlePartyLoanEarly" title="Early Settlement">
+        <field name="loanId"><text/></field>
+        <field name="remarks"><text/></field>
+        <field name="submitButton" title="Settle Loan Early"><submit button-type="button"/></field>
+    </form>
+
+    <form name="FindLoanAuditRepairForm" type="single" target="LoanAuditRepair" title="Find Loans for Audit &amp; Repair">
+        <field name="loanId"><text-find/></field>
+        <field name="organizationPartyId"><text-find/></field>
+        <field name="loanStatusId"><text-find/></field>
+        <field name="submitButton" title="${uiLabelMap.CommonFind}"><submit button-type="button"/></field>
+    </form>
+
+    <form name="ListLoanAuditRepairForm" type="list" list-name="loanAuditRepairList" title="Loans">
+        <field name="loanId" title="Loan Id"><hyperlink target="LoanAuditRepair?selectedLoanId=${loanId}" description="${loanId}"/></field>
+        <field name="organizationPartyId" title="Organization"><display/></field>
+        <field name="outstandingAmount" title="Outstanding"><display/></field>
+        <field name="loanStatusId" title="Status"><display/></field>
+    </form>
+
+    <form name="SelectedLoanAuditRepairSummary" type="single" title="Selected Loan Summary">
+        <field name="loanId" title="Loan Id"><display/></field>
+        <field name="organizationPartyId" title="Organization"><display/></field>
+        <field name="outstandingAmount" title="Outstanding"><display/></field>
+        <field name="loanStatusId" title="Status"><display/></field>
+    </form>
+
+    <form name="BackfillLoanRepaymentPaymentUiForm" type="single" target="doBackfillLoanRepaymentPayment" title="Backfill Missing Payment">
+        <field name="loanId"><text/></field>
+        <field name="loanRepaymentId"><text/></field>
+        <field name="organizationPartyId"><text/></field>
+        <field name="dryRun"><text/></field>
+        <field name="autoCreateAccounting"><text/></field>
+        <field name="autoCreateFinAccountTrans"><text/></field>
+        <field name="paymentTypeId"><text/></field>
+        <field name="paymentMethodTypeId"><text/></field>
+        <field name="paymentMethodId"><text/></field>
+        <field name="submitButton" title="Backfill Payment"><submit button-type="button"/></field>
+    </form>
+
+    <form name="BackfillLoanRepaymentAccountingUiForm" type="single" target="doBackfillLoanRepaymentAccounting" title="Backfill Missing Accounting">
+        <field name="loanId"><text/></field>
+        <field name="loanRepaymentId"><text/></field>
+        <field name="paymentId"><text/></field>
+        <field name="organizationPartyId"><text/></field>
+        <field name="dryRun"><text/></field>
+        <field name="createFinAccountTrans"><text/></field>
+        <field name="submitButton" title="Backfill Accounting"><submit button-type="button"/></field>
+    </form>
+
+    <form name="ReconcileLoanAccountingUiForm" type="single" target="doReconcileLoanAccounting" title="Reconcile Loan Accounting">
+        <field name="loanId"><text/></field>
+        <field name="organizationPartyId"><text/></field>
+        <field name="strictDuplicateAcctg"><text/></field>
+        <field name="requireFinAccountTrans"><text/></field>
+        <field name="submitButton" title="Run Reconciliation"><submit button-type="button"/></field>
+    </form>
+
+    <form name="RepairLoanFinancialIntegrityUiForm" type="single" target="doRepairLoanFinancialIntegrity" title="Repair Loan Financial Integrity">
+        <field name="loanId"><text/></field>
+        <field name="organizationPartyId"><text/></field>
+        <field name="paymentMethodId"><text/></field>
+        <field name="autoCreateAccounting"><text/></field>
+        <field name="autoCreateFinAccountTrans"><text/></field>
+        <field name="dryRun"><text/></field>
+        <field name="submitButton" title="Run Repair"><submit button-type="button"/></field>
+    </form>
+
+    <form name="PersistLoanReconciliationRunUiForm" type="single" target="doPersistLoanReconciliationRun" title="Persist Reconciliation Run">
+        <field name="loanId"><text/></field>
+        <field name="organizationPartyId"><text/></field>
+        <field name="submitButton" title="Persist Reconciliation"><submit button-type="button"/></field>
+    </form>
+
+    <form name="FindLoanReconciliationRunForm" type="single" target="LoanReconciliationDashboard" title="Find Loan Reconciliation Runs">
+        <field name="loanId"><text-find/></field>
+        <field name="organizationPartyId"><text-find/></field>
+        <field name="statusId"><text-find/></field>
+        <field name="reconciliationRunId"><text-find/></field>
+        <field name="submitButton" title="${uiLabelMap.CommonFind}"><submit button-type="button"/></field>
+    </form>
+
+    <form name="ListLoanReconciliationRuns" type="list" list-name="loanReconciliationRunList" title="Loan Reconciliation Runs">
+        <field name="reconciliationRunId" title="Run Id"><hyperlink target="ViewLoanReconciliationRun?reconciliationRunId=${reconciliationRunId}" description="${reconciliationRunId}"/></field>
+        <field name="organizationPartyId" title="Organization"><display/></field>
+        <field name="loanId" title="Loan Id"><display/></field>
+        <field name="statusId" title="Status"><display/></field>
+        <field name="checkedLoanCount" title="Loans"><display/></field>
+        <field name="checkedScheduleCount" title="Schedules"><display/></field>
+        <field name="checkedRepaymentCount" title="Repayments"><display/></field>
+        <field name="checkedPaymentCount" title="Payments"><display/></field>
+        <field name="checkedAcctgTransCount" title="Acctg"><display/></field>
+        <field name="errorCount" title="Errors"><display/></field>
+        <field name="warningCount" title="Warnings"><display/></field>
+        <field name="issueCount" title="Issues"><display/></field>
+        <field name="startedByUserLoginId" title="Started By"><display/></field>
+        <field name="startedStamp" title="Started"><display/></field>
+        <field name="finishedStamp" title="Finished"><display/></field>
+    </form>
+
+    <form name="LoanReconciliationRunHeader" type="single" title="Reconciliation Run Details">
+        <field name="reconciliationRunId" title="Run Id"><display/></field>
+        <field name="organizationPartyId" title="Organization"><display/></field>
+        <field name="loanId" title="Loan Id"><display/></field>
+        <field name="runTypeEnumId" title="Run Type"><display/></field>
+        <field name="statusId" title="Status"><display/></field>
+        <field name="startedByUserLoginId" title="Started By"><display/></field>
+        <field name="startedStamp" title="Started"><display/></field>
+        <field name="finishedStamp" title="Finished"><display/></field>
+        <field name="checkedLoanCount" title="Loans Checked"><display/></field>
+        <field name="checkedScheduleCount" title="Schedules Checked"><display/></field>
+        <field name="checkedRepaymentCount" title="Repayments Checked"><display/></field>
+        <field name="checkedPaymentCount" title="Payments Checked"><display/></field>
+        <field name="checkedAcctgTransCount" title="Acctg Checked"><display/></field>
+        <field name="errorCount" title="Errors"><display/></field>
+        <field name="warningCount" title="Warnings"><display/></field>
+        <field name="infoCount" title="Info"><display/></field>
+        <field name="issueCount" title="Issues"><display/></field>
+    </form>
+
+    <form name="ListLoanReconciliationIssues" type="list" list-name="reconciliationIssueList" title="Reconciliation Issues">
+        <field name="severityEnumId" title="Severity"><display/></field>
+        <field name="issueTypeEnumId" title="Issue Type"><display/></field>
+        <field name="organizationPartyId" title="Organization"><display/></field>
+        <field name="loanId" title="Loan Id"><display/></field>
+        <field name="loanScheduleId" title="Schedule Id"><display/></field>
+        <field name="loanRepaymentId" title="Repayment Id"><display/></field>
+        <field name="paymentId" title="Payment Id"><display/></field>
+        <field name="acctgTransId" title="AcctgTrans Id"><display/></field>
+        <field name="expectedAmount" title="Expected"><display/></field>
+        <field name="actualAmount" title="Actual"><display/></field>
+        <field name="currencyUomId" title="Currency"><display/></field>
+        <field name="description" title="Description"><display/></field>
+        <field name="createdStamp" title="Created"><display/></field>
+    </form>
+</forms>

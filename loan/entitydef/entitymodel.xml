@@ -1,0 +1,791 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+
+    <entity entity-name="PartyLoan" package-name="org.apache.ofbiz.loan" title="Party Loan">
+        <field name="loanId" type="id"/>
+        <field name="loanNumber" type="id-long"/>
+        <field name="partyId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="agreementId" type="id"/>
+        <field name="finAccountId" type="id"/>
+        <field name="loanTypeEnumId" type="id"/>
+        <field name="borrowerRoleTypeId" type="id"/>
+        <field name="borrowerTypeEnumId" type="id"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="valuationCurrencyUomId" type="id"/>
+        <field name="exchangeRate" type="fixed-point"/>
+        <field name="principalAmount" type="currency-amount"/>
+        <field name="interestAmount" type="currency-amount"/>
+        <field name="feeAmount" type="currency-amount"/>
+        <field name="penaltyAmount" type="currency-amount"/>
+        <field name="totalRepayableAmount" type="currency-amount"/>
+        <field name="paidAmount" type="currency-amount"/>
+        <field name="outstandingAmount" type="currency-amount"/>
+        <field name="installmentCount" type="numeric"/>
+        <field name="termUomId" type="id"/>
+        <field name="interestMethodEnumId" type="id"/>
+        <field name="repaymentPatternEnumId" type="id"/>
+        <field name="allocationOrderEnumId" type="id"/>
+        <field name="settlementPolicyEnumId" type="id"/>
+        <field name="repaymentChannelEnumId" type="id"/>
+        <field name="preferredRepaymentMethodEnumId" type="id"/>
+        <field name="payrollEligibleFlag" type="indicator"/>
+        <field name="allowEarlySettlementFlag" type="indicator"/>
+        <field name="allowRescheduleFlag" type="indicator"/>
+        <field name="allowPartialPaymentFlag" type="indicator"/>
+        <field name="applicationDate" type="date-time"/>
+        <field name="approvalDate" type="date-time"/>
+        <field name="disbursementDate" type="date-time"/>
+        <field name="firstDueDate" type="date-time"/>
+        <field name="maturityDate" type="date-time"/>
+        <field name="loanStatusId" type="id"/>
+        <field name="remarks" type="very-long"/>
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="approvedByUserLoginId" type="id"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+		
+		<field name="disbursementPaymentId" type="id"/>
+<field name="disbursementAcctgTransId" type="id"/>
+ 
+<field name="activatedDate" type="date-time"/>
+<field name="disbursementMethodTypeId" type="id"/>
+<field name="disbursementReference" type="long-varchar"/>
+<field name="billingAccountId" type="id"></field>
+
+        <prim-key field="loanId"/>
+        <relation type="one" rel-entity-name="Party">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" title="OrgParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Agreement">
+            <key-map field-name="agreementId" rel-field-name="agreementId"/>
+        </relation>
+        <relation type="one" rel-entity-name="FinAccount">
+            <key-map field-name="finAccountId" rel-field-name="finAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem">
+            <key-map field-name="loanStatusId" rel-field-name="statusId"/>
+        </relation>
+		<relation type="one" fk-name="PRTYLOAN_BA" rel-entity-name="BillingAccount">
+    <key-map field-name="billingAccountId" rel-field-name="billingAccountId"/>
+</relation>
+
+        <index name="IDX_PTY_LOAN_PARTY">
+            <index-field name="partyId"/>
+            <index-field name="loanStatusId"/>
+        </index>
+        <index name="IDX_PTY_LOAN_ORG">
+            <index-field name="organizationPartyId"/>
+            <index-field name="loanStatusId"/>
+        </index>
+    </entity>
+
+    <entity entity-name="PartyLoanSchedule" package-name="org.apache.ofbiz.loan" title="Party Loan Schedule">
+        <field name="loanScheduleId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="installmentSeqNum" type="numeric"/>
+        <field name="duePayrollPeriodId" type="id"/>
+        <field name="dueDate" type="date-time"/>
+        <field name="originalDueDate" type="date-time"/>
+        <field name="principalAmount" type="currency-amount"/>
+        <field name="interestAmount" type="currency-amount"/>
+        <field name="feeAmount" type="currency-amount"/>
+        <field name="penaltyAmount" type="currency-amount"/>
+        <field name="installmentAmount" type="currency-amount"/>
+        <field name="paidAmount" type="currency-amount"/>
+        <field name="outstandingAmount" type="currency-amount"/>
+        <field name="openingBalance" type="currency-amount"/>
+        <field name="closingBalance" type="currency-amount"/>
+        <field name="processedPayrollRunId" type="id"/>
+        <field name="processedPayrollResultId" type="id"/>
+        <field name="repaymentSourceEnumId" type="id"/>
+        <field name="repaymentMethodEnumId" type="id"/>
+        <field name="externalReference" type="id-long"/>
+        <field name="bankReference" type="id-long"/>
+        <field name="receivedByUserLoginId" type="id-vlong"/>
+        <field name="paymentChannelNote" type="very-long"/>
+        <field name="rescheduledFromScheduleId" type="id"/>
+        <field name="scheduleStatusId" type="id"/>
+        <field name="changeReasonEnumId" type="id"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="loanScheduleId"/>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem">
+            <key-map field-name="scheduleStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoanSchedule" title="SourceSchedule">
+            <key-map field-name="rescheduledFromScheduleId" rel-field-name="loanScheduleId"/>
+        </relation>
+        <index name="IDX_PTY_LOAN_SCH_LOAN">
+            <index-field name="loanId"/>
+            <index-field name="installmentSeqNum"/>
+        </index>
+        <index name="IDX_PTY_LOAN_SCH_DUE">
+            <index-field name="duePayrollPeriodId"/>
+            <index-field name="scheduleStatusId"/>
+        </index>
+    </entity>
+
+ <entity entity-name="PartyLoanRepayment" package-name="org.apache.ofbiz.loan" title="Party Loan Repayment">
+    <field name="loanRepaymentId" type="id"/>
+    <field name="loanId" type="id"/>
+    <field name="loanScheduleId" type="id"/>
+    <field name="paymentId" type="id"/>
+    <field name="payrollRunId" type="id"/>
+    <field name="payrollResultId" type="id"/>
+    <field name="repaymentDate" type="date-time"/>
+    <field name="amountApplied" type="currency-amount"/>
+    <field name="principalApplied" type="currency-amount"/>
+    <field name="interestApplied" type="currency-amount"/>
+    <field name="feeApplied" type="currency-amount"/>
+    <field name="penaltyApplied" type="currency-amount"/>
+    <field name="repaymentSourceEnumId" type="id"/>
+    <field name="repaymentMethodEnumId" type="id"/>
+    <field name="externalReference" type="id-long"/>
+    <field name="bankReference" type="id-long"/>
+    <field name="receivedByUserLoginId" type="id-vlong"/>
+    <field name="paymentChannelNote" type="very-long"/>
+    <field name="repaymentStatusId" type="id"/>
+    <field name="remarks" type="very-long"/>
+    <field name="lastUpdatedStamp" type="date-time"/>
+    <field name="lastUpdatedTxStamp" type="date-time"/>
+    <field name="createdStamp" type="date-time"/>
+    <field name="createdTxStamp" type="date-time"/>
+
+    <prim-key field="loanRepaymentId"/>
+
+    <relation type="one" rel-entity-name="PartyLoan">
+        <key-map field-name="loanId" rel-field-name="loanId"/>
+    </relation>
+    <relation type="one" rel-entity-name="PartyLoanSchedule">
+        <key-map field-name="loanScheduleId" rel-field-name="loanScheduleId"/>
+    </relation>
+    <relation type="one" rel-entity-name="Payment">
+        <key-map field-name="paymentId" rel-field-name="paymentId"/>
+    </relation>
+    <relation type="one" rel-entity-name="StatusItem">
+        <key-map field-name="repaymentStatusId" rel-field-name="statusId"/>
+    </relation>
+
+    <index name="IDX_PTY_LOAN_RPY_METHOD">
+        <index-field name="loanId"/>
+        <index-field name="repaymentMethodEnumId"/>
+        <index-field name="externalReference"/>
+    </index>
+</entity>
+    <entity entity-name="PartyLoanEvent" package-name="org.apache.ofbiz.loan" title="Party Loan Event">
+        <field name="loanEventId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="loanScheduleId" type="id"/>
+        <field name="loanRepaymentId" type="id"/>
+        <field name="eventTypeEnumId" type="id"/>
+        <field name="eventDate" type="date-time"/>
+        <field name="userLoginId" type="id"/>
+        <field name="eventNote" type="very-long"/>
+        <field name="referenceId" type="id"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="loanEventId"/>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="LoanTypePolicy" package-name="org.apache.ofbiz.loan" title="Loan Type Policy">
+        <field name="loanTypePolicyId" type="id"/>
+        <field name="loanTypeEnumId" type="id"/>
+        <field name="interestMethodEnumId" type="id"/>
+        <field name="repaymentPatternEnumId" type="id"/>
+        <field name="allocationOrderEnumId" type="id"/>
+        <field name="settlementPolicyEnumId" type="id"/>
+        <field name="defaultChannelEnumId" type="id"/>
+        <field name="allowPayrollFlag" type="indicator"/>
+        <field name="allowRescheduleFlag" type="indicator"/>
+        <field name="allowEarlySettlementFlag" type="indicator"/>
+        <field name="allowPartialPaymentFlag" type="indicator"/>
+        <field name="sequenceNum" type="numeric"/>
+        <field name="description" type="description"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="loanTypePolicyId"/>
+    </entity>
+
+
+    <entity entity-name="LoanAcctgCfg" package-name="org.apache.ofbiz.loan" title="Loan Accounting Config">
+        <field name="loanAcctgCfgId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="description" type="description"/>
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="isActive" type="indicator"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="loanAcctgCfgId"/>
+        <relation type="one" rel-entity-name="Party" title="OrgParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <index name="IDX_LNACFG_ORG_ACTV">
+            <index-field name="organizationPartyId"/>
+            <index-field name="isActive"/>
+            <index-field name="fromDate"/>
+        </index>
+    </entity>
+
+    <entity entity-name="LoanAcctgCfgDtl" package-name="org.apache.ofbiz.loan" title="Loan Accounting Config Detail">
+        <field name="loanAcctgCfgId" type="id"/>
+        <field name="repaymentSourceEnumId" type="id"/>
+        <field name="acctgTransTypeId" type="id"/>
+        <field name="glFiscalTypeId" type="id"/>
+        <field name="debitGlAccountId" type="id"/>
+        <field name="creditGlAccountId" type="id"/>
+        <field name="finAccountTransTypeId" type="id"/>
+        <field name="sequenceNum" type="numeric"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="loanAcctgCfgId"/>
+        <prim-key field="repaymentSourceEnumId"/>
+        <relation type="one" rel-entity-name="LoanAcctgCfg">
+            <key-map field-name="loanAcctgCfgId" rel-field-name="loanAcctgCfgId"/>
+        </relation>
+        <relation type="one" rel-entity-name="GlAccount" title="DebitGlAccount">
+            <key-map field-name="debitGlAccountId" rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="GlAccount" title="CreditGlAccount">
+            <key-map field-name="creditGlAccountId" rel-field-name="glAccountId"/>
+        </relation>
+        <index name="IDX_LNACFGDTL_SRC">
+            <index-field name="repaymentSourceEnumId"/>
+            <index-field name="sequenceNum"/>
+        </index>
+    </entity>
+
+    <view-entity entity-name="PartyLoanDueInstallmentView" package-name="org.apache.ofbiz.loan" title="Party Loan Due Installment View">
+        <member-entity entity-alias="PL" entity-name="PartyLoan"/>
+        <member-entity entity-alias="PS" entity-name="PartyLoanSchedule"/>
+        <alias-all entity-alias="PL" prefix="loan"/>
+        <alias-all entity-alias="PS" prefix="schedule"/>
+        <view-link entity-alias="PL" rel-entity-alias="PS">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </view-link>
+    </view-entity>
+
+
+ <entity entity-name="LoanReconciliationRun" package-name="org.apache.ofbiz.loan.recon" title="Loan Reconciliation Run">
+        <field name="reconciliationRunId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="runTypeEnumId" type="id"/>
+        <field name="statusId" type="id"/>
+        <field name="startedByUserLoginId" type="id"/>
+        <field name="startedStamp" type="date-time"/>
+        <field name="finishedStamp" type="date-time"/>
+        <field name="checkedLoanCount" type="numeric"/>
+        <field name="checkedScheduleCount" type="numeric"/>
+        <field name="checkedRepaymentCount" type="numeric"/>
+        <field name="checkedPaymentCount" type="numeric"/>
+        <field name="checkedAcctgTransCount" type="numeric"/>
+        <field name="errorCount" type="numeric"/>
+        <field name="warningCount" type="numeric"/>
+        <field name="infoCount" type="numeric"/>
+        <field name="issueCount" type="numeric"/>
+        <prim-key field="reconciliationRunId"/>
+        <relation type="one" rel-entity-name="Party" title="OrgParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <index name="IDX_LN_RECON_RUN_ORG">
+            <index-field name="organizationPartyId"/>
+            <index-field name="startedStamp"/>
+        </index>
+        <index name="IDX_LN_RECON_RUN_LOAN">
+            <index-field name="loanId"/>
+            <index-field name="startedStamp"/>
+        </index>
+    </entity>
+
+    <entity entity-name="LoanReconciliationIssue" package-name="org.apache.ofbiz.loan.recon" title="Loan Reconciliation Issue">
+        <field name="reconciliationIssueId" type="id"/>
+        <field name="reconciliationRunId" type="id"/>
+        <field name="severityEnumId" type="id"/>
+        <field name="issueTypeEnumId" type="id-long"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="loanScheduleId" type="id"/>
+        <field name="loanRepaymentId" type="id"/>
+        <field name="paymentId" type="id"/>
+        <field name="acctgTransId" type="id"/>
+        <field name="expectedAmount" type="currency-amount"/>
+        <field name="actualAmount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+        <field name="description" type="long-varchar"/>
+        <field name="createdStamp" type="date-time"/>
+        <prim-key field="reconciliationIssueId"/>
+        <relation type="one" rel-entity-name="LoanReconciliationRun">
+            <key-map field-name="reconciliationRunId" rel-field-name="reconciliationRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoanSchedule">
+            <key-map field-name="loanScheduleId" rel-field-name="loanScheduleId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoanRepayment">
+            <key-map field-name="loanRepaymentId" rel-field-name="loanRepaymentId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Payment">
+            <key-map field-name="paymentId" rel-field-name="paymentId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId" rel-field-name="acctgTransId"/>
+        </relation>
+        <index name="IDX_LN_RECON_ISS_RUN">
+            <index-field name="reconciliationRunId"/>
+            <index-field name="severityEnumId"/>
+        </index>
+        <index name="IDX_LN_RECON_ISS_LOAN">
+            <index-field name="loanId"/>
+            <index-field name="issueTypeEnumId"/>
+        </index>
+    </entity>
+
+
+
+	
+	
+
+
+    <!-- Phase 6A: Batch reconciliation automation audit entities -->
+    <entity entity-name="LoanReconciliationBatchRun" package-name="org.apache.ofbiz.loan.recon" title="Loan Reconciliation Batch Run">
+        <field name="batchRunId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="batchRunTypeId" type="id-long"/>
+        <field name="statusId" type="id"/>
+        <field name="dryRun" type="indicator"/>
+        <field name="persistRuns" type="indicator"/>
+        <field name="startedByUserLoginId" type="id"/>
+        <field name="startedStamp" type="date-time"/>
+        <field name="finishedStamp" type="date-time"/>
+        <field name="requestedLoanCount" type="numeric"/>
+        <field name="checkedLoanCount" type="numeric"/>
+        <field name="successCount" type="numeric"/>
+        <field name="cleanCount" type="numeric"/>
+        <field name="issueLoanCount" type="numeric"/>
+        <field name="errorCount" type="numeric"/>
+        <field name="skippedCount" type="numeric"/>
+        <field name="persistedRunCount" type="numeric"/>
+        <field name="totalIssueCount" type="numeric"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="batchRunId"/>
+        <relation type="one" rel-entity-name="Party" title="OrgParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <index name="IDX_LN_RBATCH_ORG">
+            <index-field name="organizationPartyId"/>
+            <index-field name="startedStamp"/>
+        </index>
+        <index name="IDX_LN_RBATCH_STATUS">
+            <index-field name="statusId"/>
+            <index-field name="startedStamp"/>
+        </index>
+    </entity>
+
+    <entity entity-name="LoanReconciliationBatchResult" package-name="org.apache.ofbiz.loan.recon" title="Loan Reconciliation Batch Result">
+        <field name="batchResultId" type="id"/>
+        <field name="batchRunId" type="id"/>
+        <field name="reconciliationRunId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="statusId" type="id"/>
+        <field name="errorCount" type="numeric"/>
+        <field name="issueCount" type="numeric"/>
+        <field name="message" type="long-varchar"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="batchResultId"/>
+        <relation type="one" rel-entity-name="LoanReconciliationBatchRun">
+            <key-map field-name="batchRunId" rel-field-name="batchRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="LoanReconciliationRun">
+            <key-map field-name="reconciliationRunId" rel-field-name="reconciliationRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <index name="IDX_LN_RBATCH_RES_RUN">
+            <index-field name="batchRunId"/>
+            <index-field name="statusId"/>
+        </index>
+        <index name="IDX_LN_RBATCH_RES_LOAN">
+            <index-field name="loanId"/>
+            <index-field name="createdStamp"/>
+        </index>
+    </entity>
+
+
+
+    <!-- Phase 6B - Reconciliation Governance Policy Engine -->
+    <entity entity-name="LoanReconciliationIssuePolicy" package-name="org.apache.ofbiz.loan" title="Loan Reconciliation Issue Policy">
+        <field name="policyId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="issueTypeEnumId" type="id-long"/>
+        <field name="severityEnumId" type="id"/>
+        <field name="riskLevelEnumId" type="id"/>
+        <field name="autoRepairAllowed" type="indicator"/>
+        <field name="manualApprovalRequired" type="indicator"/>
+        <field name="blockBatchRepair" type="indicator"/>
+        <field name="requiresDryRun" type="indicator"/>
+        <field name="requiresBackupReview" type="indicator"/>
+        <field name="repairServiceName" type="id-long"/>
+        <field name="recommendedAction" type="very-long"/>
+        <field name="description" type="very-long"/>
+        <field name="isActive" type="indicator"/>
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="policyId"/>
+        <index name="IDX_LRIP_TYPE">
+            <index-field name="issueTypeEnumId"/>
+            <index-field name="severityEnumId"/>
+        </index>
+        <index name="IDX_LRIP_ORG">
+            <index-field name="organizationPartyId"/>
+            <index-field name="issueTypeEnumId"/>
+        </index>
+        <index name="IDX_LRIP_ACTIVE">
+            <index-field name="isActive"/>
+            <index-field name="fromDate"/>
+        </index>
+    </entity>
+
+
+    <!-- Phase 6C - Repair Approval Workflow -->
+    <entity entity-name="LoanRepairProposal" package-name="org.apache.ofbiz.loan.recon" title="Loan Repair Proposal">
+        <field name="repairProposalId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="reconciliationIssueId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="loanScheduleId" type="id"/>
+        <field name="loanRepaymentId" type="id"/>
+        <field name="paymentId" type="id"/>
+        <field name="acctgTransId" type="id"/>
+        <field name="issueTypeEnumId" type="id-long"/>
+        <field name="severityEnumId" type="id"/>
+        <field name="riskLevelEnumId" type="id"/>
+        <field name="policyId" type="id"/>
+        <field name="repairEligibilityStatus" type="id-long"/>
+        <field name="autoRepairAllowed" type="indicator"/>
+        <field name="manualApprovalRequired" type="indicator"/>
+        <field name="blockBatchRepair" type="indicator"/>
+        <field name="dryRunRequired" type="indicator"/>
+        <field name="dryRunStatusId" type="id"/>
+        <field name="proposalStatusId" type="id"/>
+        <field name="executionStatusId" type="id"/>
+        <field name="repairServiceName" type="id-long"/>
+        <field name="recommendedAction" type="very-long"/>
+        <field name="repairPayload" type="very-long"/>
+        <field name="paymentMethodId" type="id"/>
+        <field name="paymentMethodTypeId" type="id"/>
+        <field name="paymentTypeId" type="id"/>
+        <field name="autoCreateAccounting" type="indicator"/>
+        <field name="autoCreateFinAccountTrans" type="indicator"/>
+        <field name="dryRunResult" type="very-long"/>
+        <field name="executionResult" type="very-long"/>
+        <field name="rejectionReason" type="very-long"/>
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="approvedByUserLoginId" type="id"/>
+        <field name="rejectedByUserLoginId" type="id"/>
+        <field name="executedByUserLoginId" type="id"/>
+        <field name="createdDate" type="date-time"/>
+        <field name="approvedDate" type="date-time"/>
+        <field name="rejectedDate" type="date-time"/>
+        <field name="dryRunDate" type="date-time"/>
+        <field name="executionDate" type="date-time"/>
+        <field name="lastStatusDate" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="repairProposalId"/>
+        <relation type="one" rel-entity-name="Party" title="OrgParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="LoanReconciliationIssue">
+            <key-map field-name="reconciliationIssueId" rel-field-name="reconciliationIssueId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoanSchedule">
+            <key-map field-name="loanScheduleId" rel-field-name="loanScheduleId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoanRepayment">
+            <key-map field-name="loanRepaymentId" rel-field-name="loanRepaymentId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Payment">
+            <key-map field-name="paymentId" rel-field-name="paymentId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AcctgTrans">
+            <key-map field-name="acctgTransId" rel-field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" title="ProposalStatus">
+            <key-map field-name="proposalStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" title="DryRunStatus">
+            <key-map field-name="dryRunStatusId" rel-field-name="statusId"/>
+        </relation>
+        <index name="IDX_LRP_ORG_STATUS">
+            <index-field name="organizationPartyId"/>
+            <index-field name="proposalStatusId"/>
+        </index>
+        <index name="IDX_LRP_ISSUE">
+            <index-field name="reconciliationIssueId"/>
+            <index-field name="issueTypeEnumId"/>
+        </index>
+        <index name="IDX_LRP_LOAN">
+            <index-field name="loanId"/>
+            <index-field name="proposalStatusId"/>
+        </index>
+    </entity>
+
+    <entity entity-name="LoanRepairProposalAudit" package-name="org.apache.ofbiz.loan.recon" title="Loan Repair Proposal Audit">
+        <field name="repairProposalAuditId" type="id"/>
+        <field name="repairProposalId" type="id"/>
+        <field name="auditEventTypeId" type="id-long"/>
+        <field name="fromStatusId" type="id"/>
+        <field name="toStatusId" type="id"/>
+        <field name="message" type="very-long"/>
+        <field name="payload" type="very-long"/>
+        <field name="userLoginId" type="id"/>
+        <field name="createdDate" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="repairProposalAuditId"/>
+        <relation type="one" rel-entity-name="LoanRepairProposal">
+            <key-map field-name="repairProposalId" rel-field-name="repairProposalId"/>
+        </relation>
+        <index name="IDX_LRPA_PROPOSAL">
+            <index-field name="repairProposalId"/>
+            <index-field name="createdDate"/>
+        </index>
+        <index name="IDX_LRPA_EVENT">
+            <index-field name="auditEventTypeId"/>
+            <index-field name="createdDate"/>
+        </index>
+    </entity>
+
+
+
+    <!-- Phase 6K - Backend Closure & Enterprise Hardening -->
+    <entity entity-name="LoanRepairExecutionAudit" package-name="org.apache.ofbiz.loan.recon" title="Loan Repair Execution Audit">
+        <field name="executionAuditId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="repairProposalId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="executionStatusId" type="id"/>
+        <field name="repairServiceName" type="id-long"/>
+        <field name="beforeErrorCount" type="numeric"/>
+        <field name="afterErrorCount" type="numeric"/>
+        <field name="finalStatus" type="id-long"/>
+        <field name="resultPayload" type="very-long"/>
+        <field name="executedByUserLoginId" type="id"/>
+        <field name="executedStamp" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="executionAuditId"/>
+        <relation type="one" rel-entity-name="LoanRepairProposal">
+            <key-map field-name="repairProposalId" rel-field-name="repairProposalId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <index name="IDX_LREA_PROP">
+            <index-field name="repairProposalId"/>
+            <index-field name="executedStamp"/>
+        </index>
+        <index name="IDX_LREA_ORG">
+            <index-field name="organizationPartyId"/>
+            <index-field name="executionStatusId"/>
+        </index>
+    </entity>
+
+    <entity entity-name="LoanRepairRetryQueue" package-name="org.apache.ofbiz.loan.recon" title="Loan Repair Retry Queue">
+        <field name="retryQueueId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="repairProposalId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="retryStatusId" type="id"/>
+        <field name="retryCount" type="numeric"/>
+        <field name="failureReason" type="very-long"/>
+        <field name="nextRetryDate" type="date-time"/>
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="createdDate" type="date-time"/>
+        <field name="lastUpdatedByUserLoginId" type="id"/>
+        <field name="lastUpdatedDate" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="retryQueueId"/>
+        <relation type="one" rel-entity-name="LoanRepairProposal">
+            <key-map field-name="repairProposalId" rel-field-name="repairProposalId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <index name="IDX_LRRQ_STATUS">
+            <index-field name="organizationPartyId"/>
+            <index-field name="retryStatusId"/>
+            <index-field name="nextRetryDate"/>
+        </index>
+        <index name="IDX_LRRQ_PROP">
+            <index-field name="repairProposalId"/>
+            <index-field name="retryStatusId"/>
+        </index>
+    </entity>
+
+
+
+    <entity entity-name="LoanRepairProposalComment" package-name="org.apache.ofbiz.loan" title="Loan Repair Proposal Comment">
+        <field name="commentId" type="id"/>
+        <field name="repairProposalId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="commentTypeEnumId" type="id"/>
+        <field name="commentText" type="very-long"/>
+        <field name="createdByUserLoginId" type="id-vlong"/>
+        <field name="createdDate" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="commentId"/>
+        <relation type="one" rel-entity-name="LoanRepairProposal">
+            <key-map field-name="repairProposalId" rel-field-name="repairProposalId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <index name="IDX_LRPC_PROP">
+            <index-field name="repairProposalId"/>
+            <index-field name="createdDate"/>
+        </index>
+        <index name="IDX_LRPC_ORG_LOAN">
+            <index-field name="organizationPartyId"/>
+            <index-field name="loanId"/>
+        </index>
+    </entity>
+
+    <entity entity-name="LoanRepairProposalAssignment" package-name="org.apache.ofbiz.loan" title="Loan Repair Proposal Assignment">
+        <field name="assignmentId" type="id"/>
+        <field name="repairProposalId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="loanId" type="id"/>
+        <field name="assignedToUserLoginId" type="id-vlong"/>
+        <field name="assignedByUserLoginId" type="id-vlong"/>
+        <field name="assignedDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="assignmentStatusId" type="id"/>
+        <field name="assignmentComment" type="very-long"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="assignmentId"/>
+        <relation type="one" rel-entity-name="LoanRepairProposal">
+            <key-map field-name="repairProposalId" rel-field-name="repairProposalId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PartyLoan">
+            <key-map field-name="loanId" rel-field-name="loanId"/>
+        </relation>
+        <index name="IDX_LRPA_PROP_ACTIVE">
+            <index-field name="repairProposalId"/>
+            <index-field name="thruDate"/>
+        </index>
+        <index name="IDX_LRPA_ASSIGNED">
+            <index-field name="assignedToUserLoginId"/>
+            <index-field name="assignmentStatusId"/>
+        </index>
+    </entity>
+
+
+    <entity entity-name="LoanRepaymentMethodConfig" package-name="org.apache.ofbiz.loan" title="Loan Repayment Method Config">
+        <field name="loanRepaymentMethodConfigId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="repaymentMethodEnumId" type="id"/>
+        <field name="paymentMethodTypeId" type="id"/>
+        <field name="paymentMethodId" type="id"/>
+        <field name="finAccountId" type="id"/>
+        <field name="debitGlAccountId" type="id"/>
+        <field name="creditGlAccountId" type="id"/>
+        <field name="requiresExternalReference" type="indicator"/>
+        <field name="requiresBankReference" type="indicator"/>
+        <field name="requiresReceivedByUser" type="indicator"/>
+        <field name="isPayrollMethod" type="indicator"/>
+        <field name="isActive" type="indicator"/>
+        <field name="description" type="description"/>
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time"/>
+        <field name="lastUpdatedStamp" type="date-time"/>
+        <field name="lastUpdatedTxStamp" type="date-time"/>
+        <field name="createdStamp" type="date-time"/>
+        <field name="createdTxStamp" type="date-time"/>
+        <prim-key field="loanRepaymentMethodConfigId"/>
+        <relation type="one" rel-entity-name="Party" title="OrgParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PaymentMethodType">
+            <key-map field-name="paymentMethodTypeId" rel-field-name="paymentMethodTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PaymentMethod">
+            <key-map field-name="paymentMethodId" rel-field-name="paymentMethodId"/>
+        </relation>
+        <relation type="one" rel-entity-name="FinAccount">
+            <key-map field-name="finAccountId" rel-field-name="finAccountId"/>
+        </relation>
+        <index name="IDX_LRPM_CFG_METHOD">
+            <index-field name="organizationPartyId"/>
+            <index-field name="repaymentMethodEnumId"/>
+            <index-field name="isActive"/>
+        </index>
+    </entity>
+
+</entitymodel>

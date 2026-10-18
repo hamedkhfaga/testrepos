@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>QrCore Services — central secured QR for all OFBiz and custom apps</description>
+    <vendor>qrcore</vendor>
+
+    <service name="qrcoreGenerate" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.qrcore.QrCoreServices" invoke="generate">
+        <description>
+            Return the stable secured token for (docType, docId, channel) — creating the
+            QrCode registry row on first call, reusing it afterwards so a document keeps
+            one QR for life. Token = QR1|docType|docId|org|qrCodeId|issuedAt|HMAC-SHA256.
+        </description>
+        <attribute name="docType" type="String" mode="IN" optional="false"/>
+        <attribute name="docId" type="String" mode="IN" optional="false"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="channel" type="String" mode="IN" optional="true"/>
+        <attribute name="expireAt" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="targetUrl" type="String" mode="IN" optional="true"/>
+        <attribute name="qrCodeId" type="String" mode="OUT" optional="false"/>
+        <attribute name="token" type="String" mode="OUT" optional="false"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="qrcoreVerify" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.qrcore.QrCoreServices" invoke="verify">
+        <description>
+            Verify a scanned token: recompute the HMAC, check registry status and expiry,
+            record a QrScanEvent (every attempt, including forgeries) and bump scanCount.
+        </description>
+        <attribute name="token" type="String" mode="IN" optional="false"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userAgent" type="String" mode="IN" optional="true"/>
+        <attribute name="valid" type="Boolean" mode="OUT" optional="false"/>
+        <attribute name="result" type="String" mode="OUT" optional="false"/>
+        <attribute name="qrCodeId" type="String" mode="OUT" optional="true"/>
+        <attribute name="docType" type="String" mode="OUT" optional="true"/>
+        <attribute name="docId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="channel" type="String" mode="OUT" optional="true"/>
+        <attribute name="targetUrl" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="qrcoreRevoke" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.qrcore.QrCoreServices" invoke="revoke">
+        <description>Revoke a QR code — future scans verify as REVOKED (audit kept).</description>
+        <attribute name="qrCodeId" type="String" mode="IN" optional="false"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="qrcoreReactivate" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.qrcore.QrCoreServices" invoke="reactivate">
+        <description>Reactivate a previously revoked QR code.</description>
+        <attribute name="qrCodeId" type="String" mode="IN" optional="false"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- policy maintenance (entity-auto) — consumed by all print engines -->
+    <service name="qrcoreCreatePolicy" default-entity-name="QrPolicy" engine="entity-auto"
+            invoke="create" auth="true" export="true" action="POST">
+        <description>Create a QR rendering/access policy row</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="qrcoreUpdatePolicy" default-entity-name="QrPolicy" engine="entity-auto"
+            invoke="update" auth="true" export="true" action="POST">
+        <description>Update a QR rendering/access policy row</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="qrcoreDeletePolicy" default-entity-name="QrPolicy" engine="entity-auto"
+            invoke="delete" auth="true" export="true" action="POST">
+        <description>Delete a QR rendering/access policy row</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- workflow guard — SECA-invoked on setPaymentStatus / voidPayment:
+         denies Cancel/Void for members of security group QRC_PMT_NOVOID -->
+    <!-- generic audit trail (UI-support): one row per business event -->
+    <service name="qrcoreLogAudit" engine="groovy"
+            location="component://qrcore/src/main/groovy/org/apache/ofbiz/qrcore/QrcoreBank.groovy"
+            invoke="qrcoreLogAudit" auth="true" export="true" action="POST">
+        <description>Write one AuditEvent row (docType/docId/eventType)</description>
+        <attribute name="docType" type="String" mode="IN" optional="false"/>
+        <attribute name="docId" type="String" mode="IN" optional="false"/>
+        <attribute name="eventType" type="String" mode="IN" optional="false"/>
+        <attribute name="oldValue" type="String" mode="IN" optional="true"/>
+        <attribute name="newValue" type="String" mode="IN" optional="true"/>
+        <attribute name="remark" type="String" mode="IN" optional="true"/>
+        <attribute name="auditUserLoginId" type="String" mode="IN" optional="true"/>
+        <attribute name="auditEventId" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="qrcoreAuditPaymentStatus" engine="groovy"
+            location="component://qrcore/src/main/groovy/org/apache/ofbiz/qrcore/QrcoreBank.groovy"
+            invoke="qrcoreAuditPaymentStatus" auth="false">
+        <description>SECA: audit every payment status transition</description>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="oldStatusId" type="String" mode="IN" optional="true"/>
+    </service>
+    <service name="qrcoreAuditPaymentVoid" engine="groovy"
+            location="component://qrcore/src/main/groovy/org/apache/ofbiz/qrcore/QrcoreBank.groovy"
+            invoke="qrcoreAuditPaymentVoid" auth="false">
+        <description>SECA: audit voidPayment</description>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+    </service>
+
+    <!-- digital bank-batch processing (POC): ISO 20022 out + response in -->
+    <service name="qrcoreGenerateBankFile" engine="groovy"
+            location="component://qrcore/src/main/groovy/org/apache/ofbiz/qrcore/QrcoreBank.groovy"
+            invoke="qrcoreGenerateBankFile" auth="true" export="true" action="POST">
+        <description>Generate pain.001 (outgoing) / pain.008 (incoming) for a payment group</description>
+        <attribute name="paymentGroupId" type="String" mode="IN" optional="false"/>
+        <attribute name="fileName" type="String" mode="OUT" optional="true"/>
+        <attribute name="fileContent" type="String" mode="OUT" optional="true"/>
+        <attribute name="msgId" type="String" mode="OUT" optional="true"/>
+    </service>
+    <service name="qrcoreProcessBankResponse" engine="groovy"
+            location="component://qrcore/src/main/groovy/org/apache/ofbiz/qrcore/QrcoreBank.groovy"
+            invoke="qrcoreProcessBankResponse" auth="true" export="true" action="POST">
+        <description>Apply a pain.002-style bank status response: ACSC→confirm, RJCT→void, all audited</description>
+        <attribute name="paymentGroupId" type="String" mode="IN" optional="false"/>
+        <!-- the payload IS XML — bypass the default <> injection filter -->
+        <attribute name="fileContent" type="String" mode="IN" optional="false" allow-html="any"/>
+        <attribute name="results" type="List" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="qrcorePaymentVoidGuard" engine="groovy"
+            location="component://qrcore/src/main/groovy/org/apache/ofbiz/qrcore/QrcoreGuards.groovy"
+            invoke="qrcorePaymentVoidGuard" auth="false">
+        <description>Deny payment Cancel/Void for QRC_PMT_NOVOID members</description>
+        <attribute name="paymentId" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+    </service>
+</services>

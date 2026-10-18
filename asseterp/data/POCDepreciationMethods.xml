@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Asset ERP POC — expectedEndOfLife updates + FixedAssetDepMethod for all 25 assets -->
+<entity-engine-xml>
+
+    <!-- ================================================================
+         UPDATE FixedAsset.expectedEndOfLife
+         IT HW = 5yr life (2022 -> 2027)
+         Software = 3yr life (2022 -> 2025)
+         Vehicles = 5yr life (2022 -> 2027)
+         Machinery = 10yr life (2022 -> 2032)
+         Furniture = 10yr life (2022 -> 2032)
+         ================================================================ -->
+
+    <!-- IT Hardware -->
+    <FixedAsset fixedAssetId="ASSET-IT-001" expectedEndOfLife="2027-01-15"/>
+    <FixedAsset fixedAssetId="ASSET-IT-002" expectedEndOfLife="2027-02-01"/>
+    <FixedAsset fixedAssetId="ASSET-IT-003" expectedEndOfLife="2027-03-01"/>
+    <FixedAsset fixedAssetId="ASSET-IT-004" expectedEndOfLife="2027-04-01"/>
+    <FixedAsset fixedAssetId="ASSET-IT-005" expectedEndOfLife="2027-05-15"/>
+    <FixedAsset fixedAssetId="ASSET-IT-006" expectedEndOfLife="2027-06-01"/>
+    <FixedAsset fixedAssetId="ASSET-IT-007" expectedEndOfLife="2027-07-01"/>
+    <FixedAsset fixedAssetId="ASSET-IT-008" expectedEndOfLife="2027-08-01"/>
+    <FixedAsset fixedAssetId="ASSET-IT-009" expectedEndOfLife="2027-09-01"/>
+    <FixedAsset fixedAssetId="ASSET-IT-010" expectedEndOfLife="2027-10-01"/>
+
+    <!-- Software (3yr) -->
+    <FixedAsset fixedAssetId="ASSET-SW-001" expectedEndOfLife="2025-01-15"/>
+    <FixedAsset fixedAssetId="ASSET-SW-002" expectedEndOfLife="2025-02-01"/>
+    <FixedAsset fixedAssetId="ASSET-SW-003" expectedEndOfLife="2025-03-01"/>
+    <FixedAsset fixedAssetId="ASSET-SW-004" expectedEndOfLife="2025-04-01"/>
+
+    <!-- Vehicles (5yr) -->
+    <FixedAsset fixedAssetId="ASSET-VH-001" expectedEndOfLife="2027-01-20"/>
+    <FixedAsset fixedAssetId="ASSET-VH-002" expectedEndOfLife="2027-02-15"/>
+    <FixedAsset fixedAssetId="ASSET-VH-003" expectedEndOfLife="2027-03-01"/>
+    <FixedAsset fixedAssetId="ASSET-VH-004" expectedEndOfLife="2027-04-01"/>
+
+    <!-- Machinery (10yr) -->
+    <FixedAsset fixedAssetId="ASSET-MC-001" expectedEndOfLife="2032-01-10"/>
+    <FixedAsset fixedAssetId="ASSET-MC-002" expectedEndOfLife="2032-02-01"/>
+    <FixedAsset fixedAssetId="ASSET-MC-003" expectedEndOfLife="2032-03-01"/>
+    <FixedAsset fixedAssetId="ASSET-MC-004" expectedEndOfLife="2032-04-01"/>
+
+    <!-- Furniture (10yr) -->
+    <FixedAsset fixedAssetId="ASSET-FN-001" expectedEndOfLife="2032-01-15"/>
+    <FixedAsset fixedAssetId="ASSET-FN-002" expectedEndOfLife="2032-02-01"/>
+    <FixedAsset fixedAssetId="ASSET-FN-003" expectedEndOfLife="2032-03-01"/>
+
+    <!-- ================================================================
+         FixedAssetDepMethod — links each asset to its depreciation algorithm
+         IT HW, SW, Machinery, Furniture -> Straight Line
+         Vehicles -> Double Declining Balance
+         ================================================================ -->
+
+    <!-- IT Hardware — Straight Line -->
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-001" fromDate="2022-01-15 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-002" fromDate="2022-02-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-003" fromDate="2022-03-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-004" fromDate="2022-04-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-005" fromDate="2022-05-15 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-006" fromDate="2022-06-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-007" fromDate="2022-07-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-008" fromDate="2022-08-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-009" fromDate="2022-09-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-IT-010" fromDate="2022-10-01 00:00:00.0"/>
+
+    <!-- Software — Straight Line -->
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-SW-001" fromDate="2022-01-15 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-SW-002" fromDate="2022-02-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-SW-003" fromDate="2022-03-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-SW-004" fromDate="2022-04-01 00:00:00.0"/>
+
+    <!-- Vehicles — Double Declining Balance -->
+    <FixedAssetDepMethod depreciationCustomMethodId="DBL_DECL_DEP_FORMULA" fixedAssetId="ASSET-VH-001" fromDate="2022-01-20 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="DBL_DECL_DEP_FORMULA" fixedAssetId="ASSET-VH-002" fromDate="2022-02-15 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="DBL_DECL_DEP_FORMULA" fixedAssetId="ASSET-VH-003" fromDate="2022-03-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="DBL_DECL_DEP_FORMULA" fixedAssetId="ASSET-VH-004" fromDate="2022-04-01 00:00:00.0"/>
+
+    <!-- Machinery — Straight Line -->
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-MC-001" fromDate="2022-01-10 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-MC-002" fromDate="2022-02-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-MC-003" fromDate="2022-03-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-MC-004" fromDate="2022-04-01 00:00:00.0"/>
+
+    <!-- Furniture — Straight Line -->
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-FN-001" fromDate="2022-01-15 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-FN-002" fromDate="2022-02-01 00:00:00.0"/>
+    <FixedAssetDepMethod depreciationCustomMethodId="STR_LINE_DEP_FORMULA" fixedAssetId="ASSET-FN-003" fromDate="2022-03-01 00:00:00.0"/>
+
+</entity-engine-xml>

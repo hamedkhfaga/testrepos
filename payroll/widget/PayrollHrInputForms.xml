@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+    <!-- ========================= -->
+    <!-- Overtime Request List     -->
+    <!-- ========================= -->
+    <form name="OvertimeRequestList" type="list" list-name="overtimeList" paginate="true">
+        <actions/>
+        <field name="employeeOvertimeRequestId"><display/></field>
+        <field name="organizationPartyId"><display/></field>
+        <field name="partyId"><display/></field>
+        <field name="workDate"><display/></field>
+        <field name="minutes"><display/></field>
+        <field name="statusId"><display/></field>
+
+        <field name="edit">
+            <hyperlink target="overtimeEdit" description="${uiLabelMap.CommonEdit}">
+                <parameter param-name="employeeOvertimeRequestId" from-field="employeeOvertimeRequestId"/>
+            </hyperlink>
+        </field>
+
+        <field name="approve">
+            <hyperlink target="approveOvertimeRequest" description="${uiLabelMap.PayrollApprove}">
+                <parameter param-name="employeeOvertimeRequestId" from-field="employeeOvertimeRequestId"/>
+            </hyperlink>
+        </field>
+    </form>
+
+    <!-- ========================= -->
+    <!-- Overtime Request Edit     -->
+    <!-- ========================= -->
+    <form name="OvertimeRequestEdit" type="single" target="updateOvertimeRequest" default-map-name="overtime">
+        <field name="employeeOvertimeRequestId"><text/></field>
+        <field name="organizationPartyId"><text/></field>
+        <field name="partyId"><text/></field>
+        <field name="workDate"><date-time/></field>
+        <field name="minutes"><text/></field>
+        <field name="statusId"><text/></field>
+        <field name="submitButton"><submit description="${uiLabelMap.CommonUpdate}"/></field>
+    </form>
+
+    <!-- ========================= -->
+    <!-- Snapshot List             -->
+    <!-- ========================= -->
+    <form name="PayrollInputSnapshotList" type="list" list-name="snapshotList" paginate="true">
+        <field name="payrollInputSnapshotId"><display/></field>
+        <field name="organizationPartyId"><display/></field>
+        <field name="periodId"><display/></field>
+        <field name="statusId"><display/></field>
+        <field name="sourceTypeEnumId"><display/></field>
+
+        <field name="view">
+            <hyperlink target="snapshotView" description="${uiLabelMap.CommonView}">
+                <parameter param-name="payrollInputSnapshotId" from-field="payrollInputSnapshotId"/>
+            </hyperlink>
+        </field>
+
+        <field name="lock">
+            <hyperlink target="lockSnapshot" description="${uiLabelMap.PayrollLock}">
+                <parameter param-name="payrollInputSnapshotId" from-field="payrollInputSnapshotId"/>
+            </hyperlink>
+        </field>
+    </form>
+
+    <!-- ========================= -->
+    <!-- Snapshot View             -->
+    <!-- ========================= -->
+    <form name="PayrollInputSnapshotView" type="display" default-map-name="snap">
+        <field name="payrollInputSnapshotId"><display/></field>
+        <field name="organizationPartyId"><display/></field>
+        <field name="periodId"><display/></field>
+        <field name="statusId"><display/></field>
+        <field name="sourceTypeEnumId"><display/></field>
+        <field name="createdStamp"><display/></field>
+    </form>
+
+</forms>

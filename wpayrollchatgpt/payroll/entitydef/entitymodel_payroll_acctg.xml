@@ -1,0 +1,344 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+    <title>Payroll Accounting Integration Entity Model</title>
+    <description>Payroll Accounting Control + Mapping (Pattern A/B) with mandatory default accounting</description>
+    <version>1.1</version>
+
+    <!-- ========================================================= -->
+    <!-- Payroll Accounting Pattern Control (Admin chooses A or B)
+         - Pattern A: GL Posting (AcctgTrans)
+         - Pattern B: Invoice/Payment run
+         - Mandatory defaults so posting can always proceed
+         - Multi-org ready via organizationPartyId + optional per-structure override
+    ========================================================== -->
+
+    <entity entity-name="PayrollAcctgConfig" package-name="org.ofbiz.payroll.acctg"
+            title="Payroll Accounting Configuration (Pattern Control + Defaults)">
+        <field name="payrollAcctgConfigId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollStructureId" type="id" optional="true"/>
+
+        <!-- StatusItem controlled -->
+        <field name="acctgPatternStatusId" type="id"/>   <!-- PAY_PAT_A / PAY_PAT_B -->
+        <field name="postingLevelStatusId" type="id"/>   <!-- POST_SUM / POST_EMP -->
+
+        <!-- Mandatory default accounting for Pattern A (GL Posting) -->
+        <field name="defaultDebitGlAccountId" type="id"/>   <!-- mandatory -->
+        <field name="defaultCreditGlAccountId" type="id"/>  <!-- mandatory -->
+
+        <!-- Mandatory clearing/payable defaults (recommended mandatory for payroll) -->
+        <field name="payrollPayableGlAccountId" type="id"/>   <!-- Net pay payable / clearing -->
+        <field name="taxPayableGlAccountId" type="id"/>       <!-- Tax liability -->
+        <field name="ssPayableGlAccountId" type="id"/>        <!-- Social security liability -->
+        <field name="loanPayableGlAccountId" type="id"/>      <!-- Loan deduction liability -->
+
+        <!-- Optional: bank clearing (useful if later linking to payment/bank batches) -->
+        <field name="bankClearingGlAccountId" type="id" optional="true"/>
+
+        <!-- Optional: default AcctgTransType (if you want explicit type) -->
+        <field name="acctgTransTypeId" type="id" optional="true"/>
+
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time" optional="true"/>
+        <field name="isActive" type="indicator"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="createdDate" type="date-time"/>
+        <field name="lastModifiedByUserLoginId" type="id" optional="true"/>
+        <field name="lastModifiedDate" type="date-time" optional="true"/>
+
+        <field name="createdStamp" type="date-time" optional="true"/>
+        <field name="createdTxStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedTxStamp" type="date-time" optional="true"/>
+
+        <prim-key field="payrollAcctgConfigId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="PAYAC_ORG" title="OrganizationParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollStructure" fk-name="PAYAC_STR" title="PayrollStructure">
+            <key-map field-name="payrollStructureId" rel-field-name="payrollStructureId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PAYAC_PAT" title="AccountingPatternStatus">
+            <key-map field-name="acctgPatternStatusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PAYAC_LVL" title="PostingLevelStatus">
+            <key-map field-name="postingLevelStatusId" rel-field-name="statusId"/>
+        </relation>
+
+        <!-- GL accounts (mandatory defaults) -->
+        <relation type="one" rel-entity-name="GlAccount" fk-name="PAYAC_DGL" title="DefaultDebitGlAccount">
+            <key-map field-name="defaultDebitGlAccountId" rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="GlAccount" fk-name="PAYAC_CGL" title="DefaultCreditGlAccount">
+            <key-map field-name="defaultCreditGlAccountId" rel-field-name="glAccountId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="GlAccount" fk-name="PAYAC_PAY" title="PayrollPayableGlAccount">
+            <key-map field-name="payrollPayableGlAccountId" rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="GlAccount" fk-name="PAYAC_TAX" title="TaxPayableGlAccount">
+            <key-map field-name="taxPayableGlAccountId" rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="GlAccount" fk-name="PAYAC_SS" title="SocialSecurityPayableGlAccount">
+            <key-map field-name="ssPayableGlAccountId" rel-field-name="glAccountId"/>
+        </relation>
+        <relation type="one" rel-entity-name="GlAccount" fk-name="PAYAC_LOAN" title="LoanPayableGlAccount">
+            <key-map field-name="loanPayableGlAccountId" rel-field-name="glAccountId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="GlAccount" fk-name="PAYAC_BNK" title="BankClearingGlAccount">
+            <key-map field-name="bankClearingGlAccountId" rel-field-name="glAccountId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="AcctgTransType" fk-name="PAYAC_ATT" title="AcctgTransType">
+            <key-map field-name="acctgTransTypeId" rel-field-name="acctgTransTypeId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="UserLogin" fk-name="PAYAC_CBY" title="CreatedByUser">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="PAYAC_MBY" title="ModifiedByUser">
+            <key-map field-name="lastModifiedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- Pattern A: GL Mapping (Payroll component -> GlAccount)
+         If specific mapping missing, fallback to PayrollAcctgConfig defaults
+    ========================================================== -->
+
+    <entity entity-name="PayrollGlMap" package-name="org.ofbiz.payroll.acctg"
+            title="Payroll Component to GL Account Mapping">
+        <field name="payrollGlMapId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollStructureId" type="id" optional="true"/>
+
+        <!-- StatusItem controlled -->
+        <field name="componentTypeStatusId" type="id"/>  <!-- CMP_BASIC/CMP_OT/CMP_ALW/CMP_TAX/CMP_SS/CMP_LOAN/CMP_NET -->
+        <field name="drCrFlag" type="value"/>            <!-- D / C -->
+
+        <!-- OFBiz accounting -->
+        <field name="glAccountId" type="id"/>
+
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time" optional="true"/>
+        <field name="isActive" type="indicator"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="createdDate" type="date-time"/>
+
+        <field name="createdStamp" type="date-time" optional="true"/>
+        <field name="createdTxStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedTxStamp" type="date-time" optional="true"/>
+
+        <prim-key field="payrollGlMapId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="PGLM_ORG" title="OrganizationParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollStructure" fk-name="PGLM_STR" title="PayrollStructure">
+            <key-map field-name="payrollStructureId" rel-field-name="payrollStructureId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PGLM_COMP" title="ComponentTypeStatus">
+            <key-map field-name="componentTypeStatusId" rel-field-name="statusId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="GlAccount" fk-name="PGLM_GL" title="GlAccount">
+            <key-map field-name="glAccountId" rel-field-name="glAccountId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="UserLogin" fk-name="PGLM_CBY" title="CreatedByUser">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollAcctgPosting" package-name="org.ofbiz.payroll.acctg"
+            title="Payroll Accounting Posting (Pattern A links PayrollIteration to AcctgTrans)">
+        <field name="postingId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollIterationId" type="id"/>
+
+        <!-- OFBiz accounting -->
+        <field name="acctgTransId" type="id" optional="true"/>
+
+        <!-- StatusItem controlled -->
+        <field name="statusId" type="id"/>               <!-- POSTED/POST_ERR/POST_REV -->
+        <field name="postedDate" type="date-time" optional="true"/>
+        <field name="postedByUserLoginId" type="id" optional="true"/>
+        <field name="errorMessage" type="long-varchar" optional="true"/>
+
+        <!-- Optional: reversal link -->
+        <field name="reversalPostingId" type="id" optional="true"/>
+
+        <field name="createdStamp" type="date-time" optional="true"/>
+        <field name="createdTxStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedTxStamp" type="date-time" optional="true"/>
+
+        <prim-key field="postingId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="PACP_ORG" title="OrganizationParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollIteration" fk-name="PACP_ITER" title="PayrollIteration">
+            <key-map field-name="payrollIterationId" rel-field-name="payrollIterationId"/>
+        </relation>
+        <relation type="one" rel-entity-name="AcctgTrans" fk-name="PACP_AT" title="AccountingTransaction">
+            <key-map field-name="acctgTransId" rel-field-name="acctgTransId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PACP_STS" title="PostingStatus">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="PACP_PBY" title="PostedByUser">
+            <key-map field-name="postedByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="PayrollAcctgPosting" fk-name="PACP_REV" title="ReversalPosting">
+            <key-map field-name="reversalPostingId" rel-field-name="postingId"/>
+        </relation>
+    </entity>
+
+    <!-- ========================================================= -->
+    <!-- Pattern B: PayRun generation (links to Payment/Invoice)
+         Mandatory defaults so Pattern B can run without extra setup
+    ========================================================== -->
+
+    <entity entity-name="PayrollPayConfig" package-name="org.ofbiz.payroll.acctg"
+            title="Payroll Payment/Invoice Configuration (Pattern B)">
+        <field name="payrollPayConfigId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollStructureId" type="id" optional="true"/>
+
+        <!-- Core OFBiz accounting references -->
+        <field name="payMethodTypeId" type="id"/>   <!-- mandatory for Pattern B -->
+        <field name="paymentTypeId" type="id"/>     <!-- mandatory for Pattern B -->
+        <field name="invoiceTypeId" type="id" optional="true"/>
+
+        <!-- Optional: payment gateway or finAccount support later -->
+        <field name="finAccountId" type="id" optional="true"/>
+
+        <field name="fromDate" type="date-time"/>
+        <field name="thruDate" type="date-time" optional="true"/>
+        <field name="isActive" type="indicator"/>
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="createdDate" type="date-time"/>
+
+        <field name="createdStamp" type="date-time" optional="true"/>
+        <field name="createdTxStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedTxStamp" type="date-time" optional="true"/>
+
+        <prim-key field="payrollPayConfigId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="PPYC_ORG" title="OrganizationParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollStructure" fk-name="PPYC_STR" title="PayrollStructure">
+            <key-map field-name="payrollStructureId" rel-field-name="payrollStructureId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="PaymentMethodType" fk-name="PPYC_PMTM" title="PaymentMethodType">
+            <key-map field-name="payMethodTypeId" rel-field-name="paymentMethodTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PaymentType" fk-name="PPYC_PMTY" title="PaymentType">
+            <key-map field-name="paymentTypeId" rel-field-name="paymentTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="InvoiceType" fk-name="PPYC_INVT" title="InvoiceType">
+            <key-map field-name="invoiceTypeId" rel-field-name="invoiceTypeId"/>
+        </relation>
+        <relation type="one" rel-entity-name="FinAccount" fk-name="PPYC_FINA" title="FinAccount">
+            <key-map field-name="finAccountId" rel-field-name="finAccountId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="UserLogin" fk-name="PPYC_CBY" title="CreatedByUser">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollPayRun" package-name="org.ofbiz.payroll.acctg"
+            title="Payroll PayRun Header (Pattern B)">
+        <field name="payRunId" type="id"/>
+        <field name="organizationPartyId" type="id"/>
+        <field name="payrollIterationId" type="id"/>
+
+        <!-- StatusItem controlled -->
+        <field name="statusId" type="id"/>       <!-- RUN_NEW/RUN_GEN/RUN_SENT/RUN_ERR -->
+
+        <field name="createdByUserLoginId" type="id"/>
+        <field name="createdDate" type="date-time"/>
+
+        <field name="createdStamp" type="date-time" optional="true"/>
+        <field name="createdTxStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedTxStamp" type="date-time" optional="true"/>
+
+        <prim-key field="payRunId"/>
+
+        <relation type="one" rel-entity-name="Party" fk-name="PPRN_ORG" title="OrganizationParty">
+            <key-map field-name="organizationPartyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="PayrollIteration" fk-name="PPRN_ITER" title="PayrollIteration">
+            <key-map field-name="payrollIterationId" rel-field-name="payrollIterationId"/>
+        </relation>
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PPRN_STS" title="PayRunStatus">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+        <relation type="one" rel-entity-name="UserLogin" fk-name="PPRN_CBY" title="CreatedByUser">
+            <key-map field-name="createdByUserLoginId" rel-field-name="userLoginId"/>
+        </relation>
+    </entity>
+
+    <entity entity-name="PayrollPayRunItem" package-name="org.ofbiz.payroll.acctg"
+            title="Payroll PayRun Item (Pattern B links to Payment/Invoice)">
+        <field name="payRunItemId" type="id"/>
+        <field name="payRunId" type="id"/>
+        <field name="partyId" type="id"/>
+
+        <field name="amount" type="currency-amount"/>
+        <field name="currencyUomId" type="id"/>
+
+        <!-- Optional links after generation -->
+        <field name="paymentId" type="id" optional="true"/>
+        <field name="invoiceId" type="id" optional="true"/>
+
+        <!-- StatusItem controlled -->
+        <field name="statusId" type="id"/>     <!-- ITEM_NEW/ITEM_GEN/ITEM_ERR -->
+        <field name="errorMessage" type="long-varchar" optional="true"/>
+
+        <field name="createdStamp" type="date-time" optional="true"/>
+        <field name="createdTxStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedStamp" type="date-time" optional="true"/>
+        <field name="lastUpdatedTxStamp" type="date-time" optional="true"/>
+
+        <prim-key field="payRunItemId"/>
+
+        <relation type="one" rel-entity-name="PayrollPayRun" fk-name="PPRI_RUN" title="PayRunHeader">
+            <key-map field-name="payRunId" rel-field-name="payRunId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Party" fk-name="PPRI_PTY" title="EmployeeParty">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Uom" fk-name="PPRI_UOM" title="CurrencyUom">
+            <key-map field-name="currencyUomId" rel-field-name="uomId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="Payment" fk-name="PPRI_PAY" title="Payment">
+            <key-map field-name="paymentId" rel-field-name="paymentId"/>
+        </relation>
+        <relation type="one" rel-entity-name="Invoice" fk-name="PPRI_INV" title="Invoice">
+            <key-map field-name="invoiceId" rel-field-name="invoiceId"/>
+        </relation>
+
+        <relation type="one" rel-entity-name="StatusItem" fk-name="PPRI_STS" title="PayRunItemStatus">
+            <key-map field-name="statusId" rel-field-name="statusId"/>
+        </relation>
+    </entity>
+
+</entitymodel>

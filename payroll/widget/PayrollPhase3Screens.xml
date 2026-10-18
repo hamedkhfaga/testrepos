@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+  <screen name="PayrollPhase3Main">
+    <section>
+      <actions>
+        <set field="uiLabelMap" value="uiLabelMap"/>
+      </actions>
+      <widgets>
+        <include-menu name="PayrollMainMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+        <decorator-screen name="CommonDecorator" location="component://common/widget/CommonScreens.xml">
+          <decorator-section name="body">
+            <label style="h2" text="${uiLabelMap.PayrollPhase3Title}"/>
+
+            <include-form name="PayrollPostRunForm" location="component://payroll/widget/PayrollPhase3Forms.xml"/>
+            <include-form name="PayrollRoutePaymentsForm" location="component://payroll/widget/PayrollPhase3Forms.xml"/>
+            <include-form name="PayrollGenerateBankBatchForm" location="component://payroll/widget/PayrollPhase3Forms.xml"/>
+
+<include-form name="PayrollApproveBankBatchForm" location="component://payroll/widget/PayrollPhase3Forms.xml"/>
+<include-form name="PayrollExportBankFileForm" location="component://payroll/widget/PayrollPhase3Forms.xml"/>
+
+            <label style="h3" text="${uiLabelMap.PayrollLastServiceResult}"/>
+            <platform-specific>
+              <html><html-template location="component://common/webcommon/includes/eventMessage.ftl"/></html>
+            </platform-specific>
+
+          </decorator-section>
+        </decorator-screen>
+      </widgets>
+    </section>
+  </screen>
+
+</screens>

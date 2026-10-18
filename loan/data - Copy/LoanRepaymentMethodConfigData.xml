@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- Phase 13: Enterprise repayment method mapping - config driven only -->
+    <LoanRepaymentMethodConfig loanRepaymentMethodConfigId="LRPMC_COMP_CASH"
+                               organizationPartyId="Company"
+                               repaymentMethodEnumId="LNPM_CASH"
+                               paymentMethodTypeId="CASH"
+                               requiresExternalReference="N"
+                               requiresBankReference="N"
+                               requiresReceivedByUser="Y"
+                               isPayrollMethod="N"
+                               isActive="Y"
+                               description="Cash repayment mapped to OFBiz CASH"
+                               fromDate="2026-01-01 00:00:00.000"/>
+
+    <LoanRepaymentMethodConfig loanRepaymentMethodConfigId="LRPMC_COMP_BANK"
+                               organizationPartyId="Company"
+                               repaymentMethodEnumId="LNPM_BANK_TRANSFER"
+                               paymentMethodTypeId="EFT_ACCOUNT"
+                               requiresExternalReference="Y"
+                               requiresBankReference="Y"
+                               requiresReceivedByUser="N"
+                               isPayrollMethod="N"
+                               isActive="Y"
+                               description="Bank transfer repayment mapped to EFT_ACCOUNT"
+                               fromDate="2026-01-01 00:00:00.000"/>
+
+    <LoanRepaymentMethodConfig loanRepaymentMethodConfigId="LRPMC_COMP_CHECK"
+                               organizationPartyId="Company"
+                               repaymentMethodEnumId="LNPM_CHECK"
+                               paymentMethodTypeId="COMPANY_CHECK"
+                               requiresExternalReference="Y"
+                               requiresBankReference="N"
+                               requiresReceivedByUser="N"
+                               isPayrollMethod="N"
+                               isActive="Y"
+                               description="Check repayment mapped to COMPANY_CHECK"
+                               fromDate="2026-01-01 00:00:00.000"/>
+
+    <LoanRepaymentMethodConfig loanRepaymentMethodConfigId="LRPMC_COMP_CARD"
+                               organizationPartyId="Company"
+                               repaymentMethodEnumId="LNPM_CARD"
+                               paymentMethodTypeId="CREDIT_CARD"
+                               requiresExternalReference="Y"
+                               requiresBankReference="N"
+                               requiresReceivedByUser="N"
+                               isPayrollMethod="N"
+                               isActive="Y"
+                               description="Card repayment mapped to CREDIT_CARD"
+                               fromDate="2026-01-01 00:00:00.000"/>
+
+    <LoanRepaymentMethodConfig loanRepaymentMethodConfigId="LRPMC_COMP_WALLET"
+                               organizationPartyId="Company"
+                               repaymentMethodEnumId="LNPM_MOBILE_WALLET"
+                               paymentMethodTypeId="FIN_ACCOUNT"
+                               requiresExternalReference="Y"
+                               requiresBankReference="Y"
+                               requiresReceivedByUser="N"
+                               isPayrollMethod="N"
+                               isActive="Y"
+                               description="Mobile wallet repayment mapped to FIN_ACCOUNT"
+                               fromDate="2026-01-01 00:00:00.000"/>
+
+    <LoanRepaymentMethodConfig loanRepaymentMethodConfigId="LRPMC_COMP_DDEBIT"
+                               organizationPartyId="Company"
+                               repaymentMethodEnumId="LNPM_DIRECT_DEBIT"
+                               paymentMethodTypeId="EFT_ACCOUNT"
+                               requiresExternalReference="Y"
+                               requiresBankReference="Y"
+                               requiresReceivedByUser="N"
+                               isPayrollMethod="N"
+                               isActive="Y"
+                               description="Direct debit repayment mapped to EFT_ACCOUNT"
+                               fromDate="2026-01-01 00:00:00.000"/>
+
+    <LoanRepaymentMethodConfig loanRepaymentMethodConfigId="LRPMC_COMP_PAYROLL"
+                               organizationPartyId="Company"
+                               repaymentMethodEnumId="LNPM_PAYROLL"
+                               requiresExternalReference="N"
+                               requiresBankReference="N"
+                               requiresReceivedByUser="N"
+                               isPayrollMethod="Y"
+                               isActive="Y"
+                               description="Payroll deduction repayment method"
+                               fromDate="2026-01-01 00:00:00.000"/>
+
+</entity-engine-xml>

@@ -1,0 +1,16 @@
+{
+  "phase": "Phase 10B",
+  "title": "Governance Action Rules Hardening",
+  "backend": [
+    "Block assignment for terminal proposal statuses",
+    "Block approve/reject for obsolete proposals",
+    "Block dry-run/execution for terminal proposal statuses",
+    "Add readOnly and actionReason to queue rows"
+  ],
+  "frontend": [
+    "Disable invalid row actions for closed proposals",
+    "Show Closed proposal - read-only reason",
+    "Skip terminal rows in batch actions",
+    "Use getLoanGovernanceQueueV1 endpoint"
+  ]
+}

@@ -1,0 +1,323 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/entity-model.xsd">
+
+    <!-- ================================================= -->
+    <!-- View 1: EmployeeListView                          -->
+    <!-- ================================================= -->
+    <view-entity entity-name="EmployeeListView"
+                 package-name="org.apache.ofbiz.payroll"
+                 title="Employee List View">
+
+        <member-entity entity-alias="PER" entity-name="Person"/>
+        <member-entity entity-alias="EMP" entity-name="Employment"/>
+
+        <alias entity-alias="PER" field="partyId" name="employeeId"/>
+        <alias entity-alias="PER" field="firstName" name="firstName"/>
+        <alias entity-alias="PER" field="lastName" name="lastName"/>
+        <alias entity-alias="PER" field="gender" name="gender"/>
+        <alias entity-alias="EMP" field="fromDate" name="employmentFromDate"/>
+        <alias entity-alias="EMP" field="thruDate" name="employmentThruDate"/>
+
+        <view-link entity-alias="PER" rel-entity-alias="EMP" rel-optional="true">
+            <key-map field-name="partyId" rel-field-name="partyIdTo"/>
+        </view-link>
+    </view-entity>
+
+    <!-- ================================================= -->
+    <!-- View 2: EmployeeMasterView                        -->
+    <!-- ================================================= -->
+    <view-entity entity-name="EmployeeMasterView"
+                 package-name="org.apache.ofbiz.payroll"
+                 title="Employee Master View">
+
+        <member-entity entity-alias="PER" entity-name="Person"/>
+        <member-entity entity-alias="PR" entity-name="PartyRole"/>
+        <member-entity entity-alias="EMP" entity-name="Employment"/>
+        <member-entity entity-alias="PAY" entity-name="PayHistory"/>
+
+        <alias entity-alias="PER" field="partyId" name="employeePartyId"/>
+        <alias entity-alias="PER" field="firstName" name="firstName"/>
+        <alias entity-alias="PER" field="middleName" name="middleName"/>
+        <alias entity-alias="PER" field="lastName" name="lastName"/>
+        <alias entity-alias="PER" field="gender" name="gender"/>
+        <alias entity-alias="PER" field="birthDate" name="birthDate"/>
+        <alias entity-alias="EMP" field="fromDate" name="employmentFromDate"/>
+        <alias entity-alias="EMP" field="thruDate" name="employmentThruDate"/>
+        <alias entity-alias="PAY" field="amount" name="salaryAmount"/>
+        <alias entity-alias="PAY" field="fromDate" name="salaryFromDate"/>
+        <alias entity-alias="PAY" field="thruDate" name="salaryThruDate"/>
+
+        <view-link entity-alias="PER" rel-entity-alias="PR">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </view-link>
+        <view-link entity-alias="PER" rel-entity-alias="EMP" rel-optional="true">
+            <key-map field-name="partyId" rel-field-name="partyIdTo"/>
+        </view-link>
+        <view-link entity-alias="PER" rel-entity-alias="PAY" rel-optional="true">
+            <key-map field-name="partyId" rel-field-name="partyIdFrom"/>
+        </view-link>
+
+        <entity-condition>
+            <condition-expr entity-alias="PR" field-name="roleTypeId" operator="EQUALS" value="EMPLOYEE"/>
+        </entity-condition>
+    </view-entity>
+
+    <!-- ================================================= -->
+    <!-- View 3: CurrentEmployeeSalaryView                 -->
+    <!-- ================================================= -->
+    <view-entity entity-name="CurrentEmployeeSalaryView"
+                 package-name="org.apache.ofbiz.payroll"
+                 title="Current Employee Salary View">
+
+        <member-entity entity-alias="PER" entity-name="Person"/>
+        <member-entity entity-alias="PR" entity-name="PartyRole"/>
+        <member-entity entity-alias="PAY" entity-name="PayHistory"/>
+
+        <alias entity-alias="PER" field="partyId" name="employeePartyId"/>
+        <alias entity-alias="PER" field="firstName" name="firstName"/>
+        <alias entity-alias="PER" field="lastName" name="lastName"/>
+        <alias entity-alias="PAY" field="amount" name="salaryAmount"/>
+        <alias entity-alias="PAY" field="fromDate" name="salaryFromDate"/>
+        <alias entity-alias="PAY" field="thruDate" name="salaryThruDate"/>
+
+        <view-link entity-alias="PER" rel-entity-alias="PR">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </view-link>
+        <view-link entity-alias="PER" rel-entity-alias="PAY">
+            <key-map field-name="partyId" rel-field-name="partyIdFrom"/>
+        </view-link>
+
+        <entity-condition>
+            <condition-expr entity-alias="PR" field-name="roleTypeId" operator="EQUALS" value="EMPLOYEE"/>
+        </entity-condition>
+    </view-entity>
+ 
+ 
+ 
+ 
+ 
+    <!-- ================================================= -->
+    <!-- View 4: EmployeeMasterListView                   -->
+    <!-- ================================================= -->
+  
+    <view-entity
+        entity-name="EmployeeMasterListView"
+        package-name="org.apache.ofbiz.payroll"
+        title="Employee Master List">
+
+        <!-- ===================== -->
+        <!-- MEMBER ENTITIES -->
+        <!-- ===================== -->
+
+        <member-entity
+            entity-alias="P"
+            entity-name="Person"/>
+
+        <member-entity
+            entity-alias="PR"
+            entity-name="PartyRole"/>
+
+        <!-- ===================== -->
+        <!-- VIEW LINKS -->
+        <!-- ===================== -->
+
+        <view-link
+            entity-alias="P"
+            rel-entity-alias="PR">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </view-link>
+
+        <!-- ===================== -->
+        <!-- ALIASES -->
+        <!-- ===================== -->
+
+        <alias entity-alias="P" name="partyId"/>
+        <alias entity-alias="P" name="firstName"/>
+        <alias entity-alias="P" name="lastName"/>
+        <alias entity-alias="P" name="birthDate"/>
+
+        <alias entity-alias="PR" name="roleTypeId"/>
+
+        <!-- ===================== -->
+        <!-- CONDITIONS -->
+        <!-- ===================== -->
+
+        <entity-condition>
+            <condition
+                entity-alias="PR"
+                field-name="roleTypeId"
+                operator="equals"
+                value="EMPLOYEE"/>
+        </entity-condition>
+
+    </view-entity>
+ 
+
+    <!-- ================================================= -->
+    <!-- View 5: DepartmentSummaryView                   -->
+    <!-- ================================================= -->
+ 
+    <view-entity
+        entity-name="DepartmentSummaryView"
+        package-name="org.apache.ofbiz.payroll"
+        title="Department Summary View">
+
+        <!-- ===================== -->
+        <!-- MEMBER ENTITIES -->
+        <!-- ===================== -->
+
+        <!-- Department as PartyGroup -->
+        <member-entity
+            entity-alias="PG"
+            entity-name="PartyGroup"/>
+
+        <!-- Role definition -->
+        <member-entity
+            entity-alias="PR"
+            entity-name="PartyRole"/>
+
+        <!-- Department manager relationship -->
+        <member-entity
+            entity-alias="PRR"
+            entity-name="PartyRelationship"/>
+
+        <!-- Manager person -->
+        <member-entity
+            entity-alias="P"
+            entity-name="Person"/>
+
+        <!-- ===================== -->
+        <!-- VIEW LINKS -->
+        <!-- ===================== -->
+
+        <!-- PartyGroup → PartyRole -->
+        <view-link
+            entity-alias="PG"
+            rel-entity-alias="PR">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </view-link>
+
+        <!-- PartyGroup → PartyRelationship -->
+        <view-link
+            entity-alias="PG"
+            rel-entity-alias="PRR">
+            <key-map field-name="partyId" rel-field-name="partyIdFrom"/>
+        </view-link>
+
+        <!-- PartyRelationship → Person -->
+        <view-link
+            entity-alias="PRR"
+            rel-entity-alias="P">
+            <key-map field-name="partyIdTo" rel-field-name="partyId"/>
+        </view-link>
+
+        <!-- ===================== -->
+        <!-- ALIASES -->
+        <!-- ===================== -->
+
+        <!-- Department -->
+        <alias entity-alias="PG" name="partyId"/>
+        <alias entity-alias="PG" name="groupName"/>
+
+        <!-- Role -->
+        <alias entity-alias="PR" name="roleTypeId"/>
+
+        <!-- Relationship -->
+        <alias entity-alias="PRR" name="partyRelationshipTypeId"/>
+        <alias entity-alias="PRR" name="fromDate"/>
+        <alias entity-alias="PRR" name="thruDate"/>
+
+        <!-- Manager -->
+        <alias entity-alias="P" name="firstName" alias="managerFirstName"/>
+        <alias entity-alias="P" name="lastName" alias="managerLastName"/>
+
+        <!-- ===================== -->
+        <!-- CONDITIONS -->
+        <!-- ===================== -->
+
+        <entity-condition>
+            <!-- Only departments -->
+            <condition
+                entity-alias="PR"
+                field-name="roleTypeId"
+                operator="equals"
+                value="DEPARTMENT"/>
+
+            <!-- Only manager relationship -->
+            <condition
+                entity-alias="PRR"
+                field-name="partyRelationshipTypeId"
+                operator="equals"
+                value="GROUP_ROLLUP"/>
+
+            <!-- Active relationship only -->
+            <condition
+                entity-alias="PRR"
+                field-name="thruDate"
+                operator="null"/>
+        </entity-condition>
+
+    </view-entity>
+ 
+
+    <!-- ================================================= -->
+    <!-- View 6: ActiveAssignmentsView                   -->
+    <!-- ================================================= -->
+ 
+    <view-entity
+        entity-name="ActiveAssignmentsView"
+        package-name="org.apache.ofbiz.payroll"
+        title="Active Employee Assignments">
+
+        <!-- ===================== -->
+        <!-- MEMBER ENTITIES -->
+        <!-- ===================== -->
+
+        <member-entity
+            entity-alias="EA"
+            entity-name="Employment"/>
+
+        <member-entity
+            entity-alias="P"
+            entity-name="Person"/>
+
+        <!-- ===================== -->
+        <!-- VIEW LINKS -->
+        <!-- ===================== -->
+
+        <view-link
+            entity-alias="EA"
+            rel-entity-alias="P">
+            <key-map field-name="partyId" rel-field-name="partyId"/>
+        </view-link>
+
+        <!-- ===================== -->
+        <!-- ALIASES -->
+        <!-- ===================== -->
+
+        <alias entity-alias="EA" name="partyId"/>
+        <alias entity-alias="EA" name="fromDate"/>
+        <alias entity-alias="EA" name="thruDate"/>
+        <alias entity-alias="EA" name="employmentTypeId"/>
+
+        <alias entity-alias="P" name="firstName"/>
+        <alias entity-alias="P" name="lastName"/>
+
+        <!-- ===================== -->
+        <!-- CONDITIONS -->
+        <!-- ===================== -->
+
+        <entity-condition>
+            <!-- FIXED: was operator="is-null" -->
+            <condition
+                entity-alias="EA"
+                field-name="thruDate"
+                operator="null"/>
+        </entity-condition>
+
+    </view-entity>
+ 
+
+
+</entitymodel>

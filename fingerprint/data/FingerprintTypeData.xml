@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <BiometricDeviceType biometricDeviceTypeId="FP_SCAN"
+                         description="Fingerprint Scanner"/>
+
+</entity-engine-xml>

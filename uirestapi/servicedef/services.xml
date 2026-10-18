@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>UI REST API Plugin Services</description>
+    <vendor>Custom</vendor>
+    <version>1.0</version>
+
+    <service name="uiGetEmployeeList" engine="groovy"
+        location="component://uirestapi/groovyScripts/uiGetEmployeeList.groovy"
+        invoke="uiGetEmployeeList" export="true" action="POST" auth="true">
+        <description>Get paginated employee list with search filters</description>
+        <attribute name="viewSize"     type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewIndex"    type="Integer" mode="IN" optional="true"/>
+        <attribute name="firstName"    type="String"  mode="IN" optional="true"/>
+        <attribute name="lastName"     type="String"  mode="IN" optional="true"/>
+        <attribute name="partyId"      type="String"  mode="IN" optional="true"/>
+        <attribute name="employeeList" type="List"    mode="OUT" optional="true"/>
+        <attribute name="totalCount"   type="Integer" mode="OUT" optional="true"/>
+        <attribute name="viewSize"     type="Integer" mode="OUT" optional="true"/>
+        <attribute name="viewIndex"    type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="uiGetInvoiceList" engine="groovy"
+        location="component://uirestapi/groovyScripts/uiGetInvoiceList.groovy"
+        invoke="uiGetInvoiceList" export="true" action="POST" auth="true">
+        <description>Get paginated invoice list with search filters</description>
+        <attribute name="viewSize"      type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewIndex"     type="Integer" mode="IN" optional="true"/>
+        <attribute name="invoiceId"     type="String"  mode="IN" optional="true"/>
+        <attribute name="statusId"      type="String"  mode="IN" optional="true"/>
+        <attribute name="invoiceTypeId" type="String"  mode="IN" optional="true"/>
+        <attribute name="partyId"       type="String"  mode="IN" optional="true"/>
+        <attribute name="partyIdFrom"   type="String"  mode="IN" optional="true"/>
+        <attribute name="invoiceList"   type="List"    mode="OUT" optional="true"/>
+        <attribute name="totalCount"    type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="uiGetPaymentList" engine="groovy"
+        location="component://uirestapi/groovyScripts/uiGetPaymentList.groovy"
+        invoke="uiGetPaymentList" export="true" action="POST" auth="true">
+        <description>Get paginated payment list with search filters</description>
+        <attribute name="viewSize"      type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewIndex"     type="Integer" mode="IN" optional="true"/>
+        <attribute name="paymentId"     type="String"  mode="IN" optional="true"/>
+        <attribute name="statusId"      type="String"  mode="IN" optional="true"/>
+        <attribute name="paymentTypeId" type="String"  mode="IN" optional="true"/>
+        <attribute name="partyIdFrom"   type="String"  mode="IN" optional="true"/>
+        <attribute name="partyIdTo"     type="String"  mode="IN" optional="true"/>
+        <attribute name="paymentList"   type="List"    mode="OUT" optional="true"/>
+        <attribute name="totalCount"    type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="uiGetOrderList" engine="groovy"
+        location="component://uirestapi/groovyScripts/uiGetOrderList.groovy"
+        invoke="uiGetOrderList" export="true" action="POST" auth="true">
+        <description>Get paginated order list with search filters</description>
+        <attribute name="viewSize"     type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewIndex"    type="Integer" mode="IN" optional="true"/>
+        <attribute name="orderId"      type="String"  mode="IN" optional="true"/>
+        <attribute name="statusId"     type="String"  mode="IN" optional="true"/>
+        <attribute name="orderTypeId"  type="String"  mode="IN" optional="true"/>
+        <attribute name="partyId"      type="String"  mode="IN" optional="true"/>
+        <attribute name="orderList"    type="List"    mode="OUT" optional="true"/>
+        <attribute name="totalCount"   type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="uiGetGlAccountList" engine="groovy"
+        location="component://uirestapi/groovyScripts/uiGetGlAccountList.groovy"
+        invoke="uiGetGlAccountList" export="true" action="POST" auth="true">
+        <description>Get paginated GL account list with search filters</description>
+        <attribute name="viewSize"         type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewIndex"        type="Integer" mode="IN" optional="true"/>
+        <attribute name="glAccountId"      type="String"  mode="IN" optional="true"/>
+        <attribute name="accountCode"      type="String"  mode="IN" optional="true"/>
+        <attribute name="accountName"      type="String"  mode="IN" optional="true"/>
+        <attribute name="glAccountTypeId"  type="String"  mode="IN" optional="true"/>
+        <attribute name="glAccountList"    type="List"    mode="OUT" optional="true"/>
+        <attribute name="totalCount"       type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="uiGetPartyList" engine="groovy"
+        location="component://uirestapi/groovyScripts/uiGetPartyList.groovy"
+        invoke="uiGetPartyList" export="true" action="POST" auth="true">
+        <description>Get paginated party list with search filters</description>
+        <attribute name="viewSize"     type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewIndex"    type="Integer" mode="IN" optional="true"/>
+        <attribute name="partyId"      type="String"  mode="IN" optional="true"/>
+        <attribute name="partyTypeId"  type="String"  mode="IN" optional="true"/>
+        <attribute name="firstName"    type="String"  mode="IN" optional="true"/>
+        <attribute name="lastName"     type="String"  mode="IN" optional="true"/>
+        <attribute name="groupName"    type="String"  mode="IN" optional="true"/>
+        <attribute name="partyList"    type="List"    mode="OUT" optional="true"/>
+        <attribute name="totalCount"   type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="uiGetProductList" engine="groovy"
+        location="component://uirestapi/groovyScripts/uiGetProductList.groovy"
+        invoke="uiGetProductList" export="true" action="POST" auth="true">
+        <description>Get paginated product list with search filters</description>
+        <attribute name="viewSize"      type="Integer" mode="IN" optional="true"/>
+        <attribute name="viewIndex"     type="Integer" mode="IN" optional="true"/>
+        <attribute name="productId"     type="String"  mode="IN" optional="true"/>
+        <attribute name="productTypeId" type="String"  mode="IN" optional="true"/>
+        <attribute name="internalName"  type="String"  mode="IN" optional="true"/>
+        <attribute name="productList"   type="List"    mode="OUT" optional="true"/>
+        <attribute name="totalCount"    type="Integer" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="uiRunSql" engine="groovy" location="component://uirestapi/groovyScripts/uiRunSql.groovy" invoke="uiRunSql" export="true" action="POST" auth="true"><description>Execute SQL</description><attribute name="sqlCommand" type="String" mode="IN" optional="false"/><attribute name="grouperName" type="String" mode="IN" optional="true"/><attribute name="limitView" type="Integer" mode="IN" optional="true"/><attribute name="rows" type="List" mode="OUT" optional="true"/><attribute name="columns" type="List" mode="OUT" optional="true"/><attribute name="rowCount" type="Integer" mode="OUT" optional="true"/></service>
+    <service name="uiDebug" engine="groovy" location="component://uirestapi/groovyScripts/uiDebug.groovy" invoke="uiDebug" export="true" action="POST" auth="true"><description>Debug</description><attribute name="helperClass" type="String" mode="OUT" optional="true"/><attribute name="helperMethods" type="List" mode="OUT" optional="true"/><attribute name="delegatorMethods" type="List" mode="OUT" optional="true"/></service>
+</services>

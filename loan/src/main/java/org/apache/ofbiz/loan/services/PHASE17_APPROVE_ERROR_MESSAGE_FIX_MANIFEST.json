@@ -1,0 +1,15 @@
+{
+  "package": "phase17_approve_error_message_fix",
+  "changedFiles": [
+    "LoanAgreementServices.java",
+    "LoanServices.java"
+  ],
+  "purpose": "Return clear approval-service error messages for missing loan role master/party data before AgreementRole FK failure.",
+  "changes": [
+    "LoanAgreementServices.java: pre-validates organizationPartyId / LOAN_PROVIDER and borrower partyId / LOAN_BORROWER PartyRole before creating AgreementRole.",
+    "LoanAgreementServices.java: returns explicit error if Party is missing or PartyRole is missing.",
+    "LoanServices.java: changes wrapper text from 'Loan approved but agreement creation failed' to 'Loan approval failed during agreement creation'."
+  ],
+  "expectedUserError": "Cannot approve loan. Missing PartyRole for borrower partyId=EuroCustomer, roleTypeId=LOAN_BORROWER. Add PartyRole EuroCustomer / LOAN_BORROWER before approving the loan.",
+  "safety": "No successful create/approve/disbursement/repayment business logic changed; only pre-validation and error wording."
+}

@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    
+    <!-- Main view creation service -->
+    <service name="createAllPayrollViews" engine="java"
+        location="org.ofbiz.payroll.PayrollViewService"
+        invoke="createAllPayrollViews"
+        auth="false" export="true" action="POST">
+        <description>Create payroll database views or log SQL for manual execution</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="message" type="String" mode="OUT"/>
+        <attribute name="viewsDefined" type="Integer" mode="OUT"/>
+        <attribute name="sqlAvailable" type="Boolean" mode="OUT"/>
+        <attribute name="status" type="String" mode="OUT"/>
+    </service>
+    
+    <!-- Startup trigger service -->
+    <service name="payrollOnStartupCreateViews" engine="java"
+        location="org.ofbiz.payroll.PayrollStartupService"
+        invoke="onStartupCreateViews"
+        auth="false" export="true" action="POST">
+        <description>Trigger payroll view creation on OFBiz startup</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+        <attribute name="message" type="String" mode="OUT"/>
+    </service>
+    
+</services>

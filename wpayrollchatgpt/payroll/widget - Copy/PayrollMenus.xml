@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://ofbiz.apache.org/Widget-Menu"
+       xsi:schemaLocation="http://ofbiz.apache.org/Widget-Menu http://ofbiz.apache.org/dtds/widget-menu.xsd">
+
+    <!-- ================================================= -->
+    <!-- MAIN APP BAR (TOP MENU)                          -->
+    <!-- ================================================= -->
+    <menu name="MainAppBar"
+          extends="CommonAppBarMenu"
+          extends-resource="component://common/widget/CommonMenus.xml">
+
+        <menu-item name="Dashboard" title="Dashboard">
+            <link target="PayrollDashboard"/>
+        </menu-item>
+
+        <menu-item name="EmployeeManagementTab" title="Employee Management">
+            <link target="EmployeeList"/>
+        </menu-item>
+
+        <menu-item name="PayrollProcessingTab" title="Payroll Processing">
+            <link target="RunPayroll"/>
+        </menu-item>
+
+        <menu-item name="ReportsTab" title="Reports">
+            <link target="PayrollReports"/>
+        </menu-item>
+
+    </menu>
+
+
+    <!-- ================================================= -->
+    <!-- EMPLOYEE MANAGEMENT SUB TAB BAR (ACCOUNTING STYLE) -->
+    <!-- ================================================= -->
+    <menu name="EmployeeManagementSubTabBar"
+          menu-container-style="button-bar button-style-2"
+          default-selected-style="selected">
+
+        <menu-item name="EmployeeList" title="Employee List">
+            <link target="EmployeeList"/>
+        </menu-item>
+
+        <menu-item name="CreateEmployee" title="Create Employee">
+            <link target="CreateEmployee"/>
+        </menu-item>
+
+        <menu-item name="Assignments" title="Assignments">
+            <link target="CreateEmployeeAssignment"/>
+        </menu-item>
+
+        <menu-item name="InternationalEmployees" title="International Employees">
+            <link target="InternationalEmployeeList"/>
+        </menu-item>
+
+        <menu-item name="AddInternational" title="Add International">
+            <link target="CreateInternationalEmployee"/>
+        </menu-item>
+
+    </menu>
+
+
+    <!-- ================================================= -->
+    <!-- PAYROLL PROCESSING SUB TAB BAR                    -->
+    <!-- ================================================= -->
+    <menu name="PayrollProcessingSubTabBar"
+          menu-container-style="button-bar button-style-2"
+          default-selected-style="selected">
+
+        <menu-item name="RunPayroll" title="Run Payroll">
+            <link target="RunPayroll"/>
+        </menu-item>
+
+        <menu-item name="PayrollIterations" title="All Iterations">
+            <link target="PayrollIterationList"/>
+        </menu-item>
+
+        <menu-item name="CalculatePayroll" title="Calculate Payroll">
+            <link target="CalculatePayroll"/>
+        </menu-item>
+
+        <menu-item name="FinalizePayroll" title="Finalize Payroll">
+            <link target="FinalizePayroll"/>
+        </menu-item>
+
+    </menu>
+
+</menus>

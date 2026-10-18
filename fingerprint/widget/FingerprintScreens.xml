@@ -1,0 +1,805 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.<screen name="FingerprintHome">
+-->
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+ <screen name="TrendChartPortletScreen">
+    <section>
+        <widgets>
+            <platform-specific>
+                <html><html-template location="component://fingerprint/template/attendance/AttendanceTrendChart.ftl"/></html>
+            </platform-specific>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="DeviceListPortletScreen">
+    <section>
+        <widgets>
+            <include-form name="ListActiveDevices" location="component://fingerprint/widget/FingerprintForms.xml"/>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="RecentPunchesPortletScreen">
+    <section>
+        <widgets>
+            <include-form name="RecentPunches" location="component://fingerprint/widget/FingerprintForms.xml"/>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="main1111">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Fingerprint Dashboard"/>
+            <set field="headerItem" value="main"/>
+            <set field="portalPageId" value="FP_DASHBOARD"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <include-portal-page id="${portalPageId}"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+ 
+
+<screen name="main">
+    <section>
+	
+        <actions>
+            <set field="portalPageId" value="FP_DASHBOARD"/>
+            <script location="component://fingerprint/groovyScripts/FingerprintDashboard.groovy"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <include-portal-page id="${portalPageId}"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="SummaryCardsPortlet">
+    <section>
+        <widgets>
+            <platform-specific>
+                <html><html-template location="component://fingerprint/template/dashboard/SummaryCards.ftl"/></html>
+            </platform-specific>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="TrendChartPortlet">
+    <section>
+        <widgets>
+            <screenlet title="Attendance Trend (Last 30 Days)">
+                <platform-specific>
+                    <html><html-template location="component://fingerprint/template/attendance/AttendanceTrendChart.ftl"/></html>
+                </platform-specific>
+            </screenlet>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="DeviceStatusPortlet">
+   
+    <section>
+        <actions>
+            <property-map resource="CommonUiLabels" map-name="uiLabelMap" global="true"/>
+            <property-map resource="FingerprintUiLabels" map-name="uiLabelMap" global="true"/>
+        </actions>
+        <widgets>
+            <include-form name="ListActiveDevices" location="component://fingerprint/widget/FingerprintForms.xml"/>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="RecentPunchesPortlet">
+    <section>
+        <widgets>
+            <screenlet title="Recent Punches">
+                <include-form name="RecentPunches" location="component://fingerprint/widget/FingerprintForms.xml"/>
+            </screenlet>
+        </widgets>
+    </section>
+</screen>
+
+
+
+
+
+
+
+
+ <screen name="mainbackup">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Fingerprint System Dashboard"/>
+            <script location="component://fingerprint/groovyScripts/FingerprintDashboard.groovy"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <container style="dashboard-container">
+                        <platform-specific>
+                            <html>
+                                <html-template location="component://fingerprint/template/dashboard/SummaryCards.ftl"/>
+                            </html>
+                        </platform-specific>
+                        <screenlet title="Attendance Trend (Last 30 Days)">
+                                    <platform-specific>
+                                        <html><html-template location="component://fingerprint/template/attendance/AttendanceTrendChart.ftl"/></html>
+                                    </platform-specific>
+                                </screenlet>
+                        <container style="row">
+                            <container style="column-left">
+                                <screenlet title="Biometric Devices Status">
+                                    <include-form name="ListActiveDevices" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                                </screenlet>
+								<screenlet title="Recent Punches">
+                                    <include-form name="RecentPunches" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                                </screenlet>
+                            </container>
+                        </container>
+                    </container>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+
+<screen name="mainworkingasdashboardbasic">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Fingerprint System Dashboard"/>
+            <script location="component://fingerprint/groovyScripts/FingerprintDashboard.groovy"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <container style="dashboard-container">
+                        <platform-specific>
+                            <html>
+                                <html-template location="component://fingerprint/template/dashboard/SummaryCards.ftl"/>
+                            </html>
+                        </platform-specific>
+                        <screenlet title="Attendance Trend (Last 30 Days)">
+                                    <platform-specific>
+                                        <html><html-template location="component://fingerprint/template/attendance/AttendanceTrendChart.ftl"/></html>
+                                    </platform-specific>
+                                </screenlet>
+                        <container style="row">
+                            <container style="column-left">
+                                <screenlet title="Biometric Devices Status">
+                                    <include-form name="ListActiveDevices" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                                </screenlet>
+								<screenlet title="Recent Punches">
+                                    <include-form name="RecentPunches" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                                </screenlet>
+                            </container>
+                        </container>
+                    </container>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="mainFingerprintDashboard">
+    <section>
+        <actions>
+            <set field="headerItem" value="main"/>
+            <script location="component://fingerprint/groovyScripts/FingerprintDashboard.groovy"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <container style="container-fluid">
+                        
+                        <container style="row text-center" id="dashboard-counters">
+                            <container style="col-md-3">
+                                <label style="h2" text="${totalEmployees!0}"/>
+                                <label style="h5" text="Staff"/>
+                            </container>
+                            <container style="col-md-3">
+                                <label style="h2" text="${presentToday!0}"/>
+                                <label style="h5" text="Present"/>
+                            </container>
+                            <container style="col-md-3">
+                                <label style="h2" text="${lateToday!0}"/>
+                                <label style="h5" text="Late"/>
+                            </container>
+                            <container style="col-md-3">
+                                <label style="h2" text="${pendingExceptions!0}"/>
+                                <label style="h5" text="Pending"/>
+								
+                            </container>
+                        </container>
+                        <horizontal-separator/>
+
+                        <container style="row">
+                            <container style="col-md-12">
+                                <screenlet title="Attendance Trend (Last 30 Days)">
+                                    <platform-specific>
+                                        <html><html-template location="component://fingerprint/template/attendance/AttendanceTrendChart.ftl"/></html>
+                                    </platform-specific>
+                                </screenlet>
+                            </container>
+                        </container>
+
+                        <container style="row">
+                            <container style="col-md-6">
+                                <screenlet title="Active Devices">
+                                    <include-form name="ListActiveDevices" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                                </screenlet>
+                            </container>
+                            <container style="col-md-6">
+                                <screenlet title="Recent Punches">
+                                    <include-form name="RecentPunches" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                                </screenlet>
+                            </container>
+                        </container>
+                        
+                    </container>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+<!--
+<screen name="AttendanceDashboard">
+    <section>
+        <actions>
+            <set field="totalEmployees" from-field="requestAttributes.totalEmployees" default-value="0"/>
+            <set field="presentToday" from-field="requestAttributes.presentToday" default-value="0"/>
+            <set field="lateToday" from-field="requestAttributes.lateToday" default-value="0"/>
+            <set field="pendingExceptions" from-field="requestAttributes.pendingExceptions" default-value="0"/>
+        </actions>
+        <widgets>
+            <container style="container-fluid">
+                <container style="row text-center" id="dashboard-counters">
+                    <container style="col-md-3 border py-3">
+                        <label style="h2" text="${totalEmployees}"/>
+                        <label style="h5" text="Staff"/>
+                    </container>
+                    <container style="col-md-3 border py-3">
+                        <label style="h2" text="${presentToday}"/>
+                        <label style="h5" text="Present"/>
+                    </container>
+                    <container style="col-md-3 border py-3">
+                        <label style="h2" text="${lateToday}"/>
+                        <label style="h5" text="Late"/>
+                    </container>
+                    <container style="col-md-3 border py-3">
+                        <label style="h2" text="${pendingExceptions}"/>
+                        <label style="h5" text="Pending"/>
+                    </container>
+                </container>
+                
+                <horizontal-separator/>
+
+                <container style="row">
+                    <container style="col-md-12">
+                        <screenlet title="Attendance Trend">
+                            <platform-specific>
+                                <html>
+                                    <html-template location="component://fingerprint/template/attendance/AttendanceTrendChart.ftl"/>
+                                </html>
+                            </platform-specific>
+                        </screenlet>
+                    </container>
+                </container>
+
+                <container style="row">
+                    <container style="col-md-12">
+                        <screenlet title="Recent Punches">
+                             <include-form name="RecentPunches" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                        </screenlet>
+                    </container>
+                </container>
+            </container>
+        </widgets>
+    </section>
+</screen>
+-->
+
+
+<screen name="AttendanceCounters">
+    <section>
+        <actions>
+            <set field="totalEmployees" from-field="requestAttributes.totalEmployees" default-value="0"/>
+            <set field="presentToday" from-field="requestAttributes.presentToday" default-value="0"/>
+            <set field="lateToday" from-field="requestAttributes.lateToday" default-value="0"/>
+            <set field="pendingExceptions" from-field="requestAttributes.pendingExceptions" default-value="0"/>
+        </actions>
+        <widgets>
+            <container style="row">
+                <container style="col-md-3">
+                    <screenlet title="Total Staff">
+                        <container style="text-center">
+                            <label style="h1" text="${totalEmployees}"/>
+                        </container>
+                    </screenlet>
+                </container>
+                
+                <container style="col-md-3">
+                    <screenlet title="Present Today">
+                        <container style="text-center">
+                            <label style="h1" text="${presentToday}"/>
+                        </container>
+                    </screenlet>
+                </container>
+                
+                <container style="col-md-3">
+                    <screenlet title="Late Arrivals">
+                        <container style="text-center">
+                            <label style="h1" text="${lateToday}"/>
+                        </container>
+                    </screenlet>
+                </container>
+                
+                <container style="col-md-3">
+                    <screenlet title="Exceptions">
+                        <container style="text-center">
+                            <label style="h1" text="${pendingExceptions}"/>
+                        </container>
+                    </screenlet>
+                </container>
+            </container>
+        </widgets>
+    </section>
+</screen>
+
+
+<screen name="AttendanceSummaryExcelScreen">
+    <section>
+        <actions>
+            <script location="component://fingerprint/groovyScripts/AttendanceReport.groovy"/>
+        </actions>
+        <widgets>
+            <platform-specific>
+                <html>
+                    <html-template location="component://fingerprint/template/attendance/AttendanceSummary.xls.ftl"/>
+                </html>
+            </platform-specific>
+        </widgets>
+    </section>
+</screen>
+
+    <screen name="FingerprintHome">
+        <section>
+            <widgets>
+                <decorator-screen name="main-decorator" location="component://common/widget/CommonScreens.xml">
+                    <decorator-section name="body">
+                        <label style="h1" text="${uiLabelMap['Fingerprint.ModuleTitle']}"/>
+                        <container style="margin-top:10px;">
+                            <label text="Hi every body called Main"/>
+                            <include-menu name="FingerprintMainMenu" location="component://fingerprint/widget/FingerprintMenus.xml"/>
+                        </container>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+<screen name="BiometricDeviceListxx">
+    <section>
+        <actions>
+            <!-- Force same decorator location used by the application -->
+            <set field="parameters.mainDecoratorLocation"
+                 value="${parameters.mainDecoratorLocation ?: 'component://common/widget/CommonScreens.xml'}"/>
+        </actions>
+
+        <widgets>
+            <decorator-screen name="main-decorator"
+                              location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <label text="Hello BiometricDeviceList" style="h1"/>
+                    <label text="This screen is now using the same decorator as main, so the menu bar should be visible."/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="AnyFingerprintScreen">
+  <section>
+    <actions>
+      <set field="mainDecoratorLocation" value="component://fingerprint/widget/CommonScreens.xml"/>
+      <set field="decoratorName" value="MainDecorator"/>
+      <set field="subMenuName" value="BiometricSubMenu"/>
+    </actions>
+    <widgets>
+      <decorator-screen name="${decoratorName}" location="${mainDecoratorLocation}">
+        <decorator-section name="body">
+          <!-- your widgets/forms/list -->
+        </decorator-section>
+      </decorator-screen>
+    </widgets>
+  </section>
+</screen>
+
+ 
+    <screen name="BiometricDeviceList">
+        <section>
+            <actions>
+                
+            <set field="mainDecoratorLocation" value="component://fingerprint/widget/CommonScreens.xml" global="false"/>
+            <!-- You can use either decorator since both exist now -->
+            <set field="decoratorName" value="CommonAppDecorator" global="false"/>
+            </actions>
+            <widgets>
+                <!-- Use main-decorator which is standard in OFBiz -->
+               <decorator-screen name="${decoratorName}" location="${mainDecoratorLocation}">
+                <decorator-section name="body">
+                    
+                    <!-- Submenu Navigation Bar 
+                    <container style="margin-bottom:20px;">
+                        <include-menu name="EmployeeManagementSubMenu"
+                                      location="component://Fingerprint/PayrollMenus.xml"/>
+                    </container>
+					-->
+						 <screenlet title="BiometricDeviceCreateForm">
+                     
+                        <include-form name="BiometricDeviceCreateForm" 
+                                    location="component://fingerprint/widget/FingerprintForms.xml"/>
+						 </screenlet>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+<!-- ================================================= -->
+<!-- BiometricDeviceUser List (No Form, No include-form) -->
+<!-- ================================================= -->
+<screen name="BiometricDeviceUserList">
+    <section>
+        <actions>
+            <set field="mainDecoratorLocation" value="component://fingerprint/widget/CommonScreens.xml" global="false"/>
+            <set field="decoratorName" value="CommonAppDecorator" global="false"/>
+            
+            <set field="exportParameters" from-field="parameters"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="${decoratorName}" location="${mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="${uiLabelMap['Entity.BiometricDeviceUser']}">
+                        <container style="button-bar">
+                            <link target="BiometricDeviceUserListCsv" text="Export CSV" style="buttontext create">
+                                <parameter param-name="viewSize" value="9999"/>
+                            </link>
+                            <link target="BiometricDeviceUserListPdf" text="Export PDF" style="buttontext create">
+                                <parameter param-name="viewSize" value="9999"/>
+                            </link>
+                        </container>
+
+                        <include-form name="BiometricDeviceUserListForm"
+                                      location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+<screen name="BiometricDeviceUserListPdf">
+    <section>
+        <actions>
+            <property-map resource="FingerprintUiLabels" map-name="uiLabelMap" global="true"/>
+            <set field="parameters.viewSize" value="9999"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="CommonPdfDecorator" location="component://common/widget/CommonScreens.xml">
+                <decorator-section name="body">
+                    <include-form name="BiometricDeviceUserListForm" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="FindEmployees">
+    <section>
+        <actions>
+            <set field="headerItem" value="Employees"/>
+            <set field="layoutSettings.companyName" value="Fingerprint System" global="true"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <include-form name="FindEmployeesCondition" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    
+                    <container style="button-bar">
+   <link target="FindEmployeesPdf" text="Export PDF" style="buttontext" target-window="_blank"/>
+<link target="FindEmployeesCsv" text="Export CSV" style="buttontext" target-window="_blank"/>
+</container>
+                    <include-form name="ListEmployees" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="FindEmployeesExport">
+    <section>
+        <actions>
+            <property-map resource="CommonUiLabels" map-name="uiLabelMap" global="true"/>
+            <property-map resource="FingerprintUiLabels" map-name="uiLabelMap" global="true"/>
+            
+            <set field="layoutSettings.companyName" value="Fingerprint System" global="true"/>
+            <set field="viewSize" value="9999" type="Integer"/>
+            <set field="viewIndex" value="0" type="Integer"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="SimpleDecorator" location="component://common/widget/CommonScreens.xml">
+                <decorator-section name="body">
+                    <container>
+                        <label style="h1" text="Employee Report"/>
+                    </container>
+                    <include-form name="ListEmployees" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+ 
+<screen name="BiometricDeviceUserListCsv">
+    <section>
+        <actions>
+            <property-map resource="FingerprintUiLabels" map-name="uiLabelMap" global="true"/>
+            <set field="parameters.viewSize" value="9999"/> 
+        </actions>
+        <widgets>
+            <decorator-screen name="CommonRawScreenDecorator" location="${mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <include-form name="BiometricDeviceUserListForm" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="EditBiometricDeviceUser">
+    <section>
+        <actions>
+            <set field="mainDecoratorLocation" value="component://fingerprint/widget/CommonScreens.xml" global="false"/>
+            
+            <set field="biometricDeviceId" from-field="parameters.biometricDeviceId"/>
+            <set field="partyId" from-field="parameters.partyId"/>
+            <set field="fromDate" from-field="parameters.fromDate"/>
+            
+            <entity-one entity-name="BiometricDeviceUser" value-field="biometricDeviceUser"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="CommonAppDecorator" location="${mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="Edit Biometric Device User">
+                        <include-form name="EditBiometricDeviceUser" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="BiometricEventLogList">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Biometric Event Logs"/>
+            <set field="parameters" from-field="parameters"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="Search Filters">
+                        <include-form name="FindBiometricEventLog" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                    <screenlet title="Results">
+                        <include-form name="BiometricEventLogListForm" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+<screen name="WorkShiftList">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Work Shifts"/>
+            <set field="headerItem" value="WorkShift"/>
+            <set field="parameters" from-field="parameters"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="Search Shifts">
+                        <include-form name="FindWorkShifts" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                    <screenlet title="Shift List">
+                        <include-form name="WorkShiftList" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="CreateAttendancePolicy">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Create New Policy"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="Policy Details">
+                        <include-form name="AttendancePolicyCreateForm" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen> 
+
+<screen name="AttendancePolicyList">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Attendance Policy Management"/>
+            <set field="parameters" from-field="parameters"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <container style="button-bar">
+                        <link target="CreateAttendancePolicy" text="Create New Policy" style="buttontext create"/>
+                    </container>
+
+                    <screenlet title="Search Policies">
+                        <include-form name="FindAttendancePolicies" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                    
+                    <screenlet title="Attendance Policies">
+                        <include-form name="AttendancePolicyList" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="AttendanceDaySummaryList">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Attendance Day Summary"/>
+            <set field="parameters" from-field="parameters"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="Search Summary">
+                        <include-form name="FindAttendanceDaySummary" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                    <screenlet title="Summary List">
+                        <include-form name="AttendanceDaySummaryList" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="AttendanceDaySummaryDetails">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Attendance Day Summary Details"/>
+            <entity-one entity-name="AttendanceDaySummary" value-field="summaryDetails"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="Summary Information" navigation-menu-name="DetailsSubMenu">
+                        <include-form name="AttendanceDaySummaryDetails" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="AttendanceExceptionList">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Attendance Exceptions"/>
+            <set field="parameters" from-field="parameters"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="Search Exceptions">
+                        <include-form name="FindAttendanceExceptions" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                    <screenlet title="Exception List">
+                        <include-form name="AttendanceExceptionList" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+<screen name="AttendanceExceptionDetails">
+    <section>
+        <actions>
+            <set field="titleProperty" value="Resolve Attendance Exception"/>
+            <entity-one entity-name="AttendanceException" value-field="attendanceException"/>
+        </actions>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <screenlet title="Exception Details">
+                        <include-form name="AttendanceExceptionResolveForm" location="component://fingerprint/widget/FingerprintForms.xml"/>
+                    </screenlet>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+
+
+
+<screen name="AttendanceSummaryExcelScreen">
+    <section>
+        <actions>
+            <set field="viewIndex" from-field="parameters.VIEW_INDEX" type="Integer"/>
+            <set field="viewSize" from-field="parameters.VIEW_SIZE" type="Integer"/>
+            
+            <script location="component://fingerprint/groovyScripts/AttendanceReport.groovy"/>
+        </actions>
+        <widgets>
+            <platform-specific>
+                <html>
+                    <html-template location="component://fingerprint/template/attendance/AttendanceSummary.xls.ftl"/>
+                </html>
+            </platform-specific>
+        </widgets>
+    </section>
+</screen>
+
+ <!-- MainDecorator.xml -->
+<screen name="main-decorator">
+    <section>
+        <actions>
+            <set field="layoutSettings.companyName" value="Fingerprint Management System" global="true"/>
+            <set field="activeApp" value="fingerprint" global="true"/>
+        </actions>
+        <widgets>
+            </widgets>
+    </section>
+</screen>
+
+</screens>

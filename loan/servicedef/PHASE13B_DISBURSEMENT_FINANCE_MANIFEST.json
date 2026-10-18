@@ -1,0 +1,11 @@
+{
+  "phase": "Phase 13B",
+  "title": "Disbursement Finance Orchestration",
+  "changedFiles": [
+    "LoanServices.java",
+    "services.xml"
+  ],
+  "newService": "orchestrateLoanDisbursementFinanceV1",
+  "purpose": "Create disbursement accounting if missing, post it, and finalize loan disbursement without manual SQL posting.",
+  "note": "Uses postAcctgTrans if available; falls back to controlled isPosted/postedDate update for demo/local setups."
+}

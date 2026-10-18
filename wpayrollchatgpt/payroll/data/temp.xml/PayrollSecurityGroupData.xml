@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE entity-engine-xml>
+<entity-engine-xml>
+    <!-- ========================================== -->
+    <!-- PAYROLL SECURITY GROUPS -->
+    <!-- ========================================== -->
+    
+    <SecurityGroup group-id="PAYROLL_ADMIN" description="Payroll Administrator"/>
+    <SecurityGroup group-id="PAYROLL_MANAGER" description="Payroll Manager"/>
+    <SecurityGroup group-id="PAYROLL_CLERK" description="Payroll Clerk"/>
+    <SecurityGroup group-id="PAYROLL_VIEWER" description="Payroll Viewer"/>
+    
+    <!-- ========================================== -->
+    <!-- SECURITY GROUP PERMISSIONS -->
+    <!-- ========================================== -->
+    
+    <!-- Payroll Admin - Full Access -->
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="PAYROLL_DASH_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="EMP_LIST_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="EMP_ASSIGN_CREATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="INTL_EMP_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="INTL_EMP_CREATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="PAYROLL_RUN"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="PAYROLL_ITER_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="PAYROLL_CALC"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="PAYROLL_FINALIZE"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="EMP_LOAN_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="EMP_LOAN_CREATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="LOAN_REPORT_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="TAX_CONFIG_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="TAX_CONFIG_CREATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="TAX_REPORT_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="PAYSLIP_GENERATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="BANK_TRANSFER_GEN"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="PAYROLL_EXPORT"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="QUICK_REPORT_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="PAYROLL_HIST_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="SYS_SETTINGS_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="PAYROLL_STRUCT_MNG"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="ALLOWANCE_TYPE_MNG"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="BANK_CONFIG_MNG"/>
+    <SecurityGroupPermission group-id="PAYROLL_ADMIN" permission-id="HR_POLICY_MNG"/>
+    
+    <!-- Payroll Manager - Most Access -->
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="PAYROLL_DASH_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="EMP_LIST_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="EMP_ASSIGN_CREATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="INTL_EMP_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="INTL_EMP_CREATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="PAYROLL_RUN"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="PAYROLL_ITER_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="PAYROLL_CALC"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="PAYROLL_FINALIZE"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="EMP_LOAN_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="EMP_LOAN_CREATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="LOAN_REPORT_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="TAX_CONFIG_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="TAX_REPORT_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="PAYSLIP_GENERATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="BANK_TRANSFER_GEN"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="PAYROLL_EXPORT"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="QUICK_REPORT_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_MANAGER" permission-id="PAYROLL_HIST_VIEW"/>
+    
+    <!-- Payroll Clerk -->
+    <SecurityGroupPermission group-id="PAYROLL_CLERK" permission-id="PAYROLL_DASH_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_CLERK" permission-id="EMP_LIST_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_CLERK" permission-id="PAYROLL_ITER_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_CLERK" permission-id="PAYROLL_CALC"/>
+    <SecurityGroupPermission group-id="PAYROLL_CLERK" permission-id="EMP_LOAN_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_CLERK" permission-id="TAX_CONFIG_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_CLERK" permission-id="PAYSLIP_GENERATE"/>
+    <SecurityGroupPermission group-id="PAYROLL_CLERK" permission-id="QUICK_REPORT_VIEW"/>
+    
+    <!-- Payroll Viewer -->
+    <SecurityGroupPermission group-id="PAYROLL_VIEWER" permission-id="PAYROLL_DASH_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_VIEWER" permission-id="EMP_LIST_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_VIEWER" permission-id="PAYROLL_ITER_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_VIEWER" permission-id="EMP_LOAN_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_VIEWER" permission-id="TAX_CONFIG_VIEW"/>
+    <SecurityGroupPermission group-id="PAYROLL_VIEWER" permission-id="QUICK_REPORT_VIEW"/>
+</entity-engine-xml>

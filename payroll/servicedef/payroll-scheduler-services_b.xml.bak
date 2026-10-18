@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ===================================================== -->
+    <!-- Payroll Scheduler - Pattern B (V2 implementation) -->
+    <!-- Uniquely named services (â€¦B) to avoid collisions -->
+    <!-- ===================================================== -->
+
+    <service name="runMonthlyPayrollB"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+             invoke="runMonthlyPayrollV2"
+             auth="true"
+             use-transaction="false">
+        <description>Pattern B monthly payroll (V2): attendance â†’ resolve period â†’ create â†’ process â†’ approve â†’ post</description>
+
+        <!-- Optional inputs used by V2 -->
+        <attribute name="payrollPeriodId" type="String" mode="IN" optional="true"/>
+        <attribute name="currencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="valuationCurrencyUomId" type="String" mode="IN" optional="true"/>
+        <attribute name="exchangeRate" type="BigDecimal" mode="IN" optional="true"/>
+
+        <attribute name="accountingPostOptionId" type="String" mode="IN" optional="true"/>
+        <attribute name="vendorPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="invoiceTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="bankTransferConfigId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="periodYear" type="Long" mode="IN" optional="true"/>
+        <attribute name="periodMonth" type="Long" mode="IN" optional="true"/>
+        <attribute name="reportTypeId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+
+        <!-- Outputs -->
+        <attribute name="okCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="errorCount" type="Integer" mode="OUT" optional="true"/>
+        <attribute name="nextRunTime" type="Timestamp" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="processPayrollEmailQueueWorkerB"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+             invoke="processPayrollEmailQueueWorkerV2"
+             auth="true"
+             use-transaction="false">
+        <description>Pattern B email worker wrapper (V2)</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollSmsQueueWorkerB"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+             invoke="processPayrollSmsQueueWorkerV2"
+             auth="true"
+             use-transaction="false">
+        <description>Pattern B SMS worker wrapper (V2)</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollExportQueueWorkerB"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+             invoke="processPayrollExportQueueWorkerV2"
+             auth="true"
+             use-transaction="false">
+        <description>Pattern B export worker wrapper (V2)</description>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="processPayrollComplianceDailyWorkerB"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollSchedulerServicesV2"
+             invoke="processPayrollComplianceDailyWorkerV2"
+             auth="true"
+             use-transaction="false">
+        <description>Pattern B compliance daily worker (V2)</description>
+        <attribute name="periodYear" type="Long" mode="IN" optional="true"/>
+        <attribute name="periodMonth" type="Long" mode="IN" optional="true"/>
+        <attribute name="reportTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+</services>
+

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource>
+    <!-- ===================================================== -->
+    <!-- Payroll / HR Inputs (Stage#1 UI) - AR                  -->
+    <!-- ===================================================== -->
+
+    <property key="PayrollHrInputsTitle" value="مدخلات الموارد البشرية"/>
+    <property key="PayrollHrInputsHome" value="الرئيسية - مدخلات الموارد البشرية"/>
+    <property key="PayrollHrInputsIntro" value="إدارة مدخلات الموارد البشرية (يدوي، بصمة، سياسة، استيراد) المستخدمة لبناء لقطات مدخلات الرواتب."/>
+
+    <property key="PayrollOvertimeRequests" value="طلبات العمل الإضافي"/>
+    <property key="PayrollOvertimeRequestId" value="معرّف طلب العمل الإضافي"/>
+    <property key="PayrollOvertimeMinutes" value="الدقائق"/>
+    <property key="PayrollWorkDate" value="تاريخ العمل"/>
+    <property key="PayrollStatus" value="الحالة"/>
+
+    <property key="PayrollInputSnapshots" value="لقطات مدخلات الرواتب"/>
+    <property key="PayrollInputSnapshotId" value="معرّف اللقطة"/>
+    <property key="PayrollPeriodId" value="فترة الرواتب"/>
+    <property key="PayrollSourceType" value="نوع المصدر"/>
+
+    <property key="PayrollApprove" value="اعتماد"/>
+    <property key="PayrollLock" value="قفل"/>
+</resource>

@@ -1,0 +1,15 @@
+{
+  "phase": "Phase 14B",
+  "title": "Dashboard drill-down row APIs",
+  "changedFiles": [
+    "LoanUiServices.java",
+    "services.xml"
+  ],
+  "newServices": [
+    "getLoanDashboardDetailRowsV1",
+    "getLoanScheduleDetailRowsV1",
+    "getLoanRepaymentDetailRowsV1",
+    "getLoanAccountingDetailRowsV1"
+  ],
+  "scope": "Read-only drill-down rows only"
+}

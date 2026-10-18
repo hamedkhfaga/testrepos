@@ -1,0 +1,324 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ===================================================== -->
+    <!-- BIOMETRIC DEVICE -->
+    <!-- ===================================================== -->
+
+    <service name="createBiometricDevice"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricServices"
+             invoke="createBiometricDevice"
+             auth="true"
+             export="true">
+        <description>Create Biometric Device (multi-org)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="deviceName" type="String" mode="IN" optional="false"/>
+        <attribute name="serialNumber" type="String" mode="IN" optional="true"/>
+        <attribute name="vendorName" type="String" mode="IN" optional="true"/>
+        <attribute name="modelName" type="String" mode="IN" optional="true"/>
+        <attribute name="deviceTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="ipAddress" type="String" mode="IN" optional="true"/>
+        <attribute name="port" type="String" mode="IN" optional="true"/>
+        <attribute name="timeZoneId" type="String" mode="IN" optional="true"/>
+        <attribute name="facilityId" type="String" mode="IN" optional="true"/>
+        <attribute name="geoPointId" type="String" mode="IN" optional="true"/>
+        <attribute name="externalSystemRef" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="biometricDeviceId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="updateBiometricDevice"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricServices"
+             invoke="updateBiometricDevice"
+             auth="true"
+             export="true">
+        <description>Update Biometric Device (multi-org)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="biometricDeviceId" type="String" mode="IN" optional="false"/>
+
+        <attribute name="deviceName" type="String" mode="IN" optional="true"/>
+        <attribute name="serialNumber" type="String" mode="IN" optional="true"/>
+        <attribute name="vendorName" type="String" mode="IN" optional="true"/>
+        <attribute name="modelName" type="String" mode="IN" optional="true"/>
+        <attribute name="deviceTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="ipAddress" type="String" mode="IN" optional="true"/>
+        <attribute name="port" type="String" mode="IN" optional="true"/>
+        <attribute name="timeZoneId" type="String" mode="IN" optional="true"/>
+        <attribute name="facilityId" type="String" mode="IN" optional="true"/>
+        <attribute name="geoPointId" type="String" mode="IN" optional="true"/>
+        <attribute name="externalSystemRef" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="updated" type="Boolean" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- BIOMETRIC DEVICE USER MAPPING -->
+    <!-- ===================================================== -->
+
+    <service name="createBiometricDeviceUser"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricServices"
+             invoke="createBiometricDeviceUser"
+             auth="true"
+             export="true">
+        <description>Create Device User Mapping (barcode-ready)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="biometricDeviceId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="deviceUserId" type="String" mode="IN" optional="false"/>
+        <attribute name="cardNumber" type="String" mode="IN" optional="true"/>
+        <attribute name="badgeId" type="String" mode="IN" optional="true"/>
+        <attribute name="badgeBarcode" type="String" mode="IN" optional="true"/>
+        <attribute name="badgeBarcodeTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="deviceUserStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="externalRefId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="created" type="Boolean" mode="OUT" optional="false"/>
+        <attribute name="effectiveFromDate" type="Timestamp" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="expireBiometricDeviceUser"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricServices"
+             invoke="expireBiometricDeviceUser"
+             auth="true"
+             export="true">
+        <description>Expire Device User Mapping (set thruDate)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="biometricDeviceId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="expired" type="Boolean" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- TEMPLATE STORE + CREDENTIALS + ENROLLMENT -->
+    <!-- ===================================================== -->
+
+    <service name="storeBiometricTemplate"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricServices"
+             invoke="storeBiometricTemplate"
+             auth="true"
+             export="false" export="true" action="POST">
+        <description>Store encrypted biometric template</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="storageTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="templateHash" type="String" mode="IN" optional="true"/>
+        <attribute name="encryptedTemplate" type="byte[]" mode="IN" optional="true"/>
+        <attribute name="externalRefId" type="String" mode="IN" optional="true"/>
+        <attribute name="encryptionKeyId" type="String" mode="IN" optional="true"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="templateStoreId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="createPartyBiometricCredential"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricServices"
+             invoke="createPartyBiometricCredential"
+             auth="true"
+             export="true">
+        <description>Create employee biometric credential</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+
+        <attribute name="biometricTypeEnumId" type="String" mode="IN" optional="false"/>
+        <attribute name="fingerIndexEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="templateStoreId" type="String" mode="IN" optional="true"/>
+        <attribute name="credentialStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="qualityScore" type="String" mode="IN" optional="true"/>
+        <attribute name="fromDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="thruDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="externalRefId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="partyBiometricId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="enrollPartyBiometric"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricServices"
+             invoke="enrollPartyBiometric"
+             auth="true"
+             export="true">
+        <description>Enroll biometric (creates enrollment audit record)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyBiometricId" type="String" mode="IN" optional="false"/>
+        <attribute name="partyId" type="String" mode="IN" optional="false"/>
+        <attribute name="biometricDeviceId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="enrolledDateTime" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="enrollMethodEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="enrollStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="notes" type="String" mode="IN" optional="true"/>
+        <attribute name="externalRefId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="partyBiometricEnrollmentId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- IMPORT BATCH + EVENT LOG INGESTION (REST READY) -->
+    <!-- ===================================================== -->
+
+    <service name="createBiometricImportBatch"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricImportServices"
+             invoke="createBiometricImportBatch"
+             auth="true"
+             export="true">
+        <description>Create import batch for logs (file/API/SFTP)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="biometricDeviceId" type="String" mode="IN" optional="true"/>
+        <attribute name="importSourceEnumId" type="String" mode="IN" optional="false"/>
+        <attribute name="sourceFileName" type="String" mode="IN" optional="true"/>
+        <attribute name="sourceChecksum" type="String" mode="IN" optional="true"/>
+        <attribute name="importFromDateTime" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="importThruDateTime" type="Timestamp" mode="IN" optional="true"/>
+
+        <attribute name="biometricImportBatchId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="finalizeBiometricImportBatch"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricImportServices"
+             invoke="finalizeBiometricImportBatch"
+             auth="true"
+             export="true">
+        <description>Finalize import batch (counts, status, errors)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="biometricImportBatchId" type="String" mode="IN" optional="false"/>
+        <attribute name="importStatusId" type="String" mode="IN" optional="false"/>
+        <attribute name="recordCount" type="Long" mode="IN" optional="true"/>
+        <attribute name="errorCount" type="Long" mode="IN" optional="true"/>
+        <attribute name="errorMessage" type="String" mode="IN" optional="true"/>
+
+        <attribute name="finalized" type="Boolean" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="createBiometricEventLog"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricImportServices"
+             invoke="createBiometricEventLog"
+             auth="false"
+             export="true">
+        <description>
+            Ingest one biometric event log (REST endpoint friendly).
+            Must be idempotent by (organizationPartyId + biometricDeviceId + vendorEventId) or checksum rules in Java.
+        </description>
+
+        <!-- Auth can be handled by API gateway or device token strategy;
+             keep auth=false if you implement custom token validation in Java. -->
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+
+        <attribute name="biometricImportBatchId" type="String" mode="IN" optional="true"/>
+        <attribute name="biometricDeviceId" type="String" mode="IN" optional="false"/>
+
+        <!-- Identification: at least one should be provided; Java will enforce -->
+        <attribute name="partyId" type="String" mode="IN" optional="true"/>
+        <attribute name="deviceUserId" type="String" mode="IN" optional="true"/>
+        <attribute name="badgeBarcode" type="String" mode="IN" optional="true"/>
+
+        <!-- Idempotency -->
+        <attribute name="vendorEventId" type="String" mode="IN" optional="true"/>
+
+        <!-- Event -->
+        <attribute name="eventDateTime" type="Timestamp" mode="IN" optional="false"/>
+        <attribute name="eventTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="punchTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="verifyModeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="workLocationFacilityId" type="String" mode="IN" optional="true"/>
+
+        <!-- Raw payload -->
+        <attribute name="rawPayload" type="String" mode="IN" optional="true"/>
+        <attribute name="externalRefId" type="String" mode="IN" optional="true"/>
+
+        <!-- Outputs -->
+        <attribute name="biometricEventLogId" type="String" mode="OUT" optional="false"/>
+        <attribute name="createdNew" type="Boolean" mode="OUT" optional="false"/>
+        <attribute name="resolvedPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="processStatusId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+<service service-name="performFind" result-map="resultMlt" export="true" action="POST">
+    <field-map field-name="entityName" value="BiometricEventLog"/>
+    <field-map field-name="inputFields" from-field="parameters"/>
+    <field-map field-name="noConditionFind" value="Y"/>
+    <field-map field-name="orderBy" value="-eventDateTime"/>
+</service>
+<set field="biometricEventLogList" from-field="resultMlt.list"/>
+
+
+
+    <service name="markBiometricEventLogProcessed"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricImportServices"
+             invoke="markBiometricEventLogProcessed"
+             auth="true"
+             export="true">
+        <description>Update process status for one event log</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="biometricEventLogId" type="String" mode="IN" optional="false"/>
+        <attribute name="processStatusId" type="String" mode="IN" optional="false"/>
+        <attribute name="errorMessage" type="String" mode="IN" optional="true"/>
+
+        <attribute name="updated" type="Boolean" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ===================================================== -->
+    <!-- VERIFICATION AUDIT -->
+    <!-- ===================================================== -->
+
+    <service name="logBiometricVerificationAttempt"
+             engine="java"
+             location="org.ofbiz.hr.biometric.BiometricVerificationServices"
+             invoke="logBiometricVerificationAttempt"
+             auth="true"
+             export="true">
+        <description>Audit verification attempt (success/fail)</description>
+
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="biometricDeviceId" type="String" mode="IN" optional="true"/>
+        <attribute name="partyId" type="String" mode="IN" optional="true"/>
+        <attribute name="partyBiometricId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="attemptDateTime" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="verifyModeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="resultStatusId" type="String" mode="IN" optional="false"/>
+        <attribute name="matchScore" type="String" mode="IN" optional="true"/>
+        <attribute name="rawPayload" type="String" mode="IN" optional="true"/>
+        <attribute name="externalRefId" type="String" mode="IN" optional="true"/>
+
+        <attribute name="biometricVerificationAttemptId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+<service name="pingBiometricDeviceService" engine="groovy"
+         location="component://fingerprint/groovyScripts/PingDevice.groovy" invoke="" export="true" action="POST">
+    <attribute name="biometricDeviceId" type="String" mode="IN" optional="false"/>
+</service>
+</services>

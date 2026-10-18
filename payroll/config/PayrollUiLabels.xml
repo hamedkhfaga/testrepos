@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties resource="PayrollUiLabels">
+
+    <!-- ===================================================== -->
+    <!-- Application / Main Navigation -->
+    <!-- ===================================================== -->
+    <property key="PayrollApplication">
+        <value xml:lang="en">Payroll System</value>
+        <value xml:lang="ar">نظام الرواتب</value>
+    </property>
+
+    <property key="PayrollMenuMain">
+        <value xml:lang="en">Payroll</value>
+        <value xml:lang="ar">الرواتب</value>
+    </property>
+
+    <property key="PayrollSetup">
+        <value xml:lang="en">Setup</value>
+        <value xml:lang="ar">الإعدادات</value>
+    </property>
+
+
+    <property key="PayrollMenuPeriodTypes">
+        <value xml:lang="en">Payroll Period Types</value>
+        <value xml:lang="ar">أنواع فترات الرواتب</value>
+    </property>
+
+    <property key="PayrollMenuPeriods">
+        <value xml:lang="en">Payroll Periods</value>
+        <value xml:lang="ar">فترات الرواتب</value>
+    </property>
+
+    <property key="PayrollMenuAssignments">
+        <value xml:lang="en">Payroll Assignments</value>
+        <value xml:lang="ar">تعيينات الرواتب</value>
+    </property>
+
+    <property key="PayrollRunActions">
+        <value xml:lang="en">Run Actions</value>
+        <value xml:lang="ar">إجراءات الدفعة</value>
+    </property>
+
+    <property key="PayrollReports">
+        <value xml:lang="en">Reports</value>
+        <value xml:lang="ar">التقارير</value>
+    </property>
+
+    <property key="PayrollMenuRuns">
+        <value xml:lang="en">Payroll Runs</value>
+        <value xml:lang="ar">دفعات الرواتب</value>
+    </property>
+
+    <property key="PayrollMenuOrganizations">
+        <value xml:lang="en">Organizations</value>
+        <value xml:lang="ar">المنظمات</value>
+    </property>
+
+    <property key="PayrollMenuStructures">
+        <value xml:lang="en">Payroll Structures</value>
+        <value xml:lang="ar">هياكل الرواتب</value>
+    </property>
+
+    <property key="PayrollMenuCurrencyRates">
+        <value xml:lang="en">Currency Rates</value>
+        <value xml:lang="ar">أسعار الصرف</value>
+    </property>
+
+    <property key="PayrollMenuPolicies">
+        <value xml:lang="en">Overtime Policies</value>
+        <value xml:lang="ar">سياسات الإضافي</value>
+    </property>
+
+    <property key="PayrollMenuHrPolicySets">
+        <value xml:lang="en">HR Policy Sets</value>
+        <value xml:lang="ar">مجموعات سياسات الموارد البشرية</value>
+    </property>
+
+    <property key="PayrollMenuHrPolicies">
+        <value xml:lang="en">HR Policies</value>
+        <value xml:lang="ar">سياسات الموارد البشرية</value>
+    </property>
+
+    <property key="PayrollMenuTaxConfig">
+        <value xml:lang="en">Tax Configuration</value>
+        <value xml:lang="ar">إعدادات الضرائب</value>
+    </property>
+
+    <property key="PayrollMenuSocialSecurity">
+        <value xml:lang="en">Social Security Configuration</value>
+        <value xml:lang="ar">إعدادات الضمان الاجتماعي</value>
+    </property>
+
+    <property key="PayrollMenuAllowanceTypes">
+        <value xml:lang="en">Allowance Types</value>
+        <value xml:lang="ar">أنواع البدلات</value>
+    </property>
+
+    <property key="PayrollMenuDeductionTypes">
+        <value xml:lang="en">Deduction Types</value>
+        <value xml:lang="ar">أنواع الاستقطاعات</value>
+    </property>
+
+    <property key="PayrollMenuPosting">
+        <value xml:lang="en">Posting Audit</value>
+        <value xml:lang="ar">تدقيق الترحيلات</value>
+    </property>
+
+    <property key="PayrollMenuGlMapping">
+        <value xml:lang="en">GL Mapping</value>
+        <value xml:lang="ar">ربط الأستاذ العام</value>
+    </property>
+
+    <property key="PayrollMenuInvoiceMapping">
+        <value xml:lang="en">Invoice Mapping</value>
+        <value xml:lang="ar">ربط الفواتير</value>
+    </property>
+
+    <property key="PayrollMenuExportRequests">
+        <value xml:lang="en">Export Requests</value>
+        <value xml:lang="ar">طلبات التصدير</value>
+    </property>
+
+    <property key="PayrollMenuRetroPayroll">
+        <value xml:lang="en">Retro Payroll</value>
+        <value xml:lang="ar">الرواتب بأثر رجعي</value>
+    </property>
+
+    <property key="PayrollMenuCompliance">
+        <value xml:lang="en">Compliance Reports</value>
+        <value xml:lang="ar">تقارير الالتزام</value>
+    </property>
+
+    <!-- ===================================================== -->
+    <!-- Action Menus Titles -->
+    <!-- ===================================================== -->
+    <property key="PayrollRunActionsMenuTitle">
+        <value xml:lang="en">Run Actions</value>
+        <value xml:lang="ar">إجراءات الدفعة</value>
+    </property>
+
+    <property key="PayrollPayslipActionsMenuTitle">
+        <value xml:lang="en">Payslip Actions</value>
+        <value xml:lang="ar">إجراءات القسيمة</value>
+    </property>
+
+    <!-- ===================================================== -->
+    <!-- Payroll Run Actions -->
+    <!-- ===================================================== -->
+    <property key="PayrollActionProcessSalaries">
+        <value xml:lang="en">Process Salaries</value>
+        <value xml:lang="ar">احتساب الرواتب</value>
+    </property>
+
+    <property key="PayrollActionApprove">
+        <value xml:lang="en">Approve</value>
+        <value xml:lang="ar">اعتماد</value>
+    </property>
+
+    <property key="PayrollActionPostByOption">
+        <value xml:lang="en">Post (GL / Invoice)</value>
+        <value xml:lang="ar">ترحيل (أستاذ / فواتير)</value>
+    </property>
+
+    <property key="PayrollActionGenerateBankBatch">
+        <value xml:lang="en">Generate Bank Transfer Batch</value>
+        <value xml:lang="ar">إنشاء ملف التحويل البنكي</value>
+    </property>
+
+    <property key="PayrollActionBackToRun">
+        <value xml:lang="en">Back to Run</value>
+        <value xml:lang="ar">العودة إلى الدفعة</value>
+    </property>
+
+    <property key="PayrollActionGenerateBarcode">
+        <value xml:lang="en">Generate Barcode</value>
+        <value xml:lang="ar">إنشاء باركود</value>
+    </property>
+
+    <property key="PayrollActionGeneratePdfOpenPdf">
+        <value xml:lang="en">Generate PDF (OpenPDF)</value>
+        <value xml:lang="ar">إنشاء PDF (OpenPDF)</value>
+    </property>
+
+    <property key="PayrollActionGeneratePdfFop">
+        <value xml:lang="en">Generate PDF (FOP)</value>
+        <value xml:lang="ar">إنشاء PDF (FOP)</value>
+    </property>
+
+    <!-- ===================================================== -->
+    <!-- Generic Buttons / Links -->
+    <!-- ===================================================== -->
+    <property key="CommonCreate">
+        <value xml:lang="en">Create</value>
+        <value xml:lang="ar">إنشاء</value>
+    </property>
+
+    <property key="CommonSave">
+        <value xml:lang="en">Save</value>
+        <value xml:lang="ar">حفظ</value>
+    </property>
+
+    <property key="CommonSearch">
+        <value xml:lang="en">Search</value>
+        <value xml:lang="ar">بحث</value>
+    </property>
+
+    <property key="CommonUpdate">
+        <value xml:lang="en">Update</value>
+        <value xml:lang="ar">تحديث</value>
+    </property>
+
+    <property key="CommonDelete">
+        <value xml:lang="en">Delete</value>
+        <value xml:lang="ar">حذف</value>
+    </property>
+
+    <property key="CommonEdit">
+        <value xml:lang="en">Edit</value>
+        <value xml:lang="ar">تعديل</value>
+    </property>
+
+    <property key="CommonView">
+        <value xml:lang="en">View</value>
+        <value xml:lang="ar">عرض</value>
+    </property>
+
+    <property key="CommonBack">
+        <value xml:lang="en">Back</value>
+        <value xml:lang="ar">رجوع</value>
+    </property>
+
+    <property key="CommonExport">
+        <value xml:lang="en">Export</value>
+        <value xml:lang="ar">تصدير</value>
+    </property>
+
+    <property key="CommonDownload">
+        <value xml:lang="en">Download</value>
+        <value xml:lang="ar">تنزيل</value>
+    </property>
+
+    <!-- ===================================================== -->
+    <!-- Screen / Form Titles (used in forms/screens if you switch to uiLabelMap) -->
+    <!-- ===================================================== -->
+    <property key="PayrollTitleDashboard">
+        <value xml:lang="en">Payroll Dashboard</value>
+        <value xml:lang="ar">لوحة الرواتب</value>
+    </property>
+
+    <property key="PayrollTitleRuns">
+        <value xml:lang="en">Payroll Runs</value>
+        <value xml:lang="ar">دفعات الرواتب</value>
+    </property>
+
+    <property key="PayrollTitleRunCreate">
+        <value xml:lang="en">Create Payroll Run</value>
+        <value xml:lang="ar">إنشاء دفعة رواتب</value>
+    </property>
+
+    <property key="PayrollTitleRunView">
+        <value xml:lang="en">Payroll Run Details</value>
+        <value xml:lang="ar">تفاصيل دفعة الرواتب</value>
+    </property>
+
+    <property key="PayrollTitleResults">
+        <value xml:lang="en">Employee Payroll Results</value>
+        <value xml:lang="ar">نتائج الرواتب للموظفين</value>
+    </property>
+
+    <property key="PayrollTitlePayslip">
+        <value xml:lang="en">Payslip</value>
+        <value xml:lang="ar">قسيمة راتب</value>
+    </property>
+
+    <property key="PayrollTitleExportRequests">
+        <value xml:lang="en">Payroll Export Requests</value>
+        <value xml:lang="ar">طلبات تصدير الرواتب</value>
+    </property>
+
+    <property key="PayrollTitlePostingAudit">
+        <value xml:lang="en">Payroll Posting Audit</value>
+        <value xml:lang="ar">تدقيق ترحيلات الرواتب</value>
+    </property>
+
+    <property key="PayrollTitleGlMapping">
+        <value xml:lang="en">Payroll GL Mapping</value>
+        <value xml:lang="ar">ربط الرواتب بالأستاذ العام</value>
+    </property>
+
+    <property key="PayrollTitleInvoiceMapping">
+        <value xml:lang="en">Payroll Invoice Mapping</value>
+        <value xml:lang="ar">ربط الرواتب بالفواتير</value>
+    </property>
+
+    <property key="PayrollTitleOrganizations">
+        <value xml:lang="en">Payroll Organizations</value>
+        <value xml:lang="ar">منظمات الرواتب</value>
+    </property>
+
+    <property key="PayrollTitleStructures">
+        <value xml:lang="en">Payroll Structures</value>
+        <value xml:lang="ar">هياكل الرواتب</value>
+    </property>
+
+    <property key="PayrollTitleCurrencyRates">
+        <value xml:lang="en">Currency Rates</value>
+        <value xml:lang="ar">أسعار الصرف</value>
+    </property>
+
+    <property key="PayrollTitleOvertimePolicies">
+        <value xml:lang="en">Overtime Policies</value>
+        <value xml:lang="ar">سياسات الإضافي</value>
+    </property>
+
+    <property key="PayrollTitleHrPolicySets">
+        <value xml:lang="en">HR Policy Sets</value>
+        <value xml:lang="ar">مجموعات سياسات الموارد البشرية</value>
+    </property>
+
+    <property key="PayrollTitleHrPolicies">
+        <value xml:lang="en">HR Policies</value>
+        <value xml:lang="ar">سياسات الموارد البشرية</value>
+    </property>
+
+    <property key="PayrollTitleTaxConfig">
+        <value xml:lang="en">Tax Configuration</value>
+        <value xml:lang="ar">إعدادات الضرائب</value>
+    </property>
+
+    <property key="PayrollTitleSocialSecurity">
+        <value xml:lang="en">Social Security Configuration</value>
+        <value xml:lang="ar">إعدادات الضمان الاجتماعي</value>
+    </property>
+
+    <property key="PayrollTitleAllowanceTypes">
+        <value xml:lang="en">Allowance Types</value>
+        <value xml:lang="ar">أنواع البدلات</value>
+    </property>
+
+    <property key="PayrollTitleDeductionTypes">
+        <value xml:lang="en">Deduction Types</value>
+        <value xml:lang="ar">أنواع الاستقطاعات</value>
+    </property>
+
+    <property key="PayrollTitleRetroBatches">
+        <value xml:lang="en">Retro Payroll Batches</value>
+        <value xml:lang="ar">دفعات الرواتب بأثر رجعي</value>
+    </property>
+
+    <property key="PayrollTitleComplianceReports">
+        <value xml:lang="en">Compliance Reports</value>
+        <value xml:lang="ar">تقارير الالتزام</value>
+    </property>
+
+    <!-- ===================================================== -->
+    <!-- User Messages / Errors (services + events) -->
+    <!-- ===================================================== -->
+    <property key="PayrollMsgRunCreated">
+        <value xml:lang="en">Payroll run created successfully.</value>
+        <value xml:lang="ar">تم إنشاء دفعة الرواتب بنجاح.</value>
+    </property>
+
+    <property key="PayrollMsgRunProcessed">
+        <value xml:lang="en">Payroll run processed successfully.</value>
+        <value xml:lang="ar">تمت معالجة دفعة الرواتب بنجاح.</value>
+    </property>
+
+    <property key="PayrollMsgRunApproved">
+        <value xml:lang="en">Payroll run approved successfully.</value>
+        <value xml:lang="ar">تم اعتماد دفعة الرواتب بنجاح.</value>
+    </property>
+
+    <property key="PayrollMsgRunPosted">
+        <value xml:lang="en">Payroll run posted successfully.</value>
+        <value xml:lang="ar">تم ترحيل دفعة الرواتب بنجاح.</value>
+    </property>
+
+    <property key="PayrollMsgExportRequestCreated">
+        <value xml:lang="en">Export request created successfully.</value>
+        <value xml:lang="ar">تم إنشاء طلب التصدير بنجاح.</value>
+    </property>
+
+    <property key="PayrollMsgExportGenerated">
+        <value xml:lang="en">Export file generated successfully.</value>
+        <value xml:lang="ar">تم إنشاء ملف التصدير بنجاح.</value>
+    </property>
+
+    <property key="PayrollErrMissingOrg">
+        <value xml:lang="en">Organization is required.</value>
+        <value xml:lang="ar">المنظمة مطلوبة.</value>
+    </property>
+
+    <property key="PayrollErrMissingPeriod">
+        <value xml:lang="en">Payroll period is required.</value>
+        <value xml:lang="ar">فترة الرواتب مطلوبة.</value>
+    </property>
+
+    <property key="PayrollErrMissingRunId">
+        <value xml:lang="en">Payroll run ID is required.</value>
+        <value xml:lang="ar">معرف دفعة الرواتب مطلوب.</value>
+    </property>
+
+    <property key="PayrollErrInvalidPostOption">
+        <value xml:lang="en">Invalid posting option.</value>
+        <value xml:lang="ar">خيار الترحيل غير صحيح.</value>
+    </property>
+
+    <property key="PayrollErrNotFound">
+        <value xml:lang="en">Record not found.</value>
+        <value xml:lang="ar">لم يتم العثور على السجل.</value>
+    </property>
+
+    <property key="PayrollErrAccessDenied">
+        <value xml:lang="en">Access denied.</value>
+        <value xml:lang="ar">تم رفض الوصول.</value>
+    </property>
+
+    <property key="PayrollErrUnexpected">
+        <value xml:lang="en">Unexpected error. Please contact the system administrator.</value>
+        <value xml:lang="ar">خطأ غير متوقع. يرجى التواصل مع مسؤول النظام.</value>
+    </property>
+
+
+    <!-- ===================================================== -->
+    <!-- Payroll / HR Inputs (Stage#1 UI) - Unified EN + AR     -->
+    <!-- ===================================================== -->
+
+    <!-- Application -->
+    <property key="PayrollApplication">
+        <value xml:lang="en">Payroll System</value>
+        <value xml:lang="ar">نظام الرواتب</value>
+    </property>
+
+    <!-- HR Inputs -->
+    <property key="PayrollHrInputsTitle">
+        <value xml:lang="en">HR Inputs</value>
+        <value xml:lang="ar">مدخلات الموارد البشرية</value>
+    </property>
+
+    <property key="PayrollHrInputsHome">
+        <value xml:lang="en">HR Inputs Home</value>
+        <value xml:lang="ar">الرئيسية - مدخلات الموارد البشرية</value>
+    </property>
+
+    <property key="PayrollHrInputsIntro">
+        <value xml:lang="en">Manage HR inputs (manual, fingerprint, policy, imports) used to build Payroll Input Snapshots.</value>
+        <value xml:lang="ar">إدارة مدخلات الموارد البشرية (يدوي، بصمة، سياسة، استيراد) المستخدمة لإنشاء لقطات مدخلات الرواتب.</value>
+    </property>
+
+    <!-- Overtime -->
+    <property key="PayrollOvertimeRequests">
+        <value xml:lang="en">Overtime Requests</value>
+        <value xml:lang="ar">طلبات العمل الإضافي</value>
+    </property>
+
+    <property key="PayrollOvertimeRequestId">
+        <value xml:lang="en">Overtime Request ID</value>
+        <value xml:lang="ar">معرّف طلب العمل الإضافي</value>
+    </property>
+
+    <property key="PayrollOvertimeMinutes">
+        <value xml:lang="en">Minutes</value>
+        <value xml:lang="ar">الدقائق</value>
+    </property>
+
+    <property key="PayrollWorkDate">
+        <value xml:lang="en">Work Date</value>
+        <value xml:lang="ar">تاريخ العمل</value>
+    </property>
+
+    <property key="PayrollStatus">
+        <value xml:lang="en">Status</value>
+        <value xml:lang="ar">الحالة</value>
+    </property>
+
+    <!-- Snapshot -->
+    <property key="PayrollInputSnapshots">
+        <value xml:lang="en">Payroll Input Snapshots</value>
+        <value xml:lang="ar">لقطات مدخلات الرواتب</value>
+    </property>
+
+    <property key="PayrollInputSnapshotId">
+        <value xml:lang="en">Snapshot ID</value>
+        <value xml:lang="ar">معرّف اللقطة</value>
+    </property>
+
+    <property key="PayrollPeriodId">
+        <value xml:lang="en">Payroll Period</value>
+        <value xml:lang="ar">فترة الرواتب</value>
+    </property>
+
+    <property key="PayrollSourceType">
+        <value xml:lang="en">Source Type</value>
+        <value xml:lang="ar">نوع المصدر</value>
+    </property>
+
+    <!-- Actions -->
+    <property key="PayrollApprove">
+        <value xml:lang="en">Approve</value>
+        <value xml:lang="ar">اعتماد</value>
+    </property>
+
+    <property key="PayrollLock">
+        <value xml:lang="en">Lock</value>
+        <value xml:lang="ar">قفل</value>
+    </property>
+ 
+ 
+ <property key="PayrollPhase3Title">
+  <value xml:lang="en">Phase 3: Posting & Payments</value>
+  <value xml:lang="ar">المرحلة ٣: القيود والمدفوعات</value>
+</property>
+
+<property key="PayrollPostRun">
+  <value xml:lang="en">Post Payroll Run</value>
+  <value xml:lang="ar">ترحيل مسير الرواتب</value>
+</property>
+
+<property key="PayrollRoutePayments">
+  <value xml:lang="en">Route Employee Payments</value>
+  <value xml:lang="ar">توجيه مدفوعات الموظفين</value>
+</property>
+
+<property key="PayrollGenerateBankBatch">
+  <value xml:lang="en">Generate Bank Transfer Batch</value>
+  <value xml:lang="ar">إنشاء دفعة تحويل بنكي</value>
+</property>
+
+<property key="PayrollPostOption">
+  <value xml:lang="en">Posting Option</value>
+  <value xml:lang="ar">خيار الترحيل</value>
+</property>
+
+<property key="PayrollPostToGL">
+  <value xml:lang="en">Post to GL</value>
+  <value xml:lang="ar">ترحيل إلى الأستاذ العام</value>
+</property>
+
+<property key="PayrollPostToInvoice">
+  <value xml:lang="en">Post to Invoice</value>
+  <value xml:lang="ar">ترحيل إلى الفواتير</value>
+</property>
+
+<property key="PayrollDefaultChannel">
+  <value xml:lang="en">Default Disbursement Channel</value>
+  <value xml:lang="ar">قناة الصرف الافتراضية</value>
+</property>
+
+<property key="PayrollChannelBank">
+  <value xml:lang="en">Bank</value>
+  <value xml:lang="ar">بنك</value>
+</property>
+<property key="PayrollChannelCash">
+  <value xml:lang="en">Cash</value>
+  <value xml:lang="ar">نقدي</value>
+</property>
+<property key="PayrollChannelCheque">
+  <value xml:lang="en">Cheque</value>
+  <value xml:lang="ar">شيك</value>
+</property>
+<property key="PayrollChannelWallet">
+  <value xml:lang="en">Wallet</value>
+  <value xml:lang="ar">محفظة</value>
+</property>
+
+<property key="PayrollDryRun">
+  <value xml:lang="en">Dry Run</value>
+  <value xml:lang="ar">تشغيل تجريبي</value>
+</property>
+
+<property key="PayrollForce">
+  <value xml:lang="en">Force</value>
+  <value xml:lang="ar">إجباري</value>
+</property>
+
+<property key="PayrollExecute">
+  <value xml:lang="en">Execute</value>
+  <value xml:lang="ar">تنفيذ</value>
+</property>
+
+<property key="PayrollLastServiceResult">
+  <value xml:lang="en">Last Service Result</value>
+  <value xml:lang="ar">آخر نتيجة للخدمة</value>
+</property>
+
+
+<property key="PayrollApproveBankBatch">
+  <value xml:lang="en">Approve Bank Batch</value>
+  <value xml:lang="ar">اعتماد دفعة البنك</value>
+</property>
+
+<property key="PayrollExportBankFile">
+  <value xml:lang="en">Export Bank File</value>
+  <value xml:lang="ar">تصدير ملف البنك</value>
+</property>
+
+<property key="PayrollBankTransferBatchId">
+  <value xml:lang="en">Bank Transfer Batch ID</value>
+  <value xml:lang="ar">رقم دفعة التحويل البنكي</value>
+</property>
+
+<property key="PayrollOutDir">
+  <value xml:lang="en">Output Directory</value>
+  <value xml:lang="ar">مجلد الإخراج</value>
+</property>
+
+<property key="PayrollFileName">
+  <value xml:lang="en">File Name</value>
+  <value xml:lang="ar">اسم الملف</value>
+</property>
+
+<property key="PayrollNote">
+  <value xml:lang="en">Note</value>
+  <value xml:lang="ar">ملاحظة</value>
+</property>
+
+
+
+<property key="PayrollGovernance">
+    <value xml:lang="en">Payroll Governance</value>
+    <value xml:lang="ar">حوكمة الرواتب</value>
+</property>
+
+<property key="PayrollRunLockList">
+    <value xml:lang="en">Run Locks</value>
+    <value xml:lang="ar">أقفال التشغيل</value>
+</property>
+
+<property key="PayrollPeriodControlList">
+    <value xml:lang="en">Period Controls</value>
+    <value xml:lang="ar">ضوابط الفترات</value>
+</property>
+
+<property key="PayrollActionAuditList">
+    <value xml:lang="en">Action Audit</value>
+    <value xml:lang="ar">سجل الإجراءات</value>
+</property>
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/ofbiz-properties.xsd">
+
+    <property key="PayrollFindPayslips">
+        <value xml:lang="en">Find Payslips</value>
+        <value xml:lang="ar">البحث عن قسائم الرواتب</value>
+    </property>
+
+    <property key="PayrollViewPayslip">
+        <value xml:lang="en">View Payslip</value>
+        <value xml:lang="ar">عرض قسيمة الراتب</value>
+    </property>
+
+    <property key="PayrollReconciliation">
+        <value xml:lang="en">Payroll Reconciliation</value>
+        <value xml:lang="ar">مطابقة الرواتب</value>
+    </property>
+
+    <property key="PayrollAuditViewer">
+        <value xml:lang="en">Payroll Audit Viewer</value>
+        <value xml:lang="ar">عارض تدقيق الرواتب</value>
+    </property>
+
+    <property key="PayrollPayslip">
+        <value xml:lang="en">Payslip</value>
+        <value xml:lang="ar">قسيمة راتب</value>
+    </property>
+
+    <property key="PayrollGrossSalary">
+        <value xml:lang="en">Gross Salary</value>
+        <value xml:lang="ar">إجمالي الراتب</value>
+    </property>
+
+    <property key="PayrollTotalDeductions">
+        <value xml:lang="en">Total Deductions</value>
+        <value xml:lang="ar">إجمالي الاستقطاعات</value>
+    </property>
+
+    <property key="PayrollNetSalary">
+        <value xml:lang="en">Net Salary</value>
+        <value xml:lang="ar">صافي الراتب</value>
+    </property>
+
+    <property key="PayrollEarnings">
+        <value xml:lang="en">Earnings</value>
+        <value xml:lang="ar">الاستحقاقات</value>
+    </property>
+
+    <property key="PayrollDeductions">
+        <value xml:lang="en">Deductions</value>
+        <value xml:lang="ar">الاستقطاعات</value>
+    </property>
+
+</resource>
+
+</properties>

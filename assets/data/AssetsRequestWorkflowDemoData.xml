@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Dedicated, unposted request examples. No user passwords or existing accounting records are changed. -->
+<entity-engine-xml>
+  <RequirementType requirementTypeId="ASSETS_ACQUIRE" description="Asset acquisition request"/>
+  <FixedAssetType fixedAssetTypeId="ASDEMO_LAPTOP" description="Assets workflow demo laptop"/>
+  <Party partyId="ASDEMO_ORG" partyTypeId="PARTY_GROUP" statusId="PARTY_ENABLED"/>
+  <PartyGroup partyId="ASDEMO_ORG" groupName="Assets Workflow Demo Organization"/>
+  <PartyRole partyId="ASDEMO_ORG" roleTypeId="INTERNAL_ORGANIZATIO"/>
+  <Party partyId="ASDEMO_APPR1" partyTypeId="PERSON" statusId="PARTY_ENABLED"/>
+  <Person partyId="ASDEMO_APPR1" firstName="Assets Demo" lastName="Department Approver"/>
+  <PartyRole partyId="ASDEMO_APPR1" roleTypeId="MANAGER"/>
+  <Party partyId="ASDEMO_APPR2" partyTypeId="PERSON" statusId="PARTY_ENABLED"/>
+  <Person partyId="ASDEMO_APPR2" firstName="Assets Demo" lastName="Finance Approver"/>
+  <PartyRole partyId="ASDEMO_APPR2" roleTypeId="MANAGER"/>
+  <AssetsApprovalRule assetsApprovalRuleId="ASDEMO_BASE" partyId="ASDEMO_ORG" roleTypeId="INTERNAL_ORGANIZATIO"
+    fixedAssetTypeId="ASDEMO_LAPTOP" requestTypeEnumId="ASSETS_REQ_NEW" currencyUomId="SAR"
+    minAmount="0.00" approverPartyId="ASDEMO_APPR1" approverRoleTypeId="MANAGER" sequenceNum="1"
+    statusId="ASSETS_ACTIVE" fromDate="2026-01-01 00:00:00.0" description="Demo first-level approval"/>
+  <AssetsApprovalRule assetsApprovalRuleId="ASDEMO_EXCEPTION" partyId="ASDEMO_ORG" roleTypeId="INTERNAL_ORGANIZATIO"
+    fixedAssetTypeId="ASDEMO_LAPTOP" requestTypeEnumId="ASSETS_REQ_NEW" currencyUomId="SAR"
+    budgetStatusEnumId="ASSETS_BUD_UNBUDGT" minAmount="0.00" approverPartyId="ASDEMO_APPR2"
+    approverRoleTypeId="MANAGER" sequenceNum="2" statusId="ASSETS_ACTIVE" fromDate="2026-01-01 00:00:00.0"
+    description="Demo additional approval for unbudgeted requests"/>
+  <Requirement requirementId="ASDEMO_REQ_01" requirementTypeId="ASSETS_ACQUIRE" statusId="REQ_CREATED"
+    description="Demo budget-secured laptop request" estimatedBudget="4200.00"/>
+  <AssetsRequestDetail requirementId="ASDEMO_REQ_01" partyId="ASDEMO_ORG" roleTypeId="INTERNAL_ORGANIZATIO"
+    fixedAssetTypeId="ASDEMO_LAPTOP" requestTypeEnumId="ASSETS_REQ_NEW" priorityEnumId="ASSETS_PRI_NORMAL"
+    budgetStatusEnumId="ASSETS_BUD_SECURED" estimatedCapitalizedCost="4200.00" currencyUomId="SAR" statusId="ASSETS_PENDING"
+    comments="Ready to approve. No FixedAsset or financial posting exists for this request."/>
+  <AssetsApprovalDecision assetsApprovalDecisionId="ASDEMO_DEC_01" requirementId="ASDEMO_REQ_01"
+    assetsApprovalRuleId="ASDEMO_BASE" approverPartyId="ASDEMO_APPR1" approverRoleTypeId="MANAGER"
+    sequenceNum="1" statusId="ASSETS_PENDING"/>
+  <Requirement requirementId="ASDEMO_REQ_02" requirementTypeId="ASSETS_ACQUIRE" statusId="REQ_CREATED"
+    description="Demo unbudgeted laptop request with two approval steps" estimatedBudget="6200.00"/>
+  <AssetsRequestDetail requirementId="ASDEMO_REQ_02" partyId="ASDEMO_ORG" roleTypeId="INTERNAL_ORGANIZATIO"
+    fixedAssetTypeId="ASDEMO_LAPTOP" requestTypeEnumId="ASSETS_REQ_NEW" priorityEnumId="ASSETS_PRI_URGENT"
+    budgetStatusEnumId="ASSETS_BUD_UNBUDGT" estimatedCapitalizedCost="6200.00" currencyUomId="SAR" statusId="ASSETS_PENDING"
+    comments="Approve the department step before the finance step; rejection cancels remaining tasks."/>
+  <AssetsApprovalDecision assetsApprovalDecisionId="ASDEMO_DEC_02A" requirementId="ASDEMO_REQ_02"
+    assetsApprovalRuleId="ASDEMO_BASE" approverPartyId="ASDEMO_APPR1" approverRoleTypeId="MANAGER"
+    sequenceNum="1" statusId="ASSETS_PENDING"/>
+  <AssetsApprovalDecision assetsApprovalDecisionId="ASDEMO_DEC_02B" requirementId="ASDEMO_REQ_02"
+    assetsApprovalRuleId="ASDEMO_EXCEPTION" approverPartyId="ASDEMO_APPR2" approverRoleTypeId="MANAGER"
+    sequenceNum="2" statusId="ASSETS_PENDING"/>
+  <AssetsLifecycleEvent assetsLifecycleEventId="ASDEMO_EVT_01" requirementId="ASDEMO_REQ_01"
+    eventTypeEnumId="ASSETS_EVT_REQUEST" statusId="ASSETS_PENDING" eventDate="2026-10-15 09:00:00.0"
+    description="Budget-secured demo request submitted; no physical asset or journal created for this request."/>
+  <AssetsLifecycleEvent assetsLifecycleEventId="ASDEMO_EVT_02" requirementId="ASDEMO_REQ_02"
+    eventTypeEnumId="ASSETS_EVT_REQUEST" statusId="ASSETS_PENDING" eventDate="2026-10-15 09:05:00.0"
+    description="Unbudgeted demo request submitted for two sequential approval steps."/>
+  <!-- Separate opening-balance inquiry example; deliberately no journals or GL posting setup. -->
+  <FixedAsset fixedAssetId="ASDEMO_ASSET_01" fixedAssetTypeId="ASDEMO_LAPTOP" partyId="ASDEMO_ORG"
+    roleTypeId="INTERNAL_ORGANIZATIO" fixedAssetName="Demo laptop for book-balance inquiry"
+    serialNumber="ASDEMO-SN-01" dateAcquired="2025-01-01 09:00:00.0" expectedEndOfLife="2028-01-01"
+    purchaseCost="4200.00" purchaseCostUomId="SAR" salvageValue="200.00"/>
+  <AssetsBook assetsBookId="ASDEMO_CORP" partyId="ASDEMO_ORG" roleTypeId="INTERNAL_ORGANIZATIO"
+    bookName="Demo corporate opening balances" bookTypeEnumId="ASSETS_BOOK_CORP"
+    currencyUomId="SAR" statusId="ASSETS_ACTIVE" isPrimaryBook="Y" isPostingBook="Y"
+    fromDate="2025-01-01 00:00:00.0" comments="Inquiry fixture only. GL accounts and formula setup must be configured before posting."/>
+  <AssetsBook assetsBookId="ASDEMO_MEMO" partyId="ASDEMO_ORG" roleTypeId="INTERNAL_ORGANIZATIO"
+    bookName="Demo independent memo opening balances" currencyUomId="SAR" statusId="ASSETS_ACTIVE"
+    isPrimaryBook="N" isPostingBook="N" fromDate="2025-01-01 00:00:00.0"/>
+  <AssetsBookDetail fixedAssetId="ASDEMO_ASSET_01" assetsBookId="ASDEMO_CORP" fromDate="2025-01-01 00:00:00.0"
+    statusId="ASSETS_ACTIVE" originalCost="4200.00" capitalizedCost="4200.00" salvageValue="200.00"
+    depreciableBasis="4000.00" accumulatedDepreciation="1200.00" netBookValue="3000.00"
+    usefulLifeMonths="36" remainingLifeMonths="24" placedInServiceDate="2025-01-01 09:00:00.0"/>
+  <AssetsBookDetail fixedAssetId="ASDEMO_ASSET_01" assetsBookId="ASDEMO_MEMO" fromDate="2025-01-01 00:00:00.0"
+    statusId="ASSETS_ACTIVE" originalCost="4200.00" capitalizedCost="4200.00" salvageValue="200.00"
+    depreciableBasis="4000.00" accumulatedDepreciation="1500.00" netBookValue="2700.00"
+    usefulLifeMonths="36" remainingLifeMonths="24" placedInServiceDate="2025-01-01 09:00:00.0"/>
+</entity-engine-xml>

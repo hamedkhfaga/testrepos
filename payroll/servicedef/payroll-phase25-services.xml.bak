@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+
+    <!-- ========================= -->
+    <!-- Addition Items            -->
+    <!-- ========================= -->
+    <service name="createPayrollAdditionItem"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollTxnItemServices"
+             invoke="createPayrollAdditionItem"
+             auth="true">
+        <description>Create Payroll Addition Item (Txn)</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="false"/>
+        <attribute name="payrollRunId"         type="String" mode="IN" optional="false"/>
+        <attribute name="partyId"             type="String" mode="IN" optional="false"/>
+        <attribute name="additionTypeId"      type="String" mode="IN" optional="false"/>
+        <attribute name="amount"              type="BigDecimal" mode="IN" optional="false"/>
+        <attribute name="remarks"             type="String" mode="IN" optional="true"/>
+
+        <attribute name="data" type="Map" mode="OUT" optional="false"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="listPayrollAdditionItems"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollTxnItemServices"
+             invoke="listPayrollAdditionItems"
+             auth="true">
+        <description>List Payroll Addition Items</description>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="payrollRunId"        type="String" mode="IN" optional="true"/>
+        <attribute name="partyId"             type="String" mode="IN" optional="true"/>
+        <attribute name="onlyPending"         type="String" mode="IN" optional="true"/> <!-- Y/N -->
+
+        <attribute name="data" type="Map" mode="OUT" optional="false"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- ========================= -->
+    <!-- Leave Approval            -->
+    <!-- ========================= -->
+    <service name="approveEmployeeLeaveRequest"
+             engine="java"
+             location="org.apache.ofbiz.payroll.services.PayrollLeaveServices"
+             invoke="approveEmployeeLeaveRequest"
+             auth="true">
+        <description>Approve Employee Leave Request</description>
+        <attribute name="leaveRequestId" type="String" mode="IN" optional="false"/>
+        <attribute name="approverUserLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="true"/>
+
+        <attribute name="data" type="Map" mode="OUT" optional="false"/>
+        <attribute name="legacyData" type="Map" mode="OUT" optional="false"/>
+    </service>
+
+
+
+
+</services>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Worldwide workflow seed: per-entity statuses (previously only in the
+     unloaded POCasseterp2.xml, so statusId FKs failed), the missing
+     AcctgTransTypes, GL-mapping enums for the new postings, and the
+     lifecycle event types the new services emit. -->
+<entity-engine-xml>
+
+    <!-- AcctgTrans types used by asseterp postings (only DEPRECIATION existed) -->
+    <AcctgTransType acctgTransTypeId="ASSET_RETIREMENT" hasTable="N" description="Fixed Asset Retirement/Disposal"/>
+    <AcctgTransType acctgTransTypeId="REVALUATION" hasTable="N" description="Fixed Asset Revaluation"/>
+    <AcctgTransType acctgTransTypeId="AE_LEASE_POSTING" hasTable="N" description="Lease (IFRS 16) Posting"/>
+    <AcctgTransType acctgTransTypeId="AE_HP_POSTING" hasTable="N" description="Hire Purchase Installment Posting"/>
+    <AcctgTransType acctgTransTypeId="AE_CIP_CAPITALIZE" hasTable="N" description="CIP Capitalization"/>
+    <AcctgTransType acctgTransTypeId="AE_GRANT_AMORT" hasTable="N" description="Government Grant Amortization"/>
+    <AcctgTransType acctgTransTypeId="AE_IMPAIRMENT" hasTable="N" description="Asset Impairment (IAS 36)"/>
+    <AcctgTransType acctgTransTypeId="AE_ARO_ACCRETION" hasTable="N" description="ARO Accretion (IAS 37)"/>
+    <AcctgTransType acctgTransTypeId="AE_HFS_RECLASS" hasTable="N" description="Held-for-Sale Reclassification (IFRS 5)"/>
+    <AcctgTransType acctgTransTypeId="AE_IC_TRANSFER" hasTable="N" description="Intercompany Asset Transfer"/>
+
+    <!-- Per-entity status types + items (FK-enforced by statusId relations) -->
+    <StatusType statusTypeId="AE_INS_STATUS" description="Asset Insurance Status"/>
+    <StatusItem statusId="AE_INS_ACTIVE" statusTypeId="AE_INS_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_INS_EXPIRED" statusTypeId="AE_INS_STATUS" sequenceId="02" description="Expired"/>
+    <StatusItem statusId="AE_INS_LAPSED" statusTypeId="AE_INS_STATUS" sequenceId="03" description="Lapsed"/>
+
+    <StatusType statusTypeId="AE_INS_CLAIM_STATUS" description="Insurance Claim Status"/>
+    <StatusItem statusId="AE_IC_FILED" statusTypeId="AE_INS_CLAIM_STATUS" sequenceId="01" description="Filed"/>
+    <StatusItem statusId="AE_IC_SETTLED" statusTypeId="AE_INS_CLAIM_STATUS" sequenceId="02" description="Settled"/>
+    <StatusItem statusId="AE_IC_REJECTED" statusTypeId="AE_INS_CLAIM_STATUS" sequenceId="03" description="Rejected"/>
+
+    <StatusType statusTypeId="AE_WARR_STATUS" description="Warranty Status"/>
+    <StatusItem statusId="AE_WARR_ACTIVE" statusTypeId="AE_WARR_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_WARR_EXPIRED" statusTypeId="AE_WARR_STATUS" sequenceId="02" description="Expired"/>
+
+    <StatusType statusTypeId="AE_COMPLY_STATUS" description="Compliance Document Status"/>
+    <StatusItem statusId="AE_CD_CURRENT" statusTypeId="AE_COMPLY_STATUS" sequenceId="01" description="Current"/>
+    <StatusItem statusId="AE_CD_EXPIRING" statusTypeId="AE_COMPLY_STATUS" sequenceId="02" description="Expiring"/>
+    <StatusItem statusId="AE_CD_EXPIRED" statusTypeId="AE_COMPLY_STATUS" sequenceId="03" description="Expired"/>
+
+    <StatusType statusTypeId="AE_PLEDGE_STATUS" description="Asset Pledge Status"/>
+    <StatusItem statusId="AE_PG_ACTIVE" statusTypeId="AE_PLEDGE_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_PG_RELEASED" statusTypeId="AE_PLEDGE_STATUS" sequenceId="02" description="Released"/>
+
+    <StatusType statusTypeId="AE_LEASE_STATUS" description="Lease Status"/>
+    <StatusItem statusId="AE_LEASE_ACTIVE" statusTypeId="AE_LEASE_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_LEASE_TERM" statusTypeId="AE_LEASE_STATUS" sequenceId="02" description="Terminated"/>
+    <StatusItem statusId="AE_LEASE_EXPIRED" statusTypeId="AE_LEASE_STATUS" sequenceId="03" description="Expired"/>
+
+    <StatusType statusTypeId="AE_RENTAL_STATUS" description="Rental Contract Status"/>
+    <StatusItem statusId="AE_RC_ACTIVE" statusTypeId="AE_RENTAL_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_RC_COMPLETED" statusTypeId="AE_RENTAL_STATUS" sequenceId="02" description="Completed"/>
+    <StatusItem statusId="AE_RC_CANCELLED" statusTypeId="AE_RENTAL_STATUS" sequenceId="03" description="Cancelled"/>
+
+    <StatusType statusTypeId="AE_HP_STATUS" description="Hire Purchase Status"/>
+    <StatusItem statusId="AE_HP_ACTIVE" statusTypeId="AE_HP_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_HP_SETTLED" statusTypeId="AE_HP_STATUS" sequenceId="02" description="Settled"/>
+
+    <StatusType statusTypeId="AE_BOOKING_STATUS" description="Asset Booking Status"/>
+    <StatusItem statusId="AE_BK_CONFIRMED" statusTypeId="AE_BOOKING_STATUS" sequenceId="01" description="Confirmed"/>
+    <StatusItem statusId="AE_BK_RETURNED" statusTypeId="AE_BOOKING_STATUS" sequenceId="02" description="Returned"/>
+    <StatusItem statusId="AE_BK_CANCELLED" statusTypeId="AE_BOOKING_STATUS" sequenceId="03" description="Cancelled"/>
+
+    <StatusType statusTypeId="AE_CIP_STATUS" description="CIP Project Status"/>
+    <StatusItem statusId="AE_CIP_IN_PROG" statusTypeId="AE_CIP_STATUS" sequenceId="01" description="In Progress"/>
+    <StatusItem statusId="AE_CIP_CAPIT" statusTypeId="AE_CIP_STATUS" sequenceId="02" description="Capitalized"/>
+    <StatusItem statusId="AE_CIP_CANCEL" statusTypeId="AE_CIP_STATUS" sequenceId="03" description="Cancelled"/>
+
+    <StatusType statusTypeId="AE_GRANT_STATUS" description="Government Grant Status"/>
+    <StatusItem statusId="AE_GG_ACTIVE" statusTypeId="AE_GRANT_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_GG_COMPLETE" statusTypeId="AE_GRANT_STATUS" sequenceId="02" description="Fully Amortized"/>
+
+    <StatusType statusTypeId="AE_IMPAIR_STATUS" description="Impairment Status"/>
+    <StatusItem statusId="AE_IMP_ASSESSED" statusTypeId="AE_IMPAIR_STATUS" sequenceId="01" description="Assessed"/>
+    <StatusItem statusId="AE_IMP_REVERSED" statusTypeId="AE_IMPAIR_STATUS" sequenceId="02" description="Reversed"/>
+
+    <StatusType statusTypeId="AE_ARO_STATUS" description="ARO Status"/>
+    <StatusItem statusId="AE_ARO_ACTIVE" statusTypeId="AE_ARO_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_ARO_SETTLED" statusTypeId="AE_ARO_STATUS" sequenceId="02" description="Settled"/>
+
+    <StatusType statusTypeId="AE_HFS_STATUS" description="Held-for-Sale Status"/>
+    <StatusItem statusId="AE_HFS_ACTIVE" statusTypeId="AE_HFS_STATUS" sequenceId="01" description="Held for Sale"/>
+    <StatusItem statusId="AE_HFS_SOLD" statusTypeId="AE_HFS_STATUS" sequenceId="02" description="Sold"/>
+
+    <StatusType statusTypeId="AE_SW_LIC_STATUS" description="Software License Status"/>
+    <StatusItem statusId="AE_SL_ACTIVE" statusTypeId="AE_SW_LIC_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_SL_EXPIRED" statusTypeId="AE_SW_LIC_STATUS" sequenceId="02" description="Expired"/>
+
+    <StatusType statusTypeId="AE_SPARE_STATUS" description="Spare Part Status"/>
+    <StatusItem statusId="AE_SP_ISSUED" statusTypeId="AE_SPARE_STATUS" sequenceId="01" description="Issued"/>
+    <StatusItem statusId="AE_SP_RETURNED" statusTypeId="AE_SPARE_STATUS" sequenceId="02" description="Returned"/>
+
+    <StatusType statusTypeId="AE_IC_XFER_STATUS" description="Intercompany Transfer Status"/>
+    <StatusItem statusId="AE_ICX_PENDING" statusTypeId="AE_IC_XFER_STATUS" sequenceId="01" description="Pending"/>
+    <StatusItem statusId="AE_ICX_POSTED" statusTypeId="AE_IC_XFER_STATUS" sequenceId="02" description="Posted"/>
+
+    <StatusType statusTypeId="AE_DOC_STATUS" description="Asset Document Status"/>
+    <StatusItem statusId="AE_DOCS_ACTIVE" statusTypeId="AE_DOC_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_DOCS_ARCHIVED" statusTypeId="AE_DOC_STATUS" sequenceId="02" description="Archived"/>
+
+    <!-- GL mapping enums for the new postings (extends AE_GL_MAP_TYPE) -->
+    <Enumeration enumId="GL_MAP_CASH" enumTypeId="AE_GL_MAP_TYPE" sequenceId="20" description="Cash / Bank on proceeds"/>
+    <Enumeration enumId="GL_MAP_IC_RECV" enumTypeId="AE_GL_MAP_TYPE" sequenceId="21" description="Intercompany Receivable"/>
+    <Enumeration enumId="GL_MAP_IC_PAY" enumTypeId="AE_GL_MAP_TYPE" sequenceId="22" description="Intercompany Payable"/>
+    <Enumeration enumId="GL_MAP_LEASE_LIAB" enumTypeId="AE_GL_MAP_TYPE" sequenceId="23" description="Lease Liability (IFRS 16)"/>
+    <Enumeration enumId="GL_MAP_ROU_ASSET" enumTypeId="AE_GL_MAP_TYPE" sequenceId="24" description="Right-of-Use Asset"/>
+    <Enumeration enumId="GL_MAP_INT_EXP" enumTypeId="AE_GL_MAP_TYPE" sequenceId="25" description="Interest Expense"/>
+    <Enumeration enumId="GL_MAP_HP_LIAB" enumTypeId="AE_GL_MAP_TYPE" sequenceId="26" description="Hire Purchase Liability"/>
+    <Enumeration enumId="GL_MAP_GRANT_DEF" enumTypeId="AE_GL_MAP_TYPE" sequenceId="27" description="Deferred Grant Income"/>
+    <Enumeration enumId="GL_MAP_GRANT_INC" enumTypeId="AE_GL_MAP_TYPE" sequenceId="28" description="Grant Income"/>
+    <Enumeration enumId="GL_MAP_ARO_LIAB" enumTypeId="AE_GL_MAP_TYPE" sequenceId="29" description="ARO Liability"/>
+    <Enumeration enumId="GL_MAP_HFS_ASSET" enumTypeId="AE_GL_MAP_TYPE" sequenceId="30" description="Held-for-Sale Asset"/>
+    <Enumeration enumId="GL_MAP_RENT_INC" enumTypeId="AE_GL_MAP_TYPE" sequenceId="31" description="Rental Income"/>
+
+    <!-- Lifecycle event types emitted by the new services -->
+    <Enumeration enumId="AEVT_LEASE_START" enumTypeId="AE_EVENT_TYPE" sequenceId="40" description="Lease Recognized"/>
+    <Enumeration enumId="AEVT_LEASE_PAY" enumTypeId="AE_EVENT_TYPE" sequenceId="41" description="Lease Payment Posted"/>
+    <Enumeration enumId="AEVT_LEASE_END" enumTypeId="AE_EVENT_TYPE" sequenceId="42" description="Lease Terminated"/>
+    <Enumeration enumId="AEVT_HP_PAY" enumTypeId="AE_EVENT_TYPE" sequenceId="43" description="Hire Purchase Installment Paid"/>
+    <Enumeration enumId="AEVT_CIP_CAP" enumTypeId="AE_EVENT_TYPE" sequenceId="44" description="CIP Capitalized"/>
+    <Enumeration enumId="AEVT_GRANT_AMORT" enumTypeId="AE_EVENT_TYPE" sequenceId="45" description="Grant Amortized"/>
+    <Enumeration enumId="AEVT_ARO_UNWIND" enumTypeId="AE_EVENT_TYPE" sequenceId="46" description="ARO Accretion Posted"/>
+    <Enumeration enumId="AEVT_IMPAIR_REV" enumTypeId="AE_EVENT_TYPE" sequenceId="47" description="Impairment Reversed"/>
+    <Enumeration enumId="AEVT_IC_XFER" enumTypeId="AE_EVENT_TYPE" sequenceId="48" description="Intercompany Transfer"/>
+    <Enumeration enumId="AEVT_INS_CLAIM" enumTypeId="AE_EVENT_TYPE" sequenceId="49" description="Insurance Claim"/>
+    <Enumeration enumId="AEVT_HFS_SOLD" enumTypeId="AE_EVENT_TYPE" sequenceId="50" description="Held-for-Sale Completed"/>
+
+    <!-- StatusValidChange rows: entity-auto updates enforce these -->
+    <StatusValidChange statusId="AE_INS_ACTIVE" statusIdTo="AE_INS_EXPIRED" transitionName="Expire"/>
+    <StatusValidChange statusId="AE_INS_ACTIVE" statusIdTo="AE_INS_LAPSED" transitionName="Lapse"/>
+    <StatusValidChange statusId="AE_IC_FILED" statusIdTo="AE_IC_SETTLED" transitionName="Settle"/>
+    <StatusValidChange statusId="AE_IC_FILED" statusIdTo="AE_IC_REJECTED" transitionName="Reject"/>
+    <StatusValidChange statusId="AE_WARR_ACTIVE" statusIdTo="AE_WARR_EXPIRED" transitionName="Expire"/>
+    <StatusValidChange statusId="AE_CD_CURRENT" statusIdTo="AE_CD_EXPIRING" transitionName="Expiring"/>
+    <StatusValidChange statusId="AE_CD_CURRENT" statusIdTo="AE_CD_EXPIRED" transitionName="Expire"/>
+    <StatusValidChange statusId="AE_CD_EXPIRING" statusIdTo="AE_CD_EXPIRED" transitionName="Expire"/>
+    <StatusValidChange statusId="AE_PG_ACTIVE" statusIdTo="AE_PG_RELEASED" transitionName="Release"/>
+    <StatusValidChange statusId="AE_LEASE_ACTIVE" statusIdTo="AE_LEASE_TERM" transitionName="Terminate"/>
+    <StatusValidChange statusId="AE_LEASE_ACTIVE" statusIdTo="AE_LEASE_EXPIRED" transitionName="Expire"/>
+    <StatusValidChange statusId="AE_RC_ACTIVE" statusIdTo="AE_RC_COMPLETED" transitionName="Complete"/>
+    <StatusValidChange statusId="AE_RC_ACTIVE" statusIdTo="AE_RC_CANCELLED" transitionName="Cancel"/>
+    <StatusValidChange statusId="AE_HP_ACTIVE" statusIdTo="AE_HP_SETTLED" transitionName="Settle"/>
+    <StatusValidChange statusId="AE_BK_CONFIRMED" statusIdTo="AE_BK_RETURNED" transitionName="Return"/>
+    <StatusValidChange statusId="AE_BK_CONFIRMED" statusIdTo="AE_BK_CANCELLED" transitionName="Cancel"/>
+    <StatusValidChange statusId="AE_CIP_IN_PROG" statusIdTo="AE_CIP_CAPIT" transitionName="Capitalize"/>
+    <StatusValidChange statusId="AE_CIP_IN_PROG" statusIdTo="AE_CIP_CANCEL" transitionName="Cancel"/>
+    <StatusValidChange statusId="AE_GG_ACTIVE" statusIdTo="AE_GG_COMPLETE" transitionName="Complete"/>
+    <StatusValidChange statusId="AE_IMP_ASSESSED" statusIdTo="AE_IMP_REVERSED" transitionName="Reverse"/>
+    <StatusValidChange statusId="AE_ARO_ACTIVE" statusIdTo="AE_ARO_SETTLED" transitionName="Settle"/>
+    <StatusValidChange statusId="AE_HFS_ACTIVE" statusIdTo="AE_HFS_SOLD" transitionName="Sold"/>
+    <StatusValidChange statusId="AE_SL_ACTIVE" statusIdTo="AE_SL_EXPIRED" transitionName="Expire"/>
+    <StatusValidChange statusId="AE_SP_ISSUED" statusIdTo="AE_SP_RETURNED" transitionName="Return"/>
+    <StatusValidChange statusId="AE_ICX_PENDING" statusIdTo="AE_ICX_POSTED" transitionName="Post"/>
+    <StatusValidChange statusId="AE_DOCS_ACTIVE" statusIdTo="AE_DOCS_ARCHIVED" transitionName="Archive"/>
+
+    <StatusType statusTypeId="AE_VERIF_STATUS" description="Verification Plan Status"/>
+    <StatusItem statusId="AE_VP_PLANNED" statusTypeId="AE_VERIF_STATUS" sequenceId="01" description="Planned"/>
+    <StatusItem statusId="AE_VP_IN_PROG" statusTypeId="AE_VERIF_STATUS" sequenceId="02" description="In Progress"/>
+    <StatusItem statusId="AE_VP_COMPLETED" statusTypeId="AE_VERIF_STATUS" sequenceId="03" description="Completed"/>
+    <StatusValidChange statusId="AE_VP_PLANNED" statusIdTo="AE_VP_IN_PROG" transitionName="Start"/>
+    <StatusValidChange statusId="AE_VP_PLANNED" statusIdTo="AE_VP_COMPLETED" transitionName="Complete"/>
+    <StatusValidChange statusId="AE_VP_IN_PROG" statusIdTo="AE_VP_COMPLETED" transitionName="Complete"/>
+    <StatusType statusTypeId="AE_TAG_STATUS" description="Asset Tag Status"/>
+    <StatusItem statusId="AE_TAG_ACTIVE" statusTypeId="AE_TAG_STATUS" sequenceId="01" description="Active"/>
+    <StatusItem statusId="AE_TAG_REPLACED" statusTypeId="AE_TAG_STATUS" sequenceId="02" description="Replaced"/>
+    <StatusItem statusId="AE_TAG_RETIRED" statusTypeId="AE_TAG_STATUS" sequenceId="03" description="Retired"/>
+    <StatusValidChange statusId="AE_TAG_ACTIVE" statusIdTo="AE_TAG_REPLACED" transitionName="Replace"/>
+    <StatusValidChange statusId="AE_TAG_ACTIVE" statusIdTo="AE_TAG_RETIRED" transitionName="Retire"/>
+    <StatusType statusTypeId="AE_ALERT_STATUS" description="Alert Status"/>
+    <StatusItem statusId="AE_ALT_OPEN" statusTypeId="AE_ALERT_STATUS" sequenceId="01" description="Open"/>
+    <StatusItem statusId="AE_ALT_ACKD" statusTypeId="AE_ALERT_STATUS" sequenceId="02" description="Acknowledged"/>
+    <StatusItem statusId="AE_ALT_DISM" statusTypeId="AE_ALERT_STATUS" sequenceId="03" description="Dismissed"/>
+    <StatusValidChange statusId="AE_ALT_OPEN" statusIdTo="AE_ALT_ACKD" transitionName="Acknowledge"/>
+    <StatusValidChange statusId="AE_ALT_OPEN" statusIdTo="AE_ALT_DISM" transitionName="Dismiss"/>
+
+</entity-engine-xml>

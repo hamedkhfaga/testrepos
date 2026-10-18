@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+    <!-- ===================================================== -->
+    <!-- POC WT Status Framework (Option A: WT-only statuses)   -->
+    <!-- All IDs <= 20 chars                                   -->
+    <!-- Import early: before PayrollPeriod / PayrollRun etc.   -->
+    <!-- ===================================================== -->
+
+    <!--         Period Status         -->
+    <StatusType statusTypeId="WT_PER_STAT" description="WT Payroll Period Status"/>
+    <StatusItem statusId="WT_PER_OPEN"  statusTypeId="WT_PER_STAT" description="Open"/>
+    <StatusItem statusId="WT_PER_CLS"   statusTypeId="WT_PER_STAT" description="Closed"/>
+    <StatusItem statusId="WT_PER_LOCK"  statusTypeId="WT_PER_STAT" description="Locked"/>
+
+    <!--         Run Status         -->
+    <StatusType statusTypeId="WT_RUN_STAT" description="WT Payroll Run Status"/>
+    <StatusItem statusId="WT_RUN_NEW"   statusTypeId="WT_RUN_STAT" description="New"/>
+    <StatusItem statusId="WT_RUN_CALC"  statusTypeId="WT_RUN_STAT" description="Calculated"/>
+    <StatusItem statusId="WT_RUN_APPR"  statusTypeId="WT_RUN_STAT" description="Approved"/>
+    <StatusItem statusId="WT_RUN_POST"  statusTypeId="WT_RUN_STAT" description="Posted"/>
+    <StatusItem statusId="WT_RUN_VOID"  statusTypeId="WT_RUN_STAT" description="Voided"/>
+
+    <!--         Assignment Status         -->
+    <StatusType statusTypeId="WT_ASG_STAT" description="WT Employee Assignment Status"/>
+    <StatusItem statusId="WT_ASG_ACT"  statusTypeId="WT_ASG_STAT" description="Active"/>
+    <StatusItem statusId="WT_ASG_END"  statusTypeId="WT_ASG_STAT" description="Ended"/>
+
+    <!--         Allowance Status         -->
+    <StatusType statusTypeId="WT_ALL_STAT" description="WT Employee Allowance Status"/>
+    <StatusItem statusId="WT_ALL_ACT"  statusTypeId="WT_ALL_STAT" description="Active"/>
+    <StatusItem statusId="WT_ALL_END"  statusTypeId="WT_ALL_STAT" description="Ended"/>
+
+    <!--         Deduction Status         -->
+    <StatusType statusTypeId="WT_DED_STAT" description="WT Employee Deduction Status"/>
+    <StatusItem statusId="WT_DED_ACT"  statusTypeId="WT_DED_STAT" description="Active"/>
+    <StatusItem statusId="WT_DED_END"  statusTypeId="WT_DED_STAT" description="Ended"/>
+
+    <!--         Loan Status         -->
+    <StatusType statusTypeId="WT_LOAN_STAT" description="WT Employee Loan Status"/>
+    <StatusItem statusId="WT_LOAN_ACT" statusTypeId="WT_LOAN_STAT" description="Active"/>
+    <StatusItem statusId="WT_LOAN_CLS" statusTypeId="WT_LOAN_STAT" description="Closed"/>
+
+    <!--         Installment Status         -->
+    <StatusType statusTypeId="WT_INS_STAT" description="WT Loan Installment Status"/>
+    <StatusItem statusId="WT_INS_DUE"  statusTypeId="WT_INS_STAT" description="Due"/>
+    <StatusItem statusId="WT_INS_PAD"  statusTypeId="WT_INS_STAT" description="Paid"/>
+    <StatusItem statusId="WT_INS_WAV"  statusTypeId="WT_INS_STAT" description="Waived"/>
+
+    <!--         Export/Delivery/Posting (for later stages)         -->
+    <StatusType statusTypeId="WT_EXP_STAT" description="WT Export Request Status"/>
+    <StatusItem statusId="WT_EXP_NEW"  statusTypeId="WT_EXP_STAT" description="New"/>
+    <StatusItem statusId="WT_EXP_GEN"  statusTypeId="WT_EXP_STAT" description="Generated"/>
+    <StatusItem statusId="WT_EXP_ERR"  statusTypeId="WT_EXP_STAT" description="Error"/>
+
+    <StatusType statusTypeId="WT_DEL_STAT" description="WT Payslip Delivery Status"/>
+    <StatusItem statusId="WT_DEL_NEW"  statusTypeId="WT_DEL_STAT" description="New"/>
+    <StatusItem statusId="WT_DEL_SNT"  statusTypeId="WT_DEL_STAT" description="Sent"/>
+    <StatusItem statusId="WT_DEL_VWD"  statusTypeId="WT_DEL_STAT" description="Viewed"/>
+    <StatusItem statusId="WT_DEL_ERR"  statusTypeId="WT_DEL_STAT" description="Error"/>
+
+    <StatusType statusTypeId="WT_PST_STAT" description="WT Payroll Posting Status"/>
+    <StatusItem statusId="WT_PST_NEW"  statusTypeId="WT_PST_STAT" description="New"/>
+    <StatusItem statusId="WT_PST_DON"  statusTypeId="WT_PST_STAT" description="Done"/>
+    <StatusItem statusId="WT_PST_ERR"  statusTypeId="WT_PST_STAT" description="Error"/>
+
+</entity-engine-xml>
+

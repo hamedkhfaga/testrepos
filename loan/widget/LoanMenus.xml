@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ofbiz.apache.org/Widget-Menu" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Menu http://ofbiz.apache.org/dtds/widget-menu.xsd">
+	<menu name="MainAppBar" title="${uiLabelMap.LoanApplication}" extends="CommonAppBarMenu" extends-resource="component://common/widget/CommonMenus.xml">
+		 
+		<menu-item name="LoanServicing" title="Loan Servicing" widget-style="buttontext">
+			<link target="LoanServicing"/>
+		</menu-item>
+		<menu-item name="LoanAuditRepair" title="Loan Audit &amp; Repair" widget-style="buttontext">
+			<link target="LoanAuditRepair"/>
+		</menu-item>
+		<menu-item name="LoanReconciliationDashboard" title="Loan Reconciliation Dashboard" widget-style="buttontext">
+			<link target="LoanReconciliationDashboard"/>
+		</menu-item>
+	
+	<menu-item name="LoanReactUI" title="Loan Workbench">
+    <link target="http://localhost:5173" target-window="_blank"/>
+</menu-item>
+	
+	
+	  <menu-item name="LoanDashboard" title="${uiLabelMap.LoanDashboard}" widget-style="buttontext"><link target="LoanDashboard"/></menu-item>
+        <menu-item name="FindLoans" title="${uiLabelMap.LoanFindLoans}" widget-style="buttontext"><link target="FindLoans"/></menu-item>
+        <menu-item name="LoanOrigination" title="Loan Origination" widget-style="buttontext"><link target="LoanOrigination"/></menu-item>
+    </menu>
+</menus>

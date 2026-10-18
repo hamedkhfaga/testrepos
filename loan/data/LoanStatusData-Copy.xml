@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+ 
+
+    <!-- ================================================================= -->
+    <!-- MASTER DEPENDENCIES (Declared first to pass DB Constraints)       -->
+    <!-- ================================================================= -->
+    <!-- Create the missing Category -->
+    <ProductCategory productCategoryId="NEW_REQS_CAT" productCategoryTypeId="CATALOG_CATEGORY" description="New Requirements Base Category"/>
+
+    <!-- Create the missing Supplier/Company Party -->
+    <Party partyId="SupplierCompany" partyTypeId="PARTY_GROUP" statusId="PARTY_ENABLED"/>
+    <PartyGroup partyId="SupplierCompany" groupName="Requirements Test Supplier"/>
+
+    <!-- Create the missing Warehouses -->
+    <Facility facilityId="MainWarehouse" facilityTypeId="WAREHOUSE" facilityName="Requirements Central Warehouse"/>
+    <Facility facilityId="TransferWarehouse" facilityTypeId="WAREHOUSE" facilityName="Requirements Destination Warehouse"/>
+
+
+    <!-- ================================================================= -->
+    <!-- SCOPE 1: DIGITAL SUBSCRIPTION PRODUCT                             -->
+    <!-- ================================================================= -->
+    <!-- 1. Create the Digital Product -->
+    <Product productId="RECIPE_SUB_MON" productTypeId="DIGITAL_GOOD" internalName="Monthly Recipe Subscription" 
+             description="Monthly Premium Cooking Recipes Portal Access" isVirtual="N" isVariant="N" 
+             chargeShipping="N" returnable="N" taxInPrice="N" createdDate="2026-07-29 00:00:00.0"/>
+
+    <!-- 2. Set the Price -->
+    <ProductPrice productId="RECIPE_SUB_MON" productPriceTypeId="DEFAULT_PRICE" productPricePurposeId="PURCHASE" 
+                  currencyUomId="USD" productStoreGroupId="_NA_" fromDate="2026-07-29 00:00:00.0" price="9.99"/>
+
+    <!-- 3. Safe Catalog Category Link -->
+    <ProductCategoryMember productCategoryId="NEW_REQS_CAT" productId="RECIPE_SUB_MON" fromDate="2026-07-29 00:00:00.0"/>
+
+    <!-- 4. Define the Subscription Resource -->
+    <SubscriptionResource subscriptionResourceId="RECIPE_PORTAL_RES" subscriptionResourceTypeId="DIGITAL_ACCESS" 
+                          resourceName="Premium Recipe Portal" description="Access to premium content area"/>
+
+    <!-- 5. Link Product to the Subscription Resource -->
+    <ProductSubscriptionResource productId="RECIPE_SUB_MON" subscriptionResourceId="RECIPE_PORTAL_RES" 
+                                 fromDate="2026-07-29 00:00:00.0" useTimeUomId="TF_day" useTime="30" 
+                                 canCommit="Y"/>
+
+
+    <!-- ================================================================= -->
+    <!-- SCOPE 2: DROP-SHIP PRODUCT & SUPPLIER LINK                        -->
+    <!-- ================================================================= -->
+    <!-- 1. Create the Heavy Equipment Product -->
+    <Product productId="FIT_TREADMILL_01" productTypeId="FINISHED_GOOD" internalName="Pro Fitness Treadmill XL" 
+             description="Heavy duty motorized running treadmill" isVirtual="N" isVariant="N" 
+             chargeShipping="Y" returnable="Y" createdDate="2026-07-29 00:00:00.0"/>
+
+    <!-- 2. Set Selling Price -->
+    <ProductPrice productId="FIT_TREADMILL_01" productPriceTypeId="DEFAULT_PRICE" productPricePurposeId="PURCHASE" 
+                  currencyUomId="USD" productStoreGroupId="_NA_" fromDate="2026-07-29 00:00:00.0" price="1299.00"/>
+
+    <!-- 3. Safe Catalog Category Link -->
+    <ProductCategoryMember productCategoryId="NEW_REQS_CAT" productId="FIT_TREADMILL_01" fromDate="2026-07-29 00:00:00.0"/>
+
+    <!-- 4. Link Product to Supplier -->
+    <SupplierProduct productId="FIT_TREADMILL_01" partyId="SupplierCompany" availableFromDate="2026-07-29 00:00:00.0" 
+                     minimumOrderQuantity="1" currencyUomId="USD" lastPrice="800.00" supplierProductId="SUP_TMILL_XL"/>
+
+    <!-- 5. Enforce Drop-Ship Requirement Method -->
+    <ProductFacility productId="FIT_TREADMILL_01" facilityId="MainWarehouse" requirementMethodEnumId="PRODRQM_DS"/>
+
+
+    <!-- ================================================================= -->
+    <!-- SCOPE 3: INTERNAL INVENTORY TRANSFER REQUEST                      -->
+    <!-- ================================================================= -->
+    <!-- 1. Create an Inventory Transfer Request -->
+    <InventoryTransfer inventoryTransferId="TX_2026_001" 
+                       statusId="IXF_REQUESTED" 
+                       facilityId="MainWarehouse" 
+                       facilityIdTo="TransferWarehouse" 
+                       sendDate="2026-07-29 10:00:00.0"
+                       comments="Rebalancing stock levels for regional promo campaign."/>
+
+
+
+				  
+				  
+				  
+
+</entity-engine-xml>
+
+
+
+

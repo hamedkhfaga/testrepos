@@ -1,0 +1,13 @@
+{
+  "phase": "13D-Fix1",
+  "title": "Repayment orchestrator completes 3-transaction model",
+  "changedFiles": [
+    "LoanServices.java"
+  ],
+  "includedFiles": [
+    "services.xml",
+    "LoanAccountingServices.java",
+    "LoanAccountingRepairServices.java"
+  ],
+  "newBehavior": "orchestrateLoanRepaymentAccountingV1 checks PAYMENT_ACCTG_TRANS, INCOMING_PAYMENT, PAYMENT_APPL separately and calls backfillLoanRepaymentAccountingV1 when any are missing."
+}

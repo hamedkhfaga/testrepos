@@ -1,0 +1,10 @@
+{
+  "phase": "Phase 12B-Fix2",
+  "title": "Duplicate-safe accounting completion",
+  "changedFiles": [
+    "LoanServices.java",
+    "services.xml"
+  ],
+  "fix": "Skip createAcctgTransForLoanRepayment when any AcctgTrans already exists for paymentId to prevent duplicate-accounting rollback.",
+  "testService": "recordUnifiedLoanRepaymentFinancialFirstV1"
+}

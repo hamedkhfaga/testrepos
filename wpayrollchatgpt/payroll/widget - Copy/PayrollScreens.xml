@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://ofbiz.apache.org/Widget-Screen" xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <screen name="MainTestScreen">
+        <section>
+            <actions>
+                <set field="headerItem" value="main"/><!-- this highlights the selected menu-item with name "main" -->
+            </actions>
+            <widgets>
+                <decorator-screen name="PayrollCommonDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+					
+					
+					
+					
+					
+					
+					 <label text="Hello World!! test screen :)"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+	<!---   custom screen   -->
+	<screen name="main">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <label text="MAIN SCREEN" style="h1"/>
+                    <label text="Hello World! Main screen content above."/>
+                    
+                    <!-- Section for nested content -->
+                    <section>
+                        <condition><if-has-permission permission="OFBTOOLS"/></condition>
+                        <widgets>
+                            <label text="=== NESTED SECTION ===" style="h2"/>
+                            <label text="User has permission to see this nested section."/>
+                            <label text="• Test Item A"/>
+                            <label text="• Test Item B"/>
+                            <label text="• Test Item C"/>
+                        </widgets>
+                    </section>
+                    
+                    <!-- Another section without condition -->
+                    <section>
+                        <widgets>
+                            <label text="Public Nested Section" style="h3"/>
+                            <label text="This section is always visible to all users."/>
+                            <container style="simple-box">
+                                <label text="Sample Data:"/>
+                                <label text="Row 1: Value 1"/>
+                                <label text="Row 2: Value 2"/>
+                                <label text="Row 3: Value 3"/>
+                            </container>
+                        </widgets>
+                    </section>
+                    
+                    <label text="=== END OF SCREEN ===" style="h2"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>  
+ 
+
+
+
+<screen name="maina">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <label text="MAIN SCREEN" style="h1"/>
+                    <label text="Hello World from Main Screen!"/>
+                    
+                    <!-- Correct way to include nested content -->
+                    <section>
+                        <widgets>
+                            <!-- Content of what would be the nested screen -->
+                            <container style="panel" class="nested-panel">
+                                <label text="NESTED CONTENT AREA" style="h2"/>
+                                <label text="This is embedded content using section/widgets pattern."/>
+                                
+                                <container style="spacing">
+                                    <label text="Test Labels:" style="bold"/>
+                                    <label text="• Payroll Module"/>
+                                    <label text="• Employee Database"/>
+                                    <label text="• Report Generator"/>
+                                    <label text="• Audit Trail"/>
+                                </container>
+                                
+                                <container style="form">
+                                    <label text="Status Info:" style="h3"/>
+                                    <container style="form-row">
+                                        <label text="Module:" style="form-label"/>
+                                        <label text="PayrollDashboard" style="form-value"/>
+                                    </container>
+                                    <container style="form-row">
+                                        <label text="State:" style="form-label"/>
+                                        <label text="Running ✓" style="form-value"/>
+                                    </container>
+                                </container>
+                            </container>
+                        </widgets>
+                    </section>
+                    
+                    <label text="Back to Main Content" style="h2"/>
+                    <label text="Main screen continues here after nested section."/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+   
+    <!-- ====================================================== -->
+    <!-- LOCAL DECORATOR WRAPS main-decorator (which exists)   -->
+    <!-- ====================================================== -->
+     <screen name="PayrollLocalDecorator">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator"
+                              location="component://common/widget/CommonScreens.xml">
+                <decorator-section name="body"/>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+    <!-- ====================================================== -->
+    <!-- TEST SCREEN USING FindPayrollIteration FORM            -->
+    <!-- ====================================================== -->
+    <screen name="TestPayrollFormScreen">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+
+                    <label text="Payroll Iteration Test Form" style="h2"/>
+                    <label text="UI Test Only — using FindPayrollIteration form" style="italic"/>
+
+                    <screenlet title="Find Payroll Iteration">
+                        <include-form name="FindPayrollIteration"
+                                      location="component://payroll/widget/PayrollForms.xml"/>
+                    </screenlet>
+
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+
+   
+ 
+
+  
+    <screen name="PayrollDashboard">
+        <section>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+
+                        <label text="Payroll Dashboard" style="h1"/>
+                        <label text="Overview of payroll activities" style="italic"/>
+                        
+                        <!-- Include the form -->
+                        <screenlet title="Payroll Dashboard Overview">
+                            <include-form name="PayrollDashboardForm" 
+                                          location="component://payroll/widget/PayrollForms.xml"/>
+                        </screenlet>
+
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+  
+   <screen name="UnderConstruction">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <label text="This screen is under construction" style="h1"/>
+                    <label text="The request-map exists, so the menu is now enabled."/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+    
+
+<screen name="EmployeeListsuccess">
+   
+ <section>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                 <decorator-section name="body">
+
+                        <label text="Payroll EmployeeList" style="h1"/>
+                        <label text="Overview of payroll activities" style="italic"/>
+                        
+                        <!-- Include the form -->
+                        <screenlet title="Payroll EmployeeList Overview">
+                            <include-form name="EmployeeListForm" 
+                                          location="component://payroll/widget/PayrollForms.xml"/>
+                        </screenlet>
+
+                    </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+
+
+<screen name="EmployeeListsuccess2">
+
+    <!-- ========================================================= -->
+    <!-- EMPLOYEE LIST SCREEN – IMPROVED UI / CLEAN LAYOUT         -->
+    <!-- ========================================================= -->
+
+    <section>
+        <widgets>
+
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+
+                    <!-- Page Title -->
+                    <container style="padding:20px;">
+                        <label text="Payroll Employee List" style="h1"/>
+                        <label text="Overview of all employees inside the payroll system" style="italic"/>
+                    </container>
+
+                    <!-- Beautiful Section Container -->
+                    <container style="border:1px solid #ccc; padding:25px; margin-top:20px; 
+                                      background:#fafafa; border-radius:6px;">
+
+                        <screenlet title="Employee Directory">
+
+                            <!-- Include Employee Form -->
+                            <include-form name="EmployeeListForm"
+                                          location="component://payroll/widget/PayrollForms.xml"/>
+                        </screenlet>
+
+                    </container>
+
+                </decorator-section>
+            </decorator-screen>
+
+        </widgets>
+    </section>
+
+</screen>
+
+<!-- ========================= -->
+<!--  Employee List Screen     -->
+<!-- ========================= -->
+<screen name="EmployeeList">
+
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator"
+                              location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+
+                    <!-- Page Title -->
+                    <container style="margin-bottom:20px;">
+                        <label text="Employee List"
+                               style="font-size:22px;font-weight:bold;"/>
+                        <label text="Overview of employee payroll information"
+                               style="font-size:14px;color:gray;"/>
+                    </container>
+
+                    <!-- Overview Cards -->
+                    <container style="display:flex;gap:15px;margin-bottom:25px;">
+                        <container style="padding:20px;background:#f4f4f4;border-radius:8px;flex:1;">
+                            <label text="Total Employees" style="font-weight:bold;"/>
+                            <label text="${totalEmployees}" style="font-size:24px;"/>
+                        </container>
+
+                        <container style="padding:20px;background:#f4f4f4;border-radius:8px;flex:1;">
+                            <label text="Active Employees" style="font-weight:bold;"/>
+                            <label text="${activeEmployees}" style="font-size:24px;"/>
+                        </container>
+
+                        <container style="padding:20px;background:#f4f4f4;border-radius:8px;flex:1;">
+                            <label text="Inactive Employees" style="font-weight:bold;"/>
+                            <label text="${inactiveEmployees}" style="font-size:24px;"/>
+                        </container>
+                    </container>
+
+                    <!-- Main Employee Table -->
+                    <screenlet title="Employee Directory">
+                        <include-form name="EmployeeListForm"
+                                      location="component://payroll/widget/PayrollForms.xml"/>
+                    </screenlet>
+
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+
+</screen>
+
+
+
+
+ 
+
+</screens>

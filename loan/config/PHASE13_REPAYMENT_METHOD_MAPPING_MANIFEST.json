@@ -1,0 +1,21 @@
+{
+  "phase": "Phase 13",
+  "title": "Enterprise Borrower Repayment Method Mapping",
+  "changedFiles": [
+    "entitymodel.xml",
+    "services.xml",
+    "LoanServices.java",
+    "LoanUiLabels.xml"
+  ],
+  "newEntity": "LoanRepaymentMethodConfig",
+  "newService": "getLoanRepaymentMethodOptionsV1",
+  "defaultMappings": {
+    "LNPM_CASH": "CASH",
+    "LNPM_BANK_TRANSFER": "EFT_ACCOUNT",
+    "LNPM_CHECK": "COMPANY_CHECK",
+    "LNPM_CARD": "CREDIT_CARD",
+    "LNPM_MOBILE_WALLET": "FIN_ACCOUNT",
+    "LNPM_DIRECT_DEBIT": "EFT_ACCOUNT",
+    "LNPM_PAYROLL": "LNRS_PAYROLL/payroll flow"
+  }
+}

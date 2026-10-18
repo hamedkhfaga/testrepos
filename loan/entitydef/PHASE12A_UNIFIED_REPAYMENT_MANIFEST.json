@@ -1,0 +1,16 @@
+{
+  "phase": "Phase 12A",
+  "title": "Unified Borrower Repayment Engine",
+  "backend": [
+    "Added PartyLoan borrowerTypeEnumId/preferredRepaymentMethodEnumId",
+    "Added PartyLoanRepayment repaymentMethodEnumId/externalReference/bankReference/receivedByUserLoginId/paymentChannelNote",
+    "Added recordUnifiedLoanRepaymentV1",
+    "Added previewUnifiedLoanRepaymentV1"
+  ],
+  "ui": [
+    "Added UnifiedRepaymentWorkbench.jsx",
+    "Added API wrappers",
+    "Embedded repayment workbench into Operations Dashboard"
+  ],
+  "principle": "One loan repayment workflow for all borrower types; payroll is one repayment method."
+}

@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://ofbiz.apache.org/Widget-Screen"
+         xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+<screen name="main">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <label text="MAIN SCREEN" style="h1"/>
+                    <label text="Hello World! Main screen content above."/>
+                    
+                    <!-- Section for nested content -->
+                    <section>
+                        <condition><if-has-permission permission="OFBTOOLS"/></condition>
+                        <widgets>
+                            <label text="=== NESTED SECTION ===" style="h2"/>
+                            <label text="User has permission to see this nested section."/>
+                            <label text="• Test Item A"/>
+                            <label text="• Test Item B"/>
+                            <label text="• Test Item C"/>
+                        </widgets>
+                    </section>
+                    
+                    <!-- Another section without condition -->
+                    <section>
+                        <widgets>
+                            <label text="Public Nested Section" style="h3"/>
+                            <label text="This section is always visible to all users."/>
+                            <container style="simple-box">
+                                <label text="Sample Data:"/>
+                                <label text="Row 1: Value 1"/>
+                                <label text="Row 2: Value 2"/>
+                                <label text="Row 3: Value 3"/>
+                            </container>
+                        </widgets>
+                    </section>
+                    
+                    <label text="=== END OF SCREEN ===" style="h2"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>  
+ 
+<!-- ===================================================== -->
+<!-- Payroll Organization List -->
+<!-- ===================================================== -->
+   
+
+<screen name="PayrollOrganizationListScreen">
+    <section>
+
+        <actions>
+            <set field="headerItem" value="PayrollOrg"/>
+
+            <!-- Defaults for sorting -->
+            <set field="sortField" from-field="parameters.sortField" default-value="organizationPartyId"/>
+            <set field="sortOrder" from-field="parameters.sortOrder" default-value="ASC"/>
+
+            <!-- Load data (orgList will exist even if empty) -->
+            <entity-condition entity-name="PayrollOrganization" list="orgList">
+                <condition-list combine="and">
+
+                    <condition-expr field-name="organizationPartyId"
+                                    from-field="parameters.organizationPartyId"
+                                    ignore-if-empty="true"/>
+
+                    <condition-expr field-name="orgName"
+                                    operator="like"
+                                    value="%${parameters.orgName}%"
+                                    ignore-if-empty="true"
+                                    ignore-case="true"/>
+					 <condition-expr field-name="countryGeoId"
+                        from-field="parameters.countryGeoId"
+                        ignore-if-empty="true"/>  					
+					<condition-expr field-name="isActive"
+                                     from-field="parameters.isActive"
+                                     ignore-if-empty="true"/>
+
+
+                </condition-list>
+
+                <!-- Sort logic (simple safe pattern) -->
+                <order-by field-name="${sortField}" sort-direction="${sortOrder}"/>
+            </entity-condition>
+
+            <!-- Make sure orgList is always present (defensive) -->
+            <set field="orgList" from-field="orgList" default-value="[]"/>
+        </actions>
+
+        <widgets>
+            <decorator-screen name="main-decorator" location="component://payroll/widget/CommonScreens.xml">
+                <decorator-section name="body">
+
+                    <container style="button-bar">
+                        <include-menu name="PayrollSetupMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+                    </container>
+
+                    <container style="page-title">
+                        <label text="Payroll Organizations" style="h1"/>
+                    </container>
+
+                    <screenlet title="Search">
+                        <include-form name="PayrollOrganizationSearchForm"
+                                      location="component://payroll/widget/PayrollForms.xml"/>
+                        <container style="button-bar">
+                            <link target="PayrollOrganizationCreate" text="Create New Organization" style="buttontext"/>
+                        </container>
+                    </screenlet>
+
+                   
+
+                    <!-- Always show the list screenlet + table -->
+                    <screenlet title="Organization List">
+                        <include-form name="PayrollOrganizationListForm"
+                                      location="component://payroll/widget/PayrollForms.xml"/>
+                    </screenlet>
+
+                    <!-- Show message when empty WITHOUT hiding the list/table -->
+                    <section>
+                        <condition>
+                            <if-empty field="orgList"/>
+                        </condition>
+                        <widgets>
+                            <container style="alert alert-info">
+                                <label text="No records found." style="h3"/>
+                            </container>
+                        </widgets>
+                    </section>
+
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+
+    </section>
+</screen>
+
+<!-- ===================================================== -->
+<!-- Payroll Organization Create -->
+<!-- ===================================================== -->
+<screen name="PayrollOrganizationCreateScreen">
+    <section>
+        <actions>
+            <set field="headerItem" value="PayrollOrg"/>
+        </actions>
+
+        <widgets>
+            <decorator-screen name="main-decorator" location="component://payroll/widget/CommonScreens.xml">
+                <decorator-section name="body">
+
+                    <container style="button-bar">
+                        <include-menu name="PayrollSetupMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+                    </container>
+
+                    <container style="page-title">
+                        <label text="Create Payroll Organization" style="h1"/>
+                    </container>
+
+                    <screenlet title="Create">
+                        <include-form name="PayrollOrganizationCreateForm"
+                                      location="component://payroll/widget/PayrollForms.xml"/>
+                    </screenlet>
+
+                    <container style="button-bar">
+                        <link target="PayrollOrganizationList" text="Back to List" style="buttontext"/>
+                    </container>
+
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+
+<!-- ===================================================== -->
+<!-- Payroll Organization Edit -->
+<!-- ===================================================== -->
+<screen name="PayrollOrganizationEditScreen">
+    <section>
+        <actions>
+            <set field="headerItem" value="PayrollOrg"/>
+
+            <!-- load existing record -->
+            <service service-name="performFind" result-map="oneFind">
+                <field-map field-name="entityName" value="PayrollOrganization"/>
+                <field-map field-name="inputFields" from-field="parameters"/>
+                <field-map field-name="noConditionFind" value="N"/>
+            </service>
+            <set field="orgOne" from-field="oneFind.list[0]"/>
+        </actions>
+
+        <widgets>
+            <decorator-screen name="main-decorator" location="component://payroll/widget/CommonScreens.xml">
+                <decorator-section name="body">
+
+                    <container style="button-bar">
+                        <include-menu name="PayrollSetupMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+                    </container>
+
+                    <container style="page-title">
+                        <label text="Update Payroll Organization" style="h1"/>
+                    </container>
+
+                    <screenlet title="Update">
+                        <include-form name="PayrollOrganizationUpdateForm"
+                                      location="component://payroll/widget/PayrollForms.xml"/>
+                    </screenlet>
+
+                    <container style="button-bar">
+                        <link target="PayrollOrganizationList" text="Back to List" style="buttontext"/>
+                    </container>
+
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+ <screen name="PayrollRunListScreen">
+        <section>
+            <actions>
+                <set field="titleProperty" value="PayrollMenuRuns"/>
+                <set field="headerItem" value="Payroll"/>
+                <set field="mainDecoratorLocation" from-field="parameters.mainDecoratorLocation" default-value="component://common/widget/CommonScreens.xml"/>
+
+                <set field="entityName" value="PayrollRun"/>
+                <set field="inputFields" from-field="parameters"/>
+                <set field="orderBy" value="-runDate"/>
+                <set field="viewIndex" from-field="parameters.VIEW_INDEX"/>
+                <set field="viewSize" from-field="parameters.VIEW_SIZE"/>
+                <set field="noConditionFind" value="Y"/>
+
+                <service service-name="performFind" result-map="runFindResult">
+                    <field-map field-name="entityName" from-field="entityName"/>
+                    <field-map field-name="inputFields" from-field="inputFields"/>
+                    <field-map field-name="orderBy" from-field="orderBy"/>
+                    <field-map field-name="viewSize" from-field="viewSize"/>
+                    <field-map field-name="viewIndex" from-field="viewIndex"/>
+                    <field-map field-name="noConditionFind" from-field="noConditionFind"/>
+                </service>
+
+                <set field="payrollRunList" from-field="runFindResult.list"/>
+            </actions>
+
+            <widgets>
+                <decorator-screen name="main-decorator" location="${mainDecoratorLocation}">
+                    <decorator-section name="pre-body">
+                        <include-menu name="PayrollSetupMenu" location="component://payroll/widget/PayrollMenus.xml"/>
+                    </decorator-section>
+
+                    <decorator-section name="body">
+                        <container style="button-bar">
+                             <link target="PayrollRunCreate" text="Create New Payroll Run" style="buttontext create"/>
+                        </container>
+                        <include-form name="PayrollRunListForm" location="component://payroll/widget/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+  <screen name="PayrollRunViewScreen">
+        <section>
+            <actions>
+               
+				<set field="mainDecoratorLocation" from-field="parameters.mainDecoratorLocation" default-value="component://common/widget/CommonScreens.xml"/>
+
+                <set field="orgPartyId" from-field="parameters.orgPartyId"/>
+                <set field="payrollRunId" from-field="parameters.payrollRunId"/>
+
+                <entity-one entity-name="PayrollRun" value-field="payrollRun">
+                    <field-map field-name="payrollRunId"/>
+                </entity-one>
+
+                <entity-one entity-name="PayrollPeriod" value-field="payrollPeriod">
+                    <field-map field-name="payrollPeriodId" from-field="payrollRun.payrollPeriodId"/>
+                </entity-one>
+
+                <!-- Results for the run -->
+                <service service-name="performFind" result-map="resultFind">
+                    <field-map field-name="entityName" value="EmployeePayrollResult"/>
+                    <field-map field-name="inputFields" value="{&quot;payrollRunId&quot;:${payrollRunId}}"/>
+                    <field-map field-name="orderBy" value="partyId"/>
+                </service>
+                <set field="payrollResultList" from-field="resultFind.list"/>
+            </actions>
+
+            <widgets>
+                  <decorator-screen name="main-decorator" location="${mainDecoratorLocation}">
+                    <decorator-section name="pre-body">
+					 <include-menu name="PayrollRunActionsMenu"
+                                      location="component://payroll/widget/PayrollMenus.xml"/>
+                    </decorator-section>
+					   <decorator-section name="body">
+                        <container style="margin-bottom:12px;">
+                            <label text="Payroll Run تفاصيل" style="font-size:22px;font-weight:bold;"/>
+                            <label text="Run: ${payrollRunId} / Org: ${orgPartyId}" style="font-size:13px;color:gray;"/>
+					
+                        </container>
+                      
+                        <include-form name="PayrollRunViewForm"
+                                      location="component://payroll/widget/PayrollForms.xml"/>
+
+                        <container style="margin-top:18px;margin-bottom:8px;">
+                            <label text="Employee Results" style="font-size:18px;font-weight:bold;"/>
+                        </container>
+
+                        <include-form name="EmployeePayrollResultListForm"
+                                      location="component://payroll/widget/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+<screen name="PayrollOrganizationListScreen1g">
+    <section>
+        <actions>
+            <set field="headerItem" value="PayrollOrg"/>
+
+            <set field="orgList" value="${null}"/>
+
+            <entity-condition entity-name="PayrollOrganization" list="orgList">
+                <condition-list combine="and">
+                    <condition-expr field-name="organizationPartyId" from-field="parameters.organizationPartyId" ignore-if-null="true"/>
+                    <condition-expr field-name="orgName" operator="like" value="%${parameters.orgName}%" ignore-if-null="true" ignore-case="true"/>
+                </condition-list>
+                <order-by field-name="organizationPartyId"/>
+            </entity-condition>
+        </actions>
+       
+
+	   <widgets>
+            <decorator-screen name="main-decorator" location="component://payroll/widget/CommonScreens.xml">
+                <decorator-section name="body">
+                    
+                    <screenlet title="Search Filters">
+                        <include-form name="PayrollOrganizationSearchForm" location="component://payroll/widget/PayrollForms.xml"/>
+                    </screenlet>
+
+                    <screenlet title="Results Table">
+                        <container>
+                            <label text="Current Search - ID: [${parameters.organizationPartyId}] Name: [${parameters.orgName}]" style="common-msg"/>
+                        </container>
+                        
+                        <include-form name="PayrollOrganizationListForm" location="component://payroll/widget/PayrollForms.xml"/>
+                    </screenlet>
+                    
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+
+
+
+</screens>

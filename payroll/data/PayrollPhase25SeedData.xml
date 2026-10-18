@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- ===================================================== -->
+    <!-- 1) STATUS TYPES (MUST COME FIRST)                     -->
+    <!-- ===================================================== -->
+
+    <StatusType statusTypeId="PAY_LEAVE_STAT" description="Payroll Leave Request Status"/>
+    <StatusType statusTypeId="PAY_ABS_STAT"   description="Payroll Absence Request Status"/>
+    <StatusType statusTypeId="PAY_RES_LINE"   description="Payroll Result Line Type"/>
+    <StatusType statusTypeId="GEN_STATUS"     description="Generic Status (Active/Inactive)"/>
+
+    <!-- ===================================================== -->
+    <!-- 2) GENERIC STATUS ITEMS (USED BY MASTER DATA)         -->
+    <!-- ===================================================== -->
+
+    <StatusItem statusId="ACTIVE"   statusTypeId="GEN_STATUS" description="Active"/>
+    <StatusItem statusId="INACTIVE" statusTypeId="GEN_STATUS" description="Inactive"/>
+
+    <!-- ===================================================== -->
+    <!-- 3) LEAVE REQUEST STATUSES                            -->
+    <!-- ===================================================== -->
+
+    <StatusItem statusId="LR_NEW"  statusTypeId="PAY_LEAVE_STAT" description="Leave Request - New"/>
+    <StatusItem statusId="LR_APPR" statusTypeId="PAY_LEAVE_STAT" description="Leave Request - Approved"/>
+    <StatusItem statusId="LR_REJ"  statusTypeId="PAY_LEAVE_STAT" description="Leave Request - Rejected"/>
+
+    <!-- ===================================================== -->
+    <!-- 4) ABSENCE REQUEST STATUSES                          -->
+    <!-- ===================================================== -->
+
+    <StatusItem statusId="ABS_NEW"  statusTypeId="PAY_ABS_STAT" description="Absence Request - New"/>
+    <StatusItem statusId="ABS_APPR" statusTypeId="PAY_ABS_STAT" description="Absence Request - Approved"/>
+    <StatusItem statusId="ABS_REJ"  statusTypeId="PAY_ABS_STAT" description="Absence Request - Rejected"/>
+
+    <!-- ===================================================== -->
+    <!-- 5) RESULT LINE TYPES (CRITICAL FOR PROCESSING)        -->
+    <!-- ===================================================== -->
+
+    <StatusItem statusId="PRL_STRUCT" statusTypeId="PAY_RES_LINE" description="Result Line - Structure"/>
+    <StatusItem statusId="PRL_OT"     statusTypeId="PAY_RES_LINE" description="Result Line - Overtime"/>
+    <StatusItem statusId="PRL_ADD"    statusTypeId="PAY_RES_LINE" description="Result Line - Addition Item"/>
+    <StatusItem statusId="PRL_DED"    statusTypeId="PAY_RES_LINE" description="Result Line - Deduction Item"/>
+    <StatusItem statusId="PRL_TAX"    statusTypeId="PAY_RES_LINE" description="Result Line - Tax"/>
+
+    <!-- ===================================================== -->
+    <!-- 6) DEDUCTION TYPES                                   -->
+    <!-- ===================================================== -->
+
+    <DeductionType deductionTypeId="ABSENCE"
+                   organizationPartyId="Company"
+                   description="Absence Deduction"
+                   isPreTax="N"
+                   calculationMethodId="MANUAL"
+                   defaultAmount="0"
+                   currencyUomId="SAR"
+                   statusId="ACTIVE"/>
+
+    <DeductionType deductionTypeId="UNPAID_LEAVE"
+                   organizationPartyId="Company"
+                   description="Unpaid Leave Deduction"
+                   isPreTax="N"
+                   calculationMethodId="MANUAL"
+                   defaultAmount="0"
+                   currencyUomId="SAR"
+                   statusId="ACTIVE"/>
+
+    <!-- ===================================================== -->
+    <!-- 7) ADDITION TYPES                                    -->
+    <!-- ===================================================== -->
+
+    <AdditionType additionTypeId="BONUS"
+                  organizationPartyId="Company"
+                  description="Bonus"
+                  isTaxable="Y"
+                  calculationMethodId="MANUAL"
+                  defaultAmount="0"
+                  currencyUomId="SAR"
+                  statusId="ACTIVE"/>
+
+    <AdditionType additionTypeId="COMM"
+                  organizationPartyId="Company"
+                  description="Commission"
+                  isTaxable="Y"
+                  calculationMethodId="MANUAL"
+                  defaultAmount="0"
+                  currencyUomId="SAR"
+                  statusId="ACTIVE"/>
+
+    <AdditionType additionTypeId="ADJ_POS"
+                  organizationPartyId="Company"
+                  description="Adjustment (Positive)"
+                  isTaxable="N"
+                  calculationMethodId="MANUAL"
+                  defaultAmount="0"
+                  currencyUomId="SAR"
+                  statusId="ACTIVE"/>
+
+</entity-engine-xml>

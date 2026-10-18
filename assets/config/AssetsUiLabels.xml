@@ -1,0 +1,1989 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/ofbiz-properties.xsd">
+    <property key="AssetsApplication">
+        <value xml:lang="en">Asset Management</value>
+        <value xml:lang="ar">إدارة الأصول</value>
+    </property>
+    <property key="AssetsCompanyName">
+        <value xml:lang="en">OFBiz Assets</value>
+        <value xml:lang="ar">أصول OFBiz</value>
+    </property>
+    <property key="AssetsCompanySubtitle">
+        <value xml:lang="en">Fixed asset lifecycle, depreciation, leasing, and accounting subledger</value>
+        <value xml:lang="ar">دورة حياة الأصول الثابتة والإهلاك والتأجير ودفتر الأستاذ الفرعي</value>
+    </property>
+    <property key="AssetsMain">
+        <value xml:lang="en">Main</value>
+        <value xml:lang="ar">الرئيسية</value>
+    </property>
+    <property key="AssetsDashboard">
+        <value xml:lang="en">Dashboard</value>
+        <value xml:lang="ar">لوحة المتابعة</value>
+    </property>
+    <property key="AssetsMenuBooks">
+        <value xml:lang="en">Asset Books</value>
+        <value xml:lang="ar">دفاتر الأصول</value>
+    </property>
+    <property key="AssetsMenuRequests">
+        <value xml:lang="en">Asset Requests</value>
+        <value xml:lang="ar">طلبات الأصول</value>
+    </property>
+    <property key="AssetsMenuApprovals">
+        <value xml:lang="en">Approvals</value>
+        <value xml:lang="ar">الموافقات</value>
+    </property>
+    <property key="AssetsMenuQuotes">
+        <value xml:lang="en">Quote Evaluation</value>
+        <value xml:lang="ar">تقييم عروض الأسعار</value>
+    </property>
+    <property key="AssetsMenuCapitalization">
+        <value xml:lang="en">Capitalization</value>
+        <value xml:lang="ar">الرسملة</value>
+    </property>
+    <property key="AssetsMenuDepreciation">
+        <value xml:lang="en">Depreciation</value>
+        <value xml:lang="ar">الإهلاك</value>
+    </property>
+    <property key="AssetsMenuLifecycle">
+        <value xml:lang="en">Lifecycle</value>
+        <value xml:lang="ar">دورة الحياة</value>
+    </property>
+    <property key="AssetsMenuTransfers">
+        <value xml:lang="en">Transfers</value>
+        <value xml:lang="ar">النقل</value>
+    </property>
+    <property key="AssetsMenuValuation">
+        <value xml:lang="en">Valuation</value>
+        <value xml:lang="ar">التقييم</value>
+    </property>
+    <property key="AssetsMenuDisposal">
+        <value xml:lang="en">Disposal</value>
+        <value xml:lang="ar">الاستبعاد</value>
+    </property>
+    <property key="AssetsMenuLeases">
+        <value xml:lang="en">Leases and Rentals</value>
+        <value xml:lang="ar">عقود التأجير والاستئجار</value>
+    </property>
+    <property key="AssetsMenuInsurance">
+        <value xml:lang="en">Insurance</value>
+        <value xml:lang="ar">التأمين</value>
+    </property>
+    <property key="AssetsMenuDrivers">
+        <value xml:lang="en">Drivers and Operators</value>
+        <value xml:lang="ar">السائقون والمشغلون</value>
+    </property>
+    <property key="AssetsMenuPosting">
+        <value xml:lang="en">Posting Runs</value>
+        <value xml:lang="ar">عمليات الترحيل</value>
+    </property>
+    <property key="AssetsActionCreate">
+        <value xml:lang="en">Create</value>
+        <value xml:lang="ar">إنشاء</value>
+    </property>
+    <property key="AssetsActionUpdate">
+        <value xml:lang="en">Update</value>
+        <value xml:lang="ar">تحديث</value>
+    </property>
+    <property key="AssetsActionDelete">
+        <value xml:lang="en">Delete</value>
+        <value xml:lang="ar">حذف</value>
+    </property>
+    <property key="AssetsActionApprove">
+        <value xml:lang="en">Approve</value>
+        <value xml:lang="ar">اعتماد</value>
+    </property>
+    <property key="AssetsActionReject">
+        <value xml:lang="en">Reject</value>
+        <value xml:lang="ar">رفض</value>
+    </property>
+    <property key="AssetsActionReturn">
+        <value xml:lang="en">Return for Revision</value>
+        <value xml:lang="ar">إرجاع للتعديل</value>
+    </property>
+    <property key="AssetsActionPost">
+        <value xml:lang="en">Post</value>
+        <value xml:lang="ar">ترحيل</value>
+    </property>
+    <property key="AssetsActionReverse">
+        <value xml:lang="en">Reverse</value>
+        <value xml:lang="ar">عكس</value>
+    </property>
+    <property key="AssetsActionClose">
+        <value xml:lang="en">Close</value>
+        <value xml:lang="ar">إغلاق</value>
+    </property>
+    <property key="AssetsActionCancel">
+        <value xml:lang="en">Cancel</value>
+        <value xml:lang="ar">إلغاء</value>
+    </property>
+    <property key="AssetsActionCalculate">
+        <value xml:lang="en">Calculate</value>
+        <value xml:lang="ar">احتساب</value>
+    </property>
+    <property key="AssetsActionGenerateSchedule">
+        <value xml:lang="en">Generate Schedule</value>
+        <value xml:lang="ar">إنشاء الجدول</value>
+    </property>
+    <property key="AssetsActionPlaceInService">
+        <value xml:lang="en">Place In Service</value>
+        <value xml:lang="ar">وضع في الخدمة</value>
+    </property>
+    <property key="AssetsActionDispose">
+        <value xml:lang="en">Dispose</value>
+        <value xml:lang="ar">استبعاد</value>
+    </property>
+    <property key="AssetsActionTransfer">
+        <value xml:lang="en">Transfer</value>
+        <value xml:lang="ar">نقل</value>
+    </property>
+    <property key="AssetsYes">
+        <value xml:lang="en">Yes</value>
+        <value xml:lang="ar">نعم</value>
+    </property>
+    <property key="AssetsNo">
+        <value xml:lang="en">No</value>
+        <value xml:lang="ar">لا</value>
+    </property>
+    <property key="AssetsBook">
+        <value xml:lang="en">Asset Book</value>
+        <value xml:lang="ar">دفتر الأصول</value>
+    </property>
+    <property key="AssetsBookGlAccount">
+        <value xml:lang="en">Asset Book GL Account Mapping</value>
+        <value xml:lang="ar">ربط حسابات الأستاذ بدفتر الأصول</value>
+    </property>
+    <property key="AssetsBookDetail">
+        <value xml:lang="en">Asset Book Detail</value>
+        <value xml:lang="ar">تفاصيل دفتر الأصل</value>
+    </property>
+    <property key="AssetsBookDetailAttribute">
+        <value xml:lang="en">Asset Book Detail Attribute</value>
+        <value xml:lang="ar">خاصية تفاصيل دفتر الأصل</value>
+    </property>
+    <property key="AssetsBookDepSchedule">
+        <value xml:lang="en">Asset Book Depreciation Schedule</value>
+        <value xml:lang="ar">جدول إهلاك دفتر الأصل</value>
+    </property>
+    <property key="AssetsDepRun">
+        <value xml:lang="en">Depreciation Run</value>
+        <value xml:lang="ar">عملية الإهلاك</value>
+    </property>
+    <property key="AssetsDepRunItem">
+        <value xml:lang="en">Depreciation Run Item</value>
+        <value xml:lang="ar">بند عملية الإهلاك</value>
+    </property>
+    <property key="AssetsDepUsage">
+        <value xml:lang="en">Depreciation Usage</value>
+        <value xml:lang="ar">استخدام الإهلاك</value>
+    </property>
+    <property key="AssetsComponentDetail">
+        <value xml:lang="en">Component Detail</value>
+        <value xml:lang="ar">تفاصيل المكون</value>
+    </property>
+    <property key="AssetsRequestDetail">
+        <value xml:lang="en">Asset Request Detail</value>
+        <value xml:lang="ar">تفاصيل طلب الأصل</value>
+    </property>
+    <property key="AssetsApprovalRule">
+        <value xml:lang="en">Approval Rule</value>
+        <value xml:lang="ar">قاعدة الموافقة</value>
+    </property>
+    <property key="AssetsApprovalDecision">
+        <value xml:lang="en">Approval Decision</value>
+        <value xml:lang="ar">قرار الموافقة</value>
+    </property>
+    <property key="AssetsQuoteEvaluation">
+        <value xml:lang="en">Quote Evaluation</value>
+        <value xml:lang="ar">تقييم عرض السعر</value>
+    </property>
+    <property key="AssetsCapitalization">
+        <value xml:lang="en">Capitalization</value>
+        <value xml:lang="ar">الرسملة</value>
+    </property>
+    <property key="AssetsCapitalizationCost">
+        <value xml:lang="en">Capitalization Cost</value>
+        <value xml:lang="ar">تكلفة الرسملة</value>
+    </property>
+    <property key="AssetsFixedAssetRole">
+        <value xml:lang="en">Fixed Asset Role</value>
+        <value xml:lang="ar">دور الأصل الثابت</value>
+    </property>
+    <property key="AssetsLifecycleEvent">
+        <value xml:lang="en">Lifecycle Event</value>
+        <value xml:lang="ar">حدث دورة الحياة</value>
+    </property>
+    <property key="AssetsFixedAssetTransfer">
+        <value xml:lang="en">Fixed Asset Transfer</value>
+        <value xml:lang="ar">نقل الأصل الثابت</value>
+    </property>
+    <property key="AssetsValuationEvent">
+        <value xml:lang="en">Valuation Event</value>
+        <value xml:lang="ar">حدث التقييم</value>
+    </property>
+    <property key="AssetsDisposal">
+        <value xml:lang="en">Disposal</value>
+        <value xml:lang="ar">الاستبعاد</value>
+    </property>
+    <property key="AssetsDisposalBook">
+        <value xml:lang="en">Disposal Book</value>
+        <value xml:lang="ar">دفتر الاستبعاد</value>
+    </property>
+    <property key="AssetsLeaseContract">
+        <value xml:lang="en">Lease Contract</value>
+        <value xml:lang="ar">عقد التأجير أو الاستئجار</value>
+    </property>
+    <property key="AssetsLeaseComponent">
+        <value xml:lang="en">Lease Component</value>
+        <value xml:lang="ar">مكون العقد</value>
+    </property>
+    <property key="AssetsLeasePaymentSchedule">
+        <value xml:lang="en">Lease Payment Schedule</value>
+        <value xml:lang="ar">جدول دفعات العقد</value>
+    </property>
+    <property key="AssetsLeaseAcctgSchedule">
+        <value xml:lang="en">Lease Accounting Schedule</value>
+        <value xml:lang="ar">جدول محاسبة العقد</value>
+    </property>
+    <property key="AssetsInsurancePolicy">
+        <value xml:lang="en">Insurance Policy</value>
+        <value xml:lang="ar">وثيقة التأمين</value>
+    </property>
+    <property key="AssetsDriverAssignment">
+        <value xml:lang="en">Driver Assignment</value>
+        <value xml:lang="ar">تعيين السائق</value>
+    </property>
+    <property key="AssetsPostingRun">
+        <value xml:lang="en">Posting Run</value>
+        <value xml:lang="ar">عملية الترحيل</value>
+    </property>
+    <property key="AssetsPostingRunItem">
+        <value xml:lang="en">Posting Run Item</value>
+        <value xml:lang="ar">بند عملية الترحيل</value>
+    </property>
+    <property key="AssetsEntityAssetsBook">
+        <value xml:lang="en">Asset Book</value>
+        <value xml:lang="ar">دفتر الأصول</value>
+    </property>
+    <property key="AssetsEntityAssetsBookGlAccount">
+        <value xml:lang="en">Asset Book GL Account Mapping</value>
+        <value xml:lang="ar">ربط حسابات الأستاذ بدفتر الأصول</value>
+    </property>
+    <property key="AssetsEntityAssetsBookDetail">
+        <value xml:lang="en">Asset Book Detail</value>
+        <value xml:lang="ar">تفاصيل دفتر الأصل</value>
+    </property>
+    <property key="AssetsEntityAssetsBookDetailAttribute">
+        <value xml:lang="en">Asset Book Detail Attribute</value>
+        <value xml:lang="ar">خاصية تفاصيل دفتر الأصل</value>
+    </property>
+    <property key="AssetsEntityAssetsBookDepSchedule">
+        <value xml:lang="en">Asset Book Depreciation Schedule</value>
+        <value xml:lang="ar">جدول إهلاك دفتر الأصل</value>
+    </property>
+    <property key="AssetsEntityAssetsDepRun">
+        <value xml:lang="en">Depreciation Run</value>
+        <value xml:lang="ar">عملية الإهلاك</value>
+    </property>
+    <property key="AssetsEntityAssetsDepRunItem">
+        <value xml:lang="en">Depreciation Run Item</value>
+        <value xml:lang="ar">بند عملية الإهلاك</value>
+    </property>
+    <property key="AssetsEntityAssetsDepUsage">
+        <value xml:lang="en">Depreciation Usage</value>
+        <value xml:lang="ar">استخدام الإهلاك</value>
+    </property>
+    <property key="AssetsEntityAssetsComponentDetail">
+        <value xml:lang="en">Component Detail</value>
+        <value xml:lang="ar">تفاصيل المكون</value>
+    </property>
+    <property key="AssetsEntityAssetsRequestDetail">
+        <value xml:lang="en">Asset Request Detail</value>
+        <value xml:lang="ar">تفاصيل طلب الأصل</value>
+    </property>
+    <property key="AssetsEntityAssetsApprovalRule">
+        <value xml:lang="en">Approval Rule</value>
+        <value xml:lang="ar">قاعدة الموافقة</value>
+    </property>
+    <property key="AssetsEntityAssetsApprovalDecision">
+        <value xml:lang="en">Approval Decision</value>
+        <value xml:lang="ar">قرار الموافقة</value>
+    </property>
+    <property key="AssetsEntityAssetsQuoteEvaluation">
+        <value xml:lang="en">Quote Evaluation</value>
+        <value xml:lang="ar">تقييم عرض السعر</value>
+    </property>
+    <property key="AssetsEntityAssetsCapitalization">
+        <value xml:lang="en">Capitalization</value>
+        <value xml:lang="ar">الرسملة</value>
+    </property>
+    <property key="AssetsEntityAssetsCapitalizationCost">
+        <value xml:lang="en">Capitalization Cost</value>
+        <value xml:lang="ar">تكلفة الرسملة</value>
+    </property>
+    <property key="AssetsEntityAssetsFixedAssetRole">
+        <value xml:lang="en">Fixed Asset Role</value>
+        <value xml:lang="ar">دور الأصل الثابت</value>
+    </property>
+    <property key="AssetsEntityAssetsLifecycleEvent">
+        <value xml:lang="en">Lifecycle Event</value>
+        <value xml:lang="ar">حدث دورة الحياة</value>
+    </property>
+    <property key="AssetsEntityAssetsFixedAssetTransfer">
+        <value xml:lang="en">Fixed Asset Transfer</value>
+        <value xml:lang="ar">نقل الأصل الثابت</value>
+    </property>
+    <property key="AssetsEntityAssetsValuationEvent">
+        <value xml:lang="en">Valuation Event</value>
+        <value xml:lang="ar">حدث التقييم</value>
+    </property>
+    <property key="AssetsEntityAssetsDisposal">
+        <value xml:lang="en">Disposal</value>
+        <value xml:lang="ar">الاستبعاد</value>
+    </property>
+    <property key="AssetsEntityAssetsDisposalBook">
+        <value xml:lang="en">Disposal Book</value>
+        <value xml:lang="ar">دفتر الاستبعاد</value>
+    </property>
+    <property key="AssetsEntityAssetsLeaseContract">
+        <value xml:lang="en">Lease Contract</value>
+        <value xml:lang="ar">عقد التأجير أو الاستئجار</value>
+    </property>
+    <property key="AssetsEntityAssetsLeaseComponent">
+        <value xml:lang="en">Lease Component</value>
+        <value xml:lang="ar">مكون العقد</value>
+    </property>
+    <property key="AssetsEntityAssetsLeasePaymentSchedule">
+        <value xml:lang="en">Lease Payment Schedule</value>
+        <value xml:lang="ar">جدول دفعات العقد</value>
+    </property>
+    <property key="AssetsEntityAssetsLeaseAcctgSchedule">
+        <value xml:lang="en">Lease Accounting Schedule</value>
+        <value xml:lang="ar">جدول محاسبة العقد</value>
+    </property>
+    <property key="AssetsEntityAssetsInsurancePolicy">
+        <value xml:lang="en">Insurance Policy</value>
+        <value xml:lang="ar">وثيقة التأمين</value>
+    </property>
+    <property key="AssetsEntityAssetsDriverAssignment">
+        <value xml:lang="en">Driver Assignment</value>
+        <value xml:lang="ar">تعيين السائق</value>
+    </property>
+    <property key="AssetsEntityAssetsPostingRun">
+        <value xml:lang="en">Posting Run</value>
+        <value xml:lang="ar">عملية الترحيل</value>
+    </property>
+    <property key="AssetsEntityAssetsPostingRunItem">
+        <value xml:lang="en">Posting Run Item</value>
+        <value xml:lang="ar">بند عملية الترحيل</value>
+    </property>
+    <property key="FormFieldTitle_accDepGlAccountId">
+        <value xml:lang="en">Accumulated Depreciation GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ للإهلاك المتراكم</value>
+    </property>
+    <property key="FormFieldTitle_accountingStandardEnumId">
+        <value xml:lang="en">Accounting Standard</value>
+        <value xml:lang="ar">معيار المحاسبة</value>
+    </property>
+    <property key="FormFieldTitle_acctgTransId">
+        <value xml:lang="en">Accounting Transaction ID</value>
+        <value xml:lang="ar">رمز الحركة المحاسبية</value>
+    </property>
+    <property key="FormFieldTitle_accumulatedDepreciation">
+        <value xml:lang="en">Accumulated Depreciation</value>
+        <value xml:lang="ar">الإهلاك المتراكم</value>
+    </property>
+    <property key="FormFieldTitle_agreementId">
+        <value xml:lang="en">Agreement ID</value>
+        <value xml:lang="ar">رمز الاتفاقية</value>
+    </property>
+    <property key="FormFieldTitle_allocationPercent">
+        <value xml:lang="en">Allocation Percent</value>
+        <value xml:lang="ar">نسبة التخصيص</value>
+    </property>
+    <property key="FormFieldTitle_amortizationAmount">
+        <value xml:lang="en">Amortization Amount</value>
+        <value xml:lang="ar">مبلغ الإطفاء</value>
+    </property>
+    <property key="FormFieldTitle_amount">
+        <value xml:lang="en">Amount</value>
+        <value xml:lang="ar">المبلغ</value>
+    </property>
+    <property key="FormFieldTitle_approverPartyId">
+        <value xml:lang="en">Approver Party ID</value>
+        <value xml:lang="ar">رمز جهة الموافق</value>
+    </property>
+    <property key="FormFieldTitle_approverRoleTypeId">
+        <value xml:lang="en">Approver Role Type ID</value>
+        <value xml:lang="ar">رمز نوع دور الموافق</value>
+    </property>
+    <property key="FormFieldTitle_assetClassEnumId">
+        <value xml:lang="en">Asset Class</value>
+        <value xml:lang="ar">فئة الأصل</value>
+    </property>
+    <property key="FormFieldTitle_assetGlAccountId">
+        <value xml:lang="en">Asset GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ للأصل</value>
+    </property>
+    <property key="FormFieldTitle_assetsApprovalDecisionId">
+        <value xml:lang="en">Approval Decision ID</value>
+        <value xml:lang="ar">رمز قرار الموافقة</value>
+    </property>
+    <property key="FormFieldTitle_assetsApprovalRuleId">
+        <value xml:lang="en">Approval Rule ID</value>
+        <value xml:lang="ar">رمز قاعدة الموافقة</value>
+    </property>
+    <property key="FormFieldTitle_assetsBookDepScheduleId">
+        <value xml:lang="en">Book Depreciation Schedule ID</value>
+        <value xml:lang="ar">رمز جدول إهلاك الدفتر</value>
+    </property>
+    <property key="FormFieldTitle_assetsBookGlAccountId">
+        <value xml:lang="en">Book GL Account Mapping ID</value>
+        <value xml:lang="ar">رمز ربط حساب الأستاذ بالدفتر</value>
+    </property>
+    <property key="FormFieldTitle_assetsBookId">
+        <value xml:lang="en">Asset Book ID</value>
+        <value xml:lang="ar">رمز دفتر الأصول</value>
+    </property>
+    <property key="FormFieldTitle_assetsCapitalizationId">
+        <value xml:lang="en">Capitalization ID</value>
+        <value xml:lang="ar">رمز الرسملة</value>
+    </property>
+    <property key="FormFieldTitle_assetsDepRunId">
+        <value xml:lang="en">Depreciation Run ID</value>
+        <value xml:lang="ar">رمز عملية الإهلاك</value>
+    </property>
+    <property key="FormFieldTitle_assetsDisposalId">
+        <value xml:lang="en">Disposal ID</value>
+        <value xml:lang="ar">رمز الاستبعاد</value>
+    </property>
+    <property key="FormFieldTitle_assetsDriverAssignmentId">
+        <value xml:lang="en">Driver Assignment ID</value>
+        <value xml:lang="ar">رمز تعيين السائق</value>
+    </property>
+    <property key="FormFieldTitle_assetsInsurancePolicyId">
+        <value xml:lang="en">Insurance Policy ID</value>
+        <value xml:lang="ar">رمز وثيقة التأمين</value>
+    </property>
+    <property key="FormFieldTitle_assetsLeaseId">
+        <value xml:lang="en">Lease ID</value>
+        <value xml:lang="ar">رمز عقد التأجير</value>
+    </property>
+    <property key="FormFieldTitle_assetsLifecycleEventId">
+        <value xml:lang="en">Lifecycle Event ID</value>
+        <value xml:lang="ar">رمز حدث دورة الحياة</value>
+    </property>
+    <property key="FormFieldTitle_assetsPostingRunId">
+        <value xml:lang="en">Posting Run ID</value>
+        <value xml:lang="ar">رمز عملية الترحيل</value>
+    </property>
+    <property key="FormFieldTitle_assetsQuoteEvaluationId">
+        <value xml:lang="en">Quote Evaluation ID</value>
+        <value xml:lang="ar">رمز تقييم عرض السعر</value>
+    </property>
+    <property key="FormFieldTitle_assetsTransferId">
+        <value xml:lang="en">Transfer ID</value>
+        <value xml:lang="ar">رمز النقل</value>
+    </property>
+    <property key="FormFieldTitle_assetsValuationEventId">
+        <value xml:lang="en">Valuation Event ID</value>
+        <value xml:lang="ar">رمز حدث التقييم</value>
+    </property>
+    <property key="FormFieldTitle_attrDescription">
+        <value xml:lang="en">Attribute Description</value>
+        <value xml:lang="ar">وصف الخاصية</value>
+    </property>
+    <property key="FormFieldTitle_attrName">
+        <value xml:lang="en">Attribute Name</value>
+        <value xml:lang="ar">اسم الخاصية</value>
+    </property>
+    <property key="FormFieldTitle_attrValue">
+        <value xml:lang="en">Attribute Value</value>
+        <value xml:lang="ar">قيمة الخاصية</value>
+    </property>
+    <property key="FormFieldTitle_bookName">
+        <value xml:lang="en">Book Name</value>
+        <value xml:lang="ar">اسم الدفتر</value>
+    </property>
+    <property key="FormFieldTitle_bookTypeEnumId">
+        <value xml:lang="en">Book Type</value>
+        <value xml:lang="ar">نوع الدفتر</value>
+    </property>
+    <property key="FormFieldTitle_budgetRequired">
+        <value xml:lang="en">Budget Required</value>
+        <value xml:lang="ar">يتطلب ميزانية</value>
+    </property>
+    <property key="FormFieldTitle_budgetStatusEnumId">
+        <value xml:lang="en">Budget Status</value>
+        <value xml:lang="ar">حالة الميزانية</value>
+    </property>
+    <property key="FormFieldTitle_capitalizationDate">
+        <value xml:lang="en">Capitalization Date</value>
+        <value xml:lang="ar">تاريخ الرسملة</value>
+    </property>
+    <property key="FormFieldTitle_capitalizedAmount">
+        <value xml:lang="en">Capitalized Amount</value>
+        <value xml:lang="ar">المبلغ المرسمل</value>
+    </property>
+    <property key="FormFieldTitle_capitalizedCost">
+        <value xml:lang="en">Capitalized Cost</value>
+        <value xml:lang="ar">التكلفة المرسملة</value>
+    </property>
+    <property key="FormFieldTitle_capitalizedFlag">
+        <value xml:lang="en">Capitalized Flag</value>
+        <value xml:lang="ar">مؤشر الرسملة</value>
+    </property>
+    <property key="FormFieldTitle_cipGlAccountId">
+        <value xml:lang="en">CIP GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ للأصول قيد الإنشاء</value>
+    </property>
+    <property key="FormFieldTitle_closingLiabilityAmount">
+        <value xml:lang="en">Closing Liability Amount</value>
+        <value xml:lang="ar">مبلغ الالتزام الختامي</value>
+    </property>
+    <property key="FormFieldTitle_comments">
+        <value xml:lang="en">Comments</value>
+        <value xml:lang="ar">ملاحظات</value>
+    </property>
+    <property key="FormFieldTitle_componentCost">
+        <value xml:lang="en">Component Cost</value>
+        <value xml:lang="ar">تكلفة المكون</value>
+    </property>
+    <property key="FormFieldTitle_componentFixedAssetId">
+        <value xml:lang="en">Component Fixed Asset ID</value>
+        <value xml:lang="ar">رمز الأصل الثابت للمكون</value>
+    </property>
+    <property key="FormFieldTitle_componentSeqId">
+        <value xml:lang="en">Component Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل المكون</value>
+    </property>
+    <property key="FormFieldTitle_componentTypeEnumId">
+        <value xml:lang="en">Component Type</value>
+        <value xml:lang="ar">نوع المكون</value>
+    </property>
+    <property key="FormFieldTitle_costSeqId">
+        <value xml:lang="en">Cost Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل التكلفة</value>
+    </property>
+    <property key="FormFieldTitle_costTypeEnumId">
+        <value xml:lang="en">Cost Type</value>
+        <value xml:lang="ar">نوع التكلفة</value>
+    </property>
+    <property key="FormFieldTitle_coverageAmount">
+        <value xml:lang="en">Coverage Amount</value>
+        <value xml:lang="ar">مبلغ التغطية</value>
+    </property>
+    <property key="FormFieldTitle_coverageEndDate">
+        <value xml:lang="en">Coverage End Date</value>
+        <value xml:lang="ar">تاريخ نهاية التغطية</value>
+    </property>
+    <property key="FormFieldTitle_coverageStartDate">
+        <value xml:lang="en">Coverage Start Date</value>
+        <value xml:lang="ar">تاريخ بداية التغطية</value>
+    </property>
+    <property key="FormFieldTitle_createdByUserLogin">
+        <value xml:lang="en">Created By User Login</value>
+        <value xml:lang="ar">أنشئ بواسطة مستخدم الدخول</value>
+    </property>
+    <property key="FormFieldTitle_createdDate">
+        <value xml:lang="en">Created Date</value>
+        <value xml:lang="ar">تاريخ الإنشاء</value>
+    </property>
+    <property key="FormFieldTitle_currencyUomId">
+        <value xml:lang="en">Currency</value>
+        <value xml:lang="ar">العملة</value>
+    </property>
+    <property key="FormFieldTitle_customTimePeriodId">
+        <value xml:lang="en">Custom Time Period ID</value>
+        <value xml:lang="ar">رمز الفترة الزمنية</value>
+    </property>
+    <property key="FormFieldTitle_decisionDate">
+        <value xml:lang="en">Decision Date</value>
+        <value xml:lang="ar">تاريخ القرار</value>
+    </property>
+    <property key="FormFieldTitle_decisionEnumId">
+        <value xml:lang="en">Decision</value>
+        <value xml:lang="ar">القرار</value>
+    </property>
+    <property key="FormFieldTitle_depConventionEnumId">
+        <value xml:lang="en">Depreciation Convention</value>
+        <value xml:lang="ar">قاعدة بداية الإهلاك</value>
+    </property>
+    <property key="FormFieldTitle_depGlAccountId">
+        <value xml:lang="en">Depreciation GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ لمصروف الإهلاك</value>
+    </property>
+    <property key="FormFieldTitle_depreciableBasis">
+        <value xml:lang="en">Depreciable Basis</value>
+        <value xml:lang="ar">أساس الإهلاك</value>
+    </property>
+    <property key="FormFieldTitle_depreciationAmount">
+        <value xml:lang="en">Depreciation Amount</value>
+        <value xml:lang="ar">مبلغ الإهلاك</value>
+    </property>
+    <property key="FormFieldTitle_depreciationCustomMethodId">
+        <value xml:lang="en">Depreciation Custom Method ID</value>
+        <value xml:lang="ar">رمز طريقة الإهلاك المخصصة</value>
+    </property>
+    <property key="FormFieldTitle_description">
+        <value xml:lang="en">Description</value>
+        <value xml:lang="ar">الوصف</value>
+    </property>
+    <property key="FormFieldTitle_discountRate">
+        <value xml:lang="en">Discount Rate</value>
+        <value xml:lang="ar">معدل الخصم</value>
+    </property>
+    <property key="FormFieldTitle_disposalDate">
+        <value xml:lang="en">Disposal Date</value>
+        <value xml:lang="ar">تاريخ الاستبعاد</value>
+    </property>
+    <property key="FormFieldTitle_disposalTypeEnumId">
+        <value xml:lang="en">Disposal Type</value>
+        <value xml:lang="ar">نوع الاستبعاد</value>
+    </property>
+    <property key="FormFieldTitle_dueDate">
+        <value xml:lang="en">Due Date</value>
+        <value xml:lang="ar">تاريخ الاستحقاق</value>
+    </property>
+    <property key="FormFieldTitle_endDate">
+        <value xml:lang="en">End Date</value>
+        <value xml:lang="ar">تاريخ النهاية</value>
+    </property>
+    <property key="FormFieldTitle_estimatedCapitalizedCost">
+        <value xml:lang="en">Estimated Capitalized Cost</value>
+        <value xml:lang="ar">التكلفة المرسملة التقديرية</value>
+    </property>
+    <property key="FormFieldTitle_evaluatedAmount">
+        <value xml:lang="en">Evaluated Amount</value>
+        <value xml:lang="ar">المبلغ المقيم</value>
+    </property>
+    <property key="FormFieldTitle_evaluationDate">
+        <value xml:lang="en">Evaluation Date</value>
+        <value xml:lang="ar">تاريخ التقييم</value>
+    </property>
+    <property key="FormFieldTitle_evaluatorPartyId">
+        <value xml:lang="en">Evaluator Party ID</value>
+        <value xml:lang="ar">رمز جهة المقيم</value>
+    </property>
+    <property key="FormFieldTitle_evaluatorRoleTypeId">
+        <value xml:lang="en">Evaluator Role Type ID</value>
+        <value xml:lang="ar">رمز نوع دور المقيم</value>
+    </property>
+    <property key="FormFieldTitle_eventDate">
+        <value xml:lang="en">Event Date</value>
+        <value xml:lang="ar">تاريخ الحدث</value>
+    </property>
+    <property key="FormFieldTitle_eventTypeEnumId">
+        <value xml:lang="en">Event Type</value>
+        <value xml:lang="ar">نوع الحدث</value>
+    </property>
+    <property key="FormFieldTitle_expensedAmount">
+        <value xml:lang="en">Expensed Amount</value>
+        <value xml:lang="ar">المبلغ المحمل كمصروف</value>
+    </property>
+    <property key="FormFieldTitle_expenseGlAccountId">
+        <value xml:lang="en">Expense GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ للمصروف</value>
+    </property>
+    <property key="FormFieldTitle_facilityId">
+        <value xml:lang="en">Facility ID</value>
+        <value xml:lang="ar">رمز المنشأة</value>
+    </property>
+    <property key="FormFieldTitle_fixedAssetId">
+        <value xml:lang="en">Fixed Asset ID</value>
+        <value xml:lang="ar">رمز الأصل الثابت</value>
+    </property>
+    <property key="FormFieldTitle_fixedAssetTypeId">
+        <value xml:lang="en">Fixed Asset Type ID</value>
+        <value xml:lang="ar">رمز نوع الأصل الثابت</value>
+    </property>
+    <property key="FormFieldTitle_fromDate">
+        <value xml:lang="en">From Date</value>
+        <value xml:lang="ar">من تاريخ</value>
+    </property>
+    <property key="FormFieldTitle_fromFacilityId">
+        <value xml:lang="en">From Facility ID</value>
+        <value xml:lang="ar">رمز المنشأة المصدر</value>
+    </property>
+    <property key="FormFieldTitle_fromLocationSeqId">
+        <value xml:lang="en">From Location Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل موقع المصدر</value>
+    </property>
+    <property key="FormFieldTitle_fromPartyId">
+        <value xml:lang="en">From Party ID</value>
+        <value xml:lang="ar">رمز الجهة المصدر</value>
+    </property>
+    <property key="FormFieldTitle_fromRoleTypeId">
+        <value xml:lang="en">From Role Type ID</value>
+        <value xml:lang="ar">رمز نوع دور المصدر</value>
+    </property>
+    <property key="FormFieldTitle_gainLossAmount">
+        <value xml:lang="en">Gain or Loss Amount</value>
+        <value xml:lang="ar">مبلغ الربح أو الخسارة</value>
+    </property>
+    <property key="FormFieldTitle_impairmentAmount">
+        <value xml:lang="en">Impairment Amount</value>
+        <value xml:lang="ar">مبلغ الهبوط في القيمة</value>
+    </property>
+    <property key="FormFieldTitle_impairmentGlAccountId">
+        <value xml:lang="en">Impairment GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ لهبوط القيمة</value>
+    </property>
+    <property key="FormFieldTitle_initialDirectCost">
+        <value xml:lang="en">Initial Direct Cost</value>
+        <value xml:lang="ar">التكلفة المباشرة الأولية</value>
+    </property>
+    <property key="FormFieldTitle_insuranceTypeEnumId">
+        <value xml:lang="en">Insurance Type</value>
+        <value xml:lang="ar">نوع التأمين</value>
+    </property>
+    <property key="FormFieldTitle_insurerPartyId">
+        <value xml:lang="en">Insurer Party ID</value>
+        <value xml:lang="ar">رمز جهة شركة التأمين</value>
+    </property>
+    <property key="FormFieldTitle_insurerRoleTypeId">
+        <value xml:lang="en">Insurer Role Type ID</value>
+        <value xml:lang="ar">رمز نوع دور شركة التأمين</value>
+    </property>
+    <property key="FormFieldTitle_interestAmount">
+        <value xml:lang="en">Interest Amount</value>
+        <value xml:lang="ar">مبلغ الفائدة</value>
+    </property>
+    <property key="FormFieldTitle_interestExpenseGlAccountId">
+        <value xml:lang="en">Interest Expense GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ لمصروف الفائدة</value>
+    </property>
+    <property key="FormFieldTitle_invoiceId">
+        <value xml:lang="en">Invoice ID</value>
+        <value xml:lang="ar">رمز الفاتورة</value>
+    </property>
+    <property key="FormFieldTitle_invoiceItemSeqId">
+        <value xml:lang="en">Invoice Item Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل بند الفاتورة</value>
+    </property>
+    <property key="FormFieldTitle_isPostingBook">
+        <value xml:lang="en">Posting Book</value>
+        <value xml:lang="ar">دفتر ترحيل</value>
+    </property>
+    <property key="FormFieldTitle_isPrimaryBook">
+        <value xml:lang="en">Primary Book</value>
+        <value xml:lang="ar">الدفتر الرئيسي</value>
+    </property>
+    <property key="FormFieldTitle_lastDepreciationDate">
+        <value xml:lang="en">Last Depreciation Date</value>
+        <value xml:lang="ar">تاريخ آخر إهلاك</value>
+    </property>
+    <property key="FormFieldTitle_lastModifiedByUserLogin">
+        <value xml:lang="en">Last Modified By User Login</value>
+        <value xml:lang="ar">آخر تعديل بواسطة مستخدم الدخول</value>
+    </property>
+    <property key="FormFieldTitle_lastModifiedDate">
+        <value xml:lang="en">Last Modified Date</value>
+        <value xml:lang="ar">تاريخ آخر تعديل</value>
+    </property>
+    <property key="FormFieldTitle_leaseAssetGlAccountId">
+        <value xml:lang="en">Lease Asset GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ لأصل حق الاستخدام</value>
+    </property>
+    <property key="FormFieldTitle_leaseLiabilityAmount">
+        <value xml:lang="en">Lease Liability Amount</value>
+        <value xml:lang="ar">مبلغ التزام العقد</value>
+    </property>
+    <property key="FormFieldTitle_leaseLiabilityGlAccountId">
+        <value xml:lang="en">Lease Liability GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ لالتزام العقد</value>
+    </property>
+    <property key="FormFieldTitle_leaseTypeEnumId">
+        <value xml:lang="en">Lease Type</value>
+        <value xml:lang="ar">نوع العقد</value>
+    </property>
+    <property key="FormFieldTitle_lesseePartyId">
+        <value xml:lang="en">Lessee Party ID</value>
+        <value xml:lang="ar">رمز جهة المستأجر</value>
+    </property>
+    <property key="FormFieldTitle_lesseeRoleTypeId">
+        <value xml:lang="en">Lessee Role Type ID</value>
+        <value xml:lang="ar">رمز نوع دور المستأجر</value>
+    </property>
+    <property key="FormFieldTitle_lessorPartyId">
+        <value xml:lang="en">Lessor Party ID</value>
+        <value xml:lang="ar">رمز جهة المؤجر</value>
+    </property>
+    <property key="FormFieldTitle_lessorRoleTypeId">
+        <value xml:lang="en">Lessor Role Type ID</value>
+        <value xml:lang="ar">رمز نوع دور المؤجر</value>
+    </property>
+    <property key="FormFieldTitle_lossGlAccountId">
+        <value xml:lang="en">Loss GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ للخسارة</value>
+    </property>
+    <property key="FormFieldTitle_lowValueFlag">
+        <value xml:lang="en">Low Value Flag</value>
+        <value xml:lang="ar">مؤشر القيمة المنخفضة</value>
+    </property>
+    <property key="FormFieldTitle_maxAmount">
+        <value xml:lang="en">Maximum Amount</value>
+        <value xml:lang="ar">الحد الأقصى للمبلغ</value>
+    </property>
+    <property key="FormFieldTitle_minAmount">
+        <value xml:lang="en">Minimum Amount</value>
+        <value xml:lang="ar">الحد الأدنى للمبلغ</value>
+    </property>
+    <property key="FormFieldTitle_netBookValue">
+        <value xml:lang="en">Net Book Value</value>
+        <value xml:lang="ar">صافي القيمة الدفترية</value>
+    </property>
+    <property key="FormFieldTitle_newNetBookValue">
+        <value xml:lang="en">New Net Book Value</value>
+        <value xml:lang="ar">صافي القيمة الدفترية الجديد</value>
+    </property>
+    <property key="FormFieldTitle_nextDepreciationDate">
+        <value xml:lang="en">Next Depreciation Date</value>
+        <value xml:lang="ar">تاريخ الإهلاك التالي</value>
+    </property>
+    <property key="FormFieldTitle_orderId">
+        <value xml:lang="en">Order ID</value>
+        <value xml:lang="ar">رمز الطلب</value>
+    </property>
+    <property key="FormFieldTitle_orderItemSeqId">
+        <value xml:lang="en">Order Item Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل بند الطلب</value>
+    </property>
+    <property key="FormFieldTitle_originalCost">
+        <value xml:lang="en">Original Cost</value>
+        <value xml:lang="ar">التكلفة الأصلية</value>
+    </property>
+    <property key="FormFieldTitle_parentFixedAssetId">
+        <value xml:lang="en">Parent Fixed Asset ID</value>
+        <value xml:lang="ar">رمز الأصل الثابت الرئيسي</value>
+    </property>
+    <property key="FormFieldTitle_partyId">
+        <value xml:lang="en">Party ID</value>
+        <value xml:lang="ar">رمز الجهة</value>
+    </property>
+    <property key="FormFieldTitle_paymentAmount">
+        <value xml:lang="en">Payment Amount</value>
+        <value xml:lang="ar">مبلغ الدفعة</value>
+    </property>
+    <property key="FormFieldTitle_paymentFrequencyEnumId">
+        <value xml:lang="en">Payment Frequency</value>
+        <value xml:lang="ar">دورية الدفع</value>
+    </property>
+    <property key="FormFieldTitle_paymentId">
+        <value xml:lang="en">Payment ID</value>
+        <value xml:lang="ar">رمز الدفعة</value>
+    </property>
+    <property key="FormFieldTitle_paymentSeqId">
+        <value xml:lang="en">Payment Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل الدفعة</value>
+    </property>
+    <property key="FormFieldTitle_performedByPartyId">
+        <value xml:lang="en">Performed By Party ID</value>
+        <value xml:lang="ar">رمز الجهة المنفذة</value>
+    </property>
+    <property key="FormFieldTitle_performedByRoleTypeId">
+        <value xml:lang="en">Performed By Role Type ID</value>
+        <value xml:lang="ar">رمز نوع دور المنفذ</value>
+    </property>
+    <property key="FormFieldTitle_periodEndDate">
+        <value xml:lang="en">Period End Date</value>
+        <value xml:lang="ar">تاريخ نهاية الفترة</value>
+    </property>
+    <property key="FormFieldTitle_periodStartDate">
+        <value xml:lang="en">Period Start Date</value>
+        <value xml:lang="ar">تاريخ بداية الفترة</value>
+    </property>
+    <property key="FormFieldTitle_placedInServiceDate">
+        <value xml:lang="en">Placed In Service Date</value>
+        <value xml:lang="ar">تاريخ الوضع في الخدمة</value>
+    </property>
+    <property key="FormFieldTitle_policyNumber">
+        <value xml:lang="en">Policy Number</value>
+        <value xml:lang="ar">رقم الوثيقة</value>
+    </property>
+    <property key="FormFieldTitle_postedAcctgTransId">
+        <value xml:lang="en">Posted Accounting Transaction ID</value>
+        <value xml:lang="ar">رمز الحركة المحاسبية المرحلة</value>
+    </property>
+    <property key="FormFieldTitle_postedDate">
+        <value xml:lang="en">Posted Date</value>
+        <value xml:lang="ar">تاريخ الترحيل</value>
+    </property>
+    <property key="FormFieldTitle_postingItemSeqId">
+        <value xml:lang="en">Posting Item Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل بند الترحيل</value>
+    </property>
+    <property key="FormFieldTitle_postingTypeEnumId">
+        <value xml:lang="en">Posting Type</value>
+        <value xml:lang="ar">نوع الترحيل</value>
+    </property>
+    <property key="FormFieldTitle_premiumAmount">
+        <value xml:lang="en">Premium Amount</value>
+        <value xml:lang="ar">مبلغ القسط</value>
+    </property>
+    <property key="FormFieldTitle_previousNetBookValue">
+        <value xml:lang="en">Previous Net Book Value</value>
+        <value xml:lang="ar">صافي القيمة الدفترية السابق</value>
+    </property>
+    <property key="FormFieldTitle_principalAmount">
+        <value xml:lang="en">Principal Amount</value>
+        <value xml:lang="ar">مبلغ أصل الدين</value>
+    </property>
+    <property key="FormFieldTitle_priorityEnumId">
+        <value xml:lang="en">Priority</value>
+        <value xml:lang="ar">الأولوية</value>
+    </property>
+    <property key="FormFieldTitle_proceedsAllocatedAmount">
+        <value xml:lang="en">Allocated Proceeds Amount</value>
+        <value xml:lang="ar">مبلغ المتحصلات المخصص</value>
+    </property>
+    <property key="FormFieldTitle_proceedsAmount">
+        <value xml:lang="en">Proceeds Amount</value>
+        <value xml:lang="ar">مبلغ المتحصلات</value>
+    </property>
+    <property key="FormFieldTitle_productId">
+        <value xml:lang="en">Product ID</value>
+        <value xml:lang="ar">رمز المنتج</value>
+    </property>
+    <property key="FormFieldTitle_productionCapacity">
+        <value xml:lang="en">Production Capacity</value>
+        <value xml:lang="ar">الطاقة الإنتاجية</value>
+    </property>
+    <property key="FormFieldTitle_productionCapacityUomId">
+        <value xml:lang="en">Production Capacity UOM</value>
+        <value xml:lang="ar">وحدة قياس الطاقة الإنتاجية</value>
+    </property>
+    <property key="FormFieldTitle_productMeterTypeId">
+        <value xml:lang="en">Product Meter Type ID</value>
+        <value xml:lang="ar">رمز نوع عداد المنتج</value>
+    </property>
+    <property key="FormFieldTitle_profitGlAccountId">
+        <value xml:lang="en">Profit GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ للربح</value>
+    </property>
+    <property key="FormFieldTitle_prorationMethodEnumId">
+        <value xml:lang="en">Proration Method</value>
+        <value xml:lang="ar">طريقة التوزيع النسبي</value>
+    </property>
+    <property key="FormFieldTitle_providerPartyId">
+        <value xml:lang="en">Provider Party ID</value>
+        <value xml:lang="ar">رمز جهة المزود</value>
+    </property>
+    <property key="FormFieldTitle_providerRoleTypeId">
+        <value xml:lang="en">Provider Role Type ID</value>
+        <value xml:lang="ar">رمز نوع دور المزود</value>
+    </property>
+    <property key="FormFieldTitle_purchaseOptionFlag">
+        <value xml:lang="en">Purchase Option Flag</value>
+        <value xml:lang="ar">مؤشر خيار الشراء</value>
+    </property>
+    <property key="FormFieldTitle_quoteId">
+        <value xml:lang="en">Quote ID</value>
+        <value xml:lang="ar">رمز عرض السعر</value>
+    </property>
+    <property key="FormFieldTitle_quoteItemSeqId">
+        <value xml:lang="en">Quote Item Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل بند عرض السعر</value>
+    </property>
+    <property key="FormFieldTitle_quoteRequired">
+        <value xml:lang="en">Quote Required</value>
+        <value xml:lang="ar">يتطلب عرض سعر</value>
+    </property>
+    <property key="FormFieldTitle_rateAmount">
+        <value xml:lang="en">Rate Amount</value>
+        <value xml:lang="ar">مبلغ السعر</value>
+    </property>
+    <property key="FormFieldTitle_readingDate">
+        <value xml:lang="en">Reading Date</value>
+        <value xml:lang="ar">تاريخ القراءة</value>
+    </property>
+    <property key="FormFieldTitle_receiptId">
+        <value xml:lang="en">Receipt ID</value>
+        <value xml:lang="ar">رمز الاستلام</value>
+    </property>
+    <property key="FormFieldTitle_remainingLifeMonths">
+        <value xml:lang="en">Remaining Life Months</value>
+        <value xml:lang="ar">العمر المتبقي بالأشهر</value>
+    </property>
+    <property key="FormFieldTitle_renewalOptionFlag">
+        <value xml:lang="en">Renewal Option Flag</value>
+        <value xml:lang="ar">مؤشر خيار التجديد</value>
+    </property>
+    <property key="FormFieldTitle_requestedInServiceDate">
+        <value xml:lang="en">Requested In Service Date</value>
+        <value xml:lang="ar">تاريخ الخدمة المطلوب</value>
+    </property>
+    <property key="FormFieldTitle_requestTypeEnumId">
+        <value xml:lang="en">Request Type</value>
+        <value xml:lang="ar">نوع الطلب</value>
+    </property>
+    <property key="FormFieldTitle_requirementId">
+        <value xml:lang="en">Requirement ID</value>
+        <value xml:lang="ar">رمز الاحتياج</value>
+    </property>
+    <property key="FormFieldTitle_residualValue">
+        <value xml:lang="en">Residual Value</value>
+        <value xml:lang="ar">القيمة المتبقية</value>
+    </property>
+    <property key="FormFieldTitle_residualValueGuarantee">
+        <value xml:lang="en">Residual Value Guarantee</value>
+        <value xml:lang="ar">ضمان القيمة المتبقية</value>
+    </property>
+    <property key="FormFieldTitle_revaluationAmount">
+        <value xml:lang="en">Revaluation Amount</value>
+        <value xml:lang="ar">مبلغ إعادة التقييم</value>
+    </property>
+    <property key="FormFieldTitle_revaluationGlAccountId">
+        <value xml:lang="en">Revaluation GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ لإعادة التقييم</value>
+    </property>
+    <property key="FormFieldTitle_revenueGlAccountId">
+        <value xml:lang="en">Revenue GL Account ID</value>
+        <value xml:lang="ar">رمز حساب الأستاذ للإيراد</value>
+    </property>
+    <property key="FormFieldTitle_reversalAcctgTransId">
+        <value xml:lang="en">Reversal Accounting Transaction ID</value>
+        <value xml:lang="ar">رمز الحركة المحاسبية العكسية</value>
+    </property>
+    <property key="FormFieldTitle_rightOfUseAssetAmount">
+        <value xml:lang="en">Right-of-Use Asset Amount</value>
+        <value xml:lang="ar">مبلغ أصل حق الاستخدام</value>
+    </property>
+    <property key="FormFieldTitle_roleTypeId">
+        <value xml:lang="en">Role Type ID</value>
+        <value xml:lang="ar">رمز نوع الدور</value>
+    </property>
+    <property key="FormFieldTitle_runDate">
+        <value xml:lang="en">Run Date</value>
+        <value xml:lang="ar">تاريخ التشغيل</value>
+    </property>
+    <property key="FormFieldTitle_salvageValue">
+        <value xml:lang="en">Salvage Value</value>
+        <value xml:lang="ar">قيمة الخردة</value>
+    </property>
+    <property key="FormFieldTitle_scheduleSeqId">
+        <value xml:lang="en">Schedule Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل الجدول</value>
+    </property>
+    <property key="FormFieldTitle_score">
+        <value xml:lang="en">Score</value>
+        <value xml:lang="ar">الدرجة</value>
+    </property>
+    <property key="FormFieldTitle_selectedFlag">
+        <value xml:lang="en">Selected Flag</value>
+        <value xml:lang="ar">مؤشر الاختيار</value>
+    </property>
+    <property key="FormFieldTitle_sequenceNum">
+        <value xml:lang="en">Sequence Number</value>
+        <value xml:lang="ar">رقم التسلسل</value>
+    </property>
+    <property key="FormFieldTitle_serviceAmount">
+        <value xml:lang="en">Service Amount</value>
+        <value xml:lang="ar">مبلغ الخدمة</value>
+    </property>
+    <property key="FormFieldTitle_shipmentId">
+        <value xml:lang="en">Shipment ID</value>
+        <value xml:lang="ar">رمز الشحنة</value>
+    </property>
+    <property key="FormFieldTitle_shortTermFlag">
+        <value xml:lang="en">Short-Term Flag</value>
+        <value xml:lang="ar">مؤشر قصير الأجل</value>
+    </property>
+    <property key="FormFieldTitle_sourceEntityId">
+        <value xml:lang="en">Source Entity ID</value>
+        <value xml:lang="ar">رمز كيان المصدر</value>
+    </property>
+    <property key="FormFieldTitle_sourceEntityName">
+        <value xml:lang="en">Source Entity Name</value>
+        <value xml:lang="ar">اسم كيان المصدر</value>
+    </property>
+    <property key="FormFieldTitle_startDate">
+        <value xml:lang="en">Start Date</value>
+        <value xml:lang="ar">تاريخ البداية</value>
+    </property>
+    <property key="FormFieldTitle_statusId">
+        <value xml:lang="en">Status</value>
+        <value xml:lang="ar">الحالة</value>
+    </property>
+    <property key="FormFieldTitle_targetPlaceInServiceDate">
+        <value xml:lang="en">Target Place In Service Date</value>
+        <value xml:lang="ar">تاريخ الوضع المستهدف في الخدمة</value>
+    </property>
+    <property key="FormFieldTitle_taxAmount">
+        <value xml:lang="en">Tax Amount</value>
+        <value xml:lang="ar">مبلغ الضريبة</value>
+    </property>
+    <property key="FormFieldTitle_terminationOptionFlag">
+        <value xml:lang="en">Termination Option Flag</value>
+        <value xml:lang="ar">مؤشر خيار الإنهاء</value>
+    </property>
+    <property key="FormFieldTitle_thruDate">
+        <value xml:lang="en">Through Date</value>
+        <value xml:lang="ar">إلى تاريخ</value>
+    </property>
+    <property key="FormFieldTitle_toFacilityId">
+        <value xml:lang="en">To Facility ID</value>
+        <value xml:lang="ar">رمز المنشأة الوجهة</value>
+    </property>
+    <property key="FormFieldTitle_toLocationSeqId">
+        <value xml:lang="en">To Location Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل موقع الوجهة</value>
+    </property>
+    <property key="FormFieldTitle_toPartyId">
+        <value xml:lang="en">To Party ID</value>
+        <value xml:lang="ar">رمز الجهة الوجهة</value>
+    </property>
+    <property key="FormFieldTitle_toRoleTypeId">
+        <value xml:lang="en">To Role Type ID</value>
+        <value xml:lang="ar">رمز نوع دور الوجهة</value>
+    </property>
+    <property key="FormFieldTitle_transactionDate">
+        <value xml:lang="en">Transaction Date</value>
+        <value xml:lang="ar">تاريخ الحركة</value>
+    </property>
+    <property key="FormFieldTitle_transferDate">
+        <value xml:lang="en">Transfer Date</value>
+        <value xml:lang="ar">تاريخ النقل</value>
+    </property>
+    <property key="FormFieldTitle_usageDate">
+        <value xml:lang="en">Usage Date</value>
+        <value xml:lang="ar">تاريخ الاستخدام</value>
+    </property>
+    <property key="FormFieldTitle_usageQuantity">
+        <value xml:lang="en">Usage Quantity</value>
+        <value xml:lang="ar">كمية الاستخدام</value>
+    </property>
+    <property key="FormFieldTitle_usageSeqId">
+        <value xml:lang="en">Usage Sequence ID</value>
+        <value xml:lang="ar">رمز تسلسل الاستخدام</value>
+    </property>
+    <property key="FormFieldTitle_usageUomId">
+        <value xml:lang="en">Usage UOM</value>
+        <value xml:lang="ar">وحدة قياس الاستخدام</value>
+    </property>
+    <property key="FormFieldTitle_usefulLifeMonths">
+        <value xml:lang="en">Useful Life Months</value>
+        <value xml:lang="ar">العمر الإنتاجي بالأشهر</value>
+    </property>
+    <property key="FormFieldTitle_valuationAmount">
+        <value xml:lang="en">Valuation Amount</value>
+        <value xml:lang="ar">مبلغ التقييم</value>
+    </property>
+    <property key="FormFieldTitle_valuationTypeEnumId">
+        <value xml:lang="en">Valuation Type</value>
+        <value xml:lang="ar">نوع التقييم</value>
+    </property>
+    <property key="FormFieldTitle_workEffortId">
+        <value xml:lang="en">Work Effort ID</value>
+        <value xml:lang="ar">رمز العمل</value>
+    </property>
+    <property key="AssetsStatusActive">
+        <value xml:lang="en">Active</value>
+        <value xml:lang="ar">نشط</value>
+    </property>
+    <property key="AssetsStatusInactive">
+        <value xml:lang="en">Inactive</value>
+        <value xml:lang="ar">غير نشط</value>
+    </property>
+    <property key="AssetsStatusPending">
+        <value xml:lang="en">Pending</value>
+        <value xml:lang="ar">قيد الانتظار</value>
+    </property>
+    <property key="AssetsStatusApproved">
+        <value xml:lang="en">Approved</value>
+        <value xml:lang="ar">معتمد</value>
+    </property>
+    <property key="AssetsStatusRejected">
+        <value xml:lang="en">Rejected</value>
+        <value xml:lang="ar">مرفوض</value>
+    </property>
+    <property key="AssetsStatusPlanned">
+        <value xml:lang="en">Planned</value>
+        <value xml:lang="ar">مخطط</value>
+    </property>
+    <property key="AssetsStatusPosted">
+        <value xml:lang="en">Posted</value>
+        <value xml:lang="ar">مرحل</value>
+    </property>
+    <property key="AssetsStatusReversed">
+        <value xml:lang="en">Reversed</value>
+        <value xml:lang="ar">معكوس</value>
+    </property>
+    <property key="AssetsStatusClosed">
+        <value xml:lang="en">Closed</value>
+        <value xml:lang="ar">مغلق</value>
+    </property>
+    <property key="AssetsStatusCancelled">
+        <value xml:lang="en">Cancelled</value>
+        <value xml:lang="ar">ملغي</value>
+    </property>
+    <property key="AssetsStatusInService">
+        <value xml:lang="en">In Service</value>
+        <value xml:lang="ar">في الخدمة</value>
+    </property>
+    <property key="AssetsStatusDisposed">
+        <value xml:lang="en">Disposed</value>
+        <value xml:lang="ar">مستبعد</value>
+    </property>
+    <property key="AssetsEnumBookCorporate">
+        <value xml:lang="en">Corporate Book</value>
+        <value xml:lang="ar">دفتر الشركة</value>
+    </property>
+    <property key="AssetsEnumBookTax">
+        <value xml:lang="en">Tax Book</value>
+        <value xml:lang="ar">دفتر الضريبة</value>
+    </property>
+    <property key="AssetsEnumBookIfrs">
+        <value xml:lang="en">IFRS Book</value>
+        <value xml:lang="ar">دفتر IFRS</value>
+    </property>
+    <property key="AssetsEnumBookManagement">
+        <value xml:lang="en">Management Book</value>
+        <value xml:lang="ar">دفتر الإدارة</value>
+    </property>
+    <property key="AssetsEnumBookGroup">
+        <value xml:lang="en">Group Book</value>
+        <value xml:lang="ar">دفتر المجموعة</value>
+    </property>
+    <property key="AssetsEnumConventionFullMonth">
+        <value xml:lang="en">Full Month</value>
+        <value xml:lang="ar">شهر كامل</value>
+    </property>
+    <property key="AssetsEnumConventionMidMonth">
+        <value xml:lang="en">Mid Month</value>
+        <value xml:lang="ar">منتصف الشهر</value>
+    </property>
+    <property key="AssetsEnumConventionHalfYear">
+        <value xml:lang="en">Half Year</value>
+        <value xml:lang="ar">نصف سنة</value>
+    </property>
+    <property key="AssetsEnumConventionActualDays">
+        <value xml:lang="en">Actual Days</value>
+        <value xml:lang="ar">الأيام الفعلية</value>
+    </property>
+    <property key="AssetsEnumProrateNone">
+        <value xml:lang="en">No Proration</value>
+        <value xml:lang="ar">بدون توزيع نسبي</value>
+    </property>
+    <property key="AssetsEnumProrateDays">
+        <value xml:lang="en">Prorate by Days</value>
+        <value xml:lang="ar">توزيع نسبي حسب الأيام</value>
+    </property>
+    <property key="AssetsEnumProrateMonths">
+        <value xml:lang="en">Prorate by Months</value>
+        <value xml:lang="ar">توزيع نسبي حسب الأشهر</value>
+    </property>
+    <property key="AssetsEnumRequestNew">
+        <value xml:lang="en">New Asset</value>
+        <value xml:lang="ar">أصل جديد</value>
+    </property>
+    <property key="AssetsEnumRequestReplacement">
+        <value xml:lang="en">Replacement Asset</value>
+        <value xml:lang="ar">أصل بديل</value>
+    </property>
+    <property key="AssetsEnumRequestLease">
+        <value xml:lang="en">Lease or Rental Asset</value>
+        <value xml:lang="ar">أصل تأجير أو استئجار</value>
+    </property>
+    <property key="AssetsEnumRequestTransfer">
+        <value xml:lang="en">Transfer Asset</value>
+        <value xml:lang="ar">نقل أصل</value>
+    </property>
+    <property key="AssetsEnumPriorityLow">
+        <value xml:lang="en">Low</value>
+        <value xml:lang="ar">منخفضة</value>
+    </property>
+    <property key="AssetsEnumPriorityNormal">
+        <value xml:lang="en">Normal</value>
+        <value xml:lang="ar">عادية</value>
+    </property>
+    <property key="AssetsEnumPriorityHigh">
+        <value xml:lang="en">High</value>
+        <value xml:lang="ar">عالية</value>
+    </property>
+    <property key="AssetsEnumPriorityUrgent">
+        <value xml:lang="en">Urgent</value>
+        <value xml:lang="ar">عاجلة</value>
+    </property>
+    <property key="AssetsEnumBudgetSecured">
+        <value xml:lang="en">Budget Secured</value>
+        <value xml:lang="ar">ميزانية معتمدة</value>
+    </property>
+    <property key="AssetsEnumBudgetReserved">
+        <value xml:lang="en">Budget Reserved</value>
+        <value xml:lang="ar">ميزانية محجوزة</value>
+    </property>
+    <property key="AssetsEnumBudgetUnbudgeted">
+        <value xml:lang="en">Unbudgeted</value>
+        <value xml:lang="ar">بدون ميزانية</value>
+    </property>
+    <property key="AssetsEnumBudgetRejected">
+        <value xml:lang="en">Budget Rejected</value>
+        <value xml:lang="ar">ميزانية مرفوضة</value>
+    </property>
+    <property key="AssetsEnumDecisionApprove">
+        <value xml:lang="en">Approve</value>
+        <value xml:lang="ar">اعتماد</value>
+    </property>
+    <property key="AssetsEnumDecisionReject">
+        <value xml:lang="en">Reject</value>
+        <value xml:lang="ar">رفض</value>
+    </property>
+    <property key="AssetsEnumDecisionReturn">
+        <value xml:lang="en">Return for Revision</value>
+        <value xml:lang="ar">إرجاع للتعديل</value>
+    </property>
+    <property key="AssetsEnumDecisionDelegate">
+        <value xml:lang="en">Delegate</value>
+        <value xml:lang="ar">تفويض</value>
+    </property>
+    <property key="AssetsEnumCostAsset">
+        <value xml:lang="en">Asset Cost</value>
+        <value xml:lang="ar">تكلفة الأصل</value>
+    </property>
+    <property key="AssetsEnumCostFreight">
+        <value xml:lang="en">Freight</value>
+        <value xml:lang="ar">الشحن</value>
+    </property>
+    <property key="AssetsEnumCostInstallation">
+        <value xml:lang="en">Installation</value>
+        <value xml:lang="ar">التركيب</value>
+    </property>
+    <property key="AssetsEnumCostTax">
+        <value xml:lang="en">Tax</value>
+        <value xml:lang="ar">الضريبة</value>
+    </property>
+    <property key="AssetsEnumCostService">
+        <value xml:lang="en">Service</value>
+        <value xml:lang="ar">الخدمة</value>
+    </property>
+    <property key="AssetsEnumEventRequested">
+        <value xml:lang="en">Requested</value>
+        <value xml:lang="ar">تم الطلب</value>
+    </property>
+    <property key="AssetsEnumEventApproved">
+        <value xml:lang="en">Approved</value>
+        <value xml:lang="ar">تم الاعتماد</value>
+    </property>
+    <property key="AssetsEnumEventOrdered">
+        <value xml:lang="en">Ordered</value>
+        <value xml:lang="ar">تم الطلب الشرائي</value>
+    </property>
+    <property key="AssetsEnumEventReceived">
+        <value xml:lang="en">Received</value>
+        <value xml:lang="ar">تم الاستلام</value>
+    </property>
+    <property key="AssetsEnumEventCapitalized">
+        <value xml:lang="en">Capitalized</value>
+        <value xml:lang="ar">تمت الرسملة</value>
+    </property>
+    <property key="AssetsEnumEventPlacedInService">
+        <value xml:lang="en">Placed In Service</value>
+        <value xml:lang="ar">تم الوضع في الخدمة</value>
+    </property>
+    <property key="AssetsEnumEventTransferred">
+        <value xml:lang="en">Transferred</value>
+        <value xml:lang="ar">تم النقل</value>
+    </property>
+    <property key="AssetsEnumEventRetired">
+        <value xml:lang="en">Retired</value>
+        <value xml:lang="ar">تم الإحالة للتقاعد</value>
+    </property>
+    <property key="AssetsEnumValuationImpairment">
+        <value xml:lang="en">Impairment</value>
+        <value xml:lang="ar">هبوط القيمة</value>
+    </property>
+    <property key="AssetsEnumValuationRevaluation">
+        <value xml:lang="en">Revaluation</value>
+        <value xml:lang="ar">إعادة التقييم</value>
+    </property>
+    <property key="AssetsEnumValuationWriteUp">
+        <value xml:lang="en">Write Up</value>
+        <value xml:lang="ar">زيادة القيمة</value>
+    </property>
+    <property key="AssetsEnumValuationWriteDown">
+        <value xml:lang="en">Write Down</value>
+        <value xml:lang="ar">تخفيض القيمة</value>
+    </property>
+    <property key="AssetsEnumDisposalSale">
+        <value xml:lang="en">Sale</value>
+        <value xml:lang="ar">بيع</value>
+    </property>
+    <property key="AssetsEnumDisposalScrap">
+        <value xml:lang="en">Scrap</value>
+        <value xml:lang="ar">إتلاف</value>
+    </property>
+    <property key="AssetsEnumDisposalDonation">
+        <value xml:lang="en">Donation</value>
+        <value xml:lang="ar">تبرع</value>
+    </property>
+    <property key="AssetsEnumDisposalLoss">
+        <value xml:lang="en">Loss</value>
+        <value xml:lang="ar">فقدان</value>
+    </property>
+    <property key="AssetsEnumLeaseInbound">
+        <value xml:lang="en">Inbound Lease or Rental</value>
+        <value xml:lang="ar">استئجار وارد</value>
+    </property>
+    <property key="AssetsEnumLeaseOutbound">
+        <value xml:lang="en">Outbound Lease or Rental</value>
+        <value xml:lang="ar">تأجير صادر</value>
+    </property>
+    <property key="AssetsEnumLeaseFinance">
+        <value xml:lang="en">Finance Lease</value>
+        <value xml:lang="ar">عقد تمويلي</value>
+    </property>
+    <property key="AssetsEnumLeaseOperating">
+        <value xml:lang="en">Operating Lease</value>
+        <value xml:lang="ar">عقد تشغيلي</value>
+    </property>
+    <property key="AssetsEnumStandardLocal">
+        <value xml:lang="en">Local GAAP</value>
+        <value xml:lang="ar">المعايير المحلية</value>
+    </property>
+    <property key="AssetsEnumStandardIfrs16">
+        <value xml:lang="en">IFRS 16</value>
+        <value xml:lang="ar">IFRS 16</value>
+    </property>
+    <property key="AssetsEnumStandardAsc842">
+        <value xml:lang="en">ASC 842</value>
+        <value xml:lang="ar">ASC 842</value>
+    </property>
+    <property key="AssetsEnumFrequencyMonthly">
+        <value xml:lang="en">Monthly</value>
+        <value xml:lang="ar">شهري</value>
+    </property>
+    <property key="AssetsEnumFrequencyQuarterly">
+        <value xml:lang="en">Quarterly</value>
+        <value xml:lang="ar">ربع سنوي</value>
+    </property>
+    <property key="AssetsEnumFrequencyAnnual">
+        <value xml:lang="en">Annual</value>
+        <value xml:lang="ar">سنوي</value>
+    </property>
+    <property key="AssetsEnumFrequencyOneTime">
+        <value xml:lang="en">One Time</value>
+        <value xml:lang="ar">مرة واحدة</value>
+    </property>
+    <property key="AssetsEnumComponentLease">
+        <value xml:lang="en">Lease Component</value>
+        <value xml:lang="ar">مكون التأجير</value>
+    </property>
+    <property key="AssetsEnumComponentInsurance">
+        <value xml:lang="en">Insurance Component</value>
+        <value xml:lang="ar">مكون التأمين</value>
+    </property>
+    <property key="AssetsEnumComponentDriver">
+        <value xml:lang="en">Driver Component</value>
+        <value xml:lang="ar">مكون السائق</value>
+    </property>
+    <property key="AssetsEnumComponentService">
+        <value xml:lang="en">Service Component</value>
+        <value xml:lang="ar">مكون الخدمة</value>
+    </property>
+    <property key="AssetsEnumInsuranceComprehensive">
+        <value xml:lang="en">Comprehensive</value>
+        <value xml:lang="ar">شامل</value>
+    </property>
+    <property key="AssetsEnumInsuranceLiability">
+        <value xml:lang="en">Liability</value>
+        <value xml:lang="ar">مسؤولية</value>
+    </property>
+    <property key="AssetsEnumInsuranceDamageWaiver">
+        <value xml:lang="en">Damage Waiver</value>
+        <value xml:lang="ar">تنازل عن أضرار</value>
+    </property>
+    <property key="AssetsEnumPostingDepreciation">
+        <value xml:lang="en">Depreciation Posting</value>
+        <value xml:lang="ar">ترحيل الإهلاك</value>
+    </property>
+    <property key="AssetsEnumPostingLease">
+        <value xml:lang="en">Lease Posting</value>
+        <value xml:lang="ar">ترحيل العقد</value>
+    </property>
+    <property key="AssetsEnumPostingDisposal">
+        <value xml:lang="en">Disposal Posting</value>
+        <value xml:lang="ar">ترحيل الاستبعاد</value>
+    </property>
+    <property key="AssetsEnumPostingValuation">
+        <value xml:lang="en">Valuation Posting</value>
+        <value xml:lang="ar">ترحيل التقييم</value>
+    </property>
+    <property key="AssetsPermissionError">
+        <value xml:lang="en">You do not have permission to perform this asset action.</value>
+        <value xml:lang="ar">لا توجد لديك صلاحية لتنفيذ هذا الإجراء على الأصول.</value>
+    </property>
+    <property key="AssetsViewPermissionError">
+        <value xml:lang="en">You are not allowed to view this page.</value>
+        <value xml:lang="ar">لا توجد لديك صلاحية لعرض هذه الصفحة.</value>
+    </property>
+    <property key="AssetsCreatePermissionError">
+        <value xml:lang="en">You are not allowed to create asset records.</value>
+        <value xml:lang="ar">لا توجد لديك صلاحية لإنشاء سجلات الأصول.</value>
+    </property>
+    <property key="AssetsUpdatePermissionError">
+        <value xml:lang="en">You are not allowed to update asset records.</value>
+        <value xml:lang="ar">لا توجد لديك صلاحية لتحديث سجلات الأصول.</value>
+    </property>
+    <property key="AssetsDeletePermissionError">
+        <value xml:lang="en">You are not allowed to delete asset records.</value>
+        <value xml:lang="ar">لا توجد لديك صلاحية لحذف سجلات الأصول.</value>
+    </property>
+    <property key="AssetsPostPermissionError">
+        <value xml:lang="en">You are not allowed to post asset accounting transactions.</value>
+        <value xml:lang="ar">لا توجد لديك صلاحية لترحيل الحركات المحاسبية للأصول.</value>
+    </property>
+    <property key="AssetsErrorValidationFailed">
+        <value xml:lang="en">Please correct the highlighted asset information and try again.</value>
+        <value xml:lang="ar">يرجى تصحيح بيانات الأصل المحددة ثم المحاولة مرة أخرى.</value>
+    </property>
+    <property key="AssetsErrorRequiredField">
+        <value xml:lang="en">${fieldName} is required.</value>
+        <value xml:lang="ar">الحقل ${fieldName} مطلوب.</value>
+    </property>
+    <property key="AssetsErrorRecordNotFound">
+        <value xml:lang="en">The requested asset record was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على سجل الأصل المطلوب.</value>
+    </property>
+    <property key="AssetsErrorInvalidStatus">
+        <value xml:lang="en">The selected status is not valid for this action.</value>
+        <value xml:lang="ar">الحالة المحددة غير صالحة لهذا الإجراء.</value>
+    </property>
+    <property key="AssetsErrorInvalidDateRange">
+        <value xml:lang="en">The through date must be later than the from date.</value>
+        <value xml:lang="ar">يجب أن يكون تاريخ النهاية بعد تاريخ البداية.</value>
+    </property>
+    <property key="AssetsErrorInvalidAmount">
+        <value xml:lang="en">The amount must be greater than or equal to zero.</value>
+        <value xml:lang="ar">يجب أن يكون المبلغ أكبر من أو يساوي صفر.</value>
+    </property>
+    <property key="AssetsErrorCurrencyRequired">
+        <value xml:lang="en">Currency is required for monetary asset amounts.</value>
+        <value xml:lang="ar">العملة مطلوبة للمبالغ المالية الخاصة بالأصول.</value>
+    </property>
+    <property key="AssetsErrorPartyRoleRequired">
+        <value xml:lang="en">The party must have the selected OFBiz role before it can be used here.</value>
+        <value xml:lang="ar">يجب أن تكون للجهة دور OFBiz المحدد قبل استخدامها هنا.</value>
+    </property>
+    <property key="AssetsErrorBookRequired">
+        <value xml:lang="en">Asset book is required.</value>
+        <value xml:lang="ar">دفتر الأصول مطلوب.</value>
+    </property>
+    <property key="AssetsErrorBookNotFound">
+        <value xml:lang="en">Asset book ${assetsBookId} was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على دفتر الأصول ${assetsBookId}.</value>
+    </property>
+    <property key="AssetsErrorPrimaryBookRequired">
+        <value xml:lang="en">A primary asset book is required for this company.</value>
+        <value xml:lang="ar">يلزم وجود دفتر أصول رئيسي لهذه الشركة.</value>
+    </property>
+    <property key="AssetsErrorPostingBookRequired">
+        <value xml:lang="en">A posting asset book is required before accounting transactions can be created.</value>
+        <value xml:lang="ar">يلزم وجود دفتر أصول قابل للترحيل قبل إنشاء الحركات المحاسبية.</value>
+    </property>
+    <property key="AssetsErrorMemoBookCannotPost">
+        <value xml:lang="en">This asset book is a memo book and cannot post to the general ledger.</value>
+        <value xml:lang="ar">دفتر الأصول هذا دفتر مذكرة ولا يمكن ترحيله إلى دفتر الأستاذ العام.</value>
+    </property>
+    <property key="AssetsErrorFixedAssetRequired">
+        <value xml:lang="en">Fixed asset is required.</value>
+        <value xml:lang="ar">الأصل الثابت مطلوب.</value>
+    </property>
+    <property key="AssetsErrorFixedAssetNotFound">
+        <value xml:lang="en">Fixed asset ${fixedAssetId} was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على الأصل الثابت ${fixedAssetId}.</value>
+    </property>
+    <property key="AssetsErrorBookDetailNotFound">
+        <value xml:lang="en">Book detail was not found for this fixed asset and asset book.</value>
+        <value xml:lang="ar">لم يتم العثور على تفاصيل الدفتر لهذا الأصل الثابت ودفتر الأصول.</value>
+    </property>
+    <property key="AssetsErrorBookDetailAlreadyExists">
+        <value xml:lang="en">Book detail already exists for this fixed asset and asset book.</value>
+        <value xml:lang="ar">توجد تفاصيل دفتر مسبقا لهذا الأصل الثابت ودفتر الأصول.</value>
+    </property>
+    <property key="AssetsErrorDepMethodRequired">
+        <value xml:lang="en">Depreciation method is required for a depreciable asset book detail.</value>
+        <value xml:lang="ar">طريقة الإهلاك مطلوبة لتفاصيل دفتر أصل قابل للإهلاك.</value>
+    </property>
+    <property key="AssetsErrorDepScheduleExists">
+        <value xml:lang="en">A depreciation schedule already exists for this fixed asset and book.</value>
+        <value xml:lang="ar">يوجد جدول إهلاك مسبقا لهذا الأصل الثابت والدفتر.</value>
+    </property>
+    <property key="AssetsErrorDepScheduleNotFound">
+        <value xml:lang="en">Depreciation schedule row was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على صف جدول الإهلاك.</value>
+    </property>
+    <property key="AssetsErrorDepSchedulePosted">
+        <value xml:lang="en">Posted depreciation schedule rows cannot be changed directly.</value>
+        <value xml:lang="ar">لا يمكن تعديل صفوف جدول الإهلاك المرحلة مباشرة.</value>
+    </property>
+    <property key="AssetsErrorDepScheduleAlreadyPosted">
+        <value xml:lang="en">This depreciation schedule row is already posted.</value>
+        <value xml:lang="ar">صف جدول الإهلاك هذا مرحل مسبقا.</value>
+    </property>
+    <property key="AssetsErrorDepRunNotFound">
+        <value xml:lang="en">Depreciation run was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على عملية الإهلاك.</value>
+    </property>
+    <property key="AssetsErrorDepRunAlreadyPosted">
+        <value xml:lang="en">This depreciation run is already posted.</value>
+        <value xml:lang="ar">عملية الإهلاك هذه مرحلة مسبقا.</value>
+    </property>
+    <property key="AssetsErrorDepRunNoPlannedRows">
+        <value xml:lang="en">No planned depreciation rows were found for this run.</value>
+        <value xml:lang="ar">لم يتم العثور على صفوف إهلاك مخططة لهذه العملية.</value>
+    </property>
+    <property key="AssetsErrorGlMappingMissing">
+        <value xml:lang="en">GL account mapping is missing for this asset book, asset type, or fixed asset.</value>
+        <value xml:lang="ar">ربط حسابات الأستاذ مفقود لهذا الدفتر أو نوع الأصل أو الأصل الثابت.</value>
+    </property>
+    <property key="AssetsErrorAcctgTransCreateFailed">
+        <value xml:lang="en">The accounting transaction could not be created.</value>
+        <value xml:lang="ar">تعذر إنشاء الحركة المحاسبية.</value>
+    </property>
+    <property key="AssetsErrorAcctgTransPostFailed">
+        <value xml:lang="en">The accounting transaction could not be posted.</value>
+        <value xml:lang="ar">تعذر ترحيل الحركة المحاسبية.</value>
+    </property>
+    <property key="AssetsErrorCannotReverseUnposted">
+        <value xml:lang="en">Only posted asset transactions can be reversed.</value>
+        <value xml:lang="ar">يمكن عكس حركات الأصول المرحلة فقط.</value>
+    </property>
+    <property key="AssetsErrorRequirementRequired">
+        <value xml:lang="en">Requirement is required for this asset request workflow.</value>
+        <value xml:lang="ar">الاحتياج مطلوب لمسار طلب الأصل هذا.</value>
+    </property>
+    <property key="AssetsErrorRequirementNotFound">
+        <value xml:lang="en">Requirement ${requirementId} was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على الاحتياج ${requirementId}.</value>
+    </property>
+    <property key="AssetsErrorBudgetNotApproved">
+        <value xml:lang="en">The asset request budget is not approved or secured.</value>
+        <value xml:lang="ar">ميزانية طلب الأصل غير معتمدة أو غير مؤمنة.</value>
+    </property>
+    <property key="AssetsErrorApprovalRuleMissing">
+        <value xml:lang="en">No approval rule matched this asset request.</value>
+        <value xml:lang="ar">لم تتطابق أي قاعدة موافقة مع طلب الأصل هذا.</value>
+    </property>
+    <property key="AssetsErrorApprovalAlreadyCompleted">
+        <value xml:lang="en">This approval step has already been completed.</value>
+        <value xml:lang="ar">تم إكمال خطوة الموافقة هذه مسبقا.</value>
+    </property>
+    <property key="AssetsErrorQuoteRequired">
+        <value xml:lang="en">A quote is required before this asset request can continue.</value>
+        <value xml:lang="ar">يلزم عرض سعر قبل متابعة طلب الأصل هذا.</value>
+    </property>
+    <property key="AssetsErrorQuoteNotSelected">
+        <value xml:lang="en">A selected quote evaluation is required before capitalization.</value>
+        <value xml:lang="ar">يلزم اختيار تقييم عرض سعر قبل الرسملة.</value>
+    </property>
+    <property key="AssetsErrorCapitalizationNotFound">
+        <value xml:lang="en">Capitalization record was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على سجل الرسملة.</value>
+    </property>
+    <property key="AssetsErrorCapitalizationAlreadyPosted">
+        <value xml:lang="en">This capitalization has already been posted.</value>
+        <value xml:lang="ar">تم ترحيل هذه الرسملة مسبقا.</value>
+    </property>
+    <property key="AssetsErrorCapitalizedAmountMismatch">
+        <value xml:lang="en">The capitalization cost lines do not match the capitalized amount.</value>
+        <value xml:lang="ar">بنود تكلفة الرسملة لا تطابق المبلغ المرسمل.</value>
+    </property>
+    <property key="AssetsErrorTransferDateRequired">
+        <value xml:lang="en">Transfer date is required.</value>
+        <value xml:lang="ar">تاريخ النقل مطلوب.</value>
+    </property>
+    <property key="AssetsErrorDisposalNotFound">
+        <value xml:lang="en">Disposal record was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على سجل الاستبعاد.</value>
+    </property>
+    <property key="AssetsErrorDisposalAlreadyPosted">
+        <value xml:lang="en">This disposal has already been posted.</value>
+        <value xml:lang="ar">تم ترحيل هذا الاستبعاد مسبقا.</value>
+    </property>
+    <property key="AssetsErrorDisposalBeforeServiceDate">
+        <value xml:lang="en">Disposal date cannot be before the asset was placed in service.</value>
+        <value xml:lang="ar">لا يمكن أن يكون تاريخ الاستبعاد قبل تاريخ وضع الأصل في الخدمة.</value>
+    </property>
+    <property key="AssetsErrorLeaseNotFound">
+        <value xml:lang="en">Lease or rental contract was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على عقد التأجير أو الاستئجار.</value>
+    </property>
+    <property key="AssetsErrorLeaseDateInvalid">
+        <value xml:lang="en">Lease end date must be later than lease start date.</value>
+        <value xml:lang="ar">يجب أن يكون تاريخ نهاية العقد بعد تاريخ بدايته.</value>
+    </property>
+    <property key="AssetsErrorLeasePartyMissing">
+        <value xml:lang="en">Both lessor and lessee parties are required for a lease contract.</value>
+        <value xml:lang="ar">جهتا المؤجر والمستأجر مطلوبتان لعقد التأجير.</value>
+    </property>
+    <property key="AssetsErrorLeaseComponentRequired">
+        <value xml:lang="en">At least one lease component is required.</value>
+        <value xml:lang="ar">يلزم مكون واحد على الأقل للعقد.</value>
+    </property>
+    <property key="AssetsErrorLeaseScheduleMissing">
+        <value xml:lang="en">Lease payment or accounting schedule is missing.</value>
+        <value xml:lang="ar">جدول الدفعات أو جدول محاسبة العقد مفقود.</value>
+    </property>
+    <property key="AssetsErrorInsurancePolicyNotFound">
+        <value xml:lang="en">Insurance policy was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على وثيقة التأمين.</value>
+    </property>
+    <property key="AssetsErrorInsuranceCoverageExpired">
+        <value xml:lang="en">Insurance coverage is expired for the selected date.</value>
+        <value xml:lang="ar">انتهت تغطية التأمين في التاريخ المحدد.</value>
+    </property>
+    <property key="AssetsErrorDriverAssignmentOverlap">
+        <value xml:lang="en">Driver assignment overlaps with an existing assignment for this asset.</value>
+        <value xml:lang="ar">يتداخل تعيين السائق مع تعيين قائم لهذا الأصل.</value>
+    </property>
+    <property key="AssetsErrorPostingRunNotFound">
+        <value xml:lang="en">Posting run was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على عملية الترحيل.</value>
+    </property>
+    <property key="AssetsErrorPostingRunAlreadyPosted">
+        <value xml:lang="en">This posting run has already been posted.</value>
+        <value xml:lang="ar">تم ترحيل هذه العملية مسبقا.</value>
+    </property>
+    <property key="AssetsErrorPostingRunEmpty">
+        <value xml:lang="en">No eligible asset rows were found for this posting run.</value>
+        <value xml:lang="ar">لم يتم العثور على صفوف أصول مؤهلة لعملية الترحيل هذه.</value>
+    </property>
+    <property key="AssetsErrorServiceUnexpectedFailure">
+        <value xml:lang="en">The asset service could not complete. Please review the details and try again.</value>
+        <value xml:lang="ar">تعذر إكمال خدمة الأصول. يرجى مراجعة التفاصيل ثم المحاولة مرة أخرى.</value>
+    </property>
+    <property key="AssetsSuccessCreated">
+        <value xml:lang="en">Asset record was created successfully.</value>
+        <value xml:lang="ar">تم إنشاء سجل الأصل بنجاح.</value>
+    </property>
+    <property key="AssetsSuccessUpdated">
+        <value xml:lang="en">Asset record was updated successfully.</value>
+        <value xml:lang="ar">تم تحديث سجل الأصل بنجاح.</value>
+    </property>
+    <property key="AssetsSuccessPosted">
+        <value xml:lang="en">Asset transaction was posted successfully.</value>
+        <value xml:lang="ar">تم ترحيل حركة الأصل بنجاح.</value>
+    </property>
+    <property key="AssetsSuccessReversed">
+        <value xml:lang="en">Asset transaction was reversed successfully.</value>
+        <value xml:lang="ar">تم عكس حركة الأصل بنجاح.</value>
+    </property>
+    <property key="AssetsBookAssignSuccess">
+        <value xml:lang="en">Asset ${fixedAssetId} was assigned to book ${assetsBookId} successfully.</value>
+        <value xml:lang="ar">تم ربط الأصل ${fixedAssetId} بالدفتر ${assetsBookId} بنجاح.</value>
+    </property>
+    <property key="AssetsBookAssignDryRunSuccess">
+        <value xml:lang="en">Assignment of asset ${fixedAssetId} to book ${assetsBookId} passed validation. No data was changed.</value>
+        <value xml:lang="ar">اجتاز ربط الأصل ${fixedAssetId} بالدفتر ${assetsBookId} التحقق دون تغيير البيانات.</value>
+    </property>
+    <property key="AssetsBookRemoveSuccess">
+        <value xml:lang="en">Asset ${fixedAssetId} was removed from book ${assetsBookId}; accounting history was preserved.</value>
+        <value xml:lang="ar">تمت إزالة الأصل ${fixedAssetId} من الدفتر ${assetsBookId} مع الاحتفاظ بالسجل المحاسبي.</value>
+    </property>
+    <property key="AssetsBookRemoveDryRunSuccess">
+        <value xml:lang="en">Removal of asset ${fixedAssetId} from book ${assetsBookId} passed validation. No data was changed.</value>
+        <value xml:lang="ar">اجتازت إزالة الأصل ${fixedAssetId} من الدفتر ${assetsBookId} التحقق دون تغيير البيانات.</value>
+    </property>
+    <property key="AssetsErrorBookIdRequired"><value xml:lang="en">Asset Book ID is required.</value><value xml:lang="ar">رقم دفتر الأصول مطلوب.</value></property>
+    <property key="AssetsErrorBookIdLength"><value xml:lang="en">Asset Book ID cannot exceed 20 characters.</value><value xml:lang="ar">يجب ألا يتجاوز رقم دفتر الأصول 20 حرفا.</value></property>
+    <property key="AssetsErrorBookAlreadyExists"><value xml:lang="en">Asset book ${assetsBookId} already exists.</value><value xml:lang="ar">دفتر الأصول ${assetsBookId} موجود مسبقا.</value></property>
+    <property key="AssetsErrorBookPartyRequired"><value xml:lang="en">Legal-entity Party ID is required.</value><value xml:lang="ar">رقم جهة الكيان القانوني مطلوب.</value></property>
+    <property key="AssetsErrorBookRoleRequired"><value xml:lang="en">Party role is required for the asset book.</value><value xml:lang="ar">دور الجهة مطلوب لدفتر الأصول.</value></property>
+    <property key="AssetsErrorBookNameRequired"><value xml:lang="en">Asset book name is required.</value><value xml:lang="ar">اسم دفتر الأصول مطلوب.</value></property>
+    <property key="AssetsErrorBookTypeRequired"><value xml:lang="en">Asset book type is required.</value><value xml:lang="ar">نوع دفتر الأصول مطلوب.</value></property>
+    <property key="AssetsErrorBookCurrencyRequired"><value xml:lang="en">Asset book currency is required.</value><value xml:lang="ar">عملة دفتر الأصول مطلوبة.</value></property>
+    <property key="AssetsErrorBookFromDateRequired"><value xml:lang="en">Asset book start date is required.</value><value xml:lang="ar">تاريخ بداية دفتر الأصول مطلوب.</value></property>
+    <property key="AssetsErrorBookTransitionDateRequired"><value xml:lang="en">Book transition effective date is required.</value><value xml:lang="ar">تاريخ سريان انتقال الدفتر مطلوب.</value></property>
+    <property key="AssetsErrorBookTransitionPairRequired"><value xml:lang="en">Distinct predecessor and successor Asset Book IDs are required.</value><value xml:lang="ar">يلزم تحديد دفتر سابق ودفتر لاحق مختلفين.</value></property>
+    <property key="AssetsErrorBookDateRange"><value xml:lang="en">Book end date must be later than its start date.</value><value xml:lang="ar">يجب أن يكون تاريخ نهاية الدفتر بعد تاريخ بدايته.</value></property>
+    <property key="AssetsErrorBookPartyNotFound"><value xml:lang="en">Party ${partyId} was not found.</value><value xml:lang="ar">لم يتم العثور على الجهة ${partyId}.</value></property>
+    <property key="AssetsErrorBookPartyRoleMissing"><value xml:lang="en">The selected party does not hold the required book role.</value><value xml:lang="ar">الجهة المحددة لا تحمل الدور المطلوب للدفتر.</value></property>
+    <property key="AssetsErrorBookTypeInvalid"><value xml:lang="en">The selected asset book type is invalid.</value><value xml:lang="ar">نوع دفتر الأصول المحدد غير صالح.</value></property>
+    <property key="AssetsErrorBookStatusInvalid"><value xml:lang="en">The selected asset book status is invalid for creation.</value><value xml:lang="ar">حالة دفتر الأصول المحددة غير صالحة للإنشاء.</value></property>
+    <property key="AssetsErrorBookCurrencyInvalid"><value xml:lang="en">The selected asset book currency is invalid.</value><value xml:lang="ar">عملة دفتر الأصول المحددة غير صالحة.</value></property>
+    <property key="AssetsErrorIndicatorInvalid"><value xml:lang="en">Indicator values must be Y or N.</value><value xml:lang="ar">يجب أن تكون قيم المؤشر Y أو N.</value></property>
+    <property key="AssetsErrorPrimaryBookMustPost"><value xml:lang="en">A primary asset book must be a posting book.</value><value xml:lang="ar">يجب أن يكون دفتر الأصول الأساسي دفترا مرحلا.</value></property>
+    <property key="AssetsErrorSecondaryBookCannotPost"><value xml:lang="en">A secondary book cannot post to the current single OFBiz GL. Configure it as a memo book.</value><value xml:lang="ar">لا يمكن للدفتر الثانوي الترحيل إلى دفتر الأستاذ الحالي. يجب إعداده كدفتر تقريري.</value></property>
+    <property key="AssetsErrorBookAccountingPreferenceMissing"><value xml:lang="en">Party accounting preferences are required before defining a primary or posting book.</value><value xml:lang="ar">تفضيلات محاسبة الجهة مطلوبة قبل تعريف دفتر أساسي أو مرحل.</value></property>
+    <property key="AssetsErrorBookBaseCurrencyMismatch"><value xml:lang="en">Book currency ${currencyUomId} does not match company base currency ${baseCurrencyUomId}.</value><value xml:lang="ar">عملة الدفتر ${currencyUomId} لا تطابق عملة الشركة الأساسية ${baseCurrencyUomId}.</value></property>
+    <property key="AssetsErrorActiveBookDate"><value xml:lang="en">An ACTIVE book must be effective today; future successors must remain PENDING or APPROVED.</value><value xml:lang="ar">يجب أن يكون الدفتر النشط ساريا اليوم، ويظل الدفتر المستقبلي معلقا أو معتمدا.</value></property>
+    <property key="AssetsErrorPrimaryBookUseTransition"><value xml:lang="en">Primary book ${assetsBookId} already exists. Create the successor as PENDING or APPROVED and use Primary Book Transition.</value><value xml:lang="ar">الدفتر الأساسي ${assetsBookId} موجود. أنشئ الدفتر اللاحق معلقا أو معتمدا ثم استخدم انتقال الدفتر الأساسي.</value></property>
+    <property key="AssetsErrorPrimaryBookRequiresTransition"><value xml:lang="en">A primary book cannot be closed directly; use the atomic Primary Book Transition service.</value><value xml:lang="ar">لا يمكن إغلاق الدفتر الأساسي مباشرة، استخدم خدمة انتقال الدفتر الأساسي الذرية.</value></property>
+    <property key="AssetsErrorPredecessorNotActivePrimary"><value xml:lang="en">The predecessor must be the ACTIVE primary posting book.</value><value xml:lang="ar">يجب أن يكون الدفتر السابق هو الدفتر الأساسي المرحل والنشط.</value></property>
+    <property key="AssetsErrorSuccessorNotReady"><value xml:lang="en">The successor must be a PENDING or APPROVED primary posting book.</value><value xml:lang="ar">يجب أن يكون الدفتر اللاحق دفترا أساسيا مرحلا بحالة معلق أو معتمد.</value></property>
+    <property key="AssetsErrorBookTransitionPartyMismatch"><value xml:lang="en">Predecessor and successor books must belong to the same party and role.</value><value xml:lang="ar">يجب أن ينتمي الدفتر السابق واللاحق إلى الجهة والدور نفسيهما.</value></property>
+    <property key="AssetsErrorBookTransitionAfterStart"><value xml:lang="en">Transition date must be later than the predecessor start date.</value><value xml:lang="ar">يجب أن يكون تاريخ الانتقال بعد تاريخ بداية الدفتر السابق.</value></property>
+    <property key="AssetsErrorBookTransitionBoundary"><value xml:lang="en">The predecessor thruDate and successor fromDate must equal the transition date.</value><value xml:lang="ar">يجب أن يساوي تاريخ نهاية الدفتر السابق وتاريخ بداية اللاحق تاريخ الانتقال.</value></property>
+    <property key="AssetsErrorFutureBookActivation"><value xml:lang="en">A successor cannot become ACTIVE before its transition date.</value><value xml:lang="ar">لا يمكن تنشيط الدفتر اللاحق قبل تاريخ انتقاله.</value></property>
+    <property key="AssetsErrorMultipleActivePrimaryBooks"><value xml:lang="en">Another primary book ${assetsBookId} is effective on the transition date.</value><value xml:lang="ar">يوجد دفتر أساسي آخر ${assetsBookId} سار في تاريخ الانتقال.</value></property>
+    <property key="AssetsErrorBookNotClosable"><value xml:lang="en">Only an ACTIVE or APPROVED non-primary book can be closed.</value><value xml:lang="ar">يمكن إغلاق دفتر غير أساسي بحالة نشط أو معتمد فقط.</value></property>
+    <property key="AssetsErrorBookCloseAfterStart"><value xml:lang="en">Book close date must be later than its start date.</value><value xml:lang="ar">يجب أن يكون تاريخ إغلاق الدفتر بعد تاريخ بدايته.</value></property>
+    <property key="AssetsErrorBookFuturePostedSchedule"><value xml:lang="en">Posted depreciation schedule ${assetsBookDepScheduleId} conflicts with the close or transition date. Reverse or choose a later boundary.</value><value xml:lang="ar">جدول الإهلاك المرحل ${assetsBookDepScheduleId} يتعارض مع تاريخ الإغلاق أو الانتقال. اعكس القيد أو اختر حدا زمنيا لاحقا.</value></property>
+    <property key="AssetsErrorBookTransitionPeriodBoundary"><value xml:lang="en">Schedule ${assetsBookDepScheduleId} crosses the transition date. Use an accounting-period boundary.</value><value xml:lang="ar">الجدول ${assetsBookDepScheduleId} يتجاوز تاريخ الانتقال. استخدم بداية فترة محاسبية.</value></property>
+    <property key="AssetsBookCreateSuccess"><value xml:lang="en">Asset book ${assetsBookId} was created successfully.</value><value xml:lang="ar">تم إنشاء دفتر الأصول ${assetsBookId} بنجاح.</value></property>
+    <property key="AssetsBookCreateDryRunSuccess"><value xml:lang="en">Asset book ${assetsBookId} passed validation. No data was changed.</value><value xml:lang="ar">اجتاز دفتر الأصول ${assetsBookId} التحقق دون تغيير البيانات.</value></property>
+    <property key="AssetsBookCloseSuccess"><value xml:lang="en">Asset book ${assetsBookId} was closed and its history was preserved.</value><value xml:lang="ar">تم إغلاق دفتر الأصول ${assetsBookId} مع الاحتفاظ بتاريخه.</value></property>
+    <property key="AssetsBookCloseDryRunSuccess"><value xml:lang="en">Closing asset book ${assetsBookId} passed validation. No data was changed.</value><value xml:lang="ar">اجتاز إغلاق دفتر الأصول ${assetsBookId} التحقق دون تغيير البيانات.</value></property>
+    <property key="AssetsBookTransitionSuccess"><value xml:lang="en">Primary book transitioned from ${predecessorAssetsBookId} to ${successorAssetsBookId} successfully.</value><value xml:lang="ar">تم انتقال الدفتر الأساسي من ${predecessorAssetsBookId} إلى ${successorAssetsBookId} بنجاح.</value></property>
+    <property key="AssetsBookTransitionDryRunSuccess"><value xml:lang="en">Primary-book transition from ${predecessorAssetsBookId} to ${successorAssetsBookId} passed validation. No data was changed.</value><value xml:lang="ar">اجتاز انتقال الدفتر الأساسي من ${predecessorAssetsBookId} إلى ${successorAssetsBookId} التحقق دون تغيير البيانات.</value></property>
+    <property key="AssetsBookStatus"><value xml:lang="en">Book Status</value><value xml:lang="ar">حالة الدفتر</value></property>
+    <property key="AssetsBookStatusActive"><value xml:lang="en">Active Book</value><value xml:lang="ar">دفتر نشط</value></property>
+    <property key="AssetsBookStatusPending"><value xml:lang="en">Pending Book</value><value xml:lang="ar">دفتر معلق</value></property>
+    <property key="AssetsBookStatusApproved"><value xml:lang="en">Approved Book</value><value xml:lang="ar">دفتر معتمد</value></property>
+    <property key="AssetsBookStatusInactive"><value xml:lang="en">Closed Book</value><value xml:lang="ar">دفتر مغلق</value></property>
+    <property key="AssetsCreateBook"><value xml:lang="en">Create Asset Book</value><value xml:lang="ar">إنشاء دفتر أصول</value></property>
+    <property key="AssetsCreateBookDescription"><value xml:lang="en">Define the legal entity, currency, accounting purpose, lifecycle, and effective dates. A primary book is always the posting book.</value><value xml:lang="ar">حدد الكيان القانوني والعملة والغرض المحاسبي ودورة الحياة وتواريخ السريان. يكون الدفتر الأساسي دائما دفتر الترحيل.</value></property>
+    <property key="AssetsConfirmCreateBook"><value xml:lang="en">Create Book</value><value xml:lang="ar">إنشاء الدفتر</value></property>
+    <property key="AssetsBookCreated"><value xml:lang="en">Asset book created successfully</value><value xml:lang="ar">تم إنشاء دفتر الأصول بنجاح</value></property>
+    <property key="AssetsBookLifecycleActionFailed"><value xml:lang="en">Asset book lifecycle action failed</value><value xml:lang="ar">فشل إجراء دورة حياة دفتر الأصول</value></property>
+    <property key="AssetsCollapseSearch"><value xml:lang="en">Collapse search criteria</value><value xml:lang="ar">طي معايير البحث</value></property>
+    <property key="AssetsExpandSearch"><value xml:lang="en">Expand search criteria</value><value xml:lang="ar">توسيع معايير البحث</value></property>
+    <property key="AssetsPortfolioSummary"><value xml:lang="en">Portfolio Summary</value><value xml:lang="ar">&#x645;&#x644;&#x62E;&#x635; &#x645;&#x62D;&#x641;&#x638;&#x629; &#x627;&#x644;&#x623;&#x635;&#x648;&#x644;</value></property>
+    <property key="AssetsCollapseSummary"><value xml:lang="en">Collapse portfolio summary</value><value xml:lang="ar">&#x637;&#x64A; &#x645;&#x644;&#x62E;&#x635; &#x645;&#x62D;&#x641;&#x638;&#x629; &#x627;&#x644;&#x623;&#x635;&#x648;&#x644;</value></property>
+    <property key="AssetsExpandSummary"><value xml:lang="en">Expand portfolio summary</value><value xml:lang="ar">&#x62A;&#x648;&#x633;&#x64A;&#x639; &#x645;&#x644;&#x62E;&#x635; &#x645;&#x62D;&#x641;&#x638;&#x629; &#x627;&#x644;&#x623;&#x635;&#x648;&#x644;</value></property>
+    <property key="AssetsTransitionPrimaryBook"><value xml:lang="en">Transition Primary Book</value><value xml:lang="ar">نقل الدفتر الأساسي</value></property>
+    <property key="AssetsSuccessorBook"><value xml:lang="en">Successor Asset Book</value><value xml:lang="ar">دفتر الأصول اللاحق</value></property>
+    <property key="AssetsTransitionDate"><value xml:lang="en">Transition Date</value><value xml:lang="ar">تاريخ الانتقال</value></property>
+    <property key="AssetsConfirmTransition"><value xml:lang="en">Validate and Transition</value><value xml:lang="ar">التحقق وتنفيذ الانتقال</value></property>
+    <property key="AssetsBookTransitioned"><value xml:lang="en">Primary asset book transitioned successfully</value><value xml:lang="ar">تم نقل دفتر الأصول الأساسي بنجاح</value></property>
+    <property key="AssetsCloseBook"><value xml:lang="en">Close Asset Book</value><value xml:lang="ar">إغلاق دفتر الأصول</value></property>
+    <property key="AssetsConfirmCloseBook"><value xml:lang="en">Validate and Close</value><value xml:lang="ar">التحقق والإغلاق</value></property>
+    <property key="AssetsBookClosed"><value xml:lang="en">Asset book closed successfully</value><value xml:lang="ar">تم إغلاق دفتر الأصول بنجاح</value></property>
+    <property key="AssetsPrimaryTransitionWarning"><value xml:lang="en">The predecessor closes and the approved successor starts at the same boundary. Future unposted schedules are cancelled and asset assignments are carried forward.</value><value xml:lang="ar">يغلق الدفتر السابق ويبدأ الدفتر اللاحق المعتمد عند الحد الزمني نفسه. تلغى الجداول المستقبلية غير المرحلة وتنقل ارتباطات الأصول.</value></property>
+    <property key="AssetsBookCloseWarning"><value xml:lang="en">Only a non-primary book can close directly. Posted history is preserved and future unposted schedules are cancelled.</value><value xml:lang="ar">يمكن إغلاق الدفتر غير الأساسي مباشرة فقط. يحتفظ بالسجل المرحل وتلغى الجداول المستقبلية غير المرحلة.</value></property>
+    <property key="AssetsPurchaseCostCurrency"><value xml:lang="en">Purchase Currency</value><value xml:lang="ar">عملة الشراء</value></property>
+    <property key="AssetsSourceAccumulatedDepreciation"><value xml:lang="en">Source Accumulated Depreciation</value><value xml:lang="ar">مجمع الإهلاك من المصدر</value></property>
+    <property key="AssetsSourceNetBookValue"><value xml:lang="en">Source Derived NBV</value><value xml:lang="ar">صافي القيمة الدفترية المشتق من المصدر</value></property>
+    <property key="AssetsDepreciationReadiness"><value xml:lang="en">Depreciation Readiness</value><value xml:lang="ar">جاهزية الإهلاك</value></property>
+    <property key="AssetsReady"><value xml:lang="en">Ready</value><value xml:lang="ar">جاهز</value></property>
+    <property key="AssetsAssignmentState"><value xml:lang="en">Book Assignment</value><value xml:lang="ar">الارتباط بالدفتر</value></property>
+    <property key="AssetsAlreadyAssigned"><value xml:lang="en">Already Assigned</value><value xml:lang="ar">مرتبط حاليا</value></property>
+    <property key="AssetsNotAssigned"><value xml:lang="en">Not Assigned</value><value xml:lang="ar">غير مرتبط</value></property>
+    <property key="AssetsOpeningBalances"><value xml:lang="en">Opening Balances</value><value xml:lang="ar">الأرصدة الافتتاحية</value></property>
+    <property key="AssetsDerivedNetBookValue"><value xml:lang="en">Calculated NBV</value><value xml:lang="ar">صافي القيمة الدفترية المحسوب</value></property>
+    <property key="AssetsSourceDefaultsNotice"><value xml:lang="en">Selecting an asset proposes native FixedAsset values as editable defaults. Book-specific values remain authoritative for depreciation.</value><value xml:lang="ar">يؤدي اختيار الأصل إلى اقتراح قيم الأصل الأساسية كقيم افتراضية قابلة للتعديل. وتظل قيم الدفتر هي المرجع للإهلاك.</value></property>
+    <property key="AssetsIncompleteSourceNotice"><value xml:lang="en">The selected asset has missing depreciation source data</value><value xml:lang="ar">توجد بيانات مصدر ناقصة للإهلاك في الأصل المحدد</value></property>
+    <property key="AssetsErrorApprovalDecisionIdRequired">
+        <value xml:lang="en">Approval Decision ID is required.</value>
+        <value xml:lang="ar">رقم قرار الموافقة مطلوب.</value>
+    </property>
+    <property key="AssetsErrorApprovalDecisionNotFound">
+        <value xml:lang="en">Approval decision ${assetsApprovalDecisionId} was not found.</value>
+        <value xml:lang="ar">لم يتم العثور على قرار الموافقة ${assetsApprovalDecisionId}.</value>
+    </property>
+    <property key="AssetsErrorApprovalRejectCommentsRequired">
+        <value xml:lang="en">Rejection comments are required. Explain the reason and the correction needed.</value>
+        <value xml:lang="ar">تعليقات الرفض مطلوبة. وضح السبب والتصحيح المطلوب.</value>
+    </property>
+    <property key="AssetsErrorApprovalInvalidDecision">
+        <value xml:lang="en">The decision is invalid. Select Approve or Reject.</value>
+        <value xml:lang="ar">القرار غير صالح. اختر موافقة أو رفض.</value>
+    </property>
+    <property key="AssetsErrorApprovalUnauthorizedApprover">
+        <value xml:lang="en">This task is assigned to approver ${approverPartyId}. Sign in as that approver or ask an Assets administrator to process it.</value>
+        <value xml:lang="ar">هذه المهمة مسندة إلى المعتمد ${approverPartyId}. سجل الدخول بهذا المستخدم أو اطلب من مسؤول الأصول معالجتها.</value>
+    </property>
+    <property key="AssetsErrorApprovalDecisionAlreadyProcessed">
+        <value xml:lang="en">Approval decision ${assetsApprovalDecisionId} is no longer pending. Refresh the page to see its current status.</value>
+        <value xml:lang="ar">قرار الموافقة ${assetsApprovalDecisionId} لم يعد معلقا. حدث الصفحة لعرض حالته الحالية.</value>
+    </property>
+    <property key="AssetsErrorApprovalRequirementMissing">
+        <value xml:lang="en">The approval task is not linked to a valid OFBiz Requirement.</value>
+        <value xml:lang="ar">مهمة الموافقة غير مرتبطة بمتطلب صالح في أودو بيز.</value>
+    </property>
+    <property key="AssetsErrorApprovalRequestDetailNotFound">
+        <value xml:lang="en">Asset request details for requirement ${requirementId} were not found.</value>
+        <value xml:lang="ar">لم يتم العثور على تفاصيل طلب الأصل للمتطلب ${requirementId}.</value>
+    </property>
+    <property key="AssetsErrorApprovalRequestAlreadyFinal">
+        <value xml:lang="en">Requirement ${requirementId} is already in final status ${statusId}. Refresh the task or review its workflow history.</value>
+        <value xml:lang="ar">المتطلب ${requirementId} في الحالة النهائية ${statusId}. حدث المهمة أو راجع سجل سير العمل.</value>
+    </property>
+    <property key="AssetsErrorApprovalEarlierStepPending">
+        <value xml:lang="en">Earlier approval step ${assetsApprovalDecisionId} must be approved before this task.</value>
+        <value xml:lang="ar">يجب اعتماد خطوة الموافقة السابقة ${assetsApprovalDecisionId} قبل هذه المهمة.</value>
+    </property>
+    <property key="AssetsErrorApprovalDownstreamProcessingStarted">
+        <value xml:lang="en">Requirement ${requirementId} cannot be rejected because capitalization or an active asset-book assignment already exists. Reverse the downstream transaction first.</value>
+        <value xml:lang="ar">لا يمكن رفض المتطلب ${requirementId} لوجود رسملة أو ارتباط نشط بدفتر أصول. اعكس المعاملة اللاحقة أولا.</value>
+    </property>
+    <property key="AssetsErrorApprovalRequestLockFailed">
+        <value xml:lang="en">Requirement ${requirementId} could not be locked for approval. Refresh and try again.</value>
+        <value xml:lang="ar">تعذر قفل المتطلب ${requirementId} للموافقة. حدث الصفحة وحاول مرة أخرى.</value>
+    </property>
+    <property key="AssetsErrorApprovalRequestStatusUpdateFailed">
+        <value xml:lang="en">Asset request status for requirement ${requirementId} could not be updated.</value>
+        <value xml:lang="ar">تعذر تحديث حالة طلب الأصل للمتطلب ${requirementId}.</value>
+    </property>
+    <property key="AssetsErrorApprovalNativeRequirementUpdateFailed">
+        <value xml:lang="en">Native OFBiz Requirement ${requirementId} could not be synchronized.</value>
+        <value xml:lang="ar">تعذرت مزامنة متطلب أودو بيز الأساسي ${requirementId}.</value>
+    </property>
+    <property key="AssetsErrorApprovalUnexpectedFailure">
+        <value xml:lang="en">The approval action could not be completed. Review the error details, refresh the task, and try again.</value>
+        <value xml:lang="ar">تعذر إكمال إجراء الموافقة. راجع تفاصيل الخطأ وحدث المهمة ثم حاول مرة أخرى.</value>
+    </property>
+    <property key="AssetsApprovalDecisionSuccess">
+        <value xml:lang="en">Approval decision ${assetsApprovalDecisionId} for requirement ${requirementId} was processed successfully.</value>
+        <value xml:lang="ar">تمت معالجة قرار الموافقة ${assetsApprovalDecisionId} للمتطلب ${requirementId} بنجاح.</value>
+    </property>
+    <property key="AssetsApprovalDecisionDryRunSuccess">
+        <value xml:lang="en">Approval decision ${assetsApprovalDecisionId} passed validation. No data was changed.</value>
+        <value xml:lang="ar">اجتاز قرار الموافقة ${assetsApprovalDecisionId} التحقق دون تغيير البيانات.</value>
+    </property>
+    <property key="AssetsRequestMissingField"><value xml:lang="en">Complete the required field.</value><value xml:lang="ar">أكمل الحقل المطلوب.</value></property>
+    <property key="AssetsRequestPositiveCost"><value xml:lang="en">Estimated cost must be greater than zero.</value><value xml:lang="ar">يجب أن تكون التكلفة التقديرية أكبر من صفر.</value></property>
+    <property key="AssetsRequestInvalidKey"><value xml:lang="en">The submission reference is invalid.</value><value xml:lang="ar">مرجع الإرسال غير صالح.</value></property>
+    <property key="AssetsRequestKeyConflict"><value xml:lang="en">This submission reference belongs to a different request. Retry with the original values or start a new request.</value><value xml:lang="ar">مرجع الإرسال مستخدم لطلب مختلف. أعد المحاولة بالقيم الأصلية أو ابدأ طلباً جديداً.</value></property>
+    <property key="AssetsRequestRouteIncomplete"><value xml:lang="en">A matching approval rule has no valid approver or sequence. Ask the Assets administrator to complete its setup.</value><value xml:lang="ar">إحدى قواعد الموافقة المطابقة لا تحتوي على معتمد أو ترتيب صالح. يرجى إكمال الإعداد.</value></property>
+    <property key="AssetsRequestNoApprovalRoute"><value xml:lang="en">No active approval route matches this organization, asset type, currency and request. Configure approval rules before submission.</value><value xml:lang="ar">لا يوجد مسار موافقة نشط يطابق المؤسسة ونوع الأصل والعملة والطلب. يجب إعداد قواعد الموافقة أولاً.</value></property>
+    <property key="AssetsRequestRuleRange"><value xml:lang="en">Check the amount range, currency and effective dates of the approval rule.</value><value xml:lang="ar">تحقق من نطاق المبلغ والعملة وتواريخ سريان قاعدة الموافقة.</value></property>
+    <property key="AssetsRequestOrganizationDenied"><value xml:lang="en">You do not have Assets access to this organization. An administrator must grant organization access.</value><value xml:lang="ar">ليس لديك صلاحية الأصول لهذه المؤسسة. يجب على المسؤول منح صلاحية المؤسسة.</value></property>
+    <property key="AssetsRequestInvalidReference"><value xml:lang="en">A selected reference does not exist or has the wrong type. Refresh the lookup and select a valid value.</value><value xml:lang="ar">المرجع المحدد غير موجود أو نوعه غير صحيح. حدّث القائمة وحدد قيمة صالحة.</value></property>
+    <property key="AssetsRequestServiceFailed"><value xml:lang="en">The Assets service could not complete. No successful submission was confirmed; check the OFBiz log before retrying.</value><value xml:lang="ar">تعذر إكمال خدمة الأصول. لم يتم تأكيد نجاح الإرسال؛ راجع سجل النظام قبل إعادة المحاولة.</value></property>
+    <property key="AssetsBalanceAssetIdsRequired"><value xml:lang="en">Select at least one asset for the balance inquiry.</value><value xml:lang="ar">حدد أصلاً واحداً على الأقل للاستعلام عن الرصيد.</value></property>
+    <property key="AssetsBalanceTooManyAssets"><value xml:lang="en">Use batches of at most 500 assets for the balance inquiry.</value><value xml:lang="ar">استخدم دفعات لا تتجاوز 500 أصل للاستعلام عن الأرصدة.</value></property>
+    <property key="AssetsBalanceAmbiguousBook"><value xml:lang="en">Multiple active books or assignments match this balance inquiry. Correct the book setup.</value><value xml:lang="ar">يوجد أكثر من دفتر أو تعيين نشط مطابق للاستعلام. صحح إعداد الدفاتر.</value></property>
+    <property key="AssetsBalanceMissingCost"><value xml:lang="en">The active asset book assignment has no cost basis. Complete its setup.</value><value xml:lang="ar">تعيين دفتر الأصل النشط لا يحتوي على أساس تكلفة. أكمل إعداده.</value></property>
+    <property key="AssetsBalanceInvalidEntry"><value xml:lang="en">An accounting entry has an invalid debit/credit direction.</value><value xml:lang="ar">اتجاه المدين أو الدائن للقيد المحاسبي غير صالح.</value></property>
+    <property key="AssetsRequestCreated"><value xml:lang="en">Asset request submitted for approval</value><value xml:lang="ar">تم إرسال طلب الأصل للموافقة</value></property>
+    <property key="AssetsRequestWorkflowHelp"><value xml:lang="en">Create a request first. The service validates organization access and configured approval rules; it does not create or capitalize a fixed asset.</value><value xml:lang="ar">أنشئ الطلب أولاً. تتحقق الخدمة من صلاحيات المؤسسة وقواعد الموافقة المعدة، ولا تنشئ أو ترسمل أصلاً ثابتاً.</value></property>
+    <property key="AssetsRequestNativeType"><value xml:lang="en">OFBiz requirement type</value><value xml:lang="ar">نوع الاحتياج في النظام</value></property>
+    <property key="AssetsRequestDescription"><value xml:lang="en">Business justification</value><value xml:lang="ar">المبرر التجاري</value></property>
+    <property key="AssetsRequestPreviewRoute"><value xml:lang="en">Validate and preview approvals</value><value xml:lang="ar">التحقق ومعاينة الموافقات</value></property>
+    <property key="AssetsRequestSubmit"><value xml:lang="en">Submit request</value><value xml:lang="ar">إرسال الطلب</value></property>
+    <property key="AssetsRequestApprovalRoute"><value xml:lang="en">Required approval route</value><value xml:lang="ar">مسار الموافقات المطلوب</value></property>
+    <property key="AssetsRequestRuleId"><value xml:lang="en">Approval rule ID</value><value xml:lang="ar">معرف قاعدة الموافقة</value></property>
+    <property key="AssetsRequestRuleSaved"><value xml:lang="en">Approval rule saved</value><value xml:lang="ar">تم حفظ قاعدة الموافقة</value></property>
+    <property key="AssetsRequestRulesHelp"><value xml:lang="en">Every matching active rule creates a required approval task. Lower sequences must complete first. Blank filters match all values; monetary limits require a currency.</value><value xml:lang="ar">تنشئ كل قاعدة نشطة مطابقة مهمة موافقة مطلوبة. يجب إكمال الترتيب الأدنى أولاً. المرشحات الفارغة تطابق جميع القيم، وحدود المبالغ تتطلب عملة.</value></property>
+    <property key="AssetsRequestRuleSetup"><value xml:lang="en">Create or edit approval rule</value><value xml:lang="ar">إنشاء أو تعديل قاعدة موافقة</value></property>
+    <property key="AssetsRequestMinAmount"><value xml:lang="en">Minimum amount (inclusive)</value><value xml:lang="ar">الحد الأدنى للمبلغ (شامل)</value></property>
+    <property key="AssetsRequestMaxAmount"><value xml:lang="en">Maximum amount (inclusive)</value><value xml:lang="ar">الحد الأعلى للمبلغ (شامل)</value></property>
+    <property key="AssetsRequestSaveRule"><value xml:lang="en">Save approval rule</value><value xml:lang="ar">حفظ قاعدة الموافقة</value></property>
+    <property key="AssetsNewAssetRequest"><value xml:lang="en">New asset request</value><value xml:lang="ar">طلب أصل جديد</value></property>
+    <property key="AssetsCurrencyUomId"><value xml:lang="en">Currency</value><value xml:lang="ar">العملة</value></property>
+    <property key="AssetsApprovalRules"><value xml:lang="en">Approval rules</value><value xml:lang="ar">قواعد الموافقة</value></property>
+    <property key="AssetsThruDate"><value xml:lang="en">Effective through</value><value xml:lang="ar">نهاية السريان</value></property>
+    <property key="AssetsBalanceUnavailable"><value xml:lang="en">Book balances are unavailable. Assign an active book or resolve the service error before relying on financial amounts.</value><value xml:lang="ar">أرصدة الدفاتر غير متاحة. عيّن دفتراً نشطاً أو عالج خطأ الخدمة قبل الاعتماد على المبالغ المالية.</value></property>
+    <property key="AssetsRequestPositiveQuantity"><value xml:lang="en">A positive quantity is required for a product requirement.</value><value xml:lang="ar">يلزم تحديد كمية موجبة لمتطلب المنتج.</value></property>
+    <property key="AssetsRequestInvalidFacility"><value xml:lang="en">Select a facility owned by the requesting organization.</value><value xml:lang="ar">اختر منشأة مملوكة للمؤسسة الطالبة.</value></property>
+</resource>

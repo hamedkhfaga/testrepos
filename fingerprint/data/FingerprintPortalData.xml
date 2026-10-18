@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <PortalPortlet portalPortletId="FP_CARDS" 
+                   portletName="Fingerprint Cards" 
+                   screenName="SummaryCardsPortlet" 
+                   screenLocation="component://fingerprint/widget/FingerprintScreens.xml"/>
+
+    <PortalPortlet portalPortletId="FP_DEVICES" 
+                   portletName="Biometric Devices" 
+                   screenName="DeviceStatusPortlet" 
+                   screenLocation="component://fingerprint/widget/FingerprintScreens.xml"/>
+
+    <PortalPortlet portalPortletId="FP_PUNCHES" 
+                   portletName="Recent Punches" 
+                   screenName="RecentPunchesPortlet" 
+                   screenLocation="component://fingerprint/widget/FingerprintScreens.xml"/>
+
+    <PortalPortlet portalPortletId="FP_TREND" 
+                   portletName="Attendance Trends" 
+                   screenName="TrendChartPortlet" 
+                   screenLocation="component://fingerprint/widget/FingerprintScreens.xml"/>
+ 
+    <PortalPage portalPageId="FP_DASHBOARD" portalPageName="Fingerprint Dashboard" description="3-Tier Dashboard" ownerUserLoginId="_NA_"/>
+    
+    <PortalPageColumn portalPageId="FP_DASHBOARD" columnSeqId="00001" columnWidthPercentage="100"/>
+    <PortalPageColumn portalPageId="FP_DASHBOARD" columnSeqId="00002" columnWidthPercentage="49"/>
+    <PortalPageColumn portalPageId="FP_DASHBOARD" columnSeqId="00003" columnWidthPercentage="49"/>
+    <PortalPageColumn portalPageId="FP_DASHBOARD" columnSeqId="00004" columnWidthPercentage="100"/>
+
+    <PortalPagePortlet portalPageId="FP_DASHBOARD" portalPortletId="FP_CARDS" portletSeqId="00001" columnSeqId="00001" sequenceNum="1"/>
+    <PortalPagePortlet portalPageId="FP_DASHBOARD" portalPortletId="FP_DEVICES" portletSeqId="00003" columnSeqId="00002" sequenceNum="1"/>
+    <PortalPagePortlet portalPageId="FP_DASHBOARD" portalPortletId="FP_PUNCHES" portletSeqId="00005" columnSeqId="00001" sequenceNum="2"/>
+    <PortalPagePortlet portalPageId="FP_DASHBOARD" portalPortletId="FP_TREND" portletSeqId="00006" columnSeqId="00002" sequenceNum="2"/>
+</entity-engine-xml>

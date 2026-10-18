@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- Bootstrap: schedule first run immediately.
+         Worker will reschedule itself. -->
+
+    <JobSandbox jobId="PAYROLL_EMAIL_BOOT"
+               jobName="PAYROLL_EMAIL_WORKER"
+               serviceName="processPayrollEmailQueueWorker"
+               poolId="pool"
+               runAsUser="system"
+               runTime="0"
+               statusId="SERVICE_PENDING"
+               maxRetry="3"
+               currentRetryCount="0"/>
+
+    <JobSandbox jobId="PAYROLL_SMS_BOOT"
+               jobName="PAYROLL_SMS_WORKER"
+               serviceName="processPayrollSmsQueueWorker"
+               poolId="pool"
+               runAsUser="system"
+               runTime="0"
+               statusId="SERVICE_PENDING"
+               maxRetry="3"
+               currentRetryCount="0"/>
+
+    <JobSandbox jobId="PAYROLL_EXPORT_BOOT"
+               jobName="PAYROLL_EXPORT_WORKER"
+               serviceName="processPayrollExportQueueWorker"
+               poolId="pool"
+               runAsUser="system"
+               runTime="0"
+               statusId="SERVICE_PENDING"
+               maxRetry="3"
+               currentRetryCount="0"/>
+
+    <JobSandbox jobId="PAYROLL_COMP_BOOT"
+               jobName="PAYROLL_COMPLIANCE_WORKER"
+               serviceName="processPayrollComplianceDailyWorker"
+               poolId="pool"
+               runAsUser="system"
+               runTime="0"
+               statusId="SERVICE_PENDING"
+               maxRetry="2"
+               currentRetryCount="0"/>
+
+</entity-engine-xml>

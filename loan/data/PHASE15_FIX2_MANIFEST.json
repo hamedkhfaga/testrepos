@@ -1,0 +1,40 @@
+{
+  "phase": "Phase 15 Fix2",
+  "title": "Remove demo PartyRole rows from LoanTypeData",
+  "rootCause": "LoanTypeData.xml inserted PartyRole for DemoCustomer1 before the Party existed, causing FK PARTY_RLE_PARTY rollback.",
+  "changedFiles": [
+    "LoanTypeData.xml"
+  ],
+  "removedPartyRoles": [
+    {
+      "partyId": "DemoCustomer1",
+      "roleTypeId": "LOAN_BORROWER"
+    },
+    {
+      "partyId": "DemoCustomer2",
+      "roleTypeId": "LOAN_BORROWER"
+    },
+    {
+      "partyId": "DemoEmployee",
+      "roleTypeId": "LOAN_BORROWER"
+    },
+    {
+      "partyId": "PAY_EMP001",
+      "roleTypeId": "LOAN_BORROWER"
+    }
+  ],
+  "keptPartyRoles": [
+    {
+      "partyId": "Company",
+      "roleTypeId": "LOAN_PROVIDER"
+    }
+  ],
+  "checks": {
+    "removedDemoPartyRolesCount": 4,
+    "DemoCustomer1PartyRoleRemoved": true,
+    "CompanyLoanProviderKept": true,
+    "LOAN_FINANCE_before_LOAN_DISBURSEMENT": true,
+    "LOAN_ITEM_before_LOAN_PRINCIPAL": true
+  },
+  "note": "Borrower PartyRole assignments for demo parties should be created only after the Party exists, or by services during loan approval. Seed/reference file keeps RoleType definitions only."
+}

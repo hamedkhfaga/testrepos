@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<entity-engine-xml>
+    <!-- Assets-only reference data used to exercise every React workflow page. -->
+    <Product productId="PROD-BATT-001" productTypeId="FINISHED_GOOD"
+             internalName="Laptop Replacement Battery" productName="Laptop Replacement Battery"/>
+
+    <FixedAsset fixedAssetId="POC-COMP-001" fixedAssetTypeId="ASSET_LAPTOP"
+                parentFixedAssetId="POC-LAP-001" partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                fixedAssetName="POC Laptop Battery Component" serialNumber="BATT-POC-0001"
+                dateAcquired="2026-07-10 08:00:00.0" expectedEndOfLife="2028-07-10"
+                salvageValue="0.00" depreciation="0.00" purchaseCost="180.00" purchaseCostUomId="USD"/>
+    <FixedAsset fixedAssetId="POC-RENT-001" fixedAssetTypeId="ASSET_LAPTOP"
+                partyId="ASSETSUP1" roleTypeId="SUPPLIER" fixedAssetName="POC Inbound Rental Laptop"
+                serialNumber="RENT-POC-0001" dateAcquired="2026-07-01 08:00:00.0"
+                expectedEndOfLife="2029-07-01" salvageValue="100.00" depreciation="0.00"
+                purchaseCost="1500.00" purchaseCostUomId="USD"/>
+    <FixedAsset fixedAssetId="POC-LEASE-001" fixedAssetTypeId="ASSET_LAPTOP"
+                partyId="ASSETSUP1" roleTypeId="SUPPLIER" fixedAssetName="POC Finance Lease Laptop"
+                serialNumber="LEASE-POC-0001" dateAcquired="2026-07-01 08:00:00.0"
+                expectedEndOfLife="2030-07-01" salvageValue="150.00" depreciation="0.00"
+                purchaseCost="2400.00" purchaseCostUomId="USD"/>
+    <FixedAsset fixedAssetId="POC-DISP-001" fixedAssetTypeId="ASSET_LAPTOP"
+                partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO" fixedAssetName="POC Retired Laptop"
+                serialNumber="DISP-POC-0001" dateAcquired="2022-01-01 08:00:00.0"
+                expectedEndOfLife="2026-01-01" actualEndOfLife="2026-07-11"
+                salvageValue="50.00" depreciation="750.00" purchaseCost="1000.00" purchaseCostUomId="USD"/>
+
+    <AssetsComponentDetail parentFixedAssetId="POC-LAP-001" componentFixedAssetId="POC-COMP-001"
+                           assetsBookId="ASSETS_CORP" fromDate="2026-07-10 08:00:00.0"
+                           statusId="ASSETS_ACTIVE" allocationPercent="15.0000" componentCost="180.00"
+                           residualValue="0.00" comments="Replaceable laptop battery tracked as a component."/>
+
+    <!-- Maintenance, usage, and spare-parts operations. -->
+    <WorkEffort workEffortId="ASSET-WO-001" workEffortTypeId="EVENT" currentStatusId="CAL_TENTATIVE"
+                workEffortName="Laptop preventive maintenance" description="Battery and operating-system health inspection"
+                fixedAssetId="POC-LAP-001" facilityId="WebStoreWarehouse"
+                estimatedStartDate="2026-07-15 09:00:00.0" estimatedCompletionDate="2026-07-15 11:00:00.0"
+                createdDate="2026-07-11 08:00:00.0" createdByUserLogin="admin"/>
+    <WorkEffort workEffortId="ASSET-WO-002" workEffortTypeId="ASSET_USAGE" currentStatusId="CAL_TENTATIVE"
+                workEffortName="Leased asset operation" description="POC operator and usage tracking"
+                fixedAssetId="POC-LAP-001" estimatedStartDate="2026-07-12 08:00:00.0"
+                estimatedCompletionDate="2026-07-31 18:00:00.0"
+                createdDate="2026-07-11 08:00:00.0" createdByUserLogin="admin"/>
+    <FixedAssetMaint fixedAssetId="POC-LAP-001" maintHistSeqId="00001" statusId="ASSETS_PLANNED"
+                     productMaintTypeId="CHECK_BATTERY" scheduleWorkEffortId="ASSET-WO-001"
+                     intervalQuantity="30.00" intervalUomId="TF_day"/>
+    <FixedAssetMaint fixedAssetId="POC-LAP-002" maintHistSeqId="00001" statusId="ASSETS_ACTIVE"
+                     productMaintTypeId="REPLACE_BATTERY" scheduleWorkEffortId="ASSET-WO-001"
+                     intervalQuantity="365.00" intervalUomId="TF_day"/>
+    <InventoryItem inventoryItemId="ASSET-INV-001" inventoryItemTypeId="NON_SERIAL_INV_ITEM"
+                   productId="PROD-BATT-001" ownerPartyId="Company" statusId="INV_AVAILABLE"
+                   datetimeReceived="2026-07-10 08:00:00.0" facilityId="WebStoreWarehouse"
+                   comments="POC spare battery allocated to laptop maintenance." quantityOnHandTotal="5.00"
+                   availableToPromiseTotal="4.00" accountingQuantityTotal="5.00"
+                   unitCost="180.00" currencyUomId="USD"/>
+    <WorkEffortInventoryAssign workEffortId="ASSET-WO-001" inventoryItemId="ASSET-INV-001"
+                               statusId="ASSETS_ACTIVE" quantity="1.00"/>
+    <AssetsDepUsage fixedAssetId="POC-LAP-001" assetsBookId="ASSETS_CORP"
+                    usageDate="2026-07-12 18:00:00.0" usageSeqId="00001"
+                    usageQuantity="8.00" usageUomId="TF_hr" workEffortId="ASSET-WO-002"
+                    comments="Eight operating hours recorded for the POC asset."
+                    createdDate="2026-07-12 18:00:00.0" createdByUserLogin="admin"/>
+    <AssetsFixedAssetTransfer assetsTransferId="ASSET-TRANSFER-001" fixedAssetId="POC-LAP-002"
+                              fromFacilityId="WebStoreWarehouse" toFacilityId="RegionalWarehouse1"
+                              fromPartyId="ASSETREQ1" fromRoleTypeId="EMPLOYEE"
+                              toPartyId="Company" toRoleTypeId="INTERNAL_ORGANIZATIO"
+                              transferDate="2026-07-12 10:00:00.0" statusId="ASSETS_APPROVED"
+                              requirementId="REQ-LAP-002" comments="Approved transfer to the regional office."
+                              createdDate="2026-07-12 10:00:00.0" createdByUserLogin="admin"/>
+
+    <!-- Parallel lease/rental directions and accounting classifications. -->
+    <AssetsLeaseContract assetsLeaseId="ASL-OUT-001" fixedAssetId="POC-LAP-001"
+                         lessorPartyId="Company" lessorRoleTypeId="INTERNAL_ORGANIZATIO"
+                         lesseePartyId="ASSETREQ1" lesseeRoleTypeId="EMPLOYEE"
+                         leaseTypeEnumId="ASSETS_LEASE_OUT" accountingStandardEnumId="ASSETS_STD_LOCAL"
+                         statusId="ASSETS_ACTIVE" currencyUomId="USD" startDate="2026-07-01 08:00:00.0"
+                         endDate="2026-12-31 18:00:00.0" paymentFrequencyEnumId="ASSETS_FREQ_MONTH"
+                         discountRate="0.0000" purchaseOptionFlag="N" renewalOptionFlag="Y"
+                         terminationOptionFlag="Y" shortTermFlag="Y" lowValueFlag="N"
+                         description="Company laptop leased out with insurance and operator services."
+                         createdDate="2026-07-01 08:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLeaseContract assetsLeaseId="ASL-IN-001" fixedAssetId="POC-RENT-001"
+                         lessorPartyId="ASSETSUP1" lessorRoleTypeId="SUPPLIER"
+                         lesseePartyId="Company" lesseeRoleTypeId="INTERNAL_ORGANIZATIO"
+                         leaseTypeEnumId="ASSETS_LEASE_IN" accountingStandardEnumId="ASSETS_STD_LOCAL"
+                         statusId="ASSETS_ACTIVE" currencyUomId="USD" startDate="2026-07-01 08:00:00.0"
+                         endDate="2026-09-30 18:00:00.0" paymentFrequencyEnumId="ASSETS_FREQ_MONTH"
+                         discountRate="0.0000" purchaseOptionFlag="N" renewalOptionFlag="N"
+                         terminationOptionFlag="Y" shortTermFlag="Y" lowValueFlag="Y"
+                         description="Laptop rented in from the POC supplier."
+                         createdDate="2026-07-01 08:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLeaseContract assetsLeaseId="ASL-FIN-001" fixedAssetId="POC-LEASE-001"
+                         lessorPartyId="ASSETSUP1" lessorRoleTypeId="SUPPLIER"
+                         lesseePartyId="Company" lesseeRoleTypeId="INTERNAL_ORGANIZATIO"
+                         leaseTypeEnumId="ASSETS_LEASE_FIN" accountingStandardEnumId="ASSETS_STD_IFRS16"
+                         statusId="ASSETS_ACTIVE" currencyUomId="USD" startDate="2026-07-01 08:00:00.0"
+                         endDate="2028-06-30 18:00:00.0" paymentFrequencyEnumId="ASSETS_FREQ_MONTH"
+                         discountRate="0.0600" initialDirectCost="100.00" residualValueGuarantee="150.00"
+                         purchaseOptionFlag="Y" renewalOptionFlag="Y" terminationOptionFlag="N"
+                         shortTermFlag="N" lowValueFlag="N" description="IFRS 16 finance lease POC."
+                         createdDate="2026-07-01 08:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLeaseContract assetsLeaseId="ASL-OPER-001" fixedAssetId="POC-RENT-001"
+                         lessorPartyId="ASSETSUP1" lessorRoleTypeId="SUPPLIER"
+                         lesseePartyId="Company" lesseeRoleTypeId="INTERNAL_ORGANIZATIO"
+                         leaseTypeEnumId="ASSETS_LEASE_OPER" accountingStandardEnumId="ASSETS_STD_IFRS16"
+                         statusId="ASSETS_ACTIVE" currencyUomId="USD" startDate="2026-07-01 08:00:00.0"
+                         endDate="2027-06-30 18:00:00.0" paymentFrequencyEnumId="ASSETS_FREQ_QTR"
+                         discountRate="0.0500" purchaseOptionFlag="N" renewalOptionFlag="Y"
+                         terminationOptionFlag="Y" shortTermFlag="N" lowValueFlag="N"
+                         description="Operating lease classification POC."
+                         createdDate="2026-07-01 08:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsLeaseComponent assetsLeaseId="ASL-OUT-001" componentSeqId="00001"
+                          componentTypeEnumId="ASSETS_COMP_INS" fixedAssetId="POC-LAP-001"
+                          providerPartyId="ASSETSUP1" providerRoleTypeId="SUPPLIER"
+                          amount="25.00" currencyUomId="USD" statusId="ASSETS_ACTIVE"
+                          comments="Insurance included in the outbound lease."/>
+    <AssetsLeaseComponent assetsLeaseId="ASL-OUT-001" componentSeqId="00002"
+                          componentTypeEnumId="ASSETS_COMP_DRV" fixedAssetId="POC-LAP-001"
+                          providerPartyId="ASSETREQ1" providerRoleTypeId="EMPLOYEE"
+                          amount="200.00" currencyUomId="USD" statusId="ASSETS_ACTIVE"
+                          comments="Operator service included in the outbound lease."/>
+    <AssetsLeaseComponent assetsLeaseId="ASL-IN-001" componentSeqId="00001"
+                          componentTypeEnumId="ASSETS_COMP_SVC" productId="PROD-BATT-001"
+                          providerPartyId="ASSETSUP1" providerRoleTypeId="SUPPLIER"
+                          amount="40.00" currencyUomId="USD" statusId="ASSETS_ACTIVE"
+                          comments="Supplier support service included in rental."/>
+    <AssetsLeaseComponent assetsLeaseId="ASL-FIN-001" componentSeqId="00001"
+                          componentTypeEnumId="ASSETS_COMP_LEASE" fixedAssetId="POC-LEASE-001"
+                          providerPartyId="ASSETSUP1" providerRoleTypeId="SUPPLIER"
+                          amount="2400.00" currencyUomId="USD" statusId="ASSETS_ACTIVE"
+                          comments="Finance lease principal component."/>
+
+    <AssetsLeasePaymentSchedule assetsLeaseId="ASL-OUT-001" paymentSeqId="00001"
+                                dueDate="2026-07-20 00:00:00.0" paymentAmount="325.00"
+                                principalAmount="100.00" interestAmount="0.00" serviceAmount="200.00"
+                                taxAmount="0.00" currencyUomId="USD" statusId="ASSETS_PLANNED"
+                                comments="Outbound lease billing including services."/>
+    <AssetsLeasePaymentSchedule assetsLeaseId="ASL-IN-001" paymentSeqId="00001"
+                                dueDate="2026-07-20 00:00:00.0" paymentAmount="190.00"
+                                principalAmount="150.00" interestAmount="0.00" serviceAmount="40.00"
+                                taxAmount="0.00" currencyUomId="USD" statusId="ASSETS_PLANNED"
+                                comments="Inbound rental payment due."/>
+    <AssetsLeasePaymentSchedule assetsLeaseId="ASL-FIN-001" paymentSeqId="00001"
+                                dueDate="2026-07-31 00:00:00.0" paymentAmount="110.00"
+                                principalAmount="98.00" interestAmount="12.00" serviceAmount="0.00"
+                                taxAmount="0.00" currencyUomId="USD" statusId="ASSETS_PLANNED"
+                                comments="First finance lease payment."/>
+    <AssetsLeasePaymentSchedule assetsLeaseId="ASL-OPER-001" paymentSeqId="00001"
+                                dueDate="2026-09-30 00:00:00.0" paymentAmount="450.00"
+                                principalAmount="425.00" interestAmount="25.00" serviceAmount="0.00"
+                                taxAmount="0.00" currencyUomId="USD" statusId="ASSETS_PLANNED"
+                                comments="Quarterly operating lease payment."/>
+
+    <AssetsLeaseAcctgSchedule assetsLeaseId="ASL-FIN-001" assetsBookId="ASSETS_CORP"
+                              scheduleSeqId="00001" periodStartDate="2026-07-01" periodEndDate="2026-07-31"
+                              rightOfUseAssetAmount="2500.00" leaseLiabilityAmount="2400.00"
+                              interestAmount="12.00" amortizationAmount="104.17" closingLiabilityAmount="2314.00"
+                              statusId="ASSETS_PLANNED" comments="First IFRS 16 finance lease accounting period."/>
+    <AssetsLeaseAcctgSchedule assetsLeaseId="ASL-OPER-001" assetsBookId="ASSETS_CORP"
+                              scheduleSeqId="00001" periodStartDate="2026-07-01" periodEndDate="2026-09-30"
+                              rightOfUseAssetAmount="1800.00" leaseLiabilityAmount="1800.00"
+                              interestAmount="25.00" amortizationAmount="150.00" closingLiabilityAmount="1375.00"
+                              statusId="ASSETS_PLANNED" comments="First operating lease accounting period."/>
+
+    <AssetsInsurancePolicy assetsInsurancePolicyId="ASSET-INS-001" fixedAssetId="POC-LAP-001"
+                           assetsLeaseId="ASL-OUT-001" insurerPartyId="ASSETSUP1" insurerRoleTypeId="SUPPLIER"
+                           policyNumber="POL-LAP-OUT-001" insuranceTypeEnumId="ASSETS_INS_COMP"
+                           coverageStartDate="2026-07-01 00:00:00.0" coverageEndDate="2026-07-31 23:59:59.0"
+                           coverageAmount="2000.00" premiumAmount="25.00" currencyUomId="USD"
+                           statusId="ASSETS_ACTIVE" comments="Comprehensive cover expiring this month."/>
+    <AssetsInsurancePolicy assetsInsurancePolicyId="ASSET-INS-002" fixedAssetId="POC-RENT-001"
+                           assetsLeaseId="ASL-IN-001" insurerPartyId="ASSETSUP1" insurerRoleTypeId="SUPPLIER"
+                           policyNumber="POL-LAP-IN-001" insuranceTypeEnumId="ASSETS_INS_DAMAGE"
+                           coverageStartDate="2026-07-01 00:00:00.0" coverageEndDate="2026-09-30 23:59:59.0"
+                           coverageAmount="1500.00" premiumAmount="15.00" currencyUomId="USD"
+                           statusId="ASSETS_ACTIVE" comments="Damage waiver included by supplier."/>
+    <AssetsDriverAssignment assetsDriverAssignmentId="ASSET-DRV-001" fixedAssetId="POC-LAP-001"
+                            assetsLeaseId="ASL-OUT-001" partyId="ASSETREQ1" roleTypeId="EMPLOYEE"
+                            workEffortId="ASSET-WO-002" fromDate="2026-07-01 08:00:00.0"
+                            thruDate="2026-12-31 18:00:00.0" rateAmount="200.00" currencyUomId="USD"
+                            statusId="ASSETS_ACTIVE" comments="POC operator assigned with the outbound lease."/>
+
+    <!-- Valuation, disposal, and controlled posting/reconciliation examples. -->
+    <AssetsValuationEvent assetsValuationEventId="ASSET-VAL-REV-001" fixedAssetId="POC-LAP-001"
+                          assetsBookId="ASSETS_CORP" valuationTypeEnumId="ASSETS_VAL_REVALUE"
+                          eventDate="2026-07-11 12:00:00.0" previousNetBookValue="1169.44"
+                          valuationAmount="80.56" newNetBookValue="1250.00" currencyUomId="USD"
+                          statusId="ASSETS_APPROVED" comments="Management-approved laptop revaluation POC."
+                          createdDate="2026-07-11 12:00:00.0" createdByUserLogin="admin"/>
+    <AssetsValuationEvent assetsValuationEventId="ASSET-VAL-IMP-001" fixedAssetId="POC-LAP-002"
+                          assetsBookId="ASSETS_CORP" valuationTypeEnumId="ASSETS_VAL_IMPAIR"
+                          eventDate="2026-07-11 13:00:00.0" previousNetBookValue="1754.17"
+                          valuationAmount="-154.17" newNetBookValue="1600.00" currencyUomId="USD"
+                          statusId="ASSETS_PENDING" comments="Pending impairment review after damage inspection."
+                          createdDate="2026-07-11 13:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsDisposal assetsDisposalId="ASSET-DISP-001" fixedAssetId="POC-DISP-001"
+                    disposalTypeEnumId="ASSETS_DISP_SALE" disposalDate="2026-07-11 15:00:00.0"
+                    proceedsAmount="300.00" currencyUomId="USD" statusId="ASSETS_DISPOSED"
+                    comments="Retired laptop sold after approval."
+                    createdDate="2026-07-11 15:00:00.0" createdByUserLogin="admin"/>
+    <AssetsDisposal assetsDisposalId="ASSET-DISP-002" fixedAssetId="POC-COMP-001"
+                    disposalTypeEnumId="ASSETS_DISP_SCRAP" disposalDate="2026-07-12 15:00:00.0"
+                    proceedsAmount="0.00" currencyUomId="USD" statusId="ASSETS_PENDING"
+                    comments="Battery component submitted for scrap approval."
+                    createdDate="2026-07-12 15:00:00.0" createdByUserLogin="admin"/>
+    <AssetsDisposalBook assetsDisposalId="ASSET-DISP-001" assetsBookId="ASSETS_CORP"
+                        fixedAssetId="POC-DISP-001" netBookValue="250.00" proceedsAllocatedAmount="300.00"
+                        gainLossAmount="50.00" statusId="ASSETS_POSTED" comments="Gain on laptop disposal."/>
+    <AssetsDisposalBook assetsDisposalId="ASSET-DISP-002" assetsBookId="ASSETS_CORP"
+                        fixedAssetId="POC-COMP-001" netBookValue="180.00" proceedsAllocatedAmount="0.00"
+                        gainLossAmount="-180.00" statusId="ASSETS_PENDING" comments="Pending component disposal loss."/>
+
+    <AssetsPostingRun assetsPostingRunId="ASSET-POST-DEPR-01" assetsBookId="ASSETS_CORP"
+                      partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                      postingTypeEnumId="ASSETS_POST_DEPR" statusId="ASSETS_POSTED"
+                      transactionDate="2026-07-31 18:00:00.0" runDate="2026-07-31 18:00:00.0"
+                      postedDate="2026-07-31 18:01:00.0" description="POC depreciation posting run"
+                      createdDate="2026-07-31 18:00:00.0" createdByUserLogin="admin"/>
+    <AssetsPostingRun assetsPostingRunId="ASSET-POST-LEASE-1" assetsBookId="ASSETS_CORP"
+                      partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                      postingTypeEnumId="ASSETS_POST_LEASE" statusId="ASSETS_PENDING"
+                      transactionDate="2026-07-31 18:00:00.0" runDate="2026-07-31 18:00:00.0"
+                      description="POC lease posting awaiting accounting review"
+                      createdDate="2026-07-31 18:00:00.0" createdByUserLogin="admin"/>
+    <AssetsPostingRun assetsPostingRunId="ASSET-POST-DISP-01" assetsBookId="ASSETS_CORP"
+                      partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                      postingTypeEnumId="ASSETS_POST_DISP" statusId="ASSETS_PENDING"
+                      transactionDate="2026-07-31 18:00:00.0" runDate="2026-07-31 18:00:00.0"
+                      description="POC disposal posting awaiting GL transaction"
+                      createdDate="2026-07-31 18:00:00.0" createdByUserLogin="admin"/>
+    <AssetsPostingRun assetsPostingRunId="ASSET-POST-VAL-001" assetsBookId="ASSETS_CORP"
+                      partyId="Company" roleTypeId="INTERNAL_ORGANIZATIO"
+                      postingTypeEnumId="ASSETS_POST_VAL" statusId="ASSETS_PENDING"
+                      transactionDate="2026-07-31 18:00:00.0" runDate="2026-07-31 18:00:00.0"
+                      description="POC valuation posting awaiting approval"
+                      createdDate="2026-07-31 18:00:00.0" createdByUserLogin="admin"/>
+    <AssetsPostingRunItem assetsPostingRunId="ASSET-POST-DEPR-01" postingItemSeqId="00001"
+                          fixedAssetId="POC-LAP-001" assetsBookId="ASSETS_CORP"
+                          sourceEntityName="AssetsBookDepSchedule" sourceEntityId="DS-LAP1-202607"
+                          amount="30.56" statusId="ASSETS_POSTED" comments="POC posted depreciation item."/>
+    <AssetsPostingRunItem assetsPostingRunId="ASSET-POST-LEASE-1" postingItemSeqId="00001"
+                          fixedAssetId="POC-LEASE-001" assetsBookId="ASSETS_CORP"
+                          sourceEntityName="AssetsLeaseAcctgSchedule" sourceEntityId="ASL-FIN-001"
+                          amount="116.17" statusId="ASSETS_PENDING" comments="Missing GL transaction for review."/>
+    <AssetsPostingRunItem assetsPostingRunId="ASSET-POST-DISP-01" postingItemSeqId="00001"
+                          fixedAssetId="POC-DISP-001" assetsBookId="ASSETS_CORP"
+                          sourceEntityName="AssetsDisposalBook" sourceEntityId="ASSET-DISP-001"
+                          amount="50.00" statusId="ASSETS_PENDING" comments="Disposal gain awaiting posting."/>
+    <AssetsPostingRunItem assetsPostingRunId="ASSET-POST-VAL-001" postingItemSeqId="00001"
+                          fixedAssetId="POC-LAP-001" assetsBookId="ASSETS_CORP"
+                          sourceEntityName="AssetsValuationEvent" sourceEntityId="ASSET-VAL-REV-001"
+                          amount="80.56" statusId="ASSETS_PENDING" comments="Revaluation amount awaiting posting."/>
+
+    <!-- A pending approval supplies My Pending Tasks without changing approved laptop requests. -->
+    <AssetsApprovalDecision assetsApprovalDecisionId="APD-LAP-003" requirementId="REQ-LAP-002"
+                            fixedAssetId="POC-LAP-002" assetsApprovalRuleId="APR-LAP-UNB"
+                            approverPartyId="ASSETAPPR1" approverRoleTypeId="MANAGER"
+                            statusId="ASSETS_PENDING" sequenceNum="20"
+                            comments="Second-level finance approval is pending for the unbudgeted request."
+                            createdDate="2026-07-12 09:00:00.0" createdByUserLogin="admin"/>
+
+    <AssetsLifecycleEvent assetsLifecycleEventId="ALE-POC-TRANSFER" fixedAssetId="POC-LAP-002"
+                          eventTypeEnumId="ASSETS_EVT_TRANSFER" eventDate="2026-07-12 10:00:00.0"
+                          statusId="ASSETS_APPROVED" performedByPartyId="ASSETREQ1"
+                          performedByRoleTypeId="EMPLOYEE" requirementId="REQ-LAP-002"
+                          facilityId="RegionalWarehouse1" description="Laptop transferred to regional office"
+                          createdDate="2026-07-12 10:00:00.0" createdByUserLogin="admin"/>
+    <AssetsLifecycleEvent assetsLifecycleEventId="ALE-POC-RETIRE" fixedAssetId="POC-DISP-001"
+                          eventTypeEnumId="ASSETS_EVT_RETIRE" eventDate="2026-07-11 15:00:00.0"
+                          statusId="ASSETS_DISPOSED" performedByPartyId="ASSETAPPR1"
+                          performedByRoleTypeId="MANAGER" description="Retired laptop sold and disposed"
+                          createdDate="2026-07-11 15:00:00.0" createdByUserLogin="admin"/>
+</entity-engine-xml>

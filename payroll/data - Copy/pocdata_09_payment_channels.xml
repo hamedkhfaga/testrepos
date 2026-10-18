@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+    <!-- BANK employee -->
+    <EmployeePaymentAllocation paymentAllocationId="EPAL_PAYEMP0001_BANK"
+        partyId="PAY_EMP0001"
+        disbursementChannelId="BANK_FILE"
+        paymentMethodId="PM_PAYEMP0001_B"
+        allocationTypeEnumId="PAY_ALLOC_PCT"
+        allocationValue="0"
+        currencyUomId="SAR"
+        prioritySeq="99"
+        isDefaultRemainder="Y"
+        statusId="PAY_ALLOC_ACT"
+        fromDate="2026-02-01 00:00:00.000"/>
+
+    <!-- CASH employee -->
+    <EmployeePaymentAllocation paymentAllocationId="EPAL_PAYEMP0002_CASH"
+        partyId="PAY_EMP0002"
+        disbursementChannelId="CASH"
+        paymentMethodId="CASH"
+        allocationTypeEnumId="PAY_ALLOC_PCT"
+        allocationValue="0"
+        currencyUomId="SAR"
+        prioritySeq="99"
+        isDefaultRemainder="Y"
+        statusId="PAY_ALLOC_ACT"
+        fromDate="2026-02-01 00:00:00.000"/>
+
+</entity-engine-xml>

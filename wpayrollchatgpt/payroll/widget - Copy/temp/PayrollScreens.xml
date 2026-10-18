@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://ofbiz.apache.org/Widget-Screen"
+         xsi:schemaLocation="http://ofbiz.apache.org/Widget-Screen 
+         http://ofbiz.apache.org/dtds/widget-screen.xsd">
+    
+    <!-- ==================== -->
+    <!-- DASHBOARD SCREENS -->
+    <!-- ==================== -->
+    <screen name="PayrollDashboard">
+        <section>
+            <actions>
+                <service service-name="getPayrollStatistics" auto-field-map="true"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="PayrollDashboardForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <!-- ==================== -->
+    <!-- EMPLOYEE MANAGEMENT SCREENS -->
+    <!-- ==================== -->
+    <screen name="EmployeeList">
+      <section>
+        <!-- REMOVE the actions section for now -->
+        <widgets>
+            <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <include-form name="EmployeeListForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+     </section>
+	 
+</screen>
+    <screen name="CreateEmployeeAssignment">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="CreateEmployeeAssignmentForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="InternationalEmployeeList">
+        <section>
+            <actions>
+                <service service-name="findInternationalEmployeeList" auto-field-map="true"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="InternationalEmployeeListForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="CreateInternationalEmployee">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="CreateInternationalEmployeeForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <!-- ==================== -->
+    <!-- PAYROLL PROCESSING SCREENS -->
+    <!-- ==================== -->
+    <screen name="RunPayroll">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="RunPayrollForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="PayrollIterationList">
+        <section>
+            <actions>
+                <service service-name="findPayrollIterationList" auto-field-map="true"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="PayrollIterationListForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="CalculatePayroll">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="CalculatePayrollForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="FinalizePayroll">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="FinalizePayrollForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <!-- ==================== -->
+    <!-- LOAN MANAGEMENT SCREENS -->
+    <!-- ==================== -->
+    <screen name="EmployeeLoans">
+        <section>
+            <actions>
+                <service service-name="findEmployeeLoanList" auto-field-map="true"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="EmployeeLoansForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="CreateEmployeeLoan">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="CreateEmployeeLoanForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="LoanReports">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="LoanReportsForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <!-- ==================== -->
+    <!-- TAX CONFIGURATION SCREENS -->
+    <!-- ==================== -->
+    <screen name="TaxConfigurationList">
+        <section>
+            <actions>
+                <service service-name="findTaxConfigurationList" auto-field-map="true"/>
+            </actions>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="TaxConfigurationListForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="CreatePayrollTaxConfig">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="CreatePayrollTaxConfigForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="TaxReports">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="TaxReportsForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <!-- ==================== -->
+    <!-- REPORTS SCREENS -->
+    <!-- ==================== -->
+    <screen name="GeneratePayslips">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="GeneratePayslipsForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="GenerateBankTransferFiles">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="GenerateBankTransferFilesForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="ExportPayrollData">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="ExportPayrollDataForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="QuickReports">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="QuickReportsForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="PayrollHistory">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="PayrollHistoryForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <!-- ==================== -->
+    <!-- SYSTEM SETTINGS SCREENS -->
+    <!-- ==================== -->
+    <screen name="PayrollStructureList">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="PayrollStructureListForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="AllowanceTypeList">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="AllowanceTypeListForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="BankConfigurationList">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="BankConfigurationListForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="HRPolicyList">
+        <section>
+            <widgets>
+                <decorator-screen name="main" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                        <include-form name="HRPolicyListForm" location="component://payroll/widget/forms/PayrollForms.xml"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+	
+	
+	
+	
+	
+	    <screen name="MainTestScreen">
+        <section>
+            <actions>
+                <set field="headerItem" value="main"/><!-- this highlights the selected menu-item with name "main" -->
+            </actions>
+            <widgets>
+                <decorator-screen name="PayrollCommonDecorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+					
+					
+					
+					
+					
+					
+					 <label text="Hello World!! test screen :)"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+	<!---   custom screen   -->
+	<screen name="main">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <label text="MAIN SCREEN" style="h1"/>
+                    <label text="Hello World! Main screen content above."/>
+                    
+                    <!-- Section for nested content -->
+                    <section>
+                        <condition><if-has-permission permission="OFBTOOLS"/></condition>
+                        <widgets>
+                            <label text="=== NESTED SECTION ===" style="h2"/>
+                            <label text="User has permission to see this nested section."/>
+                            <label text="• Test Item A"/>
+                            <label text="• Test Item B"/>
+                            <label text="• Test Item C"/>
+                        </widgets>
+                    </section>
+                    
+                    <!-- Another section without condition -->
+                    <section>
+                        <widgets>
+                            <label text="Public Nested Section" style="h3"/>
+                            <label text="This section is always visible to all users."/>
+                            <container style="simple-box">
+                                <label text="Sample Data:"/>
+                                <label text="Row 1: Value 1"/>
+                                <label text="Row 2: Value 2"/>
+                                <label text="Row 3: Value 3"/>
+                            </container>
+                        </widgets>
+                    </section>
+                    
+                    <label text="=== END OF SCREEN ===" style="h2"/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>  
+ 
+
+
+
+<screen name="maina">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+                    <label text="MAIN SCREEN" style="h1"/>
+                    <label text="Hello World from Main Screen!"/>
+                    
+                    <!-- Correct way to include nested content -->
+                    <section>
+                        <widgets>
+                            <!-- Content of what would be the nested screen -->
+                            <container style="panel" class="nested-panel">
+                                <label text="NESTED CONTENT AREA" style="h2"/>
+                                <label text="This is embedded content using section/widgets pattern."/>
+                                
+                                <container style="spacing">
+                                    <label text="Test Labels:" style="bold"/>
+                                    <label text="• Payroll Module"/>
+                                    <label text="• Employee Database"/>
+                                    <label text="• Report Generator"/>
+                                    <label text="• Audit Trail"/>
+                                </container>
+                                
+                                <container style="form">
+                                    <label text="Status Info:" style="h3"/>
+                                    <container style="form-row">
+                                        <label text="Module:" style="form-label"/>
+                                        <label text="PayrollDashboard" style="form-value"/>
+                                    </container>
+                                    <container style="form-row">
+                                        <label text="State:" style="form-label"/>
+                                        <label text="Running ✓" style="form-value"/>
+                                    </container>
+                                </container>
+                            </container>
+                        </widgets>
+                    </section>
+                    
+                    <label text="Back to Main Content" style="h2"/>
+                    <label text="Main screen continues here after nested section."/>
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+   
+    <!-- ====================================================== -->
+    <!-- LOCAL DECORATOR WRAPS main-decorator (which exists)   -->
+    <!-- ====================================================== -->
+     <screen name="PayrollLocalDecorator">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator"
+                              location="component://common/widget/CommonScreens.xml">
+                <decorator-section name="body"/>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+    <!-- ====================================================== -->
+    <!-- TEST SCREEN USING FindPayrollIteration FORM            -->
+    <!-- ====================================================== -->
+    <screen name="TestPayrollFormScreen">
+    <section>
+        <widgets>
+            <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                <decorator-section name="body">
+
+                    <label text="Payroll Iteration Test Form" style="h2"/>
+                    <label text="UI Test Only — using FindPayrollIteration form" style="italic"/>
+
+                    <screenlet title="Find Payroll Iteration">
+                        <include-form name="FindPayrollIteration"
+                                      location="component://payroll/widget/PayrollForms.xml"/>
+                    </screenlet>
+
+                </decorator-section>
+            </decorator-screen>
+        </widgets>
+    </section>
+</screen>
+
+
+   
+	
+	
+</screens>

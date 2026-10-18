@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+
+    <entity entity-name="PayrollActionAudit"
+            package-name="org.apache.ofbiz.payroll"
+            title="Payroll Action Audit">
+
+        <field name="payrollActionAuditId" type="id"></field>
+
+        <field name="organizationPartyId" type="id"></field>
+        <field name="payrollRunId" type="id"></field>
+        <field name="payrollPeriodId" type="id"></field>
+        <field name="bankTransferBatchId" type="id"></field>
+        <field name="partyId" type="id"></field>
+
+        <field name="actionTypeId" type="id"></field>
+        <field name="actionStatusId" type="id"></field>
+        <field name="actionTs" type="date-time"></field>
+
+        <field name="performedByUserLoginId" type="id"></field>
+        <field name="reasonCode" type="id-vlong"></field>
+        <field name="messageText" type="description"></field>
+        <field name="requestJson" type="description"></field>
+        <field name="responseJson" type="description"></field>
+        <field name="referenceId" type="id-vlong"></field>
+
+        <field name="lastUpdatedStamp" type="date-time"></field>
+        <field name="lastUpdatedTxStamp" type="date-time"></field>
+        <field name="createdStamp" type="date-time"></field>
+        <field name="createdTxStamp" type="date-time"></field>
+
+        <prim-key field="payrollActionAuditId"/>
+
+        <index name="IDX_PAY_ACT_AUD_RUN">
+            <index-field name="payrollRunId"/>
+        </index>
+
+        <index name="IDX_PAY_ACT_AUD_PERIOD">
+            <index-field name="organizationPartyId"/>
+            <index-field name="payrollPeriodId"/>
+        </index>
+
+        <index name="IDX_PAY_ACT_AUD_ACTION_TS">
+            <index-field name="actionTs"/>
+        </index>
+
+        <index name="IDX_PAY_ACT_AUD_ACTION_TYPE">
+            <index-field name="actionTypeId"/>
+        </index>
+    </entity>
+
+    <entity entity-name="PayrollRunLock"
+            package-name="org.apache.ofbiz.payroll"
+            title="Payroll Run Lock">
+
+        <field name="payrollRunId" type="id"></field>
+        <field name="organizationPartyId" type="id"></field>
+
+        <field name="lockStatusId" type="id"></field>
+        <field name="lockedByUserLoginId" type="id"></field>
+        <field name="lockedDate" type="date-time"></field>
+        <field name="lockReason" type="description"></field>
+
+        <field name="unlockedByUserLoginId" type="id"></field>
+        <field name="unlockedDate" type="date-time"></field>
+        <field name="unlockReason" type="description"></field>
+
+        <field name="lastActionAuditId" type="id"></field>
+
+        <field name="lastUpdatedStamp" type="date-time"></field>
+        <field name="lastUpdatedTxStamp" type="date-time"></field>
+        <field name="createdStamp" type="date-time"></field>
+        <field name="createdTxStamp" type="date-time"></field>
+
+        <prim-key field="payrollRunId"/>
+
+        <index name="IDX_PAY_RUN_LOCK_ORG">
+            <index-field name="organizationPartyId"/>
+        </index>
+
+        <index name="IDX_PAY_RUN_LOCK_STAT">
+            <index-field name="lockStatusId"/>
+        </index>
+    </entity>
+
+    <entity entity-name="PayrollPeriodControl"
+            package-name="org.apache.ofbiz.payroll"
+            title="Payroll Period Control">
+
+        <field name="organizationPartyId" type="id"></field>
+        <field name="payrollPeriodId" type="id"></field>
+
+        <field name="controlStatusId" type="id"></field>
+
+        <field name="lockedByUserLoginId" type="id"></field>
+        <field name="lockedDate" type="date-time"></field>
+        <field name="lockReason" type="description"></field>
+
+        <field name="closedByUserLoginId" type="id"></field>
+        <field name="closedDate" type="date-time"></field>
+        <field name="closeReason" type="description"></field>
+
+        <field name="lastActionAuditId" type="id"></field>
+
+        <field name="lastUpdatedStamp" type="date-time"></field>
+        <field name="lastUpdatedTxStamp" type="date-time"></field>
+        <field name="createdStamp" type="date-time"></field>
+        <field name="createdTxStamp" type="date-time"></field>
+
+        <prim-key field="organizationPartyId"/>
+        <prim-key field="payrollPeriodId"/>
+
+        <index name="IDX_PAY_PERIOD_CTRL_STAT">
+            <index-field name="controlStatusId"/>
+        </index>
+    </entity>
+
+</entitymodel>

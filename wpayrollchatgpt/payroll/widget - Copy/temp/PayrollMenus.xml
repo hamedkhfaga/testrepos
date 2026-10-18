@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://ofbiz.apache.org/Widget-Menu"
+       xsi:schemaLocation="http://ofbiz.apache.org/Widget-Menu http://ofbiz.apache.org/dtds/widget-menu.xsd">
+
+    <!-- ==================== -->
+    <!-- PAYROLL HORIZONTAL APPBAR MENU -->
+    <!-- ==================== -->
+    <menu name="MainAppBar"
+          title="${uiLabelMap.PayrollApplication}"
+          extends="CommonAppBarMenu"
+          extends-resource="component://common/widget/CommonMenus.xml">
+
+        <!-- Dashboard -->
+        <menu-item name="Dashboard" title="Dashboard}">
+            <link target="PayrollDashboard"/>
+        </menu-item>
+<!-- Test Payroll Form (optional, can be removed after testing) -->
+        <menu-item name="TestPayrollFormScreen" title="Test Payroll Form">
+            <link target="TestPayrollFormScreen"/>
+        </menu-item>
+  
+
+
+        <!-- Employee Management -->
+        <menu-item name="EmployeeManagement123" title="${uiLabelMap.EmployeeManagement}">
+            <sub-menu>
+                <menu-item name="EmployeeList" title="${uiLabelMap.EmployeeList}">
+                    <!--link target="EmployeeList"/-->
+					 <link target="PayrollDashboard"/>
+                </menu-item>
+                <menu-item name="CreateEmployeeAssignment" title="${uiLabelMap.CreateEmployeeAssignment}">
+                    <link target="CreateEmployeeAssignment"/>
+                </menu-item>
+                <menu-item name="InternationalEmployeeList" title="${uiLabelMap.InternationalEmployees}">
+                    <link target="InternationalEmployeeList"/>
+                </menu-item>
+                <menu-item name="CreateInternationalEmployee" title="${uiLabelMap.CreateInternationalEmployee}">
+                    <link target="CreateInternationalEmployee"/>
+                </menu-item>
+            </sub-menu>
+        </menu-item>
+
+
+
+<!-- Employee Management -->
+<menu-item name="EmployeeManagement" title="${uiLabelMap.EmployeeManagement}"  show-sub-menu="true" >
+    <!-- Parent menu needs a link OR permission to be enabled -->
+     <link target="EmployeeList"/>
+    
+    <!-- Add permission for the parent menu -->
+    <permission perm="EMP_LIST_VIEW"/>
+    
+    <sub-menu>
+        <!-- Employee List - VIEW permission -->
+        <menu-item name="EmployeeList" title="${uiLabelMap.EmployeeList}">
+            <permission perm="EMP_LIST_VIEW"/>
+            <link target="EmployeeList"/>
+        </menu-item>
+        
+        <!-- Create Employee Assignment - CREATE permission -->
+        <menu-item name="CreateEmployeeAssignment" title="${uiLabelMap.CreateEmployeeAssignment}">
+            <permission perm="EMP_ASSIGN_CREATE"/>
+            <link target="CreateEmployeeAssignment"/>
+        </menu-item>
+        
+        <!-- International Employee List - VIEW permission -->
+        <menu-item name="InternationalEmployeeList" title="${uiLabelMap.InternationalEmployees}">
+            <permission perm="INTL_EMP_VIEW"/>
+            <link target="InternationalEmployeeList"/>
+        </menu-item>
+        
+        <!-- Create International Employee - CREATE permission -->
+        <menu-item name="CreateInternationalEmployee" title="${uiLabelMap.CreateInternationalEmployee}">
+            <permission perm="INTL_EMP_CREATE"/>
+            <link target="CreateInternationalEmployee"/>
+        </menu-item>
+    </sub-menu>
+</menu-item>
+
+
+
+        <!-- Payroll Processing -->
+        <menu-item name="PayrollProcessing" title="${uiLabelMap.PayrollProcessing}">
+            <sub-menu>
+                <menu-item name="RunPayroll" title="${uiLabelMap.RunPayroll}">
+                    <link target="RunPayroll"/>
+                </menu-item>
+                <menu-item name="PayrollIterationList" title="${uiLabelMap.AllPayrollIterations}">
+                    <link target="PayrollIterationList"/>
+                </menu-item>
+                <menu-item name="CalculatePayroll" title="${uiLabelMap.CalculatePayroll}">
+                    <link target="CalculatePayroll"/>
+                </menu-item>
+                <menu-item name="FinalizePayroll" title="${uiLabelMap.FinalizePayroll}">
+                    <link target="FinalizePayroll"/>
+                </menu-item>
+            </sub-menu>
+        </menu-item>
+
+        <!-- Loan Management -->
+        <menu-item name="LoanManagement" title="${uiLabelMap.LoanManagement}">
+            <sub-menu>
+                <menu-item name="EmployeeLoans" title="${uiLabelMap.LoanManagement}">
+                    <link target="LoanManagement"/>
+                </menu-item>
+                <menu-item name="CreateEmployeeLoan" title="${uiLabelMap.CreateEmployeeLoan}">
+                    <link target="CreateEmployeeLoan"/>
+                </menu-item>
+                <menu-item name="LoanReports" title="${uiLabelMap.LoanReports}">
+                    <link target="LoanReports"/>
+                </menu-item>
+            </sub-menu>
+        </menu-item>
+
+        <!-- Tax Configuration -->
+        <menu-item name="TaxConfiguration" title="${uiLabelMap.TaxConfiguration}">
+            <sub-menu>
+                <menu-item name="TaxConfigurationList" title="${uiLabelMap.TaxConfiguration}">
+                    <link target="TaxConfigurationList"/>
+                </menu-item>
+                <menu-item name="CreatePayrollTaxConfig" title="${uiLabelMap.CreateTaxConfiguration}">
+                    <link target="CreatePayrollTaxConfig"/>
+                </menu-item>
+                <menu-item name="TaxReports" title="${uiLabelMap.TaxReports}">
+                    <link target="TaxReports"/>
+                </menu-item>
+            </sub-menu>
+        </menu-item>
+
+        <!-- Payroll Reports -->
+        <menu-item name="PayrollReports" title="${uiLabelMap.PayrollReports}">
+            <sub-menu>
+                <menu-item name="GeneratePayslips" title="${uiLabelMap.Payslips}">
+                    <link target="PayrollReports"/>
+                </menu-item>
+                <menu-item name="BankTransferFiles" title="${uiLabelMap.BankTransfer}">
+                    <link target="PayrollReports"/>
+                </menu-item>
+                <menu-item name="ExportPayrollData" title="${uiLabelMap.ExportPayroll}">
+                    <link target="PayrollReports"/>
+                </menu-item>
+                <menu-item name="QuickReports" title="${uiLabelMap.QuickReports}">
+                    <sub-menu>
+                        <menu-item name="LoanReportsQuick" title="${uiLabelMap.LoanReports}">
+                            <link target="LoanReports"/>
+                        </menu-item>
+                        <menu-item name="TaxReportsQuick" title="${uiLabelMap.TaxReports}">
+                            <link target="TaxReports"/>
+                        </menu-item>
+                        <menu-item name="PayrollHistory" title="${uiLabelMap.PayrollHistory}">
+                            <link target="PayrollIterationList"/>
+                        </menu-item>
+                    </sub-menu>
+                </menu-item>
+            </sub-menu>
+        </menu-item>
+
+        <!-- System Settings -->
+        <menu-item name="SystemSettings" title="${uiLabelMap.SystemSettings}">
+            <sub-menu>
+                <menu-item name="PayrollStructureList" title="${uiLabelMap.ManagePayrollStructures}">
+                    <link target="PayrollStructureList"/>
+                </menu-item>
+                <menu-item name="AllowanceTypeList" title="${uiLabelMap.ManageAllowances}">
+                    <link target="AllowanceTypeList"/>
+                </menu-item>
+                <menu-item name="BankConfigurationList" title="${uiLabelMap.ManageBankConfigs}">
+                    <link target="BankConfigurationList"/>
+                </menu-item>
+                <menu-item name="HRPolicyList" title="${uiLabelMap.ManageHRPolicies}">
+                    <link target="HRPolicyList"/>
+                </menu-item>
+            </sub-menu>
+        </menu-item>
+
+        <!-- Test Payroll Form (optional, can be removed after testing) -->
+        <menu-item name="TestPayrollFormScreen" title="Test Payroll Form">
+            <link target="TestPayrollFormScreen"/>
+        </menu-item>
+
+    </menu>
+</menus>

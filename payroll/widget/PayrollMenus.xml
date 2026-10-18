@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menus xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://ofbiz.apache.org/Widget-Menu"
+       xsi:schemaLocation="http://ofbiz.apache.org/Widget-Menu http://ofbiz.apache.org/dtds/widget-menu.xsd">
+
+    <!-- ===================================================== -->
+    <!-- Application Bar -->
+    <!-- ===================================================== -->
+  <menu name="MainAppBar"
+      title="${uiLabelMap.PayrollApplication}"
+      extends="CommonAppBarMenu"
+      extends-resource="component://common/widget/CommonMenus.xml">
+  <actions>
+    <property-map resource="PayrollUiLabels" map-name="uiLabelMap" global="true"/>
+  </actions>
+
+  <menu-item name="PayrollMainSetupMenu" title="${uiLabelMap.PayrollSetup}">
+    <link target="PayrollOrganizationList">
+      <parameter param-name="orgPartyId" from-field="parameters.orgPartyId"/>
+    </link>
+  </menu-item>
+
+  <menu-item name="PayrollMainRunActionsMenu" title="${uiLabelMap.PayrollRunActions}">
+    <link target="PayrollRunProcessSubmit">
+      <parameter param-name="payrollRunId" from-field="parameters.payrollRunId"/>
+      <parameter param-name="orgPartyId" from-field="parameters.orgPartyId"/>
+      <parameter param-name="forceRecalc" from-field="parameters.forceRecalc"/>
+    </link>
+  </menu-item>
+
+  <menu-item name="PayrollReports" title="${uiLabelMap.PayrollReports}">
+    <link target="PayrollMain"/>
+  </menu-item>
+   <menu-item name="PayrollPhase3" title="${uiLabelMap.PayrollPhase3Title}" target="PayrollPhase3Main"/>
+   
+   
+   <menu-item name="PayrollGovernance"
+           title="${uiLabelMap.PayrollGovernance}"
+           widget-style="buttontext">
+    <link target="viewPayrollGovernance"/>
+</menu-item>
+
+<menu-item name="PayrollGovernance"
+           title="${uiLabelMap.PayrollGovernance}"
+           widget-style="buttontext">
+    <link target="viewPayrollGovernance"/>
+</menu-item>
+
+<menu-item name="PayrollRunLockList"
+           title="${uiLabelMap.PayrollRunLockList}"
+           widget-style="buttontext">
+    <link target="viewPayrollGovernance"/>
+</menu-item>
+
+<menu-item name="FindPayslips"
+           title="${uiLabelMap.PayrollFindPayslips}"
+           widget-style="menuItem">
+    <link target="FindPayslips"/>
+</menu-item>
+
+<menu-item name="PayrollReconciliation"
+           title="${uiLabelMap.PayrollReconciliation}"
+           widget-style="menuItem">
+    <link target="PayrollReconciliation"/>
+</menu-item>
+
+<menu-item name="PayrollAuditViewer"
+           title="${uiLabelMap.PayrollAuditViewer}"
+           widget-style="menuItem">
+    <link target="PayrollAuditViewer"/>
+</menu-item>
+
+
+
+</menu>
+
+    <!-- ===================================================== -->
+    <!-- SETUP MENU (Master Data + Config) -->
+    <!-- ===================================================== -->
+    <menu name="PayrollSetupMenu"
+         
+          menu-container-style="button-bar button-style-2"
+          default-selected-style="selected">
+        <actions>
+            <property-map resource="PayrollUiLabels" map-name="uiLabelMap" global="true"/>
+        </actions>
+
+        <menu-item name="Organizations" title="${uiLabelMap.PayrollMenuOrganizations}">
+            <link target="PayrollOrganizationList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="PeriodTypes" title="${uiLabelMap.PayrollMenuPeriodTypes}">
+            <link target="PayrollPeriodTypeList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+		 <menu-item name="AllowanceTypes" title="${uiLabelMap.PayrollMenuAllowanceTypes}">
+            <link target="AllowanceTypeList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="DeductionTypes" title="${uiLabelMap.PayrollMenuDeductionTypes}">
+            <link target="DeductionTypeList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+        <menu-item name="CurrencyRates" title="${uiLabelMap.PayrollMenuCurrencyRates}">
+            <link target="PayrollCurrencyRateList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+        <menu-item name="Periods" title="${uiLabelMap.PayrollMenuPeriods}">
+            <link target="PayrollPeriodList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="Structures" title="${uiLabelMap.PayrollMenuStructures}">
+            <link target="PayrollStructureList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="EmployeeAssignments" title="${uiLabelMap.PayrollMenuAssignments}">
+            <link target="EmployeePayrollAssignmentList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        
+
+        <menu-item name="OvertimePolicies" title="${uiLabelMap.PayrollMenuPolicies}">
+            <link target="OvertimePolicyList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="HrPolicySets" title="${uiLabelMap.PayrollMenuHrPolicySets}">
+            <link target="HrPolicySetList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="HrPolicies" title="${uiLabelMap.PayrollMenuHrPolicies}">
+            <link target="HrPolicyList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="TaxConfig" title="${uiLabelMap.PayrollMenuTaxConfig}">
+            <link target="PayrollTaxConfigList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="SocialSecurityConfig" title="${uiLabelMap.PayrollMenuSocialSecurity}">
+            <link target="SocialSecurityConfigList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+       
+
+        <!-- Accounting setup -->
+        <menu-item name="GlMapping" title="${uiLabelMap.PayrollMenuGlMapping}">
+            <link target="PayrollGlMappingList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="InvoiceMapping" title="${uiLabelMap.PayrollMenuInvoiceMapping}">
+            <link target="PayrollInvoiceMappingList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+    </menu>
+
+    <!-- ===================================================== -->
+    <!-- RUN ACTIONS (Contextual for a selected Payroll Run) -->
+    <!-- ===================================================== -->
+    <menu name="PayrollRunActionsMenu"
+          title="${uiLabelMap.PayrollRunActionsMenuTitle}"
+          menu-container-style="button-bar button-style-2"
+          default-selected-style="selected">
+        <actions>
+            <property-map resource="PayrollUiLabels" map-name="uiLabelMap" global="true"/>
+        </actions>
+
+        <menu-item name="ApproveRun" title="${uiLabelMap.PayrollActionApprove}">
+            <link target="PayrollRunApproveSubmit">
+                <parameter param-name="payrollRunId" from-field="parameters.payrollRunId"/>
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="ProcessRun" title="${uiLabelMap.PayrollActionProcessSalaries}">
+            <link target="PayrollRunProcessSubmit">
+                <parameter param-name="payrollRunId" from-field="parameters.payrollRunId"/>
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+                <parameter param-name="forceRecalc" from-field="parameters.forceRecalc"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="PostRun" title="${uiLabelMap.PayrollActionPostByOption}">
+            <link target="PayrollRunPostSubmit">
+                <parameter param-name="payrollRunId" from-field="parameters.payrollRunId"/>
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+                <parameter param-name="accountingPostOptionId" from-field="parameters.accountingPostOptionId"/>
+                <parameter param-name="forceRepost" from-field="parameters.forceRepost"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="Results" title="${uiLabelMap.PayrollMenuResults}">
+            <link target="EmployeePayrollResultList">
+                <parameter param-name="payrollRunId" from-field="parameters.payrollRunId"/>
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="ExportRequests" title="${uiLabelMap.PayrollMenuExportRequests}">
+            <link target="PayrollExportRequestList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+                <parameter param-name="payrollRunId" from-field="parameters.payrollRunId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="BankBatch" title="${uiLabelMap.PayrollActionGenerateBankBatch}">
+            <link target="PayrollRunBankBatchSubmit">
+                <parameter param-name="payrollRunId" from-field="parameters.payrollRunId"/>
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+                <parameter param-name="bankTransferConfigId" from-field="parameters.bankTransferConfigId"/>
+            </link>
+        </menu-item>
+    </menu>
+
+    <!-- ===================================================== -->
+    <!-- RESULT ACTIONS (Contextual for a selected Payroll Result) -->
+    <!-- ===================================================== -->
+    <menu name="PayrollResultActionsMenu"
+          title="${uiLabelMap.PayrollPayslipActionsMenuTitle}"
+          menu-container-style="button-bar button-style-2"
+          default-selected-style="selected">
+        <actions>
+            <property-map resource="PayrollUiLabels" map-name="uiLabelMap" global="true"/>
+        </actions>
+
+        <menu-item name="BackToRun" title="${uiLabelMap.PayrollActionBackToRun}">
+            <link target="PayrollRunView">
+                <parameter param-name="payrollRunId" from-field="parameters.payrollRunId"/>
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="Barcode" title="${uiLabelMap.PayrollActionGenerateBarcode}">
+            <link target="GeneratePayslipBarcode">
+                <parameter param-name="payrollResultId" from-field="parameters.payrollResultId"/>
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="PdfOpenPdf" title="${uiLabelMap.PayrollActionGeneratePdfOpenPdf}">
+            <link target="GeneratePayslipPdfOpenPdf">
+                <parameter param-name="payrollResultId" from-field="parameters.payrollResultId"/>
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="PdfFop" title="${uiLabelMap.PayrollActionGeneratePdfFop}">
+            <link target="GeneratePayslipPdfFop">
+                <parameter param-name="payrollResultId" from-field="parameters.payrollResultId"/>
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+                <parameter param-name="foTemplatePath" value="component://payroll/template/payslip.fo"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="CreateExportRequest" title="${uiLabelMap.PayrollMenuCreateExportRequest}">
+            <link target="CreatePayrollExportRequest">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+                <parameter param-name="payrollResultId" from-field="parameters.payrollResultId"/>
+                <parameter param-name="exportTypeId" value="PAYSLIP"/>
+                <parameter param-name="formatTypeId" value="PDF_OPENPDF"/>
+            </link>
+        </menu-item>
+    </menu>
+
+    <!-- ===================================================== -->
+    <!-- REPORTS MENU (Audit + Retro + Compliance) -->
+    <!-- ===================================================== -->
+    <menu name="PayrollReportsMenu"
+          title="${uiLabelMap.PayrollReports}"
+          menu-container-style="button-bar button-style-2"
+          default-selected-style="selected">
+        <actions>
+            <property-map resource="PayrollUiLabels" map-name="uiLabelMap" global="true"/>
+        </actions>
+
+        <menu-item name="PostingAudit" title="${uiLabelMap.PayrollMenuPostingAudit}">
+            <link target="PayrollPostingList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="ExportRequests" title="${uiLabelMap.PayrollMenuExportRequests}">
+            <link target="PayrollExportRequestList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="RetroBatches" title="${uiLabelMap.PayrollMenuRetroBatches}">
+            <link target="PayrollRetroBatchList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+
+        <menu-item name="ComplianceReports" title="${uiLabelMap.PayrollMenuComplianceReports}">
+            <link target="PayrollComplianceReportList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+    </menu>
+ 
+    <menu name="PayrollHrInputMenu" title="${uiLabelMap.PayrollHrInputsTitle}"  
+	      menu-container-style="button-bar button-style-2"
+          default-selected-style="selected">
+		  <actions>
+            <property-map resource="PayrollUiLabels" map-name="uiLabelMap" global="true"/>
+        </actions>
+
+        <menu-item name="Organizations" title="${uiLabelMap.PayrollMenuOrganizations}">
+            <link target="PayrollOrganizationList">
+                <parameter param-name="organizationPartyId" from-field="parameters.organizationPartyId"/>
+            </link>
+        </menu-item>
+        <menu-item name="hrInputsHome" title="${uiLabelMap.PayrollHrInputsHome}">
+            <link target="hrInputs"/>
+        </menu-item>
+        <menu-item name="overtime" title="${uiLabelMap.PayrollOvertimeRequests}">
+            <link target="overtimeList"/>
+        </menu-item>
+        <menu-item name="snapshots" title="${uiLabelMap.PayrollInputSnapshots}">
+            <link target="snapshotList"/>
+        </menu-item>
+    </menu>
+ 
+ 
+
+</menus>

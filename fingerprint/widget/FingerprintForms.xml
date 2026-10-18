@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns="http://ofbiz.apache.org/Widget-Form" 
+    xsi:schemaLocation="http://ofbiz.apache.org/Widget-Form http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+        
+    <!-- ================================================= -->
+    <!-- BiometricDevice Create Form -->
+    <!-- ================================================= -->
+    <form name="BiometricDeviceCreateForm" type="single" target="createBiometricDevice" title="${uiLabelMap['Entity.BiometricDevice']}" >
+    <field name="deviceName" title="${uiLabelMap['Entity.BiometricDevice.deviceName']}"><text/></field>
+    <field name="serialNumber" position="2"    title="${uiLabelMap['Entity.BiometricDevice.serialNumber']}"><text/></field>
+    <field name="vendorName" title="${uiLabelMap['Entity.BiometricDevice.vendorName']}"><text/></field>
+    <field name="modelName" position="2" title="${uiLabelMap['Entity.BiometricDevice.modelName']}"><text/></field>
+    <field name="deviceTypeEnumId" title="${uiLabelMap['Entity.BiometricDevice.deviceTypeEnumId']}"><text/></field>
+    <field name="ipAddress" position="2" title="${uiLabelMap['Entity.BiometricDevice.ipAddress']}"><text/></field>
+    <field name="port"   title="${uiLabelMap['Entity.BiometricDevice.port']}"><text/></field>
+    <field name="timeZoneId" position="2" title="${uiLabelMap['Entity.BiometricDevice.timeZoneId']}"><text/></field>
+    <field name="facilityId" title="${uiLabelMap['Entity.BiometricDevice.facilityId']}"><text/></field>
+    <field name="geoPointId" position="2" title="${uiLabelMap['Entity.BiometricDevice.geoPointId']}"><text/></field>
+    <field name="statusId"  title="${uiLabelMap['Entity.BiometricDevice.statusId']}"><text/></field>   
+    <field name="fromDate" title="${uiLabelMap.Common.FromDate}"><date-time/></field>
+    <field name="thruDate" position="2" title="${uiLabelMap.Common.ThruDate}"><date-time/></field>    
+    <field name="submitButton" title="${uiLabelMap['Common.Create']}" widget-style="span-all"><submit button-type="button"/></field>
+</form>
+    
+	
+	
+	<!-- ================================================= -->
+    <!-- BiometricDeviceUser Create Form -->
+    <!-- ================================================= -->
+    <form name="BiometricDeviceUserCreateForm" type="single" target="createBiometricDeviceUser" title="${uiLabelMap['Entity.BiometricDeviceUser']}">
+        <field name="biometricDeviceId" title="${uiLabelMap['Entity.BiometricDeviceUser.biometricDeviceId']}"><text/></field>
+        <field name="partyId" title="${uiLabelMap['Entity.BiometricDeviceUser.partyId']}"><text/></field>
+        <field name="deviceUserId" title="${uiLabelMap['Entity.BiometricDeviceUser.deviceUserId']}"><text/></field>
+        <field name="cardNumber" title="${uiLabelMap['Entity.BiometricDeviceUser.cardNumber']}"><text/></field>
+        <field name="deviceUserStatusId" title="${uiLabelMap['Entity.BiometricDeviceUser.deviceUserStatusId']}"><text/></field>
+        <field name="fromDate" title="${uiLabelMap.Common.FromDate}"><date-time/></field>
+        <field name="thruDate" title="${uiLabelMap.Common.ThruDate}"><date-time/></field>
+
+        <field name="submitButton" title="${uiLabelMap['Common.Create']}"><submit button-type="button"/></field>
+    </form>
+
+    <!-- ================================================= -->
+    <!-- WorkShift Create Form -->
+    <!-- ================================================= -->
+    <form name="WorkShiftCreateForm" type="single" target="createWorkShift" title="${uiLabelMap['Entity.WorkShift']}">
+        <field name="shiftName" title="${uiLabelMap['Entity.WorkShift.shiftName']}"><text/></field>
+        <field name="startTime" title="${uiLabelMap['Entity.WorkShift.startTime']}">
+    <display type="date-time"/> 
+</field>
+<field name="endTime" title="${uiLabelMap['Entity.WorkShift.endTime']}">
+    <display type="date-time"/>
+</field>
+     <field name="crossMidnightFlag" title="${uiLabelMap['Entity.WorkShift.crossMidnightFlag']}"><check/></field>
+        <field name="graceInMinutes" title="${uiLabelMap['Entity.WorkShift.graceInMinutes']}"><text/></field>
+        <field name="graceOutMinutes" title="${uiLabelMap['Entity.WorkShift.graceOutMinutes']}"><text/></field>
+        <field name="breakMinutes" title="${uiLabelMap['Entity.WorkShift.breakMinutes']}"><text/></field>
+        <field name="shiftStatusId" title="${uiLabelMap['Entity.WorkShift.shiftStatusId']}"><text/></field>
+
+        <field name="submitButton" title="${uiLabelMap['Common.Create']}"><submit button-type="button"/></field>
+    </form>
+	
+	
+<form name="FindWorkShifts" type="single" target="WorkShiftList" default-map-name="parameters">
+    <field name="shiftName" title="Shift Name"><text-find ignore-case="true"/></field>
+    <field name="organizationPartyId" title="Organization ID"><text-find/></field>
+    <field name="shiftStatusId" title="Status">
+    <drop-down allow-empty="true">
+        <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
+            <entity-order-by field-name="description"/>
+        </entity-options>
+    </drop-down>
+</field>
+    <field name="noConditionFind"><hidden value="Y"/></field>
+    <field name="submitButton" title="Search" widget-style="smallSubmit"><submit/></field>
+</form>
+
+
+
+<form name="WorkShiftList" type="list" list-name="listIt" paginate-target="WorkShiftList"
+      default-table-style="basic-table hover-bar" header-row-style="header-row-2">
+    <actions>
+        <service service-name="performFind" result-map="resultMlt">
+            <field-map field-name="entityName" value="WorkShift"/>
+            <field-map field-name="inputFields" from-field="parameters"/>
+            <field-map field-name="noConditionFind" value="Y"/>
+            <field-map field-name="orderBy" value="shiftName"/>
+        </service>
+        <set field="listIt" from-field="resultMlt.listIt"/>
+    </actions>
+
+    <field name="shiftId" title="ID" sort-field="true"><display/></field>
+    <field name="shiftName" title="Shift Name" sort-field="true"><display/></field>
+    <field name="organizationPartyId" title="Org"><display/></field>
+    
+    <field name="startTime" title="Start"><display type="date-time" /></field>
+    <field name="endTime" title="End"><display   type="date-time"  /></field>
+    
+    <field name="crossMidnightFlag" title="Cross Midnight"><display/></field>
+    <field name="graceInMinutes" title="Grace In"><display/></field>
+    <field name="breakMinutes" title="Break"><display/></field>
+    
+    <field name="shiftStatusId" title="Status">
+        <display-entity entity-name="StatusItem" key-field-name="statusId" description="${description}"/>
+    </field>
+
+    <field name="editLink" title=" " widget-style="buttontext">
+        <hyperlink description="Edit" target="EditWorkShift">
+            <parameter param-name="shiftId"/>
+        </hyperlink>
+    </field>
+</form>
+  <!-- ================================================= -->
+    <!-- AttendancePolicy Create Form -->
+    <!-- ================================================= -->
+    
+
+<form name="AttendancePolicyCreateForm" type="single" target="createAttendancePolicy" title="${uiLabelMap['Entity.AttendancePolicy']}">
+    <field name="policyName" title="${uiLabelMap['Entity.AttendancePolicy.policyName']}"><text/></field>
+    <field name="roundingMethodEnumId" title="${uiLabelMap['Entity.AttendancePolicy.roundingMethodEnumId']}"><text/></field>
+    <field name="roundingMinutes" title="${uiLabelMap['Entity.AttendancePolicy.roundingMinutes']}"><text/></field>
+    <field name="overtimeMethodEnumId" title="${uiLabelMap['Entity.AttendancePolicy.overtimeMethodEnumId']}"><text/></field>
+    <field name="minOvertimeMinutes" title="${uiLabelMap['Entity.AttendancePolicy.minOvertimeMinutes']}"><text/></field>
+    <field name="allowManualAdjustFlag" title="${uiLabelMap['Entity.AttendancePolicy.allowManualAdjustFlag']}"><check/></field>
+    <field name="policyStatusId" title="${uiLabelMap['Entity.AttendancePolicy.policyStatusId']}"><text/></field>
+
+    <field name="submitButton" title="${uiLabelMap['Common.Create']}">
+        <submit button-type="button"/>
+    </field>
+
+    <field name="cancelButton" title=" "  position="2" widget-style="buttontext">
+        <hyperlink target="AttendancePolicyList" description="${uiLabelMap.CommonCancel}" target-type="intra-app"/>
+    </field>
+</form>
+
+<form name="FindAttendancePolicies" type="single" target="AttendancePolicyList" default-map-name="parameters">
+    <field name="policyName" title="Policy Name"><text-find ignore-case="true"/></field>
+    <field name="organizationPartyId" title="Organization ID"><text-find/></field>
+    <field name="policyStatusId" title="Status">
+        <drop-down allow-empty="true">
+            <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
+                <entity-constraint name="statusTypeId" value="POLICY_STATUS"/>
+                <entity-order-by field-name="description"/>
+            </entity-options>
+        </drop-down>
+    </field>
+    <field name="noConditionFind"><hidden value="Y"/></field>
+    <field name="submitButton" title="Search" widget-style="smallSubmit"><submit/></field>
+</form>
+
+<form name="AttendancePolicyList" type="list" list-name="listIt" paginate-target="AttendancePolicyList"
+      default-table-style="basic-table hover-bar" header-row-style="header-row-2">
+    <actions>
+        <service service-name="performFind" result-map="resultMlt">
+            <field-map field-name="entityName" value="AttendancePolicy"/>
+            <field-map field-name="inputFields" from-field="parameters"/>
+            <field-map field-name="noConditionFind" value="Y"/>
+            <field-map field-name="orderBy" value="policyName"/>
+        </service>
+        <set field="listIt" from-field="resultMlt.listIt"/>
+    </actions>
+
+    <field name="attendancePolicyId" title="ID" sort-field="true"><display/></field>
+    <field name="policyName" title="Policy Name" sort-field="true"><display/></field>
+    <field name="roundingMethodEnumId" title="Rounding Method"><display/></field>
+    <field name="roundingMinutes" title="Mins"><display/></field>
+    <field name="overtimeMethodEnumId" title="OT Method"><display/></field>
+    <field name="allowManualAdjustFlag" title="Manual Adj"><display/></field>
+    <field name="policyStatusId" title="Status">
+        <display-entity entity-name="StatusItem" key-field-name="statusId" description="${description}"/>
+    </field>
+    
+    <field name="editLink" title=" " widget-style="buttontext">
+        <hyperlink description="Edit" target="EditAttendancePolicy">
+            <parameter param-name="attendancePolicyId"/>
+        </hyperlink>
+    </field>
+</form>
+
+
+<form name="FindAttendanceDaySummary" type="single" target="AttendanceDaySummaryList" default-map-name="parameters">
+    <field name="partyId" title="Employee ID"><text-find/></field>
+    <field name="workDate" title="Work Date"><date-find type="date"/></field>
+    <field name="summaryStatusId" title="Status">
+        <drop-down allow-empty="true">
+            <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
+                <entity-constraint name="statusTypeId" value="ATT_SUMMARY_STATUS"/>
+            </entity-options>
+        </drop-down>
+    </field>
+    <field name="noConditionFind"><hidden value="Y"/></field>
+    <field name="submitButton" title="Search" widget-style="smallSubmit"><submit/></field>
+</form>
+
+<form name="AttendanceDaySummaryList" type="list" list-name="listIt" paginate-target="AttendanceDaySummaryList"
+      default-table-style="basic-table hover-bar" header-row-style="header-row-2">
+    <actions>
+        <service service-name="performFind" result-map="resultMlt">
+            <field-map field-name="entityName" value="AttendanceDaySummary"/>
+            <field-map field-name="inputFields" from-field="parameters"/>
+            <field-map field-name="noConditionFind" value="Y"/>
+            <field-map field-name="orderBy" value="-workDate"/>
+        </service>
+        <set field="listIt" from-field="resultMlt.listIt"/>
+    </actions>
+
+    <field name="workDate" title="Date" sort-field="true"><display type="date"/></field>
+    <field name="partyId" title="Employee"><display/></field>
+    
+    <field name="scheduledMinutes" title="Sch. Mins"><display/></field>
+    <field name="workedMinutes" title="Worked"><display/></field>
+    <field name="lateMinutes" title="Late"><display/></field>
+    <field name="overtimeMinutes" title="OT"><display/></field>
+    
+    <field name="absenceFlag" title="Absent"><display/></field>
+    <field name="shiftId" title="Shift">
+        <display-entity entity-name="WorkShift" description="${shiftName}"/>
+    </field>
+    <field name="summaryStatusId" title="Status">
+        <display-entity entity-name="StatusItem" key-field-name="statusId" description="${description}"/>
+    </field>
+
+    <field name="detailsLink" title=" " widget-style="buttontext">
+        <hyperlink description="Details" target="AttendanceDaySummaryDetails">
+            <parameter param-name="attendanceDaySummaryId"/>
+        </hyperlink>
+    </field>
+</form>
+
+<form name="AttendanceDaySummaryDetails" type="single" default-map-name="summaryDetails">
+    <field name="attendanceDaySummaryId" title="Summary ID"><display/></field>
+    <field name="partyId" title="Employee ID"><display/></field>
+    <field name="workDate" title="Work Date"><display type="date"/></field>
+    
+    <field name="shiftId" title="Shift">
+        <display-entity entity-name="WorkShift" description="${shiftName}"/>
+    </field>
+    
+    <field name="scheduledMinutes" title="Scheduled Minutes"><display/></field>
+    <field name="workedMinutes" title="Worked Minutes"><display/></field>
+    <field name="lateMinutes" title="Late Minutes"><display/></field>
+    <field name="overtimeMinutes" title="Overtime Minutes"><display/></field>
+    
+    <field name="notes" title="Notes"><display/></field>
+    <field name="calculatedDateTime" title="Calculated On"><display/></field>
+
+    <field name="backButton" title=" ">
+        <hyperlink target="AttendanceDaySummaryList" description="Back to List" style="buttontext"/>
+    </field>
+</form>
+<form name="FindAttendanceExceptions" type="single" target="AttendanceExceptionList" default-map-name="parameters">
+    <field name="partyId" title="Employee ID"><text-find/></field>
+    <field name="workDate" title="Work Date"><date-find type="date"/></field>
+
+    <field name="exceptionTypeEnumId" title="Exception Type">
+        <drop-down allow-empty="true">
+            <entity-options entity-name="Enumeration" key-field-name="enumId" description="${description}">
+                <entity-constraint name="enumTypeId" value="ATT_EXC_TYPE"/>
+                <entity-order-by field-name="description"/>
+            </entity-options>
+        </drop-down>
+    </field>
+
+    <field name="severityEnumId" title="Severity">
+        <drop-down allow-empty="true">
+            <entity-options entity-name="Enumeration" key-field-name="enumId" description="${description}">
+                <entity-constraint name="enumTypeId" value="ATT_EXC_SEVERITY"/>
+                <entity-order-by field-name="description"/>
+            </entity-options>
+        </drop-down>
+    </field>
+
+    <field name="exceptionStatusId" title="Status">
+        <drop-down allow-empty="true">
+            <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
+                <entity-constraint name="statusTypeId" value="ATT_EXC_STATUS"/>
+                <entity-order-by field-name="description"/>
+            </entity-options>
+        </drop-down>
+    </field>
+
+    <field name="noConditionFind"><hidden value="Y"/></field>
+    <field name="submitButton" title="Search" widget-style="smallSubmit"><submit/></field>
+</form>
+
+<form name="AttendanceExceptionList" type="list" list-name="listIt" paginate-target="AttendanceExceptionList"
+    default-table-style="basic-table hover-bar" header-row-style="header-row-2">
+    <actions>
+        <service service-name="performFind" result-map="resultMlt">
+            <field-map field-name="entityName" value="AttendanceException"/>
+            <field-map field-name="inputFields" from-field="parameters"/>
+            <field-map field-name="noConditionFind" value="Y"/>
+            <field-map field-name="orderBy" value="-workDate"/>
+        </service>
+        <set field="listIt" from-field="resultMlt.listIt"/>
+    </actions>
+    <field name="workDate" title="Date" sort-field="true"><display type="date"/></field>
+    <field name="partyId" title="Employee"><display/></field>
+    
+    <field name="exceptionTypeEnumId" title="Type">
+        <display-entity entity-name="Enumeration" key-field-name="enumId"/>
+    </field>
+    
+    <field name="severityEnumId" title="Severity">
+        <display-entity entity-name="Enumeration" key-field-name="enumId"/>
+    </field>
+
+    <field name="exceptionStatusId" title="Status">
+        <display-entity entity-name="StatusItem" key-field-name="statusId" description="${description}"/>
+    </field>
+
+    <field name="resolvedByUserLoginId" title="Resolved By"><display/></field>
+
+    <field name="detailsLink" title=" " widget-style="buttontext">
+        <hyperlink description="Resolve" target="AttendanceExceptionDetails">
+            <parameter param-name="attendanceExceptionId"/>
+        </hyperlink>
+    </field>
+</form>
+
+<form name="AttendanceExceptionResolveForm" type="single" target="updateAttendanceException" default-map-name="attendanceException">
+    <field name="attendanceExceptionId"><hidden/></field>
+    <field name="organizationPartyId"><hidden/></field>
+    <field name="partyId" title="Employee">
+        <display-entity entity-name="PartyNameView" description="${firstName} ${lastName} ${groupName}"/>
+    </field>
+    <field name="workDate" title="Work Date"><display type="date"/></field>
+    
+    <field name="exceptionTypeEnumId" title="Exception Type">
+        <display-entity entity-name="Enumeration" key-field-name="enumId" description="${description}"/>
+    </field>
+
+    <field name="exceptionStatusId" title="Resolution Status">
+        <drop-down allow-empty="false">
+            <entity-options entity-name="StatusItem" key-field-name="statusId" description="${description}">
+                <entity-constraint name="statusTypeId" value="ATT_EXC_STATUS"/>
+                <entity-order-by field-name="sequenceId"/>
+            </entity-options>
+        </drop-down>
+    </field>
+    
+    <field name="resolutionNote" title="Resolution Note" required-field="true">
+        <textarea rows="3" cols="50"/>
+    </field>
+
+    <field name="resolvedByUserLoginId"><hidden value="${userLogin.userLoginId}"/></field>
+    <field name="resolvedDateTime"><hidden value="${nowTimestamp}"/></field>
+    <field name="lastModifiedByUserLoginId"><hidden value="${userLogin.userLoginId}"/></field>
+
+    <field name="submitButton" title="Update &amp; Resolve" widget-style="smallSubmit">
+        <submit button-type="button"/>
+    </field>
+    <field name="cancelButton" title=" " widget-style="buttontext">
+        <hyperlink target="AttendanceExceptionList" description="Back to List"/>
+    </field>
+</form>
+<!-- ================================================= -->
+<!-- BiometricDeviceUser List Form -->
+<!-- ================================================= -->
+<form name="BiometricDeviceUserListForm"
+      type="list"
+      list-name="biometricDeviceUserList"
+      paginate="true"
+      paginate-target="BiometricDeviceUserList"
+    
+      default-table-style="basic-table hover-bar"
+      header-row-style="header-row"
+      odd-row-style="alternate-row">
+
+    <actions>
+        <entity-condition entity-name="BiometricDeviceUser">
+            <order-by field-name="biometricDeviceId"/>
+        </entity-condition>
+    </actions>
+
+    <field name="biometricDeviceId" sort-field="true" title="${uiLabelMap.CommonId}">
+        <display/>
+    </field>
+
+    <field name="partyId" sort-field="true" title="${uiLabelMap.PartyPartyId}">
+        <display/>
+    </field>
+
+    <field name="deviceUserId" sort-field="true" title="${uiLabelMap.DeviceUserId}">
+        <display/>
+    </field>
+
+    <field name="fromDate" sort-field="true" title="${uiLabelMap.CommonFromDate}">
+        <display type="date-time"/>
+    </field>
+
+  <field name="editLink" title=" " widget-style="buttontext">
+    <hyperlink description="${uiLabelMap.CommonEdit}" target="EditBiometricDeviceUser">
+        <parameter param-name="biometricDeviceId" from-field="biometricDeviceId"/>
+        <parameter param-name="partyId" from-field="partyId"/>
+        <parameter param-name="fromDate" from-field="fromDate"/>
+    </hyperlink>
+</field>
+
+    <field name="deleteLink" title=" " widget-style="buttontext">
+        <hyperlink description="${uiLabelMap.CommonDelete}" target="deleteBiometricDeviceUser" confirmation-message="Are you sure you want to delete this user?">
+            <parameter param-name="biometricDeviceId"/>
+            <parameter param-name="partyId"/>
+            <parameter param-name="fromDate"/>
+        </hyperlink>
+    </field>
+
+</form>
+
+
+<form name="EditBiometricDeviceUser" type="single" target="updateBiometricDeviceUser" default-map-name="biometricDeviceUser">
+    <field name="biometricDeviceId"><hidden/></field>
+    <field name="partyId"><hidden/></field>
+    <field name="fromDate"><hidden/></field>
+    
+    <field name="biometricDeviceIdDisplay" entry-name="biometricDeviceId" title="${uiLabelMap.DeviceId}"><display/></field>
+    <field name="partyIdDisplay" entry-name="partyId" title="${uiLabelMap.PartyPartyId}"><display/></field>
+
+    <field name="deviceUserId" title="${uiLabelMap.DeviceUserId}"><text size="20"/></field>
+    
+    <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit">
+    <submit/>
+    </field>
+
+    <field name="cancelButton" title=" " widget-style="buttontext">
+        <hyperlink target="BiometricDeviceUserList" description="${uiLabelMap.CommonCancel}"/>
+    </field>
+</form>
+<form name="BiometricDeviceUserListHeaderForm"
+      type="list"
+      list-name="list"
+      paginate="false"
+      separate-columns="true"
+      default-table-style="basic-table hover-bar">
+
+    <field name="biometricDeviceId" title="Biometric Device">
+        <display/>
+    </field>
+
+    <field name="partyId" title="Party">
+        <display/>
+    </field>
+
+    <field name="deviceUserId" title="Device User">
+        <display/>
+    </field>
+
+    <field name="fromDate" title="From Date">
+        <display/>
+    </field>
+
+</form>
+
+
+<form name="ListBiometricDeviceUser"
+      type="list"
+      list-name="listIt"
+      paginate-target="BiometricDeviceUserList"
+      separate-columns="true"
+      default-table-style="basic-table hover-bar"
+      odd-row-style="alternate-row"
+      header-row-style="header-row-2">
+
+    <actions>
+        <!-- Standard OFBiz stock service to find entity rows -->
+        <service service-name="performFind"
+                 result-map="result"
+                 result-map-list="listIt">
+            <!-- search criteria comes from parameters -->
+            <field-map field-name="inputFields" from-field="parameters"/>
+            <field-map field-name="entityName" value="BiometricDeviceUser"/>
+            <field-map field-name="orderBy" from-field="parameters.sortField"/>
+            <field-map field-name="viewIndex" from-field="viewIndex"/>
+            <field-map field-name="viewSize" from-field="viewSize"/>
+        </service>
+    </actions>
+
+    <field name="biometricDeviceId" title="Biometric Device" sort-field="true"><display/></field>
+    <field name="partyId"         title="Party"            sort-field="true"><display/></field>
+    <field name="deviceUserId"    title="Device User"      sort-field="true"><display/></field>
+    <field name="fromDate"        title="${uiLabelMap['Common.FromDate']}" sort-field="true"><display/></field>
+
+</form>
+
+ 
+<form name="FindBiometricEventLog" type="single" target="BiometricEventLogList" default-entity-name="BiometricEventLog">
+    <field name="partyId" title="Employee ID"><text-find/></field>
+    <field name="biometricDeviceId" title="Device ID"><text-find/></field>
+    <field name="eventDateTime" title="Event Date"><date-find type="date"/></field>
+    <field name="searchButton" title="Search" widget-style="smallSubmit"><submit/></field>
+</form>
+
+<form name="BiometricEventLogListForm" type="list" list-name="biometricEventLogList"
+      paginate="true" paginate-target="BiometricEventLogList" default-table-style="basic-table">
+    
+    <actions>
+        <service service-name="performFind" result-map="resultMlt">
+            <field-map field-name="entityName" value="BiometricEventLog"/>
+            <field-map field-name="inputFields" from-field="parameters"/>
+            <field-map field-name="noConditionFind" value="Y"/>
+            <field-map field-name="orderBy" value="-eventDateTime"/>
+        </service>
+        <set field="biometricEventLogList" from-field="resultMlt.listIt"/>
+    </actions>
+
+    <field name="biometricEventLogId" title="ID"><display/></field>
+    <field name="partyId" title="Employee"><display/></field>
+    <field name="eventDateTime" title="Date Time"><display/></field>
+    </form>
+
+
+<form name="FindEmployeesCondition" type="single" target="FindEmployees" default-entity-name="Person">
+    <field name="partyId" title="Employee ID"><text-find/></field>
+    <field name="firstName" title="First Name"><text-find/></field>
+    <field name="lastName" title="Last Name"><text-find/></field>
+    <field name="searchButton" title="Search" widget-style="smallSubmit"><submit/></field>
+</form>
+
+<form name="ListEmployees" type="list" list-name="listIt" default-entity-name="Person" 
+      separate-columns="true" header-row-style="header-row" default-table-style="basic-table">
+    <actions>
+        <service service-name="performFind" result-map="resultMlt">
+            <field-map field-name="entityName" value="Person"/>
+            <field-map field-name="inputFields" from-field="parameters"/>
+            <field-map field-name="noConditionFind" value="Y"/>
+        </service>
+        <set field="listIt" from-field="resultMlt.listIt"/>
+    </actions>
+    <field name="partyId" title="ID"><display/></field>
+    <field name="firstName" title="First Name"><display/></field>
+    <field name="lastName" title="Last Name"><display/></field>
+ </form>
+<form name="ListActiveDevices" type="list" list-name="listIt" target="" paginate-target="main"
+    default-table-style="basic-table hover-bar">
+    <actions>
+        <entity-condition entity-name="BiometricDevice"><order-by field-name="deviceName"/></entity-condition>
+    </actions>
+    <field name="deviceName" title="Device Name"><display/></field>
+    <field name="ipAddress" title="IP Address"><display/></field>
+    <field name="statusId" title="Status">
+        <display description="${statusId == 'DEVICE_ENABLED' ? 'Active ●' : 'Offline ●'}"/>
+    </field>
+<field name="pingAction" title=" " widget-style="buttontext">
+    <hyperlink target="pingBiometricDevice" description="Ping" link-type="anchor">
+        <parameter param-name="biometricDeviceId"/>
+    </hyperlink>
+</field>
+
+</form>
+
+<form name="RecentPunches" type="list" list-name="recentPunches"
+      odd-row-style="alternate-row" default-table-style="basic-table hover-bar">
+    <actions>
+        <entity-condition entity-name="BiometricEventLog">
+            <order-by field-name="-eventDateTime"/>
+            <limit-range start="0" size="10"/>
+        </entity-condition>
+    </actions>
+    <field name="eventDateTime" title="Time"><display/></field>
+    
+    <field name="partyId" title="Employee">
+        <hyperlink description="${partyId}" target="/partymgr/control/viewprofile" target-type="inter-app">
+            <parameter param-name="partyId"/>
+        </hyperlink>
+    </field>
+
+    <field name="punchTypeStatusId" title="Type">
+        <display description="${punchTypeStatusId == 'PUNCH_IN' ? 'CHECK-IN ↓' : 'CHECK-OUT ↑'}"/>
+    </field>
+</form>
+
+
+
+</forms>

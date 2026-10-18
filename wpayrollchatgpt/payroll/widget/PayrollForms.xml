@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-form.xsd">
+
+  <!-- ========================= -->
+  <!-- Payroll Iteration Create -->
+  <!-- ========================= -->
+  <form name="PayrollIterationCreateForm" type="single" target="processPayrollIteration" title="Create Payroll Iteration">
+    <field name="organizationPartyId" title="Organization Party" required-field="true">
+      <text/>
+    </field>
+
+    <field name="payrollStructureId" title="Payroll Structure (Optional)">
+      <text/>
+    </field>
+
+    <field name="payPeriodFrom" title="Pay Period From" required-field="true">
+      <date-time/>
+    </field>
+
+    <field name="payPeriodThru" title="Pay Period Thru" required-field="true">
+      <date-time/>
+    </field>
+
+    <field name="payDate" title="Pay Date (Optional)">
+      <date-time/>
+    </field>
+
+    <field name="currencyUomId" title="Currency (Optional)">
+      <text/>
+    </field>
+
+    <field name="submitButton" title="Process Iteration">
+      <submit button-type="button"/>
+    </field>
+  </form>
+
+  <!-- ========================= -->
+  <!-- Payroll Iteration Approve -->
+  <!-- ========================= -->
+  <form name="PayrollIterationApproveForm" type="single" target="approvePayrollIteration" title="Approve Payroll Iteration">
+    <field name="payrollIterationId" title="Payroll Iteration ID" required-field="true">
+      <text/>
+    </field>
+    <field name="submitButton" title="Approve + Trigger Accounting">
+      <submit button-type="button"/>
+    </field>
+  </form>
+
+  <!-- ========================= -->
+  <!-- Payroll Assignment Create -->
+  <!-- ========================= -->
+  <form name="EmployeePayrollAssignmentCreateForm" type="single" target="createEmployeePayrollAssignment" title="Create Employee Payroll Assignment">
+    <field name="partyId" title="Employee Party ID" required-field="true">
+      <text/>
+    </field>
+
+    <field name="payrollStructureId" title="Payroll Structure ID" required-field="true">
+      <text/>
+    </field>
+
+    <field name="employmentTypeStatusId" title="Employment Type Status (Optional)">
+      <text/>
+    </field>
+
+    <field name="contractTypeStatusId" title="Contract Type Status (Optional)">
+      <text/>
+    </field>
+
+    <field name="assignmentStatusId" title="Assignment Status (Optional)">
+      <text/>
+    </field>
+
+    <field name="baseSalary" title="Base Salary (Optional)">
+      <text/>
+    </field>
+
+    <field name="effectiveDate" title="Effective Date" required-field="true">
+      <date-time/>
+    </field>
+
+    <field name="thruDate" title="Thru Date (Optional)">
+      <date-time/>
+    </field>
+
+    <field name="comments" title="Comments (Optional)">
+      <text-area/>
+    </field>
+
+    <field name="submitButton" title="Create Assignment">
+      <submit button-type="button"/>
+    </field>
+  </form>
+
+  <!-- ========================= -->
+  <!-- Accounting Router (optional UI) -->
+  <!-- ========================= -->
+  <form name="DispatchPayrollAccountingForm" type="single" target="dispatchPayrollAccounting" title="Dispatch Payroll Accounting (Pattern A/B)">
+    <field name="payrollIterationId" title="Payroll Iteration ID (Optional)">
+      <text/>
+    </field>
+    <field name="payrollRunId" title="Payroll Run ID (Legacy Optional)">
+      <text/>
+    </field>
+    <field name="payrollStructureId" title="Payroll Structure ID (Optional)">
+      <text/>
+    </field>
+    <field name="submitButton" title="Dispatch Accounting">
+      <submit button-type="button"/>
+    </field>
+  </form>
+
+</forms>

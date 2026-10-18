@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-engine-xml>
+
+ 
+    <EnumerationType enumTypeId="ATT_EXC_TYPE" description="Attendance Exception Type"/>
+    <EnumerationType enumTypeId="ATT_EXC_SEVERITY" description="Attendance Exception Severity"/>
+    <StatusType statusTypeId="ATT_EXC_STATUS" description="Attendance Exception Status"/>
+
+    <Enumeration enumId="ATT_EXC_LATE" enumTypeId="ATT_EXC_TYPE" description="Late In" sequenceId="01"/>
+    <Enumeration enumId="ATT_EXC_EARLY" enumTypeId="ATT_EXC_TYPE" description="Early Out" sequenceId="02"/>
+    <Enumeration enumId="ATT_EXC_MISS_P" enumTypeId="ATT_EXC_TYPE" description="Missing Punch" sequenceId="03"/>
+
+    <Enumeration enumId="ATT_SEV_LOW" enumTypeId="ATT_EXC_SEVERITY" description="Low" sequenceId="01"/>
+    <Enumeration enumId="ATT_SEV_MED" enumTypeId="ATT_EXC_SEVERITY" description="Medium" sequenceId="02"/>
+    <Enumeration enumId="ATT_SEV_HIGH" enumTypeId="ATT_EXC_SEVERITY" description="High" sequenceId="03"/>
+
+    <StatusItem statusId="ATT_EXC_OPEN" statusTypeId="ATT_EXC_STATUS" description="Open/Pending" sequenceId="01"/>
+    <StatusItem statusId="ATT_EXC_RESOLVED" statusTypeId="ATT_EXC_STATUS" description="Resolved" sequenceId="02"/>
+    <StatusItem statusId="ATT_EXC_IGNORED" statusTypeId="ATT_EXC_STATUS" description="Ignored" sequenceId="03"/>
+ 
+
+    <!-- ========================================================= -->
+    <!-- Demo Parties (Employees) -->
+    <!-- ========================================================= -->
+
+    <Party partyId="PAY_EMP001" partyTypeId="PERSON"/>
+    <Person partyId="PAY_EMP001" firstName="Demo" lastName="Emp001"/>
+    <PartyRole partyId="PAY_EMP001" roleTypeId="EMPLOYEE"/>
+
+    <Party partyId="PAY_EMP002" partyTypeId="PERSON"/>
+    <Person partyId="PAY_EMP002" firstName="Demo" lastName="Emp002"/>
+    <PartyRole partyId="PAY_EMP002" roleTypeId="EMPLOYEE"/>
+
+    <Party partyId="PAY_EMP003" partyTypeId="PERSON"/>
+    <Person partyId="PAY_EMP003" firstName="Demo" lastName="Emp003"/>
+    <PartyRole partyId="PAY_EMP003" roleTypeId="EMPLOYEE"/>
+
+    <Party partyId="PAY_EMP004" partyTypeId="PERSON"/>
+    <Person partyId="PAY_EMP004" firstName="Demo" lastName="Emp004"/>
+    <PartyRole partyId="PAY_EMP004" roleTypeId="EMPLOYEE"/>
+
+    <Party partyId="PAY_EMP005" partyTypeId="PERSON"/>
+    <Person partyId="PAY_EMP005" firstName="Demo" lastName="Emp005"/>
+    <PartyRole partyId="PAY_EMP005" roleTypeId="EMPLOYEE"/>
+
+    <!-- ========================================================= -->
+    <!-- StatusType + StatusItem (FP_* to avoid clashes) -->
+    <!-- ========================================================= -->
+
+    <StatusType statusTypeId="FP_DEVICE_STATUS" description="Fingerprint Device Status"/>
+    <StatusItem statusId="FP_DEVICE_ACTIVE" statusTypeId="FP_DEVICE_STATUS" description="Active"/>
+    <StatusItem statusId="FP_DEVICE_INACTIVE" statusTypeId="FP_DEVICE_STATUS" description="Inactive"/>
+
+    <StatusType statusTypeId="FP_DEVUSER_STATUS" description="Fingerprint Device User Status"/>
+    <StatusItem statusId="FP_USER_ACTIVE" statusTypeId="FP_DEVUSER_STATUS" description="Active"/>
+    <StatusItem statusId="FP_USER_INACTIVE" statusTypeId="FP_DEVUSER_STATUS" description="Inactive"/>
+
+    <StatusType statusTypeId="FP_IMPORT_STATUS" description="Fingerprint Import Batch Status"/>
+    <StatusItem statusId="FP_IMPORT_NEW" statusTypeId="FP_IMPORT_STATUS" description="New"/>
+    <StatusItem statusId="FP_IMPORT_DONE" statusTypeId="FP_IMPORT_STATUS" description="Completed"/>
+    <StatusItem statusId="FP_IMPORT_ERROR" statusTypeId="FP_IMPORT_STATUS" description="Error"/>
+
+    <StatusType statusTypeId="FP_PROCESS_STATUS" description="Fingerprint Event Process Status"/>
+    <StatusItem statusId="FP_PROC_NEW" statusTypeId="FP_PROCESS_STATUS" description="New"/>
+    <StatusItem statusId="FP_PROC_OK" statusTypeId="FP_PROCESS_STATUS" description="Processed"/>
+    <StatusItem statusId="FP_PROC_ERR" statusTypeId="FP_PROCESS_STATUS" description="Error"/>
+
+    <StatusType statusTypeId="FP_SHIFT_STATUS" description="Attendance Shift Status"/>
+    <StatusItem statusId="FP_SHIFT_ACTIVE" statusTypeId="FP_SHIFT_STATUS" description="Active"/>
+
+    <StatusType statusTypeId="FP_POLICY_STATUS" description="Attendance Policy Status"/>
+    <StatusItem statusId="FP_POLICY_ACTIVE" statusTypeId="FP_POLICY_STATUS" description="Active"/>
+
+    <StatusType statusTypeId="FP_PAIR_STATUS" description="Attendance Punch Pair Status"/>
+    <StatusItem statusId="FP_PAIR_OPEN" statusTypeId="FP_PAIR_STATUS" description="Open"/>
+    <StatusItem statusId="FP_PAIR_CLOSED" statusTypeId="FP_PAIR_STATUS" description="Closed"/>
+
+    <StatusType statusTypeId="FP_EXCEPTION_STATUS" description="Attendance Exception Status"/>
+    <StatusItem statusId="FP_EXC_OPEN" statusTypeId="FP_EXCEPTION_STATUS" description="Open"/>
+    <StatusItem statusId="FP_EXC_RESOLVED" statusTypeId="FP_EXCEPTION_STATUS" description="Resolved"/>
+
+    <StatusType statusTypeId="FP_SUMMARY_STATUS" description="Attendance Day Summary Status"/>
+    <StatusItem statusId="FP_SUMMARY_DRAFT" statusTypeId="FP_SUMMARY_STATUS" description="Draft"/>
+    <StatusItem statusId="FP_SUMMARY_FINAL" statusTypeId="FP_SUMMARY_STATUS" description="Final"/>
+
+    <StatusType statusTypeId="FP_ENROLL_STATUS" description="Biometric Enrollment Status"/>
+    <StatusItem statusId="FP_ENROLL_OK" statusTypeId="FP_ENROLL_STATUS" description="Enrolled"/>
+
+    <StatusType statusTypeId="FP_VERIFY_RESULT" description="Biometric Verification Result"/>
+    <StatusItem statusId="FP_VERIFY_SUCCESS" statusTypeId="FP_VERIFY_RESULT" description="Success"/>
+    <StatusItem statusId="FP_VERIFY_FAIL" statusTypeId="FP_VERIFY_RESULT" description="Fail"/>
+
+    <!-- ========================================================= -->
+    <!-- StatusItem-backed "type" catalogs (replacing old Enumeration usage) -->
+    <!-- ========================================================= -->
+
+    <StatusType statusTypeId="FP_BARCODE_TYPE" description="Barcode Type"/>
+    <StatusItem statusId="FP_BAR_QR" statusTypeId="FP_BARCODE_TYPE" description="QR Barcode"/>
+
+    <StatusType statusTypeId="FP_STORAGE_TYPE" description="Template Storage Type"/>
+    <StatusItem statusId="FP_STORAGE_DB" statusTypeId="FP_STORAGE_TYPE" description="Store Encrypted Template In DB"/>
+
+    <StatusType statusTypeId="FP_BIOMETRIC_TYPE" description="Biometric Type"/>
+    <StatusItem statusId="FP_BIO_TYPE_FP" statusTypeId="FP_BIOMETRIC_TYPE" description="Fingerprint"/>
+
+    <StatusType statusTypeId="FP_FINGER_INDEX" description="Finger Index"/>
+    <StatusItem statusId="FP_F_R_THUMB" statusTypeId="FP_FINGER_INDEX" description="Right Thumb"/>
+    <StatusItem statusId="FP_F_L_THUMB" statusTypeId="FP_FINGER_INDEX" description="Left Thumb"/>
+
+    <StatusType statusTypeId="FP_ENROLL_METHOD" description="Enrollment Method"/>
+    <StatusItem statusId="FP_ENROLL_DEVICE" statusTypeId="FP_ENROLL_METHOD" description="Enroll On Device"/>
+
+    <StatusType statusTypeId="FP_IMPORT_SOURCE" description="Import Source"/>
+    <StatusItem statusId="FP_IMPORT_SOURCE_API" statusTypeId="FP_IMPORT_SOURCE" description="Import via API"/>
+
+    <StatusType statusTypeId="FP_EVENT_TYPE" description="Event Type"/>
+    <StatusItem statusId="FP_EVENT_TYPE_PUNCH" statusTypeId="FP_EVENT_TYPE" description="Punch Event"/>
+
+    <StatusType statusTypeId="FP_PUNCH_TYPE" description="Punch Type"/>
+    <StatusItem statusId="FP_PUNCH_IN" statusTypeId="FP_PUNCH_TYPE" description="IN"/>
+    <StatusItem statusId="FP_PUNCH_OUT" statusTypeId="FP_PUNCH_TYPE" description="OUT"/>
+
+    <StatusType statusTypeId="FP_VERIFY_MODE" description="Verify Mode"/>
+    <StatusItem statusId="FP_VERIFY_MODE_FP" statusTypeId="FP_VERIFY_MODE" description="Fingerprint Verify"/>
+
+    <!-- ========================================================= -->
+    <!-- Enumeration (keep ONLY what is still Enum-driven by Attendance entities) -->
+    <!-- IMPORTANT: enumId must be <= 20 chars in OFBiz core -->
+    <!-- ========================================================= -->
+
+    <Enumeration enumId="FP_ROUND_NEAREST" description="Round To Nearest"/>
+    <Enumeration enumId="FP_OT_SIMPLE" description="Simple Overtime"/>
+
+    <Enumeration enumId="FP_EXC_LATE" description="Late Arrival"/>
+    <Enumeration enumId="FP_EXC_EARLY" description="Early Leave"/>
+    <Enumeration enumId="FP_SEV_LOW" description="Low Severity"/>
+    <Enumeration enumId="FP_SEV_HIGH" description="High Severity"/>
+
+    <!-- ========================================================= -->
+    <!-- 1) FpShift (optional, but now valid per entity definition) -->
+    <!-- ========================================================= -->
+
+    <FpShift shiftId="FP_SHIFT_DAY"
+             description="Day Shift"
+             startTime="08:00:00"
+             endTime="16:00:00"
+             statusId="FP_SHIFT_ACTIVE"
+             createdDate="2026-01-01 00:00:00.0"
+             createdByUserLoginId="admin"
+             lastModifiedDate="2026-01-01 00:00:00.0"
+             lastModifiedByUserLoginId="admin"
+             createdStamp="2026-01-01 00:00:00.0"
+             createdTxStamp="2026-01-01 00:00:00.0"
+             lastUpdatedStamp="2026-01-01 00:00:00.0"
+             lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 2) BiometricDeviceType -->
+    <!-- ========================================================= -->
+
+    <BiometricDeviceType biometricDeviceTypeId="FP_DEVTYPE_01"
+                         description="Fingerprint Device Type"
+                         statusId="FP_DEVICE_ACTIVE"
+                         createdDate="2026-01-01 00:00:00.0"
+                         createdByUserLoginId="admin"
+                         lastModifiedDate="2026-01-01 00:00:00.0"
+                         lastModifiedByUserLoginId="admin"
+                         createdStamp="2026-01-01 00:00:00.0"
+                         createdTxStamp="2026-01-01 00:00:00.0"
+                         lastUpdatedStamp="2026-01-01 00:00:00.0"
+                         lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 3) BiometricDevice (FIXED: biometricDeviceTypeId) -->
+    <!-- ========================================================= -->
+
+    <BiometricDevice biometricDeviceId="BIODEV_100"
+                    organizationPartyId="Company"
+                    deviceName="Fingerprint Reader A"
+                    serialNumber="SN-FP-100"
+                    vendorName="DemoVendor"
+                    modelName="FP-Model-A"
+                    biometricDeviceTypeId="FP_DEVTYPE_01"
+                    ipAddress="10.10.10.100"
+                    port="4370"
+                    timeZoneId="Asia/Riyadh"
+                    externalSystemRef="EXT-DEV-100"
+                    statusId="FP_DEVICE_ACTIVE"
+                    fromDate="2026-01-01 00:00:00.0"
+                    createdByUserLoginId="admin"
+                    lastModifiedByUserLoginId="admin"
+                    createdStamp="2026-01-01 00:00:00.0"
+                    createdTxStamp="2026-01-01 00:00:00.0"
+                    lastUpdatedStamp="2026-01-01 00:00:00.0"
+                    lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 4) WorkShift -->
+    <!-- ========================================================= -->
+
+    <WorkShift shiftId="FP_SHIFT_DAY"
+              organizationPartyId="Company"
+              shiftName="Day Shift"
+              startTime="08:00:00"
+              endTime="16:00:00"
+              crossMidnightFlag="N"
+              graceInMinutes="10"
+              graceOutMinutes="5"
+              breakMinutes="30"
+              shiftStatusId="FP_SHIFT_ACTIVE"
+              externalRefId="EXT-SHIFT-DAY"
+              createdByUserLoginId="admin"
+              lastModifiedByUserLoginId="admin"
+              createdStamp="2026-01-01 00:00:00.0"
+              createdTxStamp="2026-01-01 00:00:00.0"
+              lastUpdatedStamp="2026-01-01 00:00:00.0"
+              lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 5) AttendancePolicy -->
+    <!-- ========================================================= -->
+
+    <AttendancePolicy attendancePolicyId="FP_POLICY_STD"
+                      organizationPartyId="Company"
+                      policyName="Standard Attendance Policy"
+                      roundingMethodEnumId="FP_ROUND_NEAREST"
+                      roundingMinutes="5"
+                      overtimeMethodEnumId="FP_OT_SIMPLE"
+                      minOvertimeMinutes="30"
+                      allowManualAdjustFlag="Y"
+                      policyStatusId="FP_POLICY_ACTIVE"
+                      externalRefId="EXT-POL-STD"
+                      notes="POC policy for fingerprint demo"
+                      createdByUserLoginId="admin"
+                      lastModifiedByUserLoginId="admin"
+                      createdStamp="2026-01-01 00:00:00.0"
+                      createdTxStamp="2026-01-01 00:00:00.0"
+                      lastUpdatedStamp="2026-01-01 00:00:00.0"
+                      lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 6) PartyShiftAssignment -->
+    <!-- ========================================================= -->
+
+    <PartyShiftAssignment partyId="PAY_EMP001"
+                          shiftId="FP_SHIFT_DAY"
+                          fromDate="2026-01-01 00:00:00.0"
+                          organizationPartyId="Company"
+                          notes="Assigned day shift"
+                          createdByUserLoginId="admin"
+                          lastModifiedByUserLoginId="admin"
+                          createdStamp="2026-01-01 00:00:00.0"
+                          createdTxStamp="2026-01-01 00:00:00.0"
+                          lastUpdatedStamp="2026-01-01 00:00:00.0"
+                          lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <PartyShiftAssignment partyId="PAY_EMP002"
+                          shiftId="FP_SHIFT_DAY"
+                          fromDate="2026-01-01 00:00:00.0"
+                          organizationPartyId="Company"
+                          notes="Assigned day shift"
+                          createdByUserLoginId="admin"
+                          lastModifiedByUserLoginId="admin"
+                          createdStamp="2026-01-01 00:00:00.0"
+                          createdTxStamp="2026-01-01 00:00:00.0"
+                          lastUpdatedStamp="2026-01-01 00:00:00.0"
+                          lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <PartyShiftAssignment partyId="PAY_EMP003"
+                          shiftId="FP_SHIFT_DAY"
+                          fromDate="2026-01-01 00:00:00.0"
+                          organizationPartyId="Company"
+                          notes="Assigned day shift"
+                          createdByUserLoginId="admin"
+                          lastModifiedByUserLoginId="admin"
+                          createdStamp="2026-01-01 00:00:00.0"
+                          createdTxStamp="2026-01-01 00:00:00.0"
+                          lastUpdatedStamp="2026-01-01 00:00:00.0"
+                          lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 7) PartyAttendancePolicy -->
+    <!-- ========================================================= -->
+
+    <PartyAttendancePolicy partyId="PAY_EMP001"
+                           attendancePolicyId="FP_POLICY_STD"
+                           fromDate="2026-01-01 00:00:00.0"
+                           organizationPartyId="Company"
+                           createdByUserLoginId="admin"
+                           lastModifiedByUserLoginId="admin"
+                           createdStamp="2026-01-01 00:00:00.0"
+                           createdTxStamp="2026-01-01 00:00:00.0"
+                           lastUpdatedStamp="2026-01-01 00:00:00.0"
+                           lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <PartyAttendancePolicy partyId="PAY_EMP002"
+                           attendancePolicyId="FP_POLICY_STD"
+                           fromDate="2026-01-01 00:00:00.0"
+                           organizationPartyId="Company"
+                           createdByUserLoginId="admin"
+                           lastModifiedByUserLoginId="admin"
+                           createdStamp="2026-01-01 00:00:00.0"
+                           createdTxStamp="2026-01-01 00:00:00.0"
+                           lastUpdatedStamp="2026-01-01 00:00:00.0"
+                           lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <PartyAttendancePolicy partyId="PAY_EMP003"
+                           attendancePolicyId="FP_POLICY_STD"
+                           fromDate="2026-01-01 00:00:00.0"
+                           organizationPartyId="Company"
+                           createdByUserLoginId="admin"
+                           lastModifiedByUserLoginId="admin"
+                           createdStamp="2026-01-01 00:00:00.0"
+                           createdTxStamp="2026-01-01 00:00:00.0"
+                           lastUpdatedStamp="2026-01-01 00:00:00.0"
+                           lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 8) BiometricDeviceUser (FIXED: badgeBarcodeTypeStatusId) -->
+    <!-- ========================================================= -->
+
+    <BiometricDeviceUser biometricDeviceId="BIODEV_100"
+                         partyId="PAY_EMP001"
+                         fromDate="2026-01-01 00:00:00.0"
+                         organizationPartyId="Company"
+                         deviceUserId="DU1001"
+                         cardNumber="CARD1001"
+                         badgeId="B1001"
+                         badgeBarcode="QR1001"
+                         badgeBarcodeTypeStatusId="FP_BAR_QR"
+                         deviceUserStatusId="FP_USER_ACTIVE"
+                         externalRefId="EXT-MAP-1001"
+                         createdByUserLoginId="admin"
+                         lastModifiedByUserLoginId="admin"
+                         createdStamp="2026-01-12 01:00:00.0"
+                         createdTxStamp="2026-01-12 01:00:00.0"
+                         lastUpdatedStamp="2026-01-12 01:00:00.0"
+                         lastUpdatedTxStamp="2026-01-12 01:00:00.0"/>
+
+    <BiometricDeviceUser biometricDeviceId="BIODEV_100"
+                         partyId="PAY_EMP002"
+                         fromDate="2026-01-01 00:00:00.0"
+                         organizationPartyId="Company"
+                         deviceUserId="DU1002"
+                         cardNumber="CARD1002"
+                         badgeId="B1002"
+                         badgeBarcode="QR1002"
+                         badgeBarcodeTypeStatusId="FP_BAR_QR"
+                         deviceUserStatusId="FP_USER_ACTIVE"
+                         externalRefId="EXT-MAP-1002"
+                         createdByUserLoginId="admin"
+                         lastModifiedByUserLoginId="admin"
+                         createdStamp="2026-01-12 01:00:00.0"
+                         createdTxStamp="2026-01-12 01:00:00.0"
+                         lastUpdatedStamp="2026-01-12 01:00:00.0"
+                         lastUpdatedTxStamp="2026-01-12 01:00:00.0"/>
+
+    <BiometricDeviceUser biometricDeviceId="BIODEV_100"
+                         partyId="PAY_EMP003"
+                         fromDate="2026-01-01 00:00:00.0"
+                         organizationPartyId="Company"
+                         deviceUserId="DU1003"
+                         cardNumber="CARD1003"
+                         badgeId="B1003"
+                         badgeBarcode="QR1003"
+                         badgeBarcodeTypeStatusId="FP_BAR_QR"
+                         deviceUserStatusId="FP_USER_ACTIVE"
+                         externalRefId="EXT-MAP-1003"
+                         createdByUserLoginId="admin"
+                         lastModifiedByUserLoginId="admin"
+                         createdStamp="2026-01-12 01:00:00.0"
+                         createdTxStamp="2026-01-12 01:00:00.0"
+                         lastUpdatedStamp="2026-01-12 01:00:00.0"
+                         lastUpdatedTxStamp="2026-01-12 01:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 9) BiometricTemplateStore (FIXED: storageTypeStatusId) -->
+    <!-- ========================================================= -->
+
+    <BiometricTemplateStore templateStoreId="TPL_1001"
+                            organizationPartyId="Company"
+                            storageTypeStatusId="FP_STORAGE_DB"
+                            templateHash="HASH_PAY_EMP001_RTHUMB"
+                            encryptedTemplate="AQIDBAUGBwgJCgsMDQ4PEA=="
+                            externalRefId="EXT-TPL-1001"
+                            encryptionKeyId="KEY_DEMO_01"
+                            fromDate="2026-01-01 00:00:00.0"
+                            createdByUserLoginId="admin"
+                            lastModifiedByUserLoginId="admin"
+                            createdStamp="2026-01-01 00:00:00.0"
+                            createdTxStamp="2026-01-01 00:00:00.0"
+                            lastUpdatedStamp="2026-01-01 00:00:00.0"
+                            lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <BiometricTemplateStore templateStoreId="TPL_1002"
+                            organizationPartyId="Company"
+                            storageTypeStatusId="FP_STORAGE_DB"
+                            templateHash="HASH_PAY_EMP002_LTHUMB"
+                            encryptedTemplate="AQIDBAUGBwgJCgsMDQ4PEA=="
+                            externalRefId="EXT-TPL-1002"
+                            encryptionKeyId="KEY_DEMO_01"
+                            fromDate="2026-01-01 00:00:00.0"
+                            createdByUserLoginId="admin"
+                            lastModifiedByUserLoginId="admin"
+                            createdStamp="2026-01-01 00:00:00.0"
+                            createdTxStamp="2026-01-01 00:00:00.0"
+                            lastUpdatedStamp="2026-01-01 00:00:00.0"
+                            lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 10) PartyBiometricCredential (FIXED: biometricTypeStatusId, fingerIndexStatusId) -->
+    <!-- ========================================================= -->
+
+    <PartyBiometricCredential partyBiometricId="CRD_1001"
+                              organizationPartyId="Company"
+                              partyId="PAY_EMP001"
+                              biometricTypeStatusId="FP_BIO_TYPE_FP"
+                              fingerIndexStatusId="FP_F_R_THUMB"
+                              templateStoreId="TPL_1001"
+                              credentialStatusId="FP_ENROLL_OK"
+                              qualityScore="95"
+                              fromDate="2026-01-01 00:00:00.0"
+                              externalRefId="EXT-CRD-1001"
+                              createdByUserLoginId="admin"
+                              lastModifiedByUserLoginId="admin"
+                              createdStamp="2026-01-01 00:00:00.0"
+                              createdTxStamp="2026-01-01 00:00:00.0"
+                              lastUpdatedStamp="2026-01-01 00:00:00.0"
+                              lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <PartyBiometricCredential partyBiometricId="CRD_1002"
+                              organizationPartyId="Company"
+                              partyId="PAY_EMP002"
+                              biometricTypeStatusId="FP_BIO_TYPE_FP"
+                              fingerIndexStatusId="FP_F_L_THUMB"
+                              templateStoreId="TPL_1002"
+                              credentialStatusId="FP_ENROLL_OK"
+                              qualityScore="92"
+                              fromDate="2026-01-01 00:00:00.0"
+                              externalRefId="EXT-CRD-1002"
+                              createdByUserLoginId="admin"
+                              lastModifiedByUserLoginId="admin"
+                              createdStamp="2026-01-01 00:00:00.0"
+                              createdTxStamp="2026-01-01 00:00:00.0"
+                              lastUpdatedStamp="2026-01-01 00:00:00.0"
+                              lastUpdatedTxStamp="2026-01-01 00:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 11) PartyBiometricEnrollment (FIXED: enrollMethodStatusId) -->
+    <!-- ========================================================= -->
+
+    <PartyBiometricEnrollment partyBiometricEnrollmentId="ENR_1001"
+                              organizationPartyId="Company"
+                              partyBiometricId="CRD_1001"
+                              partyId="PAY_EMP001"
+                              biometricDeviceId="BIODEV_100"
+                              enrolledDateTime="2026-01-01 09:00:00.0"
+                              enrolledByUserLoginId="admin"
+                              enrollMethodStatusId="FP_ENROLL_DEVICE"
+                              enrollStatusId="FP_ENROLL_OK"
+                              notes="Initial enrollment for POC"
+                              externalRefId="EXT-ENR-1001"
+                              createdStamp="2026-01-01 09:00:00.0"
+                              createdTxStamp="2026-01-01 09:00:00.0"
+                              lastUpdatedStamp="2026-01-01 09:00:00.0"
+                              lastUpdatedTxStamp="2026-01-01 09:00:00.0"/>
+
+    <PartyBiometricEnrollment partyBiometricEnrollmentId="ENR_1002"
+                              organizationPartyId="Company"
+                              partyBiometricId="CRD_1002"
+                              partyId="PAY_EMP002"
+                              biometricDeviceId="BIODEV_100"
+                              enrolledDateTime="2026-01-01 09:10:00.0"
+                              enrolledByUserLoginId="admin"
+                              enrollMethodStatusId="FP_ENROLL_DEVICE"
+                              enrollStatusId="FP_ENROLL_OK"
+                              notes="Initial enrollment for POC"
+                              externalRefId="EXT-ENR-1002"
+                              createdStamp="2026-01-01 09:10:00.0"
+                              createdTxStamp="2026-01-01 09:10:00.0"
+                              lastUpdatedStamp="2026-01-01 09:10:00.0"
+                              lastUpdatedTxStamp="2026-01-01 09:10:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 12) BiometricImportBatch (FIXED: importSourceStatusId) -->
+    <!-- ========================================================= -->
+
+    <BiometricImportBatch biometricImportBatchId="BAT_20260112_01"
+                          organizationPartyId="Company"
+                          biometricDeviceId="BIODEV_100"
+                          importSourceStatusId="FP_IMPORT_SOURCE_API"
+                          sourceFileName="API_PUSH"
+                          sourceChecksum="CHK-DEMO-20260112-01"
+                          importFromDateTime="2026-01-02 00:00:00.0"
+                          importThruDateTime="2026-01-03 23:59:59.0"
+                          importStatusId="FP_IMPORT_DONE"
+                          recordCount="6"
+                          errorCount="0"
+                          startedDateTime="2026-01-12 00:10:00.0"
+                          completedDateTime="2026-01-12 00:10:05.0"
+                          createdByUserLoginId="admin"
+                          lastModifiedByUserLoginId="admin"
+                          createdStamp="2026-01-12 00:10:00.0"
+                          createdTxStamp="2026-01-12 00:10:00.0"
+                          lastUpdatedStamp="2026-01-12 00:10:05.0"
+                          lastUpdatedTxStamp="2026-01-12 00:10:05.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 13) BiometricEventLog (FIXED: eventTypeStatusId, punchTypeStatusId, verifyModeStatusId) -->
+    <!-- ========================================================= -->
+
+    <BiometricEventLog biometricEventLogId="LOG_0001"
+                      organizationPartyId="Company"
+                      biometricImportBatchId="BAT_20260112_01"
+                      biometricDeviceId="BIODEV_100"
+                      partyId="PAY_EMP001"
+                      deviceUserId="DU1001"
+                      vendorEventId="VEND-0001"
+                      eventDateTime="2026-01-02 08:05:00.0"
+                      eventTypeStatusId="FP_EVENT_TYPE_PUNCH"
+                      punchTypeStatusId="FP_PUNCH_IN"
+                      verifyModeStatusId="FP_VERIFY_MODE_FP"
+                      processStatusId="FP_PROC_OK"
+                      rawPayload="{&quot;device&quot;:&quot;BIODEV_100&quot;,&quot;user&quot;:&quot;DU1001&quot;,&quot;type&quot;:&quot;IN&quot;}"
+                      externalRefId="EXT-LOG-0001"
+                      createdByUserLoginId="admin"
+                      lastModifiedByUserLoginId="admin"
+                      createdStamp="2026-01-12 00:10:10.0"
+                      createdTxStamp="2026-01-12 00:10:10.0"
+                      lastUpdatedStamp="2026-01-12 00:10:10.0"
+                      lastUpdatedTxStamp="2026-01-12 00:10:10.0"/>
+
+    <BiometricEventLog biometricEventLogId="LOG_0002"
+                      organizationPartyId="Company"
+                      biometricImportBatchId="BAT_20260112_01"
+                      biometricDeviceId="BIODEV_100"
+                      partyId="PAY_EMP001"
+                      deviceUserId="DU1001"
+                      vendorEventId="VEND-0002"
+                      eventDateTime="2026-01-02 16:02:00.0"
+                      eventTypeStatusId="FP_EVENT_TYPE_PUNCH"
+                      punchTypeStatusId="FP_PUNCH_OUT"
+                      verifyModeStatusId="FP_VERIFY_MODE_FP"
+                      processStatusId="FP_PROC_OK"
+                      rawPayload="{&quot;device&quot;:&quot;BIODEV_100&quot;,&quot;user&quot;:&quot;DU1001&quot;,&quot;type&quot;:&quot;OUT&quot;}"
+                      externalRefId="EXT-LOG-0002"
+                      createdByUserLoginId="admin"
+                      lastModifiedByUserLoginId="admin"
+                      createdStamp="2026-01-12 00:10:11.0"
+                      createdTxStamp="2026-01-12 00:10:11.0"
+                      lastUpdatedStamp="2026-01-12 00:10:11.0"
+                      lastUpdatedTxStamp="2026-01-12 00:10:11.0"/>
+
+    <BiometricEventLog biometricEventLogId="LOG_0003"
+                      organizationPartyId="Company"
+                      biometricImportBatchId="BAT_20260112_01"
+                      biometricDeviceId="BIODEV_100"
+                      partyId="PAY_EMP002"
+                      deviceUserId="DU1002"
+                      vendorEventId="VEND-0003"
+                      eventDateTime="2026-01-02 08:20:00.0"
+                      eventTypeStatusId="FP_EVENT_TYPE_PUNCH"
+                      punchTypeStatusId="FP_PUNCH_IN"
+                      verifyModeStatusId="FP_VERIFY_MODE_FP"
+                      processStatusId="FP_PROC_OK"
+                      rawPayload="{&quot;device&quot;:&quot;BIODEV_100&quot;,&quot;user&quot;:&quot;DU1002&quot;,&quot;type&quot;:&quot;IN&quot;}"
+                      externalRefId="EXT-LOG-0003"
+                      createdByUserLoginId="admin"
+                      lastModifiedByUserLoginId="admin"
+                      createdStamp="2026-01-12 00:10:12.0"
+                      createdTxStamp="2026-01-12 00:10:12.0"
+                      lastUpdatedStamp="2026-01-12 00:10:12.0"
+                      lastUpdatedTxStamp="2026-01-12 00:10:12.0"/>
+
+    <BiometricEventLog biometricEventLogId="LOG_0004"
+                      organizationPartyId="Company"
+                      biometricImportBatchId="BAT_20260112_01"
+                      biometricDeviceId="BIODEV_100"
+                      partyId="PAY_EMP002"
+                      deviceUserId="DU1002"
+                      vendorEventId="VEND-0004"
+                      eventDateTime="2026-01-02 15:40:00.0"
+                      eventTypeStatusId="FP_EVENT_TYPE_PUNCH"
+                      punchTypeStatusId="FP_PUNCH_OUT"
+                      verifyModeStatusId="FP_VERIFY_MODE_FP"
+                      processStatusId="FP_PROC_OK"
+                      rawPayload="{&quot;device&quot;:&quot;BIODEV_100&quot;,&quot;user&quot;:&quot;DU1002&quot;,&quot;type&quot;:&quot;OUT&quot;}"
+                      externalRefId="EXT-LOG-0004"
+                      createdByUserLoginId="admin"
+                      lastModifiedByUserLoginId="admin"
+                      createdStamp="2026-01-12 00:10:13.0"
+                      createdTxStamp="2026-01-12 00:10:13.0"
+                      lastUpdatedStamp="2026-01-12 00:10:13.0"
+                      lastUpdatedTxStamp="2026-01-12 00:10:13.0"/>
+
+    <BiometricEventLog biometricEventLogId="LOG_0005"
+                      organizationPartyId="Company"
+                      biometricImportBatchId="BAT_20260112_01"
+                      biometricDeviceId="BIODEV_100"
+                      partyId="PAY_EMP003"
+                      deviceUserId="DU1003"
+                      vendorEventId="VEND-0005"
+                      eventDateTime="2026-01-02 08:12:00.0"
+                      eventTypeStatusId="FP_EVENT_TYPE_PUNCH"
+                      punchTypeStatusId="FP_PUNCH_IN"
+                      verifyModeStatusId="FP_VERIFY_MODE_FP"
+                      processStatusId="FP_PROC_OK"
+                      rawPayload="{&quot;device&quot;:&quot;BIODEV_100&quot;,&quot;user&quot;:&quot;DU1003&quot;,&quot;type&quot;:&quot;IN&quot;}"
+                      externalRefId="EXT-LOG-0005"
+                      createdByUserLoginId="admin"
+                      lastModifiedByUserLoginId="admin"
+                      createdStamp="2026-01-12 00:10:14.0"
+                      createdTxStamp="2026-01-12 00:10:14.0"
+                      lastUpdatedStamp="2026-01-12 00:10:14.0"
+                      lastUpdatedTxStamp="2026-01-12 00:10:14.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 14) BiometricVerificationAttempt (FIXED: verifyModeStatusId) -->
+    <!-- ========================================================= -->
+
+    <BiometricVerificationAttempt biometricVerificationAttemptId="VAT_0001"
+                                  organizationPartyId="Company"
+                                  biometricDeviceId="BIODEV_100"
+                                  partyId="PAY_EMP001"
+                                  partyBiometricId="CRD_1001"
+                                  attemptDateTime="2026-01-02 08:05:00.0"
+                                  verifyModeStatusId="FP_VERIFY_MODE_FP"
+                                  resultStatusId="FP_VERIFY_SUCCESS"
+                                  matchScore="88"
+                                  rawPayload="{&quot;score&quot;:88}"
+                                  externalRefId="EXT-VAT-0001"
+                                  createdStamp="2026-01-02 08:05:00.0"
+                                  createdTxStamp="2026-01-02 08:05:00.0"
+                                  lastUpdatedStamp="2026-01-02 08:05:00.0"
+                                  lastUpdatedTxStamp="2026-01-02 08:05:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 15) AttendancePunchPair -->
+    <!-- ========================================================= -->
+
+    <AttendancePunchPair attendancePunchPairId="PAIR_0001"
+                         organizationPartyId="Company"
+                         partyId="PAY_EMP001"
+                         workDate="2026-01-02"
+                         inEventLogId="LOG_0001"
+                         outEventLogId="LOG_0002"
+                         inDateTime="2026-01-02 08:05:00.0"
+                         outDateTime="2026-01-02 16:02:00.0"
+                         workedMinutes="477"
+                         pairStatusId="FP_PAIR_CLOSED"
+                         notes="Normal day"
+                         createdByUserLoginId="admin"
+                         lastModifiedByUserLoginId="admin"
+                         createdStamp="2026-01-02 16:10:00.0"
+                         createdTxStamp="2026-01-02 16:10:00.0"
+                         lastUpdatedStamp="2026-01-02 16:10:00.0"
+                         lastUpdatedTxStamp="2026-01-02 16:10:00.0"/>
+
+    <AttendancePunchPair attendancePunchPairId="PAIR_0002"
+                         organizationPartyId="Company"
+                         partyId="PAY_EMP002"
+                         workDate="2026-01-02"
+                         inEventLogId="LOG_0003"
+                         outEventLogId="LOG_0004"
+                         inDateTime="2026-01-02 08:20:00.0"
+                         outDateTime="2026-01-02 15:40:00.0"
+                         workedMinutes="440"
+                         pairStatusId="FP_PAIR_CLOSED"
+                         notes="Left early"
+                         createdByUserLoginId="admin"
+                         lastModifiedByUserLoginId="admin"
+                         createdStamp="2026-01-02 15:45:00.0"
+                         createdTxStamp="2026-01-02 15:45:00.0"
+                         lastUpdatedStamp="2026-01-02 15:45:00.0"
+                         lastUpdatedTxStamp="2026-01-02 15:45:00.0"/>
+
+    <AttendancePunchPair attendancePunchPairId="PAIR_0003"
+                         organizationPartyId="Company"
+                         partyId="PAY_EMP003"
+                         workDate="2026-01-02"
+                         inEventLogId="LOG_0005"
+                         inDateTime="2026-01-02 08:12:00.0"
+                         workedMinutes="0"
+                         pairStatusId="FP_PAIR_OPEN"
+                         notes="Missing OUT punch"
+                         createdByUserLoginId="admin"
+                         lastModifiedByUserLoginId="admin"
+                         createdStamp="2026-01-02 18:00:00.0"
+                         createdTxStamp="2026-01-02 18:00:00.0"
+                         lastUpdatedStamp="2026-01-02 18:00:00.0"
+                         lastUpdatedTxStamp="2026-01-02 18:00:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 16) AttendanceException (Enum-driven: exceptionTypeEnumId, severityEnumId are Enumeration) -->
+    <!-- ========================================================= -->
+
+    <AttendanceException attendanceExceptionId="EXC_0001"
+                         organizationPartyId="Company"
+                         partyId="PAY_EMP002"
+                         workDate="2026-01-02"
+                         exceptionTypeEnumId="FP_EXC_EARLY"
+                         severityEnumId="FP_SEV_HIGH"
+                         relatedEventLogId="LOG_0004"
+                         relatedPunchPairId="PAIR_0002"
+                         exceptionStatusId="FP_EXC_OPEN"
+                         resolutionNote="POC exception created"
+                         createdByUserLoginId="admin"
+                         lastModifiedByUserLoginId="admin"
+                         createdStamp="2026-01-02 16:00:00.0"
+                         createdTxStamp="2026-01-02 16:00:00.0"
+                         lastUpdatedStamp="2026-01-02 16:00:00.0"
+                         lastUpdatedTxStamp="2026-01-02 16:00:00.0"/>
+
+    <AttendanceException attendanceExceptionId="EXC_0002"
+                         organizationPartyId="Company"
+                         partyId="PAY_EMP003"
+                         workDate="2026-01-02"
+                         exceptionTypeEnumId="FP_EXC_LATE"
+                         severityEnumId="FP_SEV_LOW"
+                         relatedEventLogId="LOG_0005"
+                         relatedPunchPairId="PAIR_0003"
+                         exceptionStatusId="FP_EXC_OPEN"
+                         resolutionNote="Missing OUT punch; late flagged for demo"
+                         createdByUserLoginId="admin"
+                         lastModifiedByUserLoginId="admin"
+                         createdStamp="2026-01-02 18:05:00.0"
+                         createdTxStamp="2026-01-02 18:05:00.0"
+                         lastUpdatedStamp="2026-01-02 18:05:00.0"
+                         lastUpdatedTxStamp="2026-01-02 18:05:00.0"/>
+
+    <!-- ========================================================= -->
+    <!-- 17) AttendanceDaySummary -->
+    <!-- ========================================================= -->
+
+    <AttendanceDaySummary attendanceDaySummaryId="SUM_0001"
+                          organizationPartyId="Company"
+                          partyId="PAY_EMP001"
+                          workDate="2026-01-02"
+                          shiftId="FP_SHIFT_DAY"
+                          attendancePolicyId="FP_POLICY_STD"
+                          scheduledMinutes="480"
+                          workedMinutes="477"
+                          overtimeMinutes="0"
+                          lateMinutes="0"
+                          earlyLeaveMinutes="0"
+                          absenceFlag="N"
+                          summaryStatusId="FP_SUMMARY_FINAL"
+                          calculatedDateTime="2026-01-02 17:00:00.0"
+                          calculatedByUserLoginId="admin"
+                          notes="POC summary"
+                          createdByUserLoginId="admin"
+                          lastModifiedByUserLoginId="admin"
+                          createdStamp="2026-01-02 17:00:00.0"
+                          createdTxStamp="2026-01-02 17:00:00.0"
+                          lastUpdatedStamp="2026-01-02 17:00:00.0"
+                          lastUpdatedTxStamp="2026-01-02 17:00:00.0"/>
+
+    <AttendanceDaySummary attendanceDaySummaryId="SUM_0002"
+                          organizationPartyId="Company"
+                          partyId="PAY_EMP002"
+                          workDate="2026-01-02"
+                          shiftId="FP_SHIFT_DAY"
+                          attendancePolicyId="FP_POLICY_STD"
+                          scheduledMinutes="480"
+                          workedMinutes="440"
+                          overtimeMinutes="0"
+                          lateMinutes="20"
+                          earlyLeaveMinutes="20"
+                          absenceFlag="N"
+                          summaryStatusId="FP_SUMMARY_FINAL"
+                          calculatedDateTime="2026-01-02 17:00:00.0"
+                          calculatedByUserLoginId="admin"
+                          notes="Left early demo"
+                          createdByUserLoginId="admin"
+                          lastModifiedByUserLoginId="admin"
+                          createdStamp="2026-01-02 17:00:00.0"
+                          createdTxStamp="2026-01-02 17:00:00.0"
+                          lastUpdatedStamp="2026-01-02 17:00:00.0"
+                          lastUpdatedTxStamp="2026-01-02 17:00:00.0"/>
+
+    <AttendanceDaySummary attendanceDaySummaryId="SUM_0003"
+                          organizationPartyId="Company"
+                          partyId="PAY_EMP003"
+                          workDate="2026-01-02"
+                          shiftId="FP_SHIFT_DAY"
+                          attendancePolicyId="FP_POLICY_STD"
+                          scheduledMinutes="480"
+                          workedMinutes="0"
+                          overtimeMinutes="0"
+                          lateMinutes="0"
+                          earlyLeaveMinutes="0"
+                          absenceFlag="N"
+                          summaryStatusId="FP_SUMMARY_DRAFT"
+                          calculatedDateTime="2026-01-02 17:00:00.0"
+                          calculatedByUserLoginId="admin"
+                          notes="Missing OUT punch; open pair"
+                          createdByUserLoginId="admin"
+                          lastModifiedByUserLoginId="admin"
+                          createdStamp="2026-01-02 17:00:00.0"
+                          createdTxStamp="2026-01-02 17:00:00.0"
+                          lastUpdatedStamp="2026-01-02 17:00:00.0"
+                          lastUpdatedTxStamp="2026-01-02 17:00:00.0"/>
+
+</entity-engine-xml>

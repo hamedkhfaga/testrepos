@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://ofbiz.apache.org/dtds/services.xsd">
+    <description>QrCore Services — central secured QR for all OFBiz and custom apps</description>
+    <vendor>qrcore</vendor>
+
+    <service name="qrcoreGenerate" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.qrcore.QrCoreServices" invoke="generate">
+        <description>
+            Return the stable secured token for (docType, docId, channel) — creating the
+            QrCode registry row on first call, reusing it afterwards so a document keeps
+            one QR for life. Token = QR1|docType|docId|org|qrCodeId|issuedAt|HMAC-SHA256.
+        </description>
+        <attribute name="docType" type="String" mode="IN" optional="false"/>
+        <attribute name="docId" type="String" mode="IN" optional="false"/>
+        <attribute name="organizationPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="channel" type="String" mode="IN" optional="true"/>
+        <attribute name="expireAt" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="targetUrl" type="String" mode="IN" optional="true"/>
+        <attribute name="qrCodeId" type="String" mode="OUT" optional="false"/>
+        <attribute name="token" type="String" mode="OUT" optional="false"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="qrcoreVerify" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.qrcore.QrCoreServices" invoke="verify">
+        <description>
+            Verify a scanned token: recompute the HMAC, check registry status and expiry,
+            record a QrScanEvent (every attempt, including forgeries) and bump scanCount.
+        </description>
+        <attribute name="token" type="String" mode="IN" optional="false"/>
+        <attribute name="sourceIp" type="String" mode="IN" optional="true"/>
+        <attribute name="userAgent" type="String" mode="IN" optional="true"/>
+        <attribute name="valid" type="Boolean" mode="OUT" optional="false"/>
+        <attribute name="result" type="String" mode="OUT" optional="false"/>
+        <attribute name="qrCodeId" type="String" mode="OUT" optional="true"/>
+        <attribute name="docType" type="String" mode="OUT" optional="true"/>
+        <attribute name="docId" type="String" mode="OUT" optional="true"/>
+        <attribute name="organizationPartyId" type="String" mode="OUT" optional="true"/>
+        <attribute name="channel" type="String" mode="OUT" optional="true"/>
+        <attribute name="targetUrl" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="qrcoreRevoke" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.qrcore.QrCoreServices" invoke="revoke">
+        <description>Revoke a QR code — future scans verify as REVOKED (audit kept).</description>
+        <attribute name="qrCodeId" type="String" mode="IN" optional="false"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="qrcoreReactivate" engine="java" auth="true" export="true" action="POST"
+            location="org.apache.ofbiz.qrcore.QrCoreServices" invoke="reactivate">
+        <description>Reactivate a previously revoked QR code.</description>
+        <attribute name="qrCodeId" type="String" mode="IN" optional="false"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <!-- policy maintenance (entity-auto) — consumed by all print engines -->
+    <service name="qrcoreCreatePolicy" default-entity-name="QrPolicy" engine="entity-auto"
+            invoke="create" auth="true" export="true" action="POST">
+        <description>Create a QR rendering/access policy row</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="qrcoreUpdatePolicy" default-entity-name="QrPolicy" engine="entity-auto"
+            invoke="update" auth="true" export="true" action="POST">
+        <description>Update a QR rendering/access policy row</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+    </service>
+    <service name="qrcoreDeletePolicy" default-entity-name="QrPolicy" engine="entity-auto"
+            invoke="delete" auth="true" export="true" action="POST">
+        <description>Delete a QR rendering/access policy row</description>
+        <auto-attributes include="pk" mode="IN" optional="false"/>
+    </service>
+
+    <!-- NOTE 2026-07-24: audit trail, bank-file services and payment guards
+         moved to the "ui" plugin (uiLogAudit, uiGenerateBankFile,
+         uiProcessBankResponse, uiPaymentVoidGuard, …). qrcore is QR-code only. -->
+</services>
